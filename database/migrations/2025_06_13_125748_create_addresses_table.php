@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('barangay');
             $table->string('municipality');
             $table->string('province');
-            $table->integer('zip_code')->nullable();
+            $table->string('zip_code')->nullable();
             $table->timestamps();
         });
     }
