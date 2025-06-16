@@ -21,3 +21,5 @@ Route::get('/donate', function () {
 Route::get('adoption', function () {
     return view('adoption.index');
 });
+
+require __DIR__.'/auth.php';
