@@ -8,7 +8,7 @@ Route::get('/', function () {
 
 Route::get('/rescues', function () {
     return view('rescues.index');
-});
+})->name('rescues');
 
 Route::get('/reports', function () {
     return view('reports.index');
@@ -22,4 +22,11 @@ Route::get('adoption', function () {
     return view('adoption.index');
 });
 
+Route::get('register', function () {
+    return view('register');
+});
+
+Route::get('sign-in', function () {
+    return view('sign_in');
+});
 require __DIR__.'/auth.php';

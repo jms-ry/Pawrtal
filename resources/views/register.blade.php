@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-  <h1 class="fw-bold">Donation Page</h1>
+  <h1 class="fw-bold">Create an Account Page</h1>
 @endsection
