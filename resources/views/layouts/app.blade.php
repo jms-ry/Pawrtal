@@ -16,7 +16,7 @@
     <!-- Styles / Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   </head>
-  <body class="antialiased bg-dark text-white d-flex flex-column min-vh-100">
+  <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100 overflow-auto">
     <main class="flex-grow-1">
       @include('layouts.navigation')
       @yield('content')
