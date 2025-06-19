@@ -9,7 +9,6 @@
       <span class="navbar-toggler-icon "></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarColor01">
-
       <!--Small Screen-->
         <ul class="navbar-nav me-auto d-lg-none">
           <li class="nav-item ">

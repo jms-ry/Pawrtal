@@ -4,7 +4,22 @@
   <div class="container-fluid mt-5 mb-5">
     <div class="row g-4">
       <div class="col-6 d-flex align-items-center justify-content-center d-none d-lg-block">
-        <img src="{{ asset('images/register.jpg') }}" alt="Happy pet" class="img-fluid">
+        <div class="carousel slide carousel-fade" id="registerPetCarousel" data-bs-ride="carousel" data-bs-pause="false">
+          <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="3000">
+              <img src="{{ asset('images/register/register-3.jpg') }}" alt="Happy pet" class="img-fluid">
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+              <img src="{{ asset('images/register/register-1.jpg') }}" alt="Happy pet" class="img-fluid">
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+              <img src="{{ asset('images/register/register.jpg') }}" alt="Happy pet" class="img-fluid">
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+              <img src="{{ asset('images/register/register-2.jpg') }}" alt="Happy pet" class="img-fluid">
+            </div>
+          </div>
+        </div>
       </div>
       <div class="col-12 col-md-6 mt-5">
         <h1 class="text-center fw-bold">Create a <a class="fw-bolder link-opacity-100">Pawrtal</a> account Today!</h1>
@@ -39,12 +54,8 @@
               <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Password Confirmation" aria-label="Password Confirmation">
             </div>
           </div>
-          <div class="d-flex flex-column mt-3 mb-3">
-            <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" id="terms-and-condition-checkbox">
-              <label for="terms-and-condition-checkbox" class="form-check-label">I agree to <span class="fw-bolder"><u>Terms and Conditions</u></span></label>
-            </div>
-            <button type="button" class="btn btn-success w-100">Create an Account</button>
+          <div class="d-flex flex-column mt-4 mb-3 align-items-center me-0 me-md-2 ms-0 ms-md-2">
+            <button type="button" class="btn btn-success w-100 ">Create an Account</button>
             <div class="align-items-center text-center">
               <p class="mt-3">Already have an account? <a href="{{ url('/sign-in') }}" class="fw-bold link-opacity-100">Sign in here</a></p>
             </div>

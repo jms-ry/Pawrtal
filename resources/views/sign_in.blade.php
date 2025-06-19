@@ -21,15 +21,7 @@
               <input type="password" id="password" name="password" class="form-control" placeholder="Password" aria-label="Password">
             </div>
           </div>
-          <div class="row g-0 me-2 me-md-0 mt-3">
-            <div class="col-12 col-md-8 w-md-75 ms-2 ms-md-5">
-              <div class="form-check mb-2">
-                <input type="checkbox" class="form-check-input" id="remember-me-checkbox">
-                <label for="remember-me-checkbox" class="form-check-label">Remember Me</label>
-              </div>
-            </div>
-          </div>
-          <div class="row g-0 me-2 me-md-0 mt-3">
+          <div class="row g-0 me-2 me-md-0 mt-4">
             <div class="col-12 col-md-8 ms-2 ms-md-5">
               <button type="button" class="btn btn-success w-100">Sign in</button>
               <p class="text-center text-decoration-underline fw-bold mt-2">Forgot your password?</p>
@@ -38,7 +30,19 @@
         </form>
       </div>
       <div class="col-6 d-flex align-items-center justify-content-center d-none d-lg-block">
-        <img src="{{ asset('images/sign-in.jpg') }}" alt="Happy pet" class="img-fluid">
+        <div class="carousel slide carousel-fade" id="signInPetCarousel" data-bs-ride="carousel" data-bs-pause="false">
+          <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="3000">
+              <img src="{{ asset('images/sign-in/aspin-4.jpg') }}" alt="Happy pet" class="img-fluid">
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+              <img src="{{ asset('images/sign-in/aspin-2.jpg') }}" alt="Happy pet" class="img-fluid">
+            </div>
+            <div class="carousel-item" data-bs-interval="3000">
+              <img src="{{ asset('images/sign-in/aspin-1.png') }}" alt="Happy pet" class="img-fluid">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
