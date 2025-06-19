@@ -30,16 +30,16 @@
         </form>
       </div>
       <div class="col-6 d-flex align-items-center justify-content-center d-none d-lg-block">
-        <div class="carousel slide carousel-fade" id="signInPetCarousel" data-bs-ride="carousel" data-bs-pause="false">
+        <div class="carousel slide" id="signInPetCarousel" data-bs-ride="carousel" data-bs-pause="false">
           <div class="carousel-inner">
             <div class="carousel-item active" data-bs-interval="3000">
-              <img src="{{ asset('images/sign-in/aspin-4.jpg') }}" alt="Happy pet" class="img-fluid">
+              <img src="{{ asset('images/sign-in/aspin-4.jpg') }}" alt="Happy pet" class="img-fluid border border-0 rounded-4">
             </div>
             <div class="carousel-item" data-bs-interval="3000">
-              <img src="{{ asset('images/sign-in/aspin-2.jpg') }}" alt="Happy pet" class="img-fluid">
+              <img src="{{ asset('images/sign-in/aspin-2.jpg') }}" alt="Happy pet" class="img-fluid border border-0 rounded-4">
             </div>
             <div class="carousel-item" data-bs-interval="3000">
-              <img src="{{ asset('images/sign-in/aspin-1.png') }}" alt="Happy pet" class="img-fluid">
+              <img src="{{ asset('images/sign-in/aspin-1.png') }}" alt="Happy pet" class="img-fluid border border-0 rounded-4">
             </div>
           </div>
         </div>
