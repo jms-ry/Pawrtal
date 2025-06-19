@@ -22,6 +22,10 @@ Route::get('adoption', function () {
     return view('adoption.index');
 });
 
+Route::get('about-us', function () {
+    return view('about-us');
+});
+
 Route::get('register', function () {
     return view('register');
 });
