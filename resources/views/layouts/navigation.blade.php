@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-success pe-2 ps-2" data-bs-theme="light">
+<nav class="navbar navbar-expand-lg bg-success pe-2 ps-2 border-0" data-bs-theme="light">
   <div class="container-fluid ms-lg-5">
     <div class="d-flex align-items-center">
       <img src="{{ asset('images/pets.png') }}" alt="Logo" height="40" class="me-1 fw-bolder">
@@ -6,11 +6,11 @@
     </div>
     
     <button class="navbar-toggler border border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon "></span>
+      <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarColor01">
       <!--Small Screen-->
-        <ul class="navbar-nav me-auto d-lg-none">
+        <ul class="navbar-nav me-auto d-lg-none border-top border-1 border-white pt-2 mt-3">
           <li class="nav-item ">
             <a class="nav-link fw-bold fs-5" href="/rescues">Rescues</a>
           </li>
