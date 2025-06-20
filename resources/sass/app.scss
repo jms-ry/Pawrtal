@@ -3,3 +3,14 @@
 @import "bootstrap/scss/bootstrap";
 @import "bootswatch/dist/brite/bootswatch";
 @import 'bootstrap-icons/font/bootstrap-icons.css';
+
+.custom-carousel .carousel-control-prev,
+.custom-carousel .carousel-control-next {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-carousel:hover .carousel-control-prev,
+.custom-carousel:hover .carousel-control-next {
+  opacity: 1;
+}

@@ -55,7 +55,7 @@
             </div>
           </div>
           <div class="d-flex flex-column mt-4 mb-3 align-items-center me-0 me-md-2 ms-0 ms-md-2">
-            <button type="button" class="btn btn-success w-100 ">Create an Account</button>
+            <button type="button" class="btn btn-success w-100 fw-bolder">Create an Account</button>
             <div class="align-items-center text-center">
               <p class="mt-3">Already have an account? <a href="{{ url('/sign-in') }}" class="fw-bold link-opacity-100">Sign in here</a></p>
             </div>

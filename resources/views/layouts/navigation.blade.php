@@ -27,7 +27,7 @@
             <a class="nav-link fw-bold fs-5" href="/faqs">FAQs</a>
           </li>
           <li class="d-lg-none">
-            <a class="nav-link fw-bold fs-5" href="/register">Create an Account</a>
+            <a class="nav-link fw-bold fs-5" href="/register">Sign up</a>
           </li>
           <li class="d-lg-none">
             <a class="nav-link fw-bold fs-5" href="/sign-in">Sign in</a>
@@ -43,11 +43,11 @@
       </div>
       <div class="d-none d-sm-flex flex-column flex-sm-row justify-content-end ms-auto">
         @if((!request()->is('register')) && (!request()->is('sign-in')))
-          <a href="{{ url('/register') }}" class="btn btn-warning me-md-1 me-0 d-flex align-items-center" style="background-color: #FFF44F;">
-            <i class="bi bi-person me-md-2 me-0 fs-5"></i> Create an Account
+          <a href="{{ url('/register') }}" class="btn btn-warning me-md-1 me-0 d-flex align-items-center fw-bolder" style="background-color: #FFF44F;">
+            <i class="bi bi-person me-md-2 me-0 fs-5 fw-bolder"></i> Sign up
           </a>
-          <a href="{{ url('/sign-in') }}" class="btn btn-info d-flex align-items-center" style="background-color: #82EEFD;">
-            <i class="bi bi-box-arrow-in-right me-md-2 me-0 fs-5"></i>Sign in
+          <a href="{{ url('/sign-in') }}" class="btn btn-info d-flex align-items-center fw-bolder" style="background-color: #82EEFD;">
+            <i class="bi bi-box-arrow-in-right me-md-2 me-0 fs-5 fw-bolder"></i>Sign in
           </a>
         @endif
       </div>

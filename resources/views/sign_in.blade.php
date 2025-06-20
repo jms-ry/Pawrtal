@@ -23,7 +23,7 @@
           </div>
           <div class="row g-0 me-2 me-md-0 mt-4">
             <div class="col-12 col-md-8 ms-2 ms-md-5">
-              <button type="button" class="btn btn-success w-100">Sign in</button>
+              <button type="button" class="btn btn-success w-100 fw-bolder">Sign in</button>
               <p class="text-center text-decoration-underline fw-bold mt-2">Forgot your password?</p>
             </div>
           </div>
