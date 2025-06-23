@@ -159,7 +159,7 @@
   </div>
   <!--End Ormoc Stray Oasis Section-->
   <!--How You Can Help Section-->
-  <div id="how-you-can-help" class="mt-5 mt-md-3 mb-4 mb-md-2 border-0">
+  <div id="how-you-can-help" class="card mt-5 mt-md-3 mb-4 mb-md-2 border-0">
     <div class="card-body border-0 p-3 p-md-5">
       <div class="container-fluid p-3 p-md-5">
         <h3 class="text-center fw-bolder display-6 font-monospace">How You Can Help</h3>
@@ -196,5 +196,28 @@
     </div>
   </div>
   <!--End How You Can Help Section-->
+  <!--Meet Few of Our Rescue Section-->
+  <div class="card mt-5 mt-md-3 mb-4 mb-md-2 border-0">
+    <div class="card-body border-0 p-3 p-md-5">
+      <div class="container-fluid mx-auto shadow p-3 mb-5 rounded">
+        <h3 class="text-center fw-bolder display-6 font-monospace mb-2 mt-3">Meet Few of Our Rescues</h3>
+        <div class="row g-3 mt-4 mx-auto">
+          @foreach($rescues as $rescue)
+            <div class="col-12 col-md-6 col-lg-3" data-aos="zoom-in-up" data-aos-delay="400">
+              <div class="rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 250px;">
+                <img src="{{ asset($rescue->image) }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover">
+                <span class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-light bg-opacity-75 text-dark fw-bold rounded">
+                  {{ $rescue->name }}
+                </span>
+              </div>
+            </div>
+          @endforeach
+        </div>
+        <div class="d-flex justify-content-center mt-5 mx-auto">
+          <a href="{{ url('/rescues') }}" class="btn btn-warning fw-bold rounded-pill px-4 mt-auto mx-auto"> See All Rescues</a>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
   
