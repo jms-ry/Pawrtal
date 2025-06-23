@@ -64,7 +64,7 @@
   <div class="card mt-5 mt-md-4 border-0">
     <div class="card-body p-3 p-md-5">
       <div class="container me-0 me-md-5 ms-0 ms-md-5">
-        <h3 class="text-center">About Us</h3>
+        <h3 class="text-center font-monospace fw-bolder">About Us</h3>
         <p data-aos="fade-left" data-aos-duration="500" class="fs-5 mt-5 lh-lg" style="text-align: justify;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         <p data-aos="fade-right" data-aos-duration="500" class="fs-5 lh-lg" style="text-align: justify;">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
         <div class="d-flex flex-column justify-content-center align-items-center mt-5">
@@ -108,19 +108,19 @@
       <div class="container-fluid">
         <div class="row g-0 d-flex align-items-center justify-content-center text-center p-3 p-md-5">
           <div class="col-12 col-md-3 mb-4 mb-md-0">
-            <span class="display-5 fw-bolder" id="sheltered-count">0</span>
+            <span class="display-5 fw-bolder" id="sheltered-count" data-count="{{ $shelteredCount }}">0</span>
             <h6 class="fw-bold fs-4 mt-2 font-monospace">Sheltered</h6>
           </div>
           <div class="col-12 col-md-3 mb-4 mb-md-0">
-            <span class="display-5 fw-bolder" id="spayed-count">0</span>
-            <h6 class="fw-bold fs-4 mt-2 font-monospace">Spay/Neutred</h6>
+            <span class="display-5 fw-bolder" id="spayed-neutered-count" data-count="{{ $spayedNeuteredCount }}">0</span>
+            <h6 class="fw-bold fs-4 mt-2 font-monospace">Spay/Neutered</h6>
           </div>
           <div class="col-12 col-md-3 mb-4 mb-md-0">
-            <span class="display-5 fw-bolder" id="vaccinated-count">0</span>
-            <h6 class="fw-bold fs-4 mt-2 font-monospace">Vaccinated</h6>
+            <span class="display-5 fw-bolder" id="vaccinated-count" data-count="{{ $vaccinatedCount }}">0</span>
+            <h6 class="fw-bold fs-4 mt-2 font-monospace">Fully Vaccinated</h6>
           </div>
           <div class="col-12 col-md-3 mb-4 mb-md-0">
-            <span class="display-5 fw-bolder" id="adopted-count">0</span>
+            <span class="display-5 fw-bolder" id="adopted-count" data-count="{{ $adoptedCount }}">0</span>
             <h6 class="fw-bold fs-4 mt-2 font-monospace">Adopted/Rehomed</h6>
           </div>
         </div>
@@ -159,10 +159,10 @@
   </div>
   <!--End Ormoc Stray Oasis Section-->
   <!--How You Can Help Section-->
-  <div id="how-you-can-help" class="card mt-3 mt-md-1 border-0">
+  <div id="how-you-can-help" class="mt-5 mt-md-3 mb-4 mb-md-2 border-0">
     <div class="card-body border-0 p-3 p-md-5">
-      <div class="container-fluid p3 p-md-5">
-        <h3 class="text-center fw-bolder display-6">How You Can Help</h3>
+      <div class="container-fluid p-3 p-md-5">
+        <h3 class="text-center fw-bolder display-6 font-monospace">How You Can Help</h3>
         <div class="row g-3 mt-5">
           <div class="col-12 col-md-4" data-aos="zoom-in-right" data-aos-delay="200">
             <div class="card bg-success border-0 h-100">
@@ -195,5 +195,6 @@
       </div>
     </div>
   </div>
+  <!--End How You Can Help Section-->
 @endsection
   
