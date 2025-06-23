@@ -74,7 +74,7 @@
         <!--Adoption Terms and Conditions Modal-->
         <div class="modal fade me-2" id="adoptionTermsAndConditionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="adoptionTermsAndConditionsModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content me-1 me-md-0 ms-1 ms-md-0">
+            <div class="modal-content me-3 me-md-0 ms-3 ms-md-0 mt-5 mt-md-0 mb-5 mb-md-0">
               <div class="modal-header border-0">
                 <h5 class="modal-title fs-5 fw-bolder mt-2">Adoption Terms and Conditions</h5>
               </div>
@@ -103,7 +103,7 @@
   </div>
   <!--End About Us Section-->
   <!--Rescue Statistics Section-->
-  <div class="card mt-4 border-0 bg-warning">
+  <div class="card mt-4 border-0 bg-warning mb-5">
     <div class="card-body border-0 p-3 p-md-5">
       <div class="container-fluid">
         <div class="row g-0 d-flex align-items-center justify-content-center text-center p-3 p-md-5">
@@ -128,8 +128,38 @@
     </div>
   </div>
   <!--End Rescue Statistics Section-->
+  <!--Ormoc Stray Oasis Section-->
+  <div class="card mt-5 mt-md-3 mb-4 mb-md-2 border-0">
+    <div class="card-body border-0 px-1 px-md-5">
+      <div class="container-fluid d-flex flex-column p-md-5 ms-md-4 me-md-4 ms-1 me-1">
+        <div class="d-flex flex-column ms-3 ms-md-5 me-3 me-md-5 px-1 px-md-0">
+          <h3 class="fw-bolder fs-3 mt-3 mt-md-1" style="text-align: justify;">ORMOC STRAY OASIS PROVIDES SAFE HAVEN FOR OVER 600 RESCUED ANIMALS WHO WERE ONCE ABANDONED, ABUSED, OR NEGLECTED.</h3>
+          <h5 class="lead fs-4 mt-3 mb-3" style="text-align: justify;">Ormoc Stray Oasis (OSO) is located in Ormoc City, Philippines - Home to rescues who reminds us why we continue to fight for the voiceless.</h5>
+          <!--Small Screen -->
+          <div class="mx-auto mt-2 mt-md-3 p-md-3 d-block d-md-none">
+            <div class="container-sm-fluid w-100">
+              <img src="{{ asset('images/welcome/dog-3.jpg') }}" alt="Happy pet" class="img-fluid rounded-4 mb-2">
+            </div>
+            <span class="lead fs-5 fst-italic font-monospace d-block text-center mt-2">Location: Barangay Cagbuhangin, Ormoc City, Leyte, Philippines</span>
+          </div>
+          <!--End Small Screen -->
+          <!--Large Screen -->
+          <div class="row mt-4 d-none d-md-block mb-0">
+            <div class="col-12">
+              <div class="w-75 mx-auto d-block text-center">
+                <img src="{{ asset('images/welcome/dog-3.jpg') }}" alt="Happy pet" class="img-fluid rounded-4 mb-4">
+                <span class="lead fs-5 fst-italic font-monospace mt-3">Location: Barangay Cagbuhangin, Ormoc City, Leyte, Philippines</span>
+              </div>
+            </div>
+          </div>
+          <!--End Large Screen -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--End Ormoc Stray Oasis Section-->
   <!--How You Can Help Section-->
-  <div id="how-you-can-help" class="card mt-5 mt-md-3 border-0">
+  <div id="how-you-can-help" class="card mt-3 mt-md-1 border-0">
     <div class="card-body border-0 p-3 p-md-5">
       <div class="container-fluid p3 p-md-5">
         <h3 class="text-center fw-bolder display-6">How You Can Help</h3>
@@ -138,7 +168,7 @@
             <div class="card bg-success border-0 h-100">
               <div class="card-body d-flex flex-column text-center">
                 <p class="fs-2 fw-bold font-monospace mt-3 mb-3 p-0">Donate</p>
-                <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
+                <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">Every peso counts in saving a life. Your generous donations help us provide food, shelter, and medical care to hundreds of rescues who once had nothing. From basic needs to emergency surgeries, your support keeps their second chances possible. Be part of their journey toward healing and a forever home.</p>
                 <a href="{{ url('/donate') }}" class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto">Donate</a>
               </div>
             </div>
@@ -147,7 +177,7 @@
             <div class="card bg-success border-0 h-100">
               <div class="card-body d-flex flex-column text-center">
                 <p class="fs-2 fw-bold font-monospace mt-3 mb-3 p-0">Adopt</p>
-                <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">Suspendisse varius mollis convallis. Nulla eget mauris non urna gravida interdum sit amet malesuada erat. Morbi quis faucibus lacus. Sed risus justo, fringilla porttitor urna maximus, dictum pellentesque magna. Sed at quam laoreet, imperdiet neque a, bibendum arcu. In at magna a est posuere euismod.</p>
+                <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">When you adopt, you don’t just save one life — you open space to save another. Each rescue carries a story of survival, hope, and quiet resilience. By giving them a home, you become the happy ending they’ve been waiting for. Find a loyal friend who will love you unconditionally.</p>
                 <a href="{{ url('/adoption') }}" class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto">Adopt a Rescue</a>
               </div>
             </div>
@@ -156,7 +186,7 @@
             <div class="card bg-success border-0 h-100">
               <div class="card-body d-flex flex-column text-center">
                 <p class="fs-2 fw-bold font-monospace mt-3 mb-3 p-0">Report</p>
-                <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">Praesent eu eros hendrerit, maximus nisl et, cursus lacus. Maecenas sit amet lectus neque. Cras tincidunt tellus lectus, in mattis tortor lacinia eu. Ut ut malesuada ligula. Nam nulla lorem, sollicitudin vel neque vel, ornare eleifend neque. Fusce aliquet nisi non nisl porttitor, ac tincidunt metus ornare. </p>
+                <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">You could be the reason a lost pet finds its way home. Our Lost & Found service lets you report animals in need or reunite missing pets with their families. Whether you’ve found a stray or lost your furry companion, we’re here to help. Let’s work together to bring them back where they belong.</p>
                 <a href="{{ url('/reports') }}" class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto">File a Report</a>
               </div>
             </div>
