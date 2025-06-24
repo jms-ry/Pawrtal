@@ -12,7 +12,9 @@ class AnimalController extends Controller
      */
     public function index()
     {
-        //
+      return view('rescues.index',[
+        'rescues'=> Animal::all(),
+    ]);
     }
 
     /**
