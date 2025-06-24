@@ -17,7 +17,7 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   </head>
   <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100">
-    <main class="flex-grow-1">
+    <main class="flex-grow-1" data-controller="want-to-help-btn">
       @include('layouts.navigation')
       @yield('content')
     </main>
