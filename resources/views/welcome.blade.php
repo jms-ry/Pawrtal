@@ -11,7 +11,7 @@
             <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
               <h1 class="display-5 fw-bold">Saving lives, one paw at a time.</h1>
               <p class="lead fs-4">Together, we’re rewriting their stories.</p>
-              <a href="#how-you-can-help" class="btn btn-primary btn-lg fw-bolder mt-2">I WANT TO HELP</a>
+              <a href="" class="btn btn-primary btn-lg fw-bolder mt-2 btn-help-scroll">I WANT TO HELP</a>
             </div>
           </div>
           <div class="carousel-item" style="height: 90vh;">
@@ -56,7 +56,7 @@
       <div class="position-absolute top-50 start-50 translate-middle text-center text-white w-100 px-3">
         <h6 class="display-6 fw-bold">Saving lives, one paw at a time.</h6>
         <p class="lead fs-5">Together, we’re rewriting their stories.</p>
-        <a href="#how-you-can-help" class="btn btn-primary btn-lg fw-bolder mt-2">I WANT TO HELP</a>
+        <a href="" class="btn btn-primary btn-lg fw-bolder mt-2 btn-help-scroll">I WANT TO HELP</a>
       </div>
     </div>
   </div>
@@ -71,39 +71,13 @@
           <a href="{{ url('/adoption') }}" class="btn btn-primary btn-lg fw-bolder w-md-75 px-3">ADOPT A RESCUE TODAY</a>
           <a data-bs-toggle="modal" data-bs-target="#adoptionTermsAndConditionsModal" class="text-decoration-none mt-4 text-danger fw-bolder">Terms and Conditions for Adopting a Rescue</a>
         </div>
-        <!--Adoption Terms and Conditions Modal-->
-        <div class="modal fade me-2" id="adoptionTermsAndConditionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="adoptionTermsAndConditionsModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content me-3 me-md-0 ms-3 ms-md-0 mt-5 mt-md-0 mb-5 mb-md-0">
-              <div class="modal-header border-0">
-                <h5 class="modal-title fs-5 fw-bolder mt-2">Adoption Terms and Conditions</h5>
-              </div>
-              <div class="modal-body border-0">
-                <p class="lead fs-6">The following are the terms and conditions to be complied during adoption process:</p>
-                <ol class="ms-2">
-                  <li class="fs-6" style="text-align: justify;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
-                  <li class="fs-6" style="text-align: justify;">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </li>
-                  <li class="fs-6" style="text-align: justify;">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</li>
-                  <li class="fs-6" style="text-align: justify;">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</li>
-                  <li class="fs-6" style="text-align: justify;">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</li>
-                  <li class="fs-6" style="text-align: justify;">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</li>
-                  <li class="fs-6" style="text-align: justify;">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</li>
-                  <li class="fs-6" style="text-align: justify;">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</li>
-                  <li class="fs-6" style="text-align: justify;">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</li>
-                </ol>
-              </div>
-              <div class="modal-footer border-0 mt-2">
-                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">I understand</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        @include('modals.welcome.adoption_terms_and_conditions')
       </div>
     </div>
   </div>
   <!--End About Us Section-->
   <!--Rescue Statistics Section-->
-  <div class="card mt-4 border-0 bg-warning mb-5">
+  <div class="card mt-4 border-0 bg-warning mb-5" data-controller="rescues-statistics">
     <div class="card-body border-0 p-3 p-md-5">
       <div class="container-fluid">
         <div class="row g-0 d-flex align-items-center justify-content-center text-center p-3 p-md-5">
