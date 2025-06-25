@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Animal;
 use Illuminate\Http\Request;
 
-class AnimalController extends Controller
+class AdoptionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-      $rescues = Animal::all();
-      return view('rescues.index', compact('rescues'));
+      $adoptables = Animal::where('adoption_status','available')->get();
+
+      return view('adoption.index',compact('adoptables'));
     }
 
     /**

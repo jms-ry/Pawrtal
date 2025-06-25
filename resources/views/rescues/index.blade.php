@@ -7,41 +7,43 @@
         <h3 class="text-center fw-bolder display-6 font-monospace mb-5 mt-3">Meet Our Rescues!</h3>
         <div class="row g-3 g-md-5 mb-4 justify-content-end">
           <div class="col-12 col-md-6">
-            <span class="fw-bold mb-3">Filter by</span>
-            <div class="row g-2 mt-1">
-              <div class="col-12 col-md-4">
-                <select class="form-select" aria-label="filter-select">
-                  <option selected hidden disabled>Sex</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                </select>
+            <fieldset class="p-1">
+              <legend class="fs-6 fw-bold mx-2" id="filter-legend">Filter by</legend>
+              <div class="row g-2 mt-0">
+                <div class="col-12 col-md-4">
+                  <select class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
+                    <option selected hidden disabled>Sex</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <select class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
+                    <option selected hidden disabled>Size</option>
+                    <option>Small</option>
+                    <option>Medium</option>
+                    <option>Large</option>
+                  </select>
+                </div>
+                <div class="col-12 col-md-4">
+                  <select class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
+                    <option selected hidden disabled>Adoption Status</option>
+                    <option>Available</option>
+                    <option>Unavailable</option>
+                    <option>Adopted</option>
+                  </select>
+                </div>
               </div>
-              <div class="col-12 col-md-4">
-                <select class="form-select" aria-label="filter-select">
-                  <option selected hidden disabled>Size</option>
-                  <option>Small</option>
-                  <option>Medium</option>
-                  <option>Large</option>
-                </select>
-              </div>
-              <div class="col-12 col-md-4">
-                <select class="form-select" aria-label="filter-select">
-                  <option selected hidden disabled>Adoption Status</option>
-                  <option>Available</option>
-                  <option>Unavailable</option>
-                  <option>Adopted</option>
-                </select>
-              </div>
-            </div>
+            </fieldset>
           </div>
-          <div class="col-12 col-md-6 d-flex justify-content-end">
+          <div class="col-12 col-md-6 mt-3 mt-md-auto d-flex justify-content-end ">
             <!-- Search input for larger screens -->
             <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1">
               <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control">
               <span class="input-group-text no-start-border"><i class="bi bi-search"></i></span>
             </div>
             <!-- Search input for smaller screens -->
-            <div class="input-group w-100 d-flex d-md-none">
+            <div class="input-group w-100 d-flex d-md-none px-1">
               <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control ">
               <span class="input-group-text"><i class="bi bi-search"></i></span>
             </div>
@@ -52,7 +54,7 @@
         <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
           @foreach($rescues as $rescue)
             <div class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="400">
-              <span class="text-dark fw-bold text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ $rescue->name }}</span>
+              <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ $rescue->name }}</span>
               <div class="p-2 mt-1" style="height: 300px;">
                 <img src="{{ asset($rescue->image) }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover rounded-4">
                 @if ($rescue->adoption_status === 'adopted')
@@ -62,20 +64,27 @@
               <div class="row g-2 p-2">
                 @if ($rescue->adoption_status === 'adopted' || $rescue->adoption_status === 'unavailable')
                   <div class="col-12 text-center mx-auto">
-                    <a href="" class="btn btn-sm btn-info rounded-pill w-50">About Me</a>
+                    <a href="" class="btn btn-sm btn-info rounded-pill w-50 fw-bold">About Me</a>
                   </div>
                 @else
                   <div class="col-12 col-md-6 text-center mx-auto">
-                    <a href="" class="btn btn-sm btn-info rounded-pill w-100">About Me</a>
+                    <a href="" class="btn btn-sm btn-info rounded-pill w-100 fw-bold">About Me</a>
                   </div>
                   <div class="col-12 col-md-6">
-                    <a href="" class="btn btn-sm btn-primary rounded-pill w-100">Adopt Me!</a>
+                    <a href="" class="btn btn-sm btn-success rounded-pill w-100 fw-bold">Adopt Me!</a>
                   </div>
                 @endif
               </div>
             </div>
           @endforeach
         </div>
+        <div class="d-flex justify-content-end mt-4 mt-md-5">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-primary"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
+            <button type="button" class="btn btn-primary"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
 @endsection
