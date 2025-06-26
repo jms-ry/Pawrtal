@@ -3,17 +3,17 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Animal;
+use App\Models\Rescue;
 use Illuminate\Database\Seeder;
 
-class AnimalsTableSeeder extends Seeder
+class RescuesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-      Animal::create([
+      Rescue::create([
         'name' => 'Bella',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -35,7 +35,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Milo',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -57,7 +57,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Lucy',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -79,7 +79,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Max',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -101,7 +101,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Daisy',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -123,7 +123,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Teddy',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -144,7 +144,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Stella',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -166,7 +166,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Charlie',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -188,7 +188,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Willow',
         'species' => 'Dog',
         'breed' => 'Aspin',
@@ -209,7 +209,7 @@ class AnimalsTableSeeder extends Seeder
         ],
       ]);
 
-      Animal::create([
+      Rescue::create([
         'name' => 'Bear',
         'species' => 'Dog',
         'breed' => 'Aspin',

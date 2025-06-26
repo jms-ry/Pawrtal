@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Animal;
-use Illuminate\Http\Request;
+
+use App\Models\Rescue;
+
 
 class WelcomeController extends Controller
 {
   public function index()
   {
-    $shelteredCount = Animal::count();
-    $spayedNeuteredCount = Animal::where('spayed_neutered', true)->count();
-    $vaccinatedCount = Animal::where('vaccination_status', 'vaccinated')->count();
-    $adoptedCount = Animal::where('adoption_status', 'adopted')->count();
-    $rescues = Animal::orderBy('name', 'desc')->take(4)->get();
+    $shelteredCount = Rescue::count();
+    $spayedNeuteredCount = Rescue::where('spayed_neutered', true)->count();
+    $vaccinatedCount = Rescue::where('vaccination_status', 'vaccinated')->count();
+    $adoptedCount = Rescue::where('adoption_status', 'adopted')->count();
+    $rescues = Rescue::orderBy('name', 'desc')->take(4)->get();
     
     return view('welcome', compact('shelteredCount','spayedNeuteredCount','vaccinatedCount','adoptedCount','rescues'));
   }

@@ -57,7 +57,7 @@
               </div>
               <div class="row g-2 p-2">
                 <div class="col-12 col-md-6 text-center mx-auto">
-                  <a href="" class="btn btn-sm btn-info rounded-pill w-100 fw-bold">About Me</a>
+                  <a href="{{ url('/rescues/' . $adoptable->id) }}" class="btn btn-sm btn-info rounded-pill w-100 fw-bold">About Me</a>
                 </div>
                 <div class="col-12 col-md-6">
                   <a href="" class="btn btn-sm btn-success rounded-pill w-100 fw-bold">Adopt Me!</a>

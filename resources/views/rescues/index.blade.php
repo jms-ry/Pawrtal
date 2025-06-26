@@ -62,11 +62,11 @@
               <div class="row g-2 p-2">
                 @if ($rescue->adoption_status === 'adopted' || $rescue->adoption_status === 'unavailable')
                   <div class="col-12 text-center mx-auto">
-                    <a href="" class="btn btn-sm btn-info rounded-pill w-50 fw-bold">About Me</a>
+                    <a href="{{ url('/rescues/' . $rescue->id) }}" class="btn btn-sm btn-info rounded-pill w-50 fw-bold">About Me</a>
                   </div>
                 @else
                   <div class="col-12 col-md-6 text-center mx-auto">
-                    <a href="" class="btn btn-sm btn-info rounded-pill w-100 fw-bold">About Me</a>
+                    <a href="{{ url('/rescues/' . $rescue->id) }}" class="btn btn-sm btn-info rounded-pill w-100 fw-bold">About Me</a>
                   </div>
                   <div class="col-12 col-md-6">
                     <a href="" class="btn btn-sm btn-success rounded-pill w-100 fw-bold">Adopt Me!</a>

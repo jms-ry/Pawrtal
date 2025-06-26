@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Animal extends Model
+class Rescue extends Model
 {
   protected $fillable = [
     'name',
@@ -26,5 +26,6 @@ class Animal extends Model
 
   protected $casts = [
     'images' => 'array',
-];
+  ];
+  
 }
