@@ -8,5 +8,8 @@ import { Stimulus } from '../libs/stimulus'
 import RescuesStatisticsController from './rescues_statistics_controller'
 Stimulus.register('rescues-statistics', RescuesStatisticsController)
 
+import SwitchSearchButtonController from './switch_search_button_controller'
+Stimulus.register('switch-search-button', SwitchSearchButtonController)
+
 import WantToHelpBtnController from './want_to_help_btn_controller'
 Stimulus.register('want-to-help-btn', WantToHelpBtnController)

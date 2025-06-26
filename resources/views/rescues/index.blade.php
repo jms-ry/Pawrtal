@@ -40,12 +40,10 @@
             <!-- Search input for larger screens -->
             <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1">
               <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control">
-              <span class="input-group-text no-start-border"><i class="bi bi-search"></i></span>
             </div>
             <!-- Search input for smaller screens -->
             <div class="input-group w-100 d-flex d-md-none px-1">
               <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control ">
-              <span class="input-group-text"><i class="bi bi-search"></i></span>
             </div>
           </div>
         </div>
