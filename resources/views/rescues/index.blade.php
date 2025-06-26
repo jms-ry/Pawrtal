@@ -54,7 +54,7 @@
             <div class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="400">
               <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ $rescue->name }}</span>
               <div class="p-2 mt-1" style="height: 300px;">
-                <img src="{{ asset($rescue->image) }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover rounded-4">
+                <img src="{{ asset($rescue->profile_image) }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover rounded-4">
                 @if ($rescue->adoption_status === 'adopted')
                   <span class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-1 bg-warning bg-opacity-75 text-dark fw-bold rounded"><i class="bi bi-heart-fill"></i></span>
                 @endif

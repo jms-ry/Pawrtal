@@ -15,11 +15,16 @@ class Animal extends Model
     'age',
     'size',
     'color',
-    'destinctive_features',
+    'distinctive_features',
     'health_status',
     'vaccination_status',
     'spayed_neutered',
     'adoption_status',
-    'image',
+    'profile_image',
+    'images',
   ];
+
+  protected $casts = [
+    'images' => 'array',
+];
 }

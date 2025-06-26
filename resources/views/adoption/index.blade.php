@@ -53,7 +53,7 @@
             <div class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="400">
               <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ $adoptable->name }}</span>
               <div class="p-2 mt-1" style="height: 300px;">
-                <img src="{{ asset($adoptable->image) }}" alt="{{ $adoptable->name }}" class="w-100 h-100 object-fit-cover rounded-4">
+                <img src="{{ asset($adoptable->profile_image) }}" alt="{{ $adoptable->name }}" class="w-100 h-100 object-fit-cover rounded-4">
               </div>
               <div class="row g-2 p-2">
                 <div class="col-12 col-md-6 text-center mx-auto">

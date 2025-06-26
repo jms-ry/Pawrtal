@@ -22,12 +22,17 @@ class AnimalsTableSeeder extends Seeder
         'age' => '2 years',
         'size' => 'medium',
         'color' => 'Brown and Black',
-        'destinctive_features' => 'Spotted ears',
+        'distinctive_features' => 'Spotted ears',
         'health_status' => 'healthy',
         'vaccination_status' => 'vaccinated',
         'spayed_neutered' => true,
         'adoption_status' => 'available',
-        'image' => 'images/welcome/rescue-section/dog-1.jpg'
+        'profile_image' => 'images/rescues/dog-1.jpg',
+        'images'=>[
+          'images/rescues/dog-1.jpg',
+          'images/rescues/dog-1.jpg',
+          'images/rescues/dog-1.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -39,12 +44,17 @@ class AnimalsTableSeeder extends Seeder
         'age' => '3 years',
         'size' => 'medium',
         'color' => 'White with Brown Spots',
-        'destinctive_features' => 'Brown Spots on head',
+        'distinctive_features' => 'Brown Spots on head',
         'health_status' => 'healthy',
         'vaccination_status' => 'vaccinated',
         'spayed_neutered' => false,
         'adoption_status' => 'unavailable',
-        'image' => 'images/welcome/rescue-section/dog-2.jpg'
+        'profile_image' => 'images/rescues/dog-2.jpg',
+        'images'=>[
+          'images/rescues/dog-2.jpg',
+          'images/rescues/dog-2.jpg',
+          'images/rescues/dog-2.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -56,12 +66,17 @@ class AnimalsTableSeeder extends Seeder
         'age' => '2 years',
         'size' => 'medium',
         'color' => 'White and Brown',
-        'destinctive_features' => 'White spot near the nose',
+        'distinctive_features' => 'White spot near the nose',
         'health_status' => 'healthy',
         'vaccination_status' => 'vaccinated',
         'spayed_neutered' => true,
         'adoption_status' => 'adopted',
-        'image' => 'images/welcome/rescue-section/dog-3.jpg'
+        'profile_image' => 'images/rescues/dog-3.jpg',
+        'images'=>[
+          'images/rescues/dog-3.jpg',
+          'images/rescues/dog-3.jpg',
+          'images/rescues/dog-3.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -73,12 +88,17 @@ class AnimalsTableSeeder extends Seeder
         'age' => '3 years',
         'size' => 'medium',
         'color' => 'White and Black',
-        'destinctive_features' => 'White line in the center of the head',
+        'distinctive_features' => 'White line in the center of the head',
         'health_status' => 'healthy',
         'vaccination_status' => 'partially_vaccinated',
         'spayed_neutered' => false,
         'adoption_status' => 'unavailable',
-        'image' => 'images/welcome/rescue-section/dog-4.jpg'
+        'profile_image' => 'images/rescues/dog-4.jpg',
+        'images'=>[
+          'images/rescues/dog-4.jpg',
+          'images/rescues/dog-4.jpg',
+          'images/rescues/dog-4.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -90,12 +110,17 @@ class AnimalsTableSeeder extends Seeder
         'age' => '11 months',
         'size' => 'medium',
         'color' => 'Black and White',
-        'destinctive_features' => 'White line in the center of its face',
+        'distinctive_features' => 'White line in the center of its face',
         'health_status' => 'healthy',
         'vaccination_status' => 'vaccinated',
         'spayed_neutered' => true,
         'adoption_status' => 'available',
-        'image' => 'images/welcome/rescue-section/dog-5.jpg'
+        'profile_image' => 'images/rescues/dog-5.jpg',
+        'images'=>[
+          'images/rescues/dog-5.jpg',
+          'images/rescues/dog-5.jpg',
+          'images/rescues/dog-5.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -107,12 +132,16 @@ class AnimalsTableSeeder extends Seeder
         'age' => '10 months',
         'size' => 'medium',
         'color' => 'Brown',
-        //'destinctive_features' => 'White line in the center of its face',
         'health_status' => 'healthy',
         'vaccination_status' => 'vaccinated',
         'spayed_neutered' => true,
         'adoption_status' => 'available',
-        'image' => 'images/welcome/rescue-section/dog-6.jpg'
+        'profile_image' => 'images/rescues/dog-6.jpg',
+        'images'=>[
+          'images/rescues/dog-6.jpg',
+          'images/rescues/dog-6.jpg',
+          'images/rescues/dog-6.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -124,12 +153,17 @@ class AnimalsTableSeeder extends Seeder
         'age' => '1 year',
         'size' => 'medium',
         'color' => 'Brown',
-        'destinctive_features' => 'Black line in the center of its face, Little bit black on the ears',
+        'distinctive_features' => 'Black line in the center of its face, Little bit black on the ears',
         'health_status' => 'healthy',
         'vaccination_status' => 'vaccinated',
         'spayed_neutered' => true,
         'adoption_status' => 'adopted',
-        'image' => 'images/welcome/rescue-section/dog-7.jpg'
+        'profile_image' => 'images/rescues/dog-7.jpg',
+        'images'=>[
+          'images/rescues/dog-7.jpg',
+          'images/rescues/dog-7.jpg',
+          'images/rescues/dog-7.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -141,12 +175,17 @@ class AnimalsTableSeeder extends Seeder
         'age' => '2 years',
         'size' => 'medium',
         'color' => 'Brown',
-        'destinctive_features' => 'White line on the nose',
+        'distinctive_features' => 'White line on the nose',
         'health_status' => 'healthy',
         'vaccination_status' => 'vaccinated',
         'spayed_neutered' => true,
         'adoption_status' => 'adopted',
-        'image' => 'images/welcome/rescue-section/dog-8.jpg'
+        'profile_image' => 'images/rescues/dog-8.jpg',
+        'images'=>[
+          'images/rescues/dog-8.jpg',
+          'images/rescues/dog-8.jpg',
+          'images/rescues/dog-8.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -158,12 +197,16 @@ class AnimalsTableSeeder extends Seeder
         'age' => '2 years',
         'size' => 'medium',
         'color' => 'Black',
-        //'destinctive_features' => 'White line on the nose',
         'health_status' => 'healthy',
         'vaccination_status' => 'partially_vaccinated',
         'spayed_neutered' => true,
         'adoption_status' => 'unavailable',
-        'image' => 'images/welcome/rescue-section/dog-9.jpg'
+        'profile_image' => 'images/rescues/dog-9.jpg',
+        'images'=>[
+          'images/rescues/dog-9.jpg',
+          'images/rescues/dog-9.jpg',
+          'images/rescues/dog-9.jpg',
+        ],
       ]);
 
       Animal::create([
@@ -175,12 +218,17 @@ class AnimalsTableSeeder extends Seeder
         'age' => '11 months',
         'size' => 'medium',
         'color' => 'Black with Brown',
-        'destinctive_features' => 'A little bit of black on its head, white spot on the chest',
+        'distinctive_features' => 'A little bit of black on its head, white spot on the chest',
         'health_status' => 'healthy',
         'vaccination_status' => 'partially_vaccinated',
         'spayed_neutered' => false,
         'adoption_status' => 'unavailable',
-        'image' => 'images/welcome/rescue-section/dog-10.jpg'
+        'profile_image' => 'images/rescues/dog-10.jpg',
+        'images'=>[
+          'images/rescues/dog-10.jpg',
+          'images/rescues/dog-10.jpg',
+          'images/rescues/dog-10.jpg',
+        ],
       ]);
 
 
