@@ -37,9 +37,18 @@ class RescueController extends Controller
   */
   public function show(Rescue $rescue)
   {
-    // dd ($animal);
-   
-    return view('rescues.show', compact('rescue'));
+    $randomImages = collect($rescue->images)->shuffle()->take(3);
+    $notEmpty = $randomImages->isNotEmpty();
+
+    $previousUrl = url()->previous();
+    $backContext = null;
+    if (str_contains($previousUrl, '/rescues')) {
+      $backContext = 'rescues';
+    }elseif (str_contains($previousUrl, '/adoption')) {
+      $backContext = 'adoption';
+    }
+    
+    return view('rescues.show', compact('rescue','randomImages','backContext','notEmpty'));
   }
 
   /**
