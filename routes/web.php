@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdoptionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RescueController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\Rescue;
@@ -9,10 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
 Route::get('/adoption', [AdoptionController::class, 'index'])->name('adoption.index');
 Route::resource('rescues', RescueController::class);
-
-Route::get('/reports', function () {
-    return view('reports.index');
-});
+Route::resource('reports', ReportController::class);
 
 Route::get('/donate', function () {
     return view('donate.index');
