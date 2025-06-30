@@ -5,6 +5,9 @@
 import { Stimulus } from '../libs/stimulus'
 
 
+import ReportSwitchController from './report_switch_controller'
+Stimulus.register('report-switch', ReportSwitchController)
+
 import RescuesStatisticsController from './rescues_statistics_controller'
 Stimulus.register('rescues-statistics', RescuesStatisticsController)
 

@@ -79,4 +79,19 @@ class Rescue extends Model
   {
     return $this->spayed_neutered ? 'Yes' : 'No';
   }
+
+  public function isAdopted ()
+  {
+    return $this->adoption_status === 'adopted';
+  }
+
+  public function isAvailable ()
+  {
+    return $this->adoption_status === 'available';
+  }
+
+  public function isUnavailable ()
+  {
+    return $this->adoption_status === 'unavailable';
+  }
 }

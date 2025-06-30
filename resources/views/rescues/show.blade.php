@@ -63,13 +63,17 @@
                 </div>
               </div>
             </div>
-            @if ($rescue->adoption_status === 'available')
+            @if ($rescue->isAvailable())
               <div class="d-flex justify-content-center">
                 <a href="" class="btn btn-lg btn-success fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
               </div>
-            @elseif($rescue->adoption_status === 'adopted')
+            @elseif($rescue->isAdopted())
               <div class="d-flex justify-content-center mb-4">
-                <p class="badge bg-info-subtle fs-5 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace border-0 fst-italic"><i class="bi bi-house-check-fill"></i> I'm already adopted!</p>
+                <p class="alert alert-primary  fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2" role="alert"><i class="bi bi-house-check-fill"></i> I'm already adopted!</p>
+              </div>
+            @else
+              <div class="d-flex justify-content-center mb-4">
+                <p class="alert alert-danger fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2" role="alert"><i class="bi bi-exclamation-triangle-fill"></i> I'm not yet available for adoption!</p>
               </div>
             @endif
           </div>
