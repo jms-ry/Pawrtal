@@ -50,6 +50,10 @@
                           <span> {{ $rescue->size_formatted }}</span>
                         </p>
                         <p class="fs-5 lead">
+                          <span class="fw-bold">Distinctive Features:</span>
+                          <span> {{ $rescue->distinctiveFeatures() }}</span>
+                        </p>
+                        <p class="fs-5 lead">
                           <span class="fw-bold">Vaccination Status:</span>
                           <span>{{ $rescue->vaccination_status_formatted }}</span>
                         </p>
@@ -65,7 +69,7 @@
             </div>
             @if ($rescue->isAvailable())
               <div class="d-flex justify-content-center">
-                <a href="" class="btn btn-lg btn-success fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
+                <a href="" class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
               </div>
             @elseif($rescue->isAdopted())
               <div class="d-flex justify-content-center mb-4">

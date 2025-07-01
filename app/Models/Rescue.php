@@ -94,4 +94,35 @@ class Rescue extends Model
   {
     return $this->adoption_status === 'unavailable';
   }
+
+  public function tagLabel()
+  {
+    $age = $this->age_formatted;
+    $sex = $this->sex_formatted;
+
+    return "$sex, $age";
+  }
+
+  public function distinctiveFeatures(): string
+  {
+    if($this->distinctive_features !== null) {
+      $text = trim($this->distinctive_features);
+
+      if (!preg_match('/[.!?]$/', $text)) {
+        $text .= '.';
+      }
+
+      $text = preg_replace('/([.!?])([A-Za-z])/', '$1 $2', $text);
+
+      $sentences = preg_split('/(?<=[.!?])\s+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+     $formatted = array_map(function ($sentence) {
+        $sentence = Str::lower($sentence);
+        return ucfirst(trim($sentence));
+      }, $sentences);
+
+      return implode(' ', $formatted);
+    }
+    return "None";
+  }
 }

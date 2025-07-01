@@ -25,6 +25,7 @@ class Report extends Model
     'temporary_shelter',
     'image',
     'status',
+    'animal_name',
   ];
   
   public function user(): BelongsTo
@@ -34,8 +35,9 @@ class Report extends Model
 
   public function getTypeFormattedAttribute(): string
   {
+    $type = Str::ucfirst(Str::lower($this->type));
     $species = Str::ucfirst(Str::lower($this->species));
-    return "{$this->type} {$species}";
+    return "{$type} {$species}";
   }
 
   public function isLostReport(): bool
@@ -70,18 +72,39 @@ class Report extends Model
 
   public function getConditionFormattedAttribute(): string
   {
+    if($this->condition === null) {
+      return "Unknown";
+    }
     return Str::ucfirst(Str::lower($this->condition));
   }
 
   public function getTemporaryShelterFormattedAttribute(): string
   {
+    if($this->temporary_shelter === null) {
+      return "Unknown";
+    }
     return Str::ucfirst(Str::lower($this->temporary_shelter));
   }
 
   public function distinctiveFeatures(): string
   {
     if($this->distinctive_features !== null) {
-      return Str::ucfirst(Str::lower($this->distinctive_features));
+      $text = trim($this->distinctive_features);
+
+      if (!preg_match('/[.!?]$/', $text)) {
+        $text .= '.';
+      }
+
+      $text = preg_replace('/([.!?])([A-Za-z])/', '$1 $2', $text);
+
+      $sentences = preg_split('/(?<=[.!?])\s+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+     $formatted = array_map(function ($sentence) {
+        $sentence = Str::lower($sentence);
+        return ucfirst(trim($sentence));
+      }, $sentences);
+
+      return implode(' ', $formatted);
     }
     return "None";
   }
@@ -99,5 +122,55 @@ class Report extends Model
   public function getAnimalNameFormattedAttribute(): string
   {
     return Str::headline($this->animal_name);
+  }
+
+  public function statusLabel()
+  {
+    if($this->status === 'active')
+    {
+      return "Not yet resolved";
+    }
+    return "Resolved";
+  }
+
+  public function isStillActive()
+  {
+    return $this->status === 'active';
+  }
+  
+  public function getBreedFormattedAttribute(): string
+  {
+    return Str::ucfirst(Str::lower($this->breed));
+  }
+
+  public function getColorFormattedAttribute ()
+  {
+    return Str::ucfirst(Str::lower($this->color));
+  }
+  public function getAgeEstimateFormattedAttribute ()
+  {
+    return Str::ucfirst(Str::lower($this->age_estimate)) .' ' .'old';
+  }
+
+  public function getSizeFormattedAttribute ()
+  {
+    return Str::headline($this->size);
+  }
+
+  public function ownerFullName()
+  {
+    $firstName = Str::ucfirst(Str::lower($this->user->first_name));
+    $lastName = Str::ucfirst(Str::lower($this->user->last_name));
+    return "{$firstName} {$lastName}";
+  }
+
+  public function getContactNumber()
+  {
+    return $this->user->contact_number;
+  }
+
+  public function getEmail()
+  {
+    return $this->user->email;
   }
 }

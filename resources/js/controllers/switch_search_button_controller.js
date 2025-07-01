@@ -5,7 +5,7 @@ export default class extends Controller {
   static targets = ["searchField", "matchButton", "switch"];
 
   connect() {
-    
+    this.toggleFields();
   }
 
   toggleFields() {

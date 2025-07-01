@@ -59,7 +59,7 @@
         </div>
       </div>
       <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
-        <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
+        <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center" data-controller="view-report-modal">
           @foreach ($reports as $report )
             <div class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
               <div class="card border-0 bg-warning-subtle h-100">
@@ -73,29 +73,70 @@
                   <div class="d-flex flex-column mt-md-3 mt-2">
                     @if($report->isLostReport())
                       <span class="ms-3 mt-3"><strong>Name: </strong>{{ $report->animal_name_formatted }}</span>
-                      <span class="ms-3 mt-3"><strong>Last Seen Location: </strong>{{ $report->foundLastSeenLocation() }}</span>
+                      <span class="ms-3 mt-3"><strong>Last Seen at: </strong>{{ $report->foundLastSeenLocation() }}</span>
                       <span class="ms-3 mt-3"><strong>Last Seen on: </strong>{{ $report->foundLastSeenDate() }}</span>
                     @else
                       <span class="ms-3 mt-3"><strong>Found at: </strong>{{ $report->foundLastSeenLocation() }}</span> 
                       <span class="ms-3 mt-3"><strong>Found on: </strong>{{ $report->foundLastSeenDate() }}</span>
                     @endif
                     <span class="ms-3 mt-3"><strong>Sex: </strong>{{ $report->sex_formatted }}</span>
-                    <span class="ms-3 mt-3"><strong>Distinctive Features:</strong> {{ $report->distinctiveFeatures() }}</span>
                     <span class="ms-3 mt-3"><strong>Date Reported:</strong> {{ $report->reportedDate()}}</span>
+                    <span class="ms-3 mt-3"><strong>Status:</strong> {{ $report->statusLabel()}}</span>
                   </div>
                 </div>
-                <div class="card-footer bg-warning-subtle border-0 d-flex justify-content-between px-3 mt-auto mx-auto mb-2">
-                  <a href="{{ url('/reports/' . $report->id) }}" class="btn btn-info fw-bold me-1">View Report</a>
-                  <a href="#" class="btn btn-success fw-bold ms-1">Alert Owner</a>
+                <div class="card-footer bg-warning-subtle border-0 d-flex gap-2 justify-content-between px-3 mt-auto mx-auto mb-2">
+                  @if($report->isStillActive())
+                    <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light"
+                      data-report-type="{{ $report->type}}" 
+                      data-report-animal-name ="{{ $report->animal_name_formatted }}"
+                      data-report-species="{{ $report->species }}"
+                      data-report-location="{{ $report->foundLastSeenLocation() }}"
+                      data-report-seen-date="{{ $report->foundLastSeenDate() }}"
+                      data-report-breed="{{ $report->breed_formatted }}"
+                      data-report-color="{{ $report->color_formatted }}"
+                      data-report-sex="{{ $report->sex_formatted }}"
+                      data-report-age-estimate="{{ $report->age_estimate_formatted }}"
+                      data-report-size="{{ $report->size_formatted }}"
+                      data-report-distinctive-features="{{ $report->distinctiveFeatures() }}"
+                      data-report-condition="{{ $report->condition_formatted }}"
+                      data-report-temporary-shelter="{{ $report->temporary_shelter_formatted }}"
+                      data-report-owner-name="{{ $report->ownerFullName() }}"
+                      data-report-owner-contact-number="{{ $report->getContactNumber() }}"
+                      data-report-owner-email="{{ $report->getEmail() }}"
+                      data-report-status="{{ $report->status }}"
+                      data-report-status-label="{{ $report->statusLabel() }}">View Report
+                    </a>
+                    <a href="#" class="btn btn-primary fw-bolder">Alert Owner</a>
+                  @else
+                    <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light"
+                      data-report-type="{{ $report->type}}"
+                      data-report-animal-name ="{{ $report->animal_name_formatted }}"
+                      data-report-species="{{ $report->species }}"
+                      data-report-location="{{ $report->foundLastSeenLocation() }}"
+                      data-report-seen-date="{{ $report->foundLastSeenDate() }}"
+                      data-report-breed="{{ $report->breed_formatted }}"
+                      data-report-color="{{ $report->color_formatted }}"
+                      data-report-sex="{{ $report->sex_formatted }}"
+                      data-report-age-estimate="{{ $report->age_estimate_formatted }}"
+                      data-report-size="{{ $report->size_formatted }}"
+                      data-report-distinctive-features="{{ $report->distinctiveFeatures() }}"
+                      data-report-condition="{{ $report->condition_formatted }}"
+                      data-report-temporary-shelter="{{ $report->temporary_shelter_formatted }}"
+                      data-report-owner-name="{{ $report->ownerFullName() }}"
+                      data-report-status="{{ $report->status }}"
+                      data-report-status-label="{{ $report->statusLabel() }}">View Report
+                    </a>
+                  @endif
                 </div>
               </div>
             </div>
+            @include('modals.reports.view_report_modal')
           @endforeach
         </div>
         <div class="d-flex justify-content-end mt-4 mt-md-5">
           <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-primary"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
-            <button type="button" class="btn btn-primary"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
+            <button type="button" class="btn btn-info"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
+            <button type="button" class="btn btn-info"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
           </div>
         </div>
       </div>

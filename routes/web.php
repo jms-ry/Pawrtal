@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
 Route::get('/adoption', [AdoptionController::class, 'index'])->name('adoption.index');
 Route::resource('rescues', RescueController::class);
-Route::resource('reports', ReportController::class);
+Route::resource('reports', ReportController::class)->except('show');
 
 Route::get('/donate', function () {
     return view('donate.index');
