@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Str;
@@ -172,5 +173,10 @@ class Report extends Model
   public function getEmail()
   {
     return $this->user->email;
+  }
+
+  public function owner()
+  {
+    return $this->user === Auth::user();
   }
 }

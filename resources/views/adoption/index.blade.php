@@ -2,7 +2,7 @@
 
 @section('content')
   <div class="card mt-2 mt-md-3 mb-4 mb-md-2 border-0 me-2 me-md-5 ms-2 ms-md-5 px-1 px-md-5">
-    <div class="card-body border-0 p-2 p-md-5 mx-auto">
+    <div class="card-body border-0 p-2 p-md-5">
       <div class="card-header border-0 bg-secondary">
         <h3 class="text-center fw-bolder display-6 font-monospace mb-3 mb-md-5 mt-3">Adopt a Rescue Today!</h3>
         <div class="row g-3 g-md-5 mb-md-3 mb-3 justify-content-end">
@@ -49,32 +49,43 @@
       </div>
       <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
         <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
-          @foreach($adoptables as $adoptable)
-            <div class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
-              <div class="my-2">
-                <span class="text-dark fw-bolder text-uppercase fs-4 ms-2 mt-5 p-2 font-monospace">{{ $adoptable->name }}</span>
-              </div>
-              <div class="p-2 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
-                <img src="{{ asset($adoptable->profile_image) }}" alt="{{ $adoptable->name }}" class="w-100 h-100 object-fit-cover rounded-4">
-                <div class="position-absolute bottom-0 start-0 end-0 bg-warning-subtle bg-opacity-0 text-dark p-2 text-center">
-                  <strong>{{ $adoptable->tagLabel() }}</strong>
-                </div>
-              </div>
-              <div class="row g-2 p-2">
-                <div class="col-12 text-center mx-auto d-flex gap-2 flex-row">
-                  <a href="{{ url("/rescues/{$adoptable->id}") }}" class="btn btn-sm btn-light w-100">View Profile</a>
-                  <a href="" class="btn btn-sm btn-primary w-100 fw-bolder">Adopt Me!</a>
-                </div>
-              </div>
+          @if ($adoptables->isEmpty())
+            <div class="d-flex flex-column align-items-center justify-content-center my-5">
+              <i class="bi bi-exclamation-circle fs-1 text-muted mb-2"></i>
+              <p class="fs-4 fw-semibold text-muted">No adoptable rescues yet.</p>
+              @if (Auth::user()?->isAdminOrStaff())
+                <a href="" class="btn btn-primary mt-2">Add an adoptable rescue</a>
+              @endif
+              <p class="fs-4 fw-semibold text-muted">Check back later!</p>
             </div>
-          @endforeach
-        </div>
-        <div class="d-flex justify-content-end mt-4 mt-md-5">
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-info"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
-            <button type="button" class="btn btn-info"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
+          @else
+            @foreach($adoptables as $adoptable)
+              <div class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
+                <div class="my-2">
+                  <span class="text-dark fw-bolder text-uppercase fs-4 ms-2 mt-5 p-2 font-monospace">{{ $adoptable->name }}</span>
+                </div>
+                <div class="p-2 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
+                  <img src="{{ asset($adoptable->profile_image) }}" alt="{{ $adoptable->name }}" class="w-100 h-100 object-fit-cover rounded-4">
+                  <div class="position-absolute bottom-0 start-0 end-0 bg-warning-subtle bg-opacity-0 text-dark p-2 text-center">
+                    <strong>{{ $adoptable->tagLabel() }}</strong>
+                  </div>
+                </div>
+                <div class="row g-2 p-2">
+                  <div class="col-12 text-center mx-auto d-flex gap-2 flex-row">
+                    <a href="{{ url("/rescues/{$adoptable->id}") }}" class="btn btn-sm btn-light w-100">View Profile</a>
+                    <a href="" class="btn btn-sm btn-primary w-100 fw-bolder">Adopt Me!</a>
+                  </div>
+                </div>
+              </div>
+            @endforeach
           </div>
-        </div>
+          <div class="d-flex justify-content-end mt-4 mt-md-5">
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-info"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
+              <button type="button" class="btn btn-info"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
+            </div>
+          </div>
+        @endif
       </div>
     </div>
   </div>
