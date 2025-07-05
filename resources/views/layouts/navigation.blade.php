@@ -23,9 +23,6 @@
           <li class="nav-item">
             <a class="nav-link fw-bold fs-5" href="/donate">Donate</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link fw-bold fs-5" href="/faqs">FAQs</a>
-          </li>
           <li class="d-lg-none">
             <a class="nav-link fw-bold fs-5" href="/register">Sign up</a>
           </li>
@@ -39,7 +36,6 @@
         <a href="{{ url('/reports') }}" class="btn btn-outline-success me-md-1 me-0 ms-1 border border-0 fw-bold fs-5">Lost-and-Found Reports</a>
         <a href="{{ url('/adoption') }}" class="btn btn-outline-success me-md-1 me-0 ms-1 border border-0 fw-bold fs-5">Adopt a Rescue</a>
         <a href="{{ url('/donate') }}" class="btn btn-outline-success me-md-1 me-0 ms-1 border border-0 fw-bold fs-5">Donate</a>
-        <a href="{{ url('/faqs') }}" class="btn btn-outline-success me-1 border border-0 fw-bold fs-5">FAQs</a>
       </div>
       <div class="d-none d-sm-flex flex-column flex-sm-row justify-content-end ms-auto">
         @if((!request()->is('register')) && (!request()->is('sign-in')))

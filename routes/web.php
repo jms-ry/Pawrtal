@@ -15,10 +15,6 @@ Route::get('/donate', function () {
     return view('donate.index');
 });
 
-Route::get('faqs', function () {
-    return view('faqs');
-});
-
 Route::get('register', function () {
     return view('register');
 });
