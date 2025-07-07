@@ -8,7 +8,7 @@
         <div class="row g-3 g-md-5 mb-md-2 mb-1 justify-content-end mt-md-0">
           <div class="col-12 col-md-6 d-flex flex-column flex-md-row">
             <fieldset class="p-1 mt-0 mb-0">
-              <legend class="fs-6 fw-bold mx-2" id="filter-legend">Filter by</legend>
+              <legend class="fs-6 fw-bold mx-2 font-monospace" id="filter-legend">Filter by</legend>
               <div class="row g-2 mt-0">
                 <div class="col-6">
                   <select class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">

@@ -73,7 +73,7 @@
                 <div class="row g-2 p-2">
                   <div class="col-12 text-center mx-auto d-flex gap-2 flex-row">
                     <a href="{{ url("/rescues/{$adoptable->id}") }}" class="btn btn-sm btn-light w-100">View Profile</a>
-                    <a href="" class="btn btn-sm btn-primary w-100 fw-bolder">Adopt Me!</a>
+                    <a href="{{ route('adoption-applications.create') }}" class="btn btn-sm btn-primary w-100 fw-bolder">Adopt Me!</a>
                   </div>
                 </div>
               </div>

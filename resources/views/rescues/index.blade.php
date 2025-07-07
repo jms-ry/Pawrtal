@@ -8,7 +8,7 @@
         <div class="row g-3 g-md-5 mb-4 justify-content-end">
           <div class="col-12 col-md-6">
             <fieldset class="p-1">
-              <legend class="fs-6 fw-bold mx-2" id="filter-legend">Filter by</legend>
+              <legend class="fs-6 fw-bold mx-2 font-monospace" id="filter-legend">Filter by</legend>
               <div class="row g-2 mt-0">
                 <div class="col-12 col-md-4">
                   <select class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
@@ -73,7 +73,7 @@
                 @else
                   <div class="col-12 text-center mx-auto d-flex gap-2 flex-row">
                     <a href="{{ url("/rescues/{$rescue->id}")}}" class="btn btn-sm btn-light w-100">View Profile</a>
-                    <a href="" class="btn btn-sm btn-primary w-100 fw-bolder">Adopt Me!</a>
+                    <a href="{{ route('adoption-applications.create') }}" class="btn btn-sm btn-primary w-100 fw-bolder">Adopt Me!</a>
                   </div>
                 @endif
               </div>

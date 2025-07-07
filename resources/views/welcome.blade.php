@@ -18,7 +18,7 @@
             <img src="{{ asset('images/welcome/dog-2.png') }}" alt="Happy pet" class="d-block w-100 h-100 object-fit-cover border-0">
             <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
               <h1 class="display-5 fw-bold">You can’t buy love, but you’ll find it in a rescue.</h1>
-              <button type="button" class="btn btn-primary btn-lg fw-bolder mt-2">ADOPT FROM PAWRTAL</button>
+              <a href="{{ url('/adoption') }}" class="btn btn-primary btn-lg fw-bolder mt-2">ADOPT FROM PAWRTAL</a>
             </div>
           </div>
           <div class="carousel-item" style="height: 90vh;">
@@ -26,7 +26,7 @@
             <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
               <h1 class="display-5 fw-bold">Lost a Pet? Found One?</h1>
               <p class="lead fs-4">Seen a wandering animal or lost your furry friend? Report it here so we can take action.</p>
-              <button type="button" class="btn btn-primary btn-lg fw-bolder mt-2">SUBMIT REPORT</button>
+              <a href="{{ url('/reports') }}" class="btn btn-primary btn-lg fw-bolder mt-2">VIEW OR SUBMIT A REPORT</a>
             </div>
           </div>
           <div class="carousel-item" style="height: 90vh;">
@@ -34,7 +34,7 @@
             <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
               <h1 class="display-5 fw-bold">Every Life Matters — Let's Save One Today.</h1>
               <p class="lead fs-4">Even small acts of kindness can change lives — theirs and yours.</p>
-              <button type="button" class="btn btn-primary btn-lg fw-bolder mt-2">HELP US HELP THEM</button>
+              <a href="{{ url('/donate') }}" class="btn btn-primary btn-lg fw-bolder mt-2">HELP US HELP THEM</a>
             </div>
           </div>
         </div>
