@@ -69,7 +69,7 @@
             </div>
             @if ($rescue->isAvailable())
               <div class="d-flex justify-content-center">
-                <a href="" class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
+                <a href="{{ route('adoption-applications.create') }}" class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
               </div>
             @elseif($rescue->isAdopted())
               <div class="d-flex justify-content-center mb-4">
