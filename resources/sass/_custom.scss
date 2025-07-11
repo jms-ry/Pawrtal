@@ -1,0 +1,23 @@
+//Welcome page styles
+.custom-carousel .carousel-control-prev,
+.custom-carousel .carousel-control-next {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.custom-carousel:hover .carousel-control-prev,
+.custom-carousel:hover .carousel-control-next {
+  opacity: 1;
+}
+.rescue-card img {
+  transition: transform 0.4s ease;
+}
+.rescue-card:hover img {
+  transform: scale(1.1);
+}
+
+.rescue-gallery img {
+  transition: transform 0.3s ease-in-out;
+}
+.rescue-gallery img:hover {
+  transform: scale(1.05);
+}

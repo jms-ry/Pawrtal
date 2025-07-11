@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Pawrtal</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <title>{{ config('app.name', 'Pawrtal') }}</title>
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
@@ -13,9 +16,11 @@
     <!-- Styles / Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   </head>
-  <body class="antialiased">
-    <main>
+  <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100">
+    <main class="flex-grow-1" data-controller="want-to-help-btn">
+      @include('layouts.navigation')
       @yield('content')
     </main>
   </body>
+  @include('layouts.footer')
 </html>
