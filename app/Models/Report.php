@@ -177,7 +177,7 @@ class Report extends Model
 
   public function ownedByLoggedUser()
   {
-    if(Auth::user()->id === $this->user_id) {
+    if(Auth::user()?->id === $this->user_id) {
       return true;
     }
     return false;

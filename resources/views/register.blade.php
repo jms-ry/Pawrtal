@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="col-12 col-md-6 mt-5">
-        <h1 class="text-center fw-bold">Create a <a class="fw-bolder link-opacity-100">Pawrtal</a> account Today!</h1>
+        <h1 class="text-center fw-bold mt-md-5">Create a <a class="fw-bolder link-opacity-100">Pawrtal</a> account Today!</h1>
         <form action="{{ route('register') }}" method="POST" class="mt-5">
           @csrf
           <div class="row g-2 mt-2">
