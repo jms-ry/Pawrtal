@@ -1,13 +1,11 @@
 @if ($message = Session::get('success'))
-<div class="alert alert-info info border-0 alert-dismissible fade show" role="alert">
+<div class="alert alert-success success alert-dismissible fade show" role="alert" data-controller="flash-message">
   <strong>{{ $message }}</strong>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
 
 @if ($message = Session::get('error'))
-<div class="alert alert-danger danger border-0 alert-dismissible fade show" role="alert">
+<div class="alert alert-danger danger border-0 alert-dismissible fade show" role="alert" data-controller="flash-message">
   <strong>{{ $message }}</strong>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
-@endif
+@endif  

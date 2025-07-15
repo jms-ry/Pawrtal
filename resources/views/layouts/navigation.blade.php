@@ -4,9 +4,6 @@
       <img src="{{ asset('images/pets.png') }}" alt="Logo" height="40" class="me-1 fw-bolder">
       <a class="navbar-brand fs-1 fw-bolder" href="{{ url('/') }}">Pawrtal</a>
     </div>
-    <div class="d-flex justify-content-ene">
-      
-    </div>
     <button class="navbar-toggler border border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -26,13 +23,35 @@
             <a class="nav-link fw-bold fs-5" href="/donate">Donate</a>
           </li>
           @guest
-          <li class="d-lg-none">
-            <a class="nav-link fw-bold fs-5" href="/register">Register</a>
-          </li>
-          <li class="d-lg-none">
-            <a class="nav-link fw-bold fs-5" href="/login">Log in</a>
-          </li>
+            <li class="d-lg-none">
+              <a class="nav-link fw-bold fs-5" href="/register">Register</a>
+            </li>
+            <li class="d-lg-none">
+              <a class="nav-link fw-bold fs-5" href="/login">Log in</a>
+            </li>
           @endguest
+          @auth
+            <li class="nav-item dropdown">
+              <a class="nav-link fw-bold fs-5" data-bs-toggle="dropdown" aria-expanded="false"><span class="align-items-center">{{ Auth::user()->fullName() }}<i class="bi bi-caret-down-fill ms-2"></i></span></a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                @if(Auth::user()->isAdminOrStaff())
+                  <li><a class="dropdown-item" href="#">Manage</a></li>
+                @else
+                  <li><a class="dropdown-item" href="#">Adoption Applications</a></li>
+                  <li><a class="dropdown-item" href="#">Donation History</a></li>
+                  <li><a class="dropdown-item" href="#">My Reports</a></li>
+                @endif
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button class="dropdown-item border-0" type="submit">Logout</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          @endauth
         </ul>
       <!---->
       <div class="d-none d-sm-flex flex-column flex-sm-row">
@@ -53,7 +72,28 @@
           @endif
         @endguest
         @auth
-          <strong>{{ Auth::user()->first_name }}</strong>
+          <div class="dropdown-center me-5">
+            <button class="btn btn-outline-success border-0 dropdown-toggle fw-bolder" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ Auth::user()->fullName() }}
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              @if(Auth::user()->isAdminOrStaff())
+                <li><a class="dropdown-item" href="#">Manage</a></li>
+              @else
+                <li><a class="dropdown-item" href="#">Adoption Applications</a></li>
+                <li><a class="dropdown-item" href="#">Donation History</a></li>
+                <li><a class="dropdown-item" href="#">My Reports</a></li>
+              @endif
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="{{ route('logout') }}" method="POST">
+                  @csrf
+                  <button class="dropdown-item border-0" type="submit">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </div>
         @endauth
       </div>
     </div>
