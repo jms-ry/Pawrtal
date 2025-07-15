@@ -23,10 +23,11 @@
       </div>
       <div class="col-12 col-md-6 mt-5">
         <h1 class="text-center fw-bold">Create a <a class="fw-bolder link-opacity-100">Pawrtal</a> account Today!</h1>
-        <form action="" class="mt-5">
+        <form action="{{ route('register') }}" method="POST" class="mt-5">
+          @csrf
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-6 form-floating">
-              <input type="email" class="form-control" placeholder="First name" aria-label="First name" id="floating_first_name" autofocus>
+              <input type="text" name="first_name" class="form-control" placeholder="First name" aria-label="First name" id="floating_first_name" autofocus>
               <label for="floating_first_name" class="form-label">First Name</label>
             </div>
             <div class="col-12 col-md-6 form-floating">
@@ -55,9 +56,9 @@
             </div>
           </div>
           <div class="d-flex flex-column mt-4 mb-3 align-items-center me-0 me-md-2 ms-0 ms-md-2 mt-2">
-            <button type="button" class="btn btn-success w-100 fw-bolder">Create an Account</button>
+            <button type="submit" class="btn btn-success w-100 fw-bolder">Create an Account</button>
             <div class="align-items-center text-center">
-              <p class="mt-3">Already have an account? <a href="{{ url('/sign-in') }}" class="fw-bolder text-success">Sign in here</a></p>
+              <p class="mt-3">Already have an account? <a href="{{ url('/login') }}" class="fw-bolder text-success">Log in here</a></p>
             </div>
           </div>
         </form>

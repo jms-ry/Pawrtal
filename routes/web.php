@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminStaffController;
 use App\Http\Controllers\AdoptionApplicationController;
 use App\Http\Controllers\AdoptionController;
 use App\Http\Controllers\DonationController;
@@ -13,17 +14,26 @@ Route::get('/adoption', [AdoptionController::class, 'index'])->name('adoption.in
 Route::resource('rescues', RescueController::class);
 Route::resource('reports', ReportController::class)->except('show');
 Route::resource('donations', DonationController::class);
-Route::resource('adoption-applications', AdoptionApplicationController::class);
+
 
 Route::get('/donate', function () {
-    return view('donate.index');
+  return view('donate.index');
 });
 
 Route::get('register', function () {
-    return view('register');
+  return view('register');
 });
 
-Route::get('sign-in', function () {
-    return view('sign_in');
+Route::get('login', function () {
+  return view('sign_in');
 });
+
+Route::middleware(['auth'])->group(function () {
+  Route::get('/dashboard',[AdminStaffController::class, 'index']);
+});
+
+Route::middleware(['auth'])->group(function () {
+  Route::resource('adoption-applications', AdoptionApplicationController::class);
+});
+
 require __DIR__.'/auth.php';

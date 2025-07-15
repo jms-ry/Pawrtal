@@ -175,8 +175,11 @@ class Report extends Model
     return $this->user->email;
   }
 
-  public function owner()
+  public function ownedByLoggedUser()
   {
-    return $this->user === Auth::user();
+    if(Auth::user()->id === $this->user_id) {
+      return true;
+    }
+    return false;
   }
 }
