@@ -113,7 +113,7 @@
                         data-report-status="{{ $report->status }}"
                         data-report-status-label="{{ $report->statusLabel() }}">View Report
                       </a>
-                      @if ($report->owner())
+                      @if ($report->ownedByLoggedUser())
                         <a href="#" class="btn btn-primary fw-bolder">Update Report</a>
                       @else
                         <a href="#" class="btn btn-primary fw-bolder">Alert Owner</a> 
@@ -137,7 +137,7 @@
                         data-report-status="{{ $report->status }}"
                         data-report-status-label="{{ $report->statusLabel() }}">View Report
                       </a>
-                      @if ($report->owner())
+                      @if ($report->ownedByLoggedUser())
                         <a href="#" class="btn btn-primary fw-bolder">Update Report</a>
                       @endif
                     @endif

@@ -8,7 +8,8 @@
           <h1 class="fw-bolder mt-0 mt-md-3 fs-1">Welcome Back</h1>
         </div>
         <p class="ms-2 ms-md-5 mt-3 fs-5 mt-4 mt-md-0">Don't have an account yet? <a href="{{ url('/register') }}" class="fw-bold fw-bolder text-success">Create Account</a></p>
-        <form action="" class="mt-4">
+        <form action="{{ route('login') }}" method="POST" class="mt-4">
+          @csrf
           <div class="row g-0 me-2 me-md-0">
             <div class="col-12 col-md-8 w-md-75 ms-2 ms-md-5 form-floating">
               <input type="email" class="form-control" id="floating_email" name="email" placeholder="Email" autofocus>
@@ -23,9 +24,8 @@
           </div>
           <div class="row g-0 me-2 me-md-0 mt-4">
             <div class="col-12 col-md-8 ms-2 ms-md-5">
-              <button type="button" class="btn btn-success w-100 fw-bolder">Sign in</button>
+              <button type="submit" class="btn btn-success w-100 fw-bolder">Sign in</button>
               <a href="" class="text-decoration-none mt-2"><p class="text-center fw-bold mt-2 text-danger">Forgot your password?</p></a>
-              
             </div>
           </div>
         </form>

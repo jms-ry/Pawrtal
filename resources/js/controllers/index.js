@@ -5,6 +5,9 @@
 import { Stimulus } from '../libs/stimulus'
 
 
+import FlashMessageController from './flash_message_controller'
+Stimulus.register('flash-message', FlashMessageController)
+
 import ReportSwitchController from './report_switch_controller'
 Stimulus.register('report-switch', ReportSwitchController)
 
