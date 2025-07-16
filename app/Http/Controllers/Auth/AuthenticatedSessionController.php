@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -27,7 +27,7 @@ class AuthenticatedSessionController extends Controller
 
     if($user->isAdminOrStaff())
     {
-      Session::flash('success', 'You are logged in as '.$user->getRole());
+      Session::flash('success', 'You are logged in as '.$user->getRole(). ' !');
       return redirect()->intended($this->redirectTo);
     }
     else
