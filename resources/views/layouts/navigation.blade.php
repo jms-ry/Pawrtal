@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-success pe-2 ps-2 border-0" data-bs-theme="light">
   <div class="container-fluid ms-lg-5">
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center ms-4">
       <img src="{{ asset('images/pets.png') }}" alt="Logo" height="40" class="me-1 fw-bolder">
       <a class="navbar-brand fs-1 fw-bolder" href="{{ url('/') }}">Pawrtal</a>
     </div>
@@ -54,7 +54,7 @@
           @endauth
         </ul>
       <!---->
-      <div class="d-none d-sm-flex flex-column flex-sm-row">
+      <div class="d-none d-sm-flex flex-column flex-sm-row ms-3">
         <a href="{{ url('/rescues') }}" class="btn btn-outline-success me-md-1 me-0 ms-1 border border-0 fw-bold fs-5">Rescues</a>
         <a href="{{ url('/reports') }}" class="btn btn-outline-success me-md-1 me-0 ms-1 border border-0 fw-bold fs-5">Lost-and-Found Reports</a>
         <a href="{{ url('/adoption') }}" class="btn btn-outline-success me-md-1 me-0 ms-1 border border-0 fw-bold fs-5">Adopt a Rescue</a>
