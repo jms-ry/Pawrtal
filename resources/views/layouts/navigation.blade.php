@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-success pe-2 ps-2 border-0" data-bs-theme="light">
   <div class="container-fluid ms-lg-5">
-    <div class="d-flex align-items-center ms-4">
+    <div class="d-flex align-items-center">
       <img src="{{ asset('images/pets.png') }}" alt="Logo" height="40" class="me-1 fw-bolder">
       <a class="navbar-brand fs-1 fw-bolder" href="{{ url('/') }}">Pawrtal</a>
     </div>
