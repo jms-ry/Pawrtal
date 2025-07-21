@@ -38,8 +38,8 @@
                 @if(Auth::user()->isAdminOrStaff())
                   <li><a class="dropdown-item" href="#">Manage</a></li>
                 @else
-                  <li><a class="dropdown-item" href="#">Adoption Applications</a></li>
-                  <li><a class="dropdown-item" href="#">Donation History</a></li>
+                  <li><a class="dropdown-item" href="#">My Adoption Applications</a></li>
+                  <li><a class="dropdown-item" href="#">My Donation History</a></li>
                   <li><a class="dropdown-item" href="#">My Reports</a></li>
                 @endif
                 <li><hr class="dropdown-divider"></li>
@@ -81,8 +81,8 @@
               @if(Auth::user()->isAdminOrStaff())
                 <li><a class="dropdown-item" href="#">Manage</a></li>
               @else
-                <li><a class="dropdown-item" href="#">Adoption Applications</a></li>
-                <li><a class="dropdown-item" href="#">Donation History</a></li>
+                <li><a class="dropdown-item" href="#">My Adoption Applications</a></li>
+                <li><a class="dropdown-item" href="#">My Donation History</a></li>
                 <li><a class="dropdown-item" href="#">My Reports</a></li>
               @endif
               <li><hr class="dropdown-divider"></li>
