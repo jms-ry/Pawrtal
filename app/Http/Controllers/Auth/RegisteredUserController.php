@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class RegisteredUserController extends Controller
 {

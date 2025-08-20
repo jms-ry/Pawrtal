@@ -18,7 +18,7 @@
             <div class="row g-3">
               <div class="col-12 col-md-6 mt-md-5 py-md-5 px-2 px-md-0">
                 <div class="card border-0 rounded-4 overflow-hidden m-md-5 m-2 mt-md-5" style="height: 350px;">
-                  <img src="{{ asset($rescue->profile_image) }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover rounded-4">
+                  <img src="{{ $rescue->profile_image_url }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover rounded-4">
                 </div>
               </div>
               <div class="col-12 col-md-6 mt-md-5">
@@ -72,12 +72,12 @@
                 <a href="{{ route('adoption-applications.create') }}" class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
               </div>
             @elseif($rescue->isAdopted())
-              <div class="d-flex justify-content-center mb-4">
-                <p class="alert alert-primary  fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2" role="alert"><i class="bi bi-house-check-fill"></i> I'm already adopted!</p>
+              <div class="d-flex justify-content-center mb-4 mt-2">
+                <p class="badge text-bg-primary fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2"><i class="bi bi-house-check-fill"></i> I'm already adopted!</p>
               </div>
             @else
-              <div class="d-flex justify-content-center mb-4">
-                <p class="alert alert-danger fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2" role="alert"><i class="bi bi-exclamation-triangle-fill"></i> I'm not yet available for adoption!</p>
+              <div class="d-flex justify-content-center mb-4 mt-2">
+                <p class="badge text-bg-danger fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2"><i class="bi bi-exclamation-triangle-fill"></i> I'm not yet available for adoption!</p>
               </div>
             @endif
           </div>

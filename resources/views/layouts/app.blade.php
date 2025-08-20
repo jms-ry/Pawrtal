@@ -20,7 +20,7 @@
     <!--Large Screen Flash Message-->
     <div class="row d-flex flex-row-reverse d-none d-md-flex">
       <div class="col-4">
-        <div class="alert-container">
+        <div class="alert-container me-3">
           @include('flash-messages')
         </div>
       </div>

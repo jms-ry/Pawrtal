@@ -29,7 +29,31 @@ class RescueController extends Controller
   */
   public function store(Request $request)
   {
-    //
+    $requestData = $request->all();
+
+    if ($request->hasFile('profile_image')) {
+      $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');
+
+      $actualProfileImagePath = str_replace('public/', '', $profileImagePath);
+
+      $requestData['profile_image'] = $actualProfileImagePath;
+    }
+
+    if($request->hasFile('images')) {
+      $images = [];
+      foreach ($request->file('images') as $image) {
+        $imagePath = $image->store('images/rescues/gallery_images', 'public');
+        $actualImagePath = str_replace('public/', '', $imagePath);
+        $images[] = $actualImagePath;
+      }
+      $requestData['images'] = $images;
+    } else {
+      $requestData['images'] = [];
+    }
+
+    $rescue = Rescue::create($requestData);
+    
+    return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' created successfully!');
   }
 
   /**
@@ -37,7 +61,7 @@ class RescueController extends Controller
   */
   public function show(Rescue $rescue)
   {
-    $randomImages = collect($rescue->images)->shuffle()->take(3);
+    $randomImages = collect($rescue->images_url)->shuffle()->take(3);
     $notEmpty = $randomImages->isNotEmpty();
 
     $previousUrl = url()->previous();

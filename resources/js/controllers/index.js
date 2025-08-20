@@ -11,6 +11,9 @@ Stimulus.register('flash-message', FlashMessageController)
 import ReportSwitchController from './report_switch_controller'
 Stimulus.register('report-switch', ReportSwitchController)
 
+import RescueSwitchController from './rescue-switch_controller'
+Stimulus.register('rescue-switch', RescueSwitchController)
+
 import RescuesStatisticsController from './rescues_statistics_controller'
 Stimulus.register('rescues-statistics', RescuesStatisticsController)
 
