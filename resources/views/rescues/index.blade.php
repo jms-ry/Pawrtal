@@ -38,10 +38,12 @@
           </div>
           <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end" data-controller="rescue-switch">
             @include('modals.rescue.create-rescue-profile')
-            <div class="form-check form-switch align-self-start align-self-md-end mb-1 mb-md-3 me-md-1 ms-2 ms-md-auto">
-              <input class="form-check-input " type="checkbox" value="" id="rescueSwitch" switch data-rescue-switch-target="switch" data-action="rescue-switch#toggle">
-              <label class="form-check-label mb-1 mb-md-0 ms-1 fw-bold font-monospace" for="rescueSwitch" id="switchLabel">Switch to create new rescue profile!</label>
-            </div>
+            @if($user->isAdminOrStaff())
+              <div class="form-check form-switch align-self-start align-self-md-end mb-1 mb-md-3 me-md-1 ms-2 ms-md-auto">
+                <input class="form-check-input " type="checkbox" value="" id="rescueSwitch" switch data-rescue-switch-target="switch" data-action="rescue-switch#toggle">
+                <label class="form-check-label mb-1 mb-md-0 ms-1 fw-bold font-monospace" for="rescueSwitch" id="switchLabel">Switch to create new rescue profile!</label>
+              </div>
+            @endif
             <!-- Search input for larger screens -->
             <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
               <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control" data-rescue-switch-target="searchField">

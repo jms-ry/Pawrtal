@@ -12,7 +12,7 @@ export default class extends Controller {
     const spanLabel = this.element.querySelector("#switchLabel");
     this.searchFieldTargets.forEach(el => {
       el.classList.toggle("d-none", isChecked);
-      spanLabel.textContent = isChecked ? "Switch back to search reports " : "Switch to create a report!";
+      spanLabel.textContent = isChecked ? "Switch back to search reports " : "Switch to file a report!";
     });
 
     this.createButtonTarget.classList.toggle("d-none", !isChecked);
