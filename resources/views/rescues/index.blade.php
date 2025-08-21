@@ -36,14 +36,24 @@
               </div>
             </fieldset>
           </div>
-          <div class="col-12 col-md-6 mt-3 mt-md-auto d-flex justify-content-end ">
+          <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end" data-controller="rescue-switch">
+            @include('modals.rescue.create-rescue-profile')
+            @if($user->isAdminOrStaff())
+              <div class="form-check form-switch align-self-start align-self-md-end mb-1 mb-md-3 me-md-1 ms-2 ms-md-auto">
+                <input class="form-check-input " type="checkbox" value="" id="rescueSwitch" switch data-rescue-switch-target="switch" data-action="rescue-switch#toggle">
+                <label class="form-check-label mb-1 mb-md-0 ms-1 fw-bold font-monospace" for="rescueSwitch" id="switchLabel">Switch to create new rescue profile!</label>
+              </div>
+            @endif
             <!-- Search input for larger screens -->
-            <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1">
-              <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control">
+            <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
+              <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control" data-rescue-switch-target="searchField">
+            </div>
+            <div class="d-flex justify-content-md-end justify-content-start">
+              <button type="button" class="btn btn-primary fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none" id="createRescueProfileButton" data-rescue-switch-target="createButton" data-bs-toggle="modal" data-bs-target="#createRescueProfileModal">Create Rescue Profile</button>
             </div>
             <!-- Search input for smaller screens -->
             <div class="input-group w-100 d-flex d-md-none px-1">
-              <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control ">
+              <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search Rescues" class="form-control" data-rescue-switch-target="searchField">
             </div>
           </div>
         </div>
@@ -59,7 +69,7 @@
                 @endif
               </div>
               <div class="p-2 mt-1 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
-                <img src="{{ asset($rescue->profile_image) }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover rounded-4">
+                <img src="{{ $rescue->profile_image_url }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover rounded-4">
                 <div class="position-absolute bottom-0 start-0 end-0 bg-warning-subtle bg-opacity-0 text-dark p-2 text-center">
                   <strong>{{ $rescue->tagLabel() }}</strong>
                 </div>

@@ -28,6 +28,30 @@ class Rescue extends Model
   protected $casts = [
     'images' => 'array',
   ];
+
+  public function getProfileImageUrlAttribute()
+  {
+    if(str_contains($this->profile_image,'profile_images/'))
+    {
+      return asset('storage/'. $this->profile_image);
+    }
+
+    return asset($this->profile_image);
+  }
+  
+  public function getImagesUrlAttribute()
+  {
+    if (is_array($this->images) && count($this->images) > 0) {
+      return array_map(function ($image) {
+        if(str_contains($image,'/gallery_images'))
+        {
+          return asset('storage/'. $image);
+        }
+        return asset($image);
+      }, $this->images);
+    }
+    return [];
+  }
   
   public function getSexFormattedAttribute ()
   {

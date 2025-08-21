@@ -179,7 +179,7 @@
           @foreach($rescues as $rescue)
             <div class="col-12 col-md-6 col-lg-3" data-aos="zoom-in-up" data-aos-delay="400">
               <div class="rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 250px;">
-                <img src="{{ asset($rescue->profile_image) }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover">
+                <img src="{{ asset($rescue->profile_image_url) }}" alt="{{ $rescue->name }}" class="w-100 h-100 object-fit-cover">
                 <span class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-light bg-opacity-75 text-dark fw-bold rounded">
                   {{ $rescue->name }}
                 </span>

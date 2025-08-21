@@ -42,20 +42,28 @@
           <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end" data-controller="report-switch">
             <div class="form-check form-switch align-self-start align-self-md-end mb-1 mb-md-3 me-md-1 ms-2 ms-md-auto">
               <input class="form-check-input " type="checkbox" value="" id="reportSwitch" switch data-report-switch-target="switch" data-action="report-switch#toggleFields">
-              <label class="form-check-label mb-1 mb-md-0 ms-1 fw-bold font-monospace" for="reportSwitch" id="switchLabel">Switch to create a report!</label>
+              <label class="form-check-label mb-1 mb-md-0 ms-1 fw-bold font-monospace" for="reportSwitch" id="switchLabel">Switch to file a report!</label>
             </div>
             <!-- Search input for larger screens -->
             <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
               <input type="text" name="reportsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control" data-report-switch-target="searchField">
             </div>
             <div class="d-flex justify-content-md-end justify-content-start">
-              <button type="button" class="btn btn-primary fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none" id="createReportButton" data-report-switch-target="createButton">Create Report</button>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary btn-lg fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none dropdown-toggle" id="createReportButton" data-report-switch-target="createButton" data-bs-toggle="dropdown" aria-expanded="false">File a Report!</button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createLostAnimalReportModal">Lost Animal Report</a></li>
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createFoundAnimalReportModal">Found Animal Report</a></li>
+                </ul>
+              </div>
             </div>
             <!-- Search input for smaller screens -->
             <div class="input-group w-100 d-flex d-md-none px-1">
               <input type="text" name="reportsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control" data-report-switch-target="searchField">
             </div>
           </div>
+          @include('modals.reports.create-lost-animal-report-modal')
+          @include('modals.reports.create-found-animal-report-modal')
         </div>
       </div>
       <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
@@ -75,7 +83,7 @@
                   </div>
                   <div class="card-body d-flex flex-column">
                     <div class="ratio ratio-4x3 p-0 p-md-2 mt-0 rescue-card">
-                      <img src="{{ asset($report->image) }}" alt="Gallery image" class="w-100 h-100 object-fit-cover rounded-4">
+                      <img src="{{ asset($report->image_url) }}" alt="Gallery image" class="w-100 h-100 object-fit-cover rounded-4">
                     </div>
                     <div class="d-flex flex-column mt-md-3 mt-2">
                       @if($report->isLostReport())

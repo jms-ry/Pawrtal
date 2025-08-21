@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rescue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RescueController extends Controller
 {
@@ -13,7 +14,8 @@ class RescueController extends Controller
   public function index()
   {
     $rescues = Rescue::all();
-    return view('rescues.index', compact('rescues'));
+    $user = Auth::user();
+    return view('rescues.index', compact('rescues','user'));
   }
 
   /**
@@ -29,7 +31,29 @@ class RescueController extends Controller
   */
   public function store(Request $request)
   {
-    //
+    $requestData = $request->all();
+
+    if ($request->hasFile('profile_image')) {
+      $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');
+
+      $requestData['profile_image'] = $profileImagePath;
+    }
+
+    if($request->hasFile('images')) {
+      $images = [];
+      foreach ($request->file('images') as $image) {
+        $imagePath = $image->store('images/rescues/gallery_images', 'public');
+        $actualImagePath = str_replace('public/', '', $imagePath);
+        $images[] = $actualImagePath;
+      }
+      $requestData['images'] = $images;
+    } else {
+      $requestData['images'] = [];
+    }
+
+    $rescue = Rescue::create($requestData);
+    
+    return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' created successfully!');
   }
 
   /**
@@ -37,7 +61,7 @@ class RescueController extends Controller
   */
   public function show(Rescue $rescue)
   {
-    $randomImages = collect($rescue->images)->shuffle()->take(3);
+    $randomImages = collect($rescue->images_url)->shuffle()->take(3);
     $notEmpty = $randomImages->isNotEmpty();
 
     $previousUrl = url()->previous();

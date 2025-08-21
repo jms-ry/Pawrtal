@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Report;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -13,8 +14,9 @@ class ReportController extends Controller
   */
   public function index()
   {
+    $user = Auth::user();
     $reports = Report::with('user')->get();
-    return view('reports.index', compact('reports'));
+    return view('reports.index', compact('reports','user'));
   }
 
   /**
@@ -30,7 +32,17 @@ class ReportController extends Controller
   */
   public function store(Request $request)
   {
-    //
+    $requestData = $request->all();
+
+    if ($request->hasFile('image')) {
+      $imagePath = $request->file('image')->store('images/reports/reports_images', 'public');
+
+      $requestData['image'] = $imagePath;
+    }
+
+    $report = Report::create($requestData);
+
+    return redirect()->back()->with('success', 'Report created successfully!');
   }
 
   /**

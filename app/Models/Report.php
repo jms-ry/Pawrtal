@@ -15,6 +15,7 @@ class Report extends Model
     'species',
     'breed',
     'color',
+    'sex',
     'age_estimate',
     'size',
     'found_location',
@@ -29,6 +30,16 @@ class Report extends Model
     'animal_name',
   ];
   
+  public function getImageUrlAttribute()
+  {
+    if(str_contains($this->image,'reports_images/'))
+    {
+      return asset('storage/'. $this->image);
+    }
+
+    return asset($this->image);
+  }
+
   public function user(): BelongsTo
   {
     return $this->belongsTo(User::class, 'user_id');
