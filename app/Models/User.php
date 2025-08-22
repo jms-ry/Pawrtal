@@ -76,4 +76,9 @@ class User extends Authenticatable
   {
     return Str::headline($this->role);
   }
+
+  public function isNonAdminOrStaff(): bool
+  {
+    return $this->role !== 'admin' && $this->role !== 'staff';
+  }
 }

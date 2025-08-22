@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Rescue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class RescueController extends Controller
 {
@@ -43,8 +44,7 @@ class RescueController extends Controller
       $images = [];
       foreach ($request->file('images') as $image) {
         $imagePath = $image->store('images/rescues/gallery_images', 'public');
-        $actualImagePath = str_replace('public/', '', $imagePath);
-        $images[] = $actualImagePath;
+        $images[] = $imagePath;
       }
       $requestData['images'] = $images;
     } else {
@@ -63,6 +63,7 @@ class RescueController extends Controller
   {
     $randomImages = collect($rescue->images_url)->shuffle()->take(3);
     $notEmpty = $randomImages->isNotEmpty();
+    $user = Auth::user();
 
     $previousUrl = url()->previous();
     $backContext = null;
@@ -72,7 +73,7 @@ class RescueController extends Controller
       $backContext = 'adoption';
     }
     
-    return view('rescues.show', compact('rescue','randomImages','backContext','notEmpty'));
+    return view('rescues.show', compact('rescue','randomImages','backContext','notEmpty','user'));
   }
 
   /**
@@ -88,7 +89,34 @@ class RescueController extends Controller
   */
     public function update(Request $request, Rescue $rescue)
   {
-    //
+    $rescue = Rescue::find($rescue->id);
+    $requestData = $request->all();
+
+    if($request->hasFile('profile_image') && ($rescue->profile_image)){
+      Storage::delete($rescue->profile_image);
+    }
+    
+    if ($request->hasFile('profile_image')) {
+      $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');
+
+      $requestData['profile_image'] = $profileImagePath;
+    }
+
+    if($request->hasFile('images')) {
+      $existingImages = $rescue->images ?? [];
+      $images = [];
+      foreach ($request->file('images') as $image) {
+        $imagePath = $image->store('images/rescues/gallery_images', 'public');
+        $images[] = $imagePath;
+      }
+      $requestData['images'] = array_merge($existingImages, $images);
+    } else {
+      $requestData['images'] = $report->images ?? [];
+    }
+
+    $rescue-> update($requestData);
+
+    return redirect()->back()->with('success','Rescue Profile for '. $rescue->name. ' has been updated successfully!');
   }
 
   /**
@@ -96,6 +124,9 @@ class RescueController extends Controller
   */
   public function destroy(Rescue $rescue)
   {
-    //
+    $rescue = Rescue::find($rescue->id);
+    $rescue->delete();
+
+    return redirect()->route('rescues.index')->with('success', 'Rescue profile for '. $rescue->name. ' has been deleted successfully!');
   }
 }
