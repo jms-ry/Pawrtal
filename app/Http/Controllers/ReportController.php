@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Report;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -74,6 +73,8 @@ class ReportController extends Controller
   */
   public function destroy(Report $report)
   {
-    //
+    $report->delete();
+
+    return redirect()->route('reports.index')->with('success', 'Report for has been deleted successfully!');
   }
 }

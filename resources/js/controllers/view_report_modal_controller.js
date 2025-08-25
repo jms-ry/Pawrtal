@@ -7,6 +7,7 @@ export default class extends Controller {
     viewReportModal.addEventListener('show.bs.modal', (event) => {
       const button = event.relatedTarget;
 
+      const id = button.getAttribute('data-report-id');
       const type = button.getAttribute('data-report-type');
       const animal_name = button.getAttribute('data-report-animal-name');
       const species = button.getAttribute('data-report-species');
@@ -84,19 +85,26 @@ export default class extends Controller {
 
       const statusLabel = this.element.querySelector('#reportStatusLabel');
       const status = button.getAttribute('data-report-status');
-      const activeFields = viewReportModal.querySelector('.active-fields');
+      const activeFields = viewReportModal.querySelector('#active-fields');
+      const isOwnedByLoggedUser = button.getAttribute('data-report-owned-by-logged-user') === "true";
+      const isLoggedUserAdminOrStaff = button.getAttribute('data-report-logged-user-is-adminstaff') === "true";
+
       if( status === 'active')
       {
         activeFields.classList.remove('d-none');
         statusLabel.classList.remove('text-bg-success');
         statusLabel.classList.add('text-bg-warning');
 
-        const contactNumber = this.element.querySelector('#contactNumberSpan');
-        contactNumber.textContent = contact_number;
+        if(!isOwnedByLoggedUser){
+          const contactNumber = this.element.querySelector('#contactNumberSpan');
+          contactNumber.textContent = contact_number;
 
-        const emailSpan = this.element.querySelector('#emailAddressSpan');
-        emailSpan.textContent = email;
-        
+          const emailSpan = this.element.querySelector('#emailAddressSpan');
+          emailSpan.textContent = email;
+        }else{
+          activeFields.classList.add('d-none');
+        }
+
         statusLabel.innerHTML = `<i class="bi bi-hourglass-split me-1"></i> ${status_label}`;
       }
       else
@@ -109,6 +117,28 @@ export default class extends Controller {
       
       const fullName = this.element.querySelector('#nameSpan');
       fullName.textContent = full_name;
+
+      const isAbleToDelete = isOwnedByLoggedUser || isLoggedUserAdminOrStaff;
+      const deleteButtonDiv = this.element.querySelector('#deleteReportButtonDiv');
+      const loggedAdminIsOwner = isOwnedByLoggedUser && isLoggedUserAdminOrStaff;
+
+      if(isAbleToDelete){
+        deleteButtonDiv.classList.remove('d-none');
+        if(status === 'active'){
+          deleteButtonDiv.classList.add('d-none');
+          
+          if(loggedAdminIsOwner || isOwnedByLoggedUser){
+            deleteButtonDiv.classList.remove('d-none');
+          }
+        }
+      }else{
+        deleteButtonDiv.classList.add('d-none');
+      }
+
+      const deleteReportButton = this.element.querySelector('.deleteReportButton');
+
+      deleteReportButton.setAttribute('data-report-type', type);
+      deleteReportButton.setAttribute('data-report-id', id);
     });
   }
 }

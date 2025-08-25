@@ -1,4 +1,4 @@
-<div class="modal fade me-2" id="viewReportModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="viewReportModalLabel" aria-hidden="true">
+<div class="modal fade me-2" id="viewReportModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="viewReportModalLabel">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-body border-0 bg-info-subtle">
@@ -36,7 +36,7 @@
           <h3 class="fs-5 fw-bolder mt-2 text-uppercase font-monospace"><strong >Owner's Info</strong></h3>
           <div class="d-flex flex-column align-items-start ms-2 mb-2">
             <strong class="mt-2 ms-2">Name: <span class="fw-lighter" id="nameSpan"></span></strong>
-            <div class="d-flex flex-column active-fields d-none">
+            <div class="d-flex flex-column d-none" id="active-fields">
               <strong class="mt-2 ms-2">Phone: <span class="fw-lighter" id="contactNumberSpan"></span></strong>
               <strong class="mt-2 ms-2">Email Address: <span class="fw-lighter" id="emailAddressSpan"></span></strong>
             </div>
@@ -44,7 +44,14 @@
         </div>
       </div>
       <div class="modal-footer border-0 bg-info-subtle">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <div class="align-self-start d-none" id="deleteReportButtonDiv">
+          <button type="button" class="btn btn-danger deleteReportButton" data-bs-toggle="modal" data-bs-target="#deleteReportModal"
+          data-report-type=""
+          data-report-id="">Delete Report</button>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
   </div>
