@@ -1,4 +1,4 @@
-<div class="modal fade" id="createLostAnimalReportModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createLostAnimalReportModalLabel" aria-hidden="true">
+<div class="modal fade" id="createLostAnimalReportModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createLostAnimalReportModalLabel">
   <div class="modal-dialog modal-dialog-centered modal-dialog-sm-scrollable modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-info-subtle">
@@ -9,7 +9,7 @@
         @csrf
         <div class="modal-body bg-info-subtle border-0">
           <input type="hidden" name="type" class="form-control" value="lost">
-          <input type="hidden" name="user_id" class="form-control" value="{{ $user->id }}">
+          <input type="hidden" name="user_id" class="form-control" value="{{ $user?->id }}">
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-4 form-floating">
               <input type="text" name="animal_name" class="form-control" placeholder="Animal name" aria-label="Animal name" id="floating_animal_name" autocomplete="true" required>
@@ -68,7 +68,7 @@
             </div>
             <div class="col-12 col-md-4 form-floating">
               <input type="date" name="last_seen_date" class="form-control" placeholder="Animal last seen date" aria-label="Animal last seen date" id="floating_animal_last_seen_date" required>
-              <label for="floating_animal_last_seen_date fw-bold" class="form-label">Last Seen Date</label>
+              <label for="floating_animal_last_seen_date" class="form-label fw-bold">Last Seen Date</label>
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-<div class="modal fade" id="createFoundAnimalReportModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createFoundAnimalReportModalLabel" aria-hidden="true">
+<div class="modal fade" id="createFoundAnimalReportModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createFoundAnimalReportModalLabel">
   <div class="modal-dialog modal-dialog-centered modal-dialog-sm-scrollable modal-lg">
     <div class="modal-content">
       <div class="modal-header bg-info-subtle">
@@ -9,7 +9,7 @@
         @csrf
         <div class="modal-body bg-info-subtle border-0">
           <input type="hidden" name="type" class="form-control" value="found">
-          <input type="hidden" name="user_id" class="form-control" value="{{ $user->id }}">
+          <input type="hidden" name="user_id" class="form-control" value="{{ $user?->id }}">
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-4 form-floating">
               <input type="text" name="species" class="form-control" placeholder="Animal species" aria-label="Animal species" id="floating_animal_species" autocomplete="true" required>

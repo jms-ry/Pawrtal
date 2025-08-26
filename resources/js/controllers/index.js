@@ -5,6 +5,9 @@
 import { Stimulus } from '../libs/stimulus'
 
 
+import DeleteModalController from './delete_modal_controller'
+Stimulus.register('delete-modal', DeleteModalController)
+
 import FlashMessageController from './flash_message_controller'
 Stimulus.register('flash-message', FlashMessageController)
 
@@ -19,6 +22,9 @@ Stimulus.register('rescues-statistics', RescuesStatisticsController)
 
 import SwitchSearchButtonController from './switch_search_button_controller'
 Stimulus.register('switch-search-button', SwitchSearchButtonController)
+
+import UpdateReportModalController from './update_report_modal_controller'
+Stimulus.register('update-report-modal', UpdateReportModalController)
 
 import ViewReportModalController from './view_report_modal_controller'
 Stimulus.register('view-report-modal', ViewReportModalController)

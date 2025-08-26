@@ -67,20 +67,38 @@
                 </div>
               </div>
             </div>
-            @if ($rescue->isAvailable())
-              <div class="d-flex justify-content-center">
-                <a href="{{ route('adoption-applications.create') }}" class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
-              </div>
-            @elseif($rescue->isAdopted())
-              <div class="d-flex justify-content-center mb-4 mt-2">
-                <p class="badge text-bg-primary fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2"><i class="bi bi-house-check-fill"></i> I'm already adopted!</p>
-              </div>
-            @else
-              <div class="d-flex justify-content-center mb-4 mt-2">
-                <p class="badge text-bg-danger fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2"><i class="bi bi-exclamation-triangle-fill"></i> I'm not yet available for adoption!</p>
-              </div>
-            @endif
+            <div class="d-md-flex d-flex-row justify-content-center mt-4 mt-md-2 mb-md-2">
+              @if ($rescue->isAvailable())
+                @if($user->isNonAdminOrStaff())
+                  <div class="d-flex justify-content-center me-1">
+                  <a href="{{ route('adoption-applications.create') }}" class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
+                  </div>
+                @endif
+              @elseif($rescue->isAdopted())
+                @if($user->isNonAdminOrStaff())
+                  <div class="d-flex justify-content-center mb-4 mt-2">
+                    <p class="badge text-bg-primary fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2"><i class="bi bi-house-check-fill"></i> I'm already adopted!</p>
+                  </div>
+                @endif
+              @else
+                @if($user->isNonAdminOrStaff())
+                  <div class="d-flex justify-content-center mb-4 mt-2">
+                    <p class="badge text-bg-danger fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2"><i class="bi bi-exclamation-triangle-fill"></i> I'm not yet available for adoption!</p>
+                  </div>
+                @endif
+              @endif
+              @if ($user->isAdminOrStaff())
+                <div class="d-flex justify-content-center me-1">
+                  <a class="btn btn-lg btn-warning fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#editRescueProfileModal">Update Rescue Profile</a>
+                </div>
+                <div class="d-flex justify-content-center me-1">
+                  <a class="btn btn-lg btn-danger fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#deleteRescueProfileModal">Delete Rescue Profile</a>
+                </div>
+              @endif
+            </div>
           </div>
+          @include('modals.rescue.edit-rescue-profile')
+           @include('modals.rescue.delete-rescue-profile')
         </div>
         <div class="container px-md-5 mb-5">
           <hr class="mt-3">

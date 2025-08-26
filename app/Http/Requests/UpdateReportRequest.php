@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreReportRequest extends FormRequest
+class UpdateReportRequest extends FormRequest
 {
   /**
     * Determine if the user is authorized to make this request.
@@ -38,7 +38,7 @@ class StoreReportRequest extends FormRequest
       'last_seen_date' => 'nullable', 'date',
       'condition' => 'nullable', 'string', 'max:255',
       'temporary_shelter' => 'nullable', 'string', 'max:255',
-      'image' => 'required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048',
+      'image' => 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048',
       'status' => 'in:active,resolved',
     ];
   }

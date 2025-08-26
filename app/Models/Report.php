@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Str;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class Report extends Model
 {
@@ -188,9 +188,17 @@ class Report extends Model
 
   public function ownedByLoggedUser()
   {
-    if(Auth::user()?->id === $this->user_id) {
+    $user = Auth::user();
+    if($user?->id === $this->user_id) {
       return true;
     }
     return false;
+  }
+  public function loggedUserIsAdminOrStaff(){
+    $user = Auth::user();
+
+    if($user?->isAdminOrStaff()){
+      return true;
+    }
   }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Str;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -75,5 +75,10 @@ class User extends Authenticatable
   public function getRole()
   {
     return Str::headline($this->role);
+  }
+
+  public function isNonAdminOrStaff(): bool
+  {
+    return $this->role !== 'admin' && $this->role !== 'staff';
   }
 }

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Str;
+use Illuminate\Support\Str;
 
 class Rescue extends Model
 {
@@ -28,7 +28,10 @@ class Rescue extends Model
   protected $casts = [
     'images' => 'array',
   ];
-
+  public function getNameFormattedAttribute()
+  {
+    return Str::headline($this->name);
+  }
   public function getProfileImageUrlAttribute()
   {
     if(str_contains($this->profile_image,'profile_images/'))

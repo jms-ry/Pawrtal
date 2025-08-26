@@ -74,7 +74,7 @@
             <a href="" class="btn btn-primary mt-2 fw-semibold">Create your first report</a>
           </div>
         @else
-          <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center" data-controller="view-report-modal">
+          <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center" data-controller="view-report-modal delete-modal update-report-modal">
             @foreach ($reports as $report )
               <div class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
                 <div class="card border-0 bg-warning-subtle h-100">
@@ -102,6 +102,7 @@
                   <div class="card-footer bg-warning-subtle border-0 d-flex gap-2 justify-content-between px-3 mt-auto mx-auto mb-2">
                     @if($report->isStillActive())
                       <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light"
+                        data-report-id="{{ $report->id}}"
                         data-report-type="{{ $report->type}}" 
                         data-report-animal-name ="{{ $report->animal_name_formatted }}"
                         data-report-species="{{ $report->species }}"
@@ -119,15 +120,38 @@
                         data-report-owner-contact-number="{{ $report->getContactNumber() }}"
                         data-report-owner-email="{{ $report->getEmail() }}"
                         data-report-status="{{ $report->status }}"
-                        data-report-status-label="{{ $report->statusLabel() }}">View Report
+                        data-report-status-label="{{ $report->statusLabel() }}"
+                        data-report-owned-by-logged-user="{{ $report->ownedByLoggedUser() ? 'true' : 'false'}}"
+                        data-report-logged-user-is-adminstaff="{{ $report->loggedUserIsAdminOrStaff() ? 'true' : 'false'}}">View Report
                       </a>
                       @if ($report->ownedByLoggedUser())
-                        <a href="#" class="btn btn-primary fw-bolder">Update Report</a>
+                        <a href="#" class="btn btn-primary fw-bolder"
+                          data-report-id="{{ $report->id}}"
+                          data-report-type="{{ $report->type}}"
+                          data-report-status="{{ $report->status}}"
+                          data-report-animal-name ="{{ $report->animal_name_formatted }}"
+                          data-report-species="{{ $report->species }}"
+                          data-report-location="{{ $report->foundLastSeenLocation() }}"
+                          data-report-last-seen-date="{{ $report->last_seen_date }}"
+                          data-report-found-date="{{ $report->found_date }}"
+                          data-report-breed="{{ $report->breed_formatted }}"
+                          data-report-color="{{ $report->color_formatted }}"
+                          data-report-sex="{{ $report->sex }}"
+                          data-report-age-estimate="{{ $report->age_estimate_formatted }}"
+                          data-report-size="{{ $report->size }}"
+                          data-report-distinctive-features="{{ $report->distinctiveFeatures() }}"
+                          data-report-condition="{{ $report->condition_formatted }}"
+                          data-report-temporary-shelter="{{ $report->temporary_shelter_formatted }}"
+                          data-report-image="{{ $report->image_url }}"
+                          data-report-type-formatted="{{ $report->type_formatted }}"
+                          data-bs-toggle="modal"
+                          data-bs-target="#updateReportModal">Update Report</a>
                       @else
-                        <a href="#" class="btn btn-primary fw-bolder">Alert Owner</a> 
+                        <a href="#" class="btn btn-info fw-bolder">Alert Owner</a> 
                       @endif
                     @else
                       <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light"
+                        data-report-id="{{ $report->id}}"
                         data-report-type="{{ $report->type}}"
                         data-report-animal-name ="{{ $report->animal_name_formatted }}"
                         data-report-species="{{ $report->species }}"
@@ -143,16 +167,40 @@
                         data-report-temporary-shelter="{{ $report->temporary_shelter_formatted }}"
                         data-report-owner-name="{{ $report->ownerFullName() }}"
                         data-report-status="{{ $report->status }}"
-                        data-report-status-label="{{ $report->statusLabel() }}">View Report
+                        data-report-status-label="{{ $report->statusLabel() }}"
+                        data-report-owned-by-logged-user="{{ $report->ownedByLoggedUser() ? 'true' : 'false'}}"
+                        data-report-logged-user-is-adminstaff="{{ $report->loggedUserIsAdminOrStaff() ? 'true' : 'false'}}">View Report
                       </a>
                       @if ($report->ownedByLoggedUser())
-                        <a href="#" class="btn btn-primary fw-bolder">Update Report</a>
+                        <a href="#" class="btn btn-primary fw-bolder"
+                          data-report-id="{{ $report->id}}"
+                          data-report-type="{{ $report->type}}"
+                          data-report-status="{{ $report->status}}"
+                          data-report-animal-name ="{{ $report->animal_name_formatted }}"
+                          data-report-species="{{ $report->species }}"
+                          data-report-location="{{ $report->foundLastSeenLocation() }}"
+                          data-report-last-seen-date="{{ $report->last_seen_date }}"
+                          data-report-found-date="{{ $report->found_date }}"
+                          data-report-breed="{{ $report->breed_formatted }}"
+                          data-report-color="{{ $report->color_formatted }}"
+                          data-report-sex="{{ $report->sex }}"
+                          data-report-age-estimate="{{ $report->age_estimate_formatted }}"
+                          data-report-size="{{ $report->size }}"
+                          data-report-distinctive-features="{{ $report->distinctiveFeatures() }}"
+                          data-report-condition="{{ $report->condition_formatted }}"
+                          data-report-temporary-shelter="{{ $report->temporary_shelter_formatted }}"
+                          data-report-image="{{ $report->image_url }}"
+                          data-report-type-formatted="{{ $report->type_formatted }}"
+                          data-bs-toggle="modal"
+                          data-bs-target="#updateReportModal">Update Report</a>
                       @endif
                     @endif
                   </div>
                 </div>
               </div>
               @include('modals.reports.view_report_modal')
+              @include('modals.reports.delete-report-modal')
+              @include('modals.reports.update-report-modal')
             @endforeach
           </div>
           <div class="d-flex justify-content-end mt-4 mt-md-5">
