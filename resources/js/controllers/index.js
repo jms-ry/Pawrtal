@@ -23,6 +23,9 @@ Stimulus.register('rescues-statistics', RescuesStatisticsController)
 import SwitchSearchButtonController from './switch_search_button_controller'
 Stimulus.register('switch-search-button', SwitchSearchButtonController)
 
+import UpdateReportModalController from './update_report_modal_controller'
+Stimulus.register('update-report-modal', UpdateReportModalController)
+
 import ViewReportModalController from './view_report_modal_controller'
 Stimulus.register('view-report-modal', ViewReportModalController)
 
