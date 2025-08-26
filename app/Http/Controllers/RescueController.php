@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRescueRequest;
+use App\Http\Requests\UpdateRescueRequest;
 use App\Models\Rescue;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,7 +31,7 @@ class RescueController extends Controller
   /**
     * Store a newly created resource in storage.
   */
-  public function store(Request $request)
+  public function store(StoreRescueRequest $request)
   {
     $requestData = $request->all();
 
@@ -87,7 +88,7 @@ class RescueController extends Controller
   /**
     * Update the specified resource in storage.
   */
-    public function update(Request $request, Rescue $rescue)
+    public function update(UpdateRescueRequest $request, Rescue $rescue)
   {
     $rescue = Rescue::find($rescue->id);
     $requestData = $request->all();

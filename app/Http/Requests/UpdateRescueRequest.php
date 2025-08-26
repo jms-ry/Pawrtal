@@ -35,7 +35,7 @@ class UpdateRescueRequest extends FormRequest
       'vaccination_status' => 'required|in:vaccinated,not_vaccinated,partially_vaccinated',
       'spayed_neutered' => 'required|in:true,false',
       'adoption_status' => 'required|in:available,adopted,unavailable',
-      'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+      'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
       'images' => 'nullable|array',
       'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
     ];
