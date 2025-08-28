@@ -47,7 +47,10 @@
           </div>
         </div>
       </div>
-      <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
+      <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="profile-reminder">
+        @include('modals.adoption.profile-remider-modal')
+        @include('modals.adoption.adoption-application-form-modal')
+        @include('modals.login-reminder-modal')
         <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
           @if ($adoptables->isEmpty())
             <div class="d-flex flex-column align-items-center justify-content-center my-5">
@@ -73,19 +76,25 @@
                 <div class="row g-2 p-2">
                   <div class="col-12 text-center mx-auto d-flex gap-2 flex-row">
                     <a href="{{ url("/rescues/{$adoptable->id}") }}" class="btn btn-light w-100">View Profile</a>
-                    <a href="{{ route('adoption-applications.create') }}" class="btn btn-primary w-100 fw-bolder">Adopt Me!</a>
+                    <a class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal" data-user-id="{{ $user?->id }}"
+                      @guest 
+                        data-bs-target="#loginReminderModal"
+                      @else
+                        data-bs-target="{{ $user?->canAdopt() ? '#adoptionApplicationFormModal' : '#profileReminderModal' }}"
+                      @endguest >Adopt Me!
+                    </a>
                   </div>
                 </div>
               </div>
             @endforeach
+          @endif
+        </div>
+        <div class="d-flex justify-content-end mt-4 mt-md-5">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-info"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
+            <button type="button" class="btn btn-info"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
           </div>
-          <div class="d-flex justify-content-end mt-4 mt-md-5">
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <button type="button" class="btn btn-info"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
-              <button type="button" class="btn btn-info"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
-            </div>
-          </div>
-        @endif
+        </div>
       </div>
     </div>
   </div>
