@@ -38,7 +38,7 @@
               <input type="text" name="rescueSearchField" aria-label="Search" placeholder="Search..." class="form-control w-100" data-switch-search-button-target="searchField">
             </div>
             <div class="d-flex justify-content-md-end justify-content-start">
-              <button type="button" class="btn btn-primary fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none" id="matchRescueButton" data-switch-search-button-target="matchButton">Match Me a Rescue</button>
+              <button type="button" class="btn btn-primary fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none" id="matchRescueButton" data-switch-search-button-target="matchButton">Match Me a Rescue!</button>
             </div>
             <!-- Search input for smaller screens -->
             <div class="input-group w-100 d-flex d-md-none px-1" id="rescueSearchField" >
@@ -72,8 +72,8 @@
                 </div>
                 <div class="row g-2 p-2">
                   <div class="col-12 text-center mx-auto d-flex gap-2 flex-row">
-                    <a href="{{ url("/rescues/{$adoptable->id}") }}" class="btn btn-sm btn-light w-100">View Profile</a>
-                    <a href="{{ route('adoption-applications.create') }}" class="btn btn-sm btn-primary w-100 fw-bolder">Adopt Me!</a>
+                    <a href="{{ url("/rescues/{$adoptable->id}") }}" class="btn btn-light w-100">View Profile</a>
+                    <a href="{{ route('adoption-applications.create') }}" class="btn btn-primary w-100 fw-bolder">Adopt Me!</a>
                   </div>
                 </div>
               </div>
