@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+      $address = $user?->address;
+      $household = $user?->household;
+      return view('users.show', compact('user', 'address', 'household'));
     }
 
     /**
@@ -50,9 +53,17 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+      $requestData = $request->all();
+
+      if (!empty($requestData['password'])) {
+        $user->password = $requestData['password'];
+      }
+
+      $user->update($requestData);
+
+      return redirect()->back()->with('success', 'User profile updated successfully!');
     }
 
     /**

@@ -11,6 +11,12 @@ Stimulus.register('delete-modal', DeleteModalController)
 import FlashMessageController from './flash_message_controller'
 Stimulus.register('flash-message', FlashMessageController)
 
+import HouseholdController from './household_controller'
+Stimulus.register('household', HouseholdController)
+
+import ProfileReminderController from './profile-reminder_controller'
+Stimulus.register('profile-reminder', ProfileReminderController)
+
 import ReportSwitchController from './report_switch_controller'
 Stimulus.register('report-switch', ReportSwitchController)
 

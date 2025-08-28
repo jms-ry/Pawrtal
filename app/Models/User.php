@@ -28,6 +28,7 @@ class User extends Authenticatable
     'address_id',
     'email',
     'password',
+    'household_id'
   ];
 
   /**
@@ -53,9 +54,24 @@ class User extends Authenticatable
     ];
   }
 
+  public function canAdopt(){
+    if($this->isNonAdminOrStaff()){
+      if($this->address && $this->household){
+        return true;
+      }else{
+        return false;
+      }
+    }else{
+      return false;
+    }
+  }
+  public function household()
+  {
+    return $this->belongsTo(Household::class);
+  }
   public function address(): BelongsTo
   {
-    return $this->belongsTo(Address::class, 'address_id');
+    return $this->belongsTo(Address::class);
   }
   public function reports(): HasMany
   {

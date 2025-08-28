@@ -16,7 +16,9 @@ class ReportController extends Controller
   {
     $user = Auth::user();
     $reports = Report::with('user')->orderBy('id','asc')->get();
-    return view('reports.index', compact('reports','user'));
+    $lostModal = Auth::check() ? '#createLostAnimalReportModal' : '#loginReminderModal';
+    $foundModal = Auth::check() ? '#createFoundAnimalReportModal' : '#loginReminderModal';
+    return view('reports.index', compact('reports','user','lostModal','foundModal'));
   }
 
   /**

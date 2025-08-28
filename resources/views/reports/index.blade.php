@@ -52,8 +52,8 @@
               <div class="btn-group">
                 <button type="button" class="btn btn-primary btn-lg fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none dropdown-toggle" id="createReportButton" data-report-switch-target="createButton" data-bs-toggle="dropdown" aria-expanded="false">File a Report!</button>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createLostAnimalReportModal">Lost Animal Report</a></li>
-                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createFoundAnimalReportModal">Found Animal Report</a></li>
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="{{ $lostModal }}">Lost Animal Report</a></li>
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="{{ $foundModal }}">Found Animal Report</a></li>
                 </ul>
               </div>
             </div>
@@ -64,6 +64,7 @@
           </div>
           @include('modals.reports.create-lost-animal-report-modal')
           @include('modals.reports.create-found-animal-report-modal')
+          @include('modals.login-reminder-modal')
         </div>
       </div>
       <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
