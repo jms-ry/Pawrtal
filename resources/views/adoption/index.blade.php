@@ -47,8 +47,8 @@
           </div>
         </div>
       </div>
-      <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="profile-reminder">
-        @include('modals.adoption.profile-remider-modal')
+      <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="profile-reminder adoption-application">
+        @include('modals.profile-remider-modal')
         @include('modals.adoption.adoption-application-form-modal')
         @include('modals.login-reminder-modal')
         <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
@@ -76,7 +76,10 @@
                 <div class="row g-2 p-2">
                   <div class="col-12 text-center mx-auto d-flex gap-2 flex-row">
                     <a href="{{ url("/rescues/{$adoptable->id}") }}" class="btn btn-light w-100">View Profile</a>
-                    <a class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal" data-user-id="{{ $user?->id }}"
+                    <a class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal" 
+                      data-user-id="{{ $user?->id }}"
+                      data-adoptable-name="{{ $adoptable->name }}"
+                      data-adoptable-id="{{ $adoptable->id }}"
                       @guest 
                         data-bs-target="#loginReminderModal"
                       @else

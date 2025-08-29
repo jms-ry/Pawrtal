@@ -54,6 +54,10 @@ class User extends Authenticatable
     ];
   }
 
+  public function adoptionApplications(): HasMany
+  {
+    return $this->hasMany(AdoptionApplication::class);
+  }
   public function canAdopt(){
     if($this->isNonAdminOrStaff()){
       if($this->address && $this->household){

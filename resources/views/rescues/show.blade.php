@@ -67,27 +67,38 @@
                 </div>
               </div>
             </div>
-            <div class="d-md-flex d-flex-row justify-content-center mt-4 mt-md-2 mb-md-2">
+            <div class="d-md-flex d-flex-row justify-content-center mt-4 mt-md-2 mb-md-2" data-controller="profile-reminder adoption-application">
+              @include('modals.profile-remider-modal')
+              @include('modals.adoption.adoption-application-form-modal')
+              @include('modals.login-reminder-modal')
               @if ($rescue->isAvailable())
-                @if($user->isNonAdminOrStaff())
+                @if($user?->isNonAdminOrStaff() || Auth::guest())
                   <div class="d-flex justify-content-center me-1">
-                  <a href="{{ route('adoption-applications.create') }}" class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0">Adopt Me!</a>
+                  <a class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0" data-bs-toggle="modal" 
+                      data-user-id="{{ $user?->id }}"
+                      data-adoptable-name="{{ $rescue->name }}"
+                      data-adoptable-id="{{ $rescue->id }}"
+                      @guest 
+                        data-bs-target="#loginReminderModal"
+                      @else
+                        data-bs-target="{{ $user?->canAdopt() ? '#adoptionApplicationFormModal' : '#profileReminderModal' }}"
+                      @endguest>Adopt Me!</a>
                   </div>
                 @endif
               @elseif($rescue->isAdopted())
-                @if($user->isNonAdminOrStaff())
+                @if($user?->isNonAdminOrStaff())
                   <div class="d-flex justify-content-center mb-4 mt-2">
                     <p class="badge text-bg-primary fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2"><i class="bi bi-house-check-fill"></i> I'm already adopted!</p>
                   </div>
                 @endif
               @else
-                @if($user->isNonAdminOrStaff())
+                @if($user?->isNonAdminOrStaff())
                   <div class="d-flex justify-content-center mb-4 mt-2">
                     <p class="badge text-bg-danger fs-6 fw-lighter mt-4 mt-md-0 mb-2 mb-md-0 font-monospace fst-italic text-center p-md-2 py-2 px-md-2"><i class="bi bi-exclamation-triangle-fill"></i> I'm not yet available for adoption!</p>
                   </div>
                 @endif
               @endif
-              @if ($user->isAdminOrStaff())
+              @if ($user?->isAdminOrStaff())
                 <div class="d-flex justify-content-center me-1">
                   <a class="btn btn-lg btn-warning fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#editRescueProfileModal">Update Rescue Profile</a>
                 </div>
