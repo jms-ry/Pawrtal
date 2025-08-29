@@ -23,7 +23,7 @@
 
           <div class="row g-2 mt-3">
             <div class="col-12 col-md-6">
-              <label for="valid_id" class="form-label fw-bold">Upload Valid Id</label>
+              <label for="valid_id" class="form-label fw-bold">Upload Valid ID</label>
               <input type="file" name="valid_id" id="valid_id" class="form-control" accept="image/*,.pdf,.doc,.docx" required>
             </div>
             <div class="col-12 col-md-6">
