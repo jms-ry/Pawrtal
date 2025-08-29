@@ -35,7 +35,7 @@ Route::get('login', function () {
 
 Route::middleware(['auth'])->group(function () {
   Route::get('/dashboard',[AdminStaffController::class, 'index']);
-  Route::resource('users',UserController::class)->except('show','create','edit');
+  Route::resource('users',UserController::class)->except('create','edit');
 });
 
 

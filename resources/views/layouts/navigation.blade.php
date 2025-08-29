@@ -34,7 +34,7 @@
             <li class="nav-item dropdown">
               <a class="nav-link fw-bold fs-5" data-bs-toggle="dropdown" aria-expanded="false"><span class="align-items-center">{{ Auth::user()->fullName() }}<i class="bi bi-caret-down-fill ms-2"></i></span></a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="{{ route('users.show',Auth::user()->id) }}">Profile</a></li>
                 @if(Auth::user()->isAdminOrStaff())
                   <li><a class="dropdown-item" href="#">Manage</a></li>
                 @else
@@ -77,7 +77,7 @@
               {{ Auth::user()->fullName() }}
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><a class="dropdown-item" href="{{ route('users.show',Auth::user()->id) }}">Profile</a></li>
               @if(Auth::user()->isAdminOrStaff())
                 <li><a class="dropdown-item" href="#">Manage</a></li>
               @else

@@ -58,7 +58,10 @@
           </div>
         </div>
       </div>
-      <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
+      <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="profile-reminder adoption-application">
+        @include('modals.profile-remider-modal')
+        @include('modals.adoption.adoption-application-form-modal')
+        @include('modals.login-reminder-modal')
         <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
           @foreach($rescues as $rescue)
             <div class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
@@ -83,7 +86,15 @@
                 @else
                   <div class="col-12 text-center mx-auto d-flex gap-2 flex-row">
                     <a href="{{ url("/rescues/{$rescue->id}")}}" class="btn btn-light w-100">View Profile</a>
-                    <a href="{{ route('adoption-applications.create') }}" class="btn btn-primary w-100 fw-bolder">Adopt Me!</a>
+                    <a class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal" 
+                      data-user-id="{{ $user?->id }}"
+                      data-adoptable-name="{{ $rescue->name }}"
+                      data-adoptable-id="{{ $rescue->id }}"
+                      @guest 
+                        data-bs-target="#loginReminderModal"
+                      @else
+                        data-bs-target="{{ $user?->canAdopt() ? '#adoptionApplicationFormModal' : '#profileReminderModal' }}"
+                      @endguest>Adopt Me!</a>
                   </div>
                 @endif
               </div>
