@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
 Route::get('/adoption', [AdoptionController::class, 'index'])->name('adoption.index');
-Route::resource('rescues', RescueController::class);
-Route::resource('reports', ReportController::class)->except('show');
+Route::resource('rescues', RescueController::class)->except('create','edit');
+Route::resource('reports', ReportController::class)->except('show','create','edit');
 Route::resource('donations', DonationController::class);
-Route::resource('addresses',AddressController::class);
-Route::resource('households',HouseholdController::class);
-Route::resource('adoption-applications',AdoptionApplicationController::class);
+Route::resource('addresses',AddressController::class)->except('index','show','create','edit');
+Route::resource('households',HouseholdController::class)->except('index','show','create','edit');
+Route::resource('adoption-applications',AdoptionApplicationController::class)->except('create','edit');
 
 Route::get('/donate', function () {
   return view('donate.index');
@@ -35,7 +35,7 @@ Route::get('login', function () {
 
 Route::middleware(['auth'])->group(function () {
   Route::get('/dashboard',[AdminStaffController::class, 'index']);
-  Route::resource('users',UserController::class);
+  Route::resource('users',UserController::class)->except('show','create','edit');
 });
 
 
