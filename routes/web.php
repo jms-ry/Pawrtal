@@ -19,6 +19,7 @@ Route::resource('reports', ReportController::class)->except('show');
 Route::resource('donations', DonationController::class);
 Route::resource('addresses',AddressController::class);
 Route::resource('households',HouseholdController::class);
+Route::resource('adoption-applications',AdoptionApplicationController::class);
 
 Route::get('/donate', function () {
   return view('donate.index');
@@ -37,8 +38,5 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('users',UserController::class);
 });
 
-Route::middleware(['auth'])->group(function () {
-  Route::resource('adoption-applications', AdoptionApplicationController::class);
-});
 
 require __DIR__.'/auth.php';

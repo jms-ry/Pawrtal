@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use App\Models\AdoptionApplication;
 
 class AdoptionApplicationController extends Controller
 {
@@ -20,14 +21,7 @@ class AdoptionApplicationController extends Controller
   */
   public function create(Request $request)
   {
-    $previousUrl = url()->previous();
-    $backContext = null;
-    if (str_contains($previousUrl, '/rescues')) {
-      $backContext = 'rescues';
-    }elseif (str_contains($previousUrl, '/adoption')) {
-      $backContext = 'adoption';
-    }
-    return view(('adoption_application.create'), compact('backContext'));
+
   }
 
     /**
@@ -35,13 +29,35 @@ class AdoptionApplicationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $requestData = $request->all();
+
+      if($request->hasFile('valid_id')){
+        $validIdPath = $request->file('valid_id')->store('images/adoption_applications/valid_ids','public');
+
+        $requestData['valid_id'] = $validIdPath;
+      }
+
+      if($request->hasFile('supporting_documents')){
+        $supporting_documents = [];
+
+        foreach ($request->file('supporting_documents') as $supporting_document){
+          $supportingDocumentPath = $supporting_document->store('images/adoption_applications/supporting_documents','public');
+          $supporting_documents [] = $supportingDocumentPath;
+        }
+        $requestData['supporting_documents'] = $supporting_documents;
+      }else{
+        $requestData['supporting_documents'] = [];
+      }
+
+      $adoption_application = AdoptionApplication::create($requestData);
+
+      return redirect()->back()->with('success', 'Adoption application for '. $adoption_application->rescue->name. ' was submitted successfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(AdoptionApplication $adoptionApplication)
     {
         //
     }
@@ -49,7 +65,7 @@ class AdoptionApplicationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(AdoptionApplication $adoptionApplication)
     {
         //
     }
@@ -57,7 +73,7 @@ class AdoptionApplicationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, AdoptionApplication $adoptionApplication)
     {
         //
     }
@@ -65,7 +81,7 @@ class AdoptionApplicationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(AdoptionApplication $adoptionApplication)
     {
         //
     }

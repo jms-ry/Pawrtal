@@ -28,6 +28,11 @@ class Rescue extends Model
   protected $casts = [
     'images' => 'array',
   ];
+
+  public function adoptionApplications()
+  {
+    return $this->hasMany(AdoptionApplication::class);
+  }
   public function getNameFormattedAttribute()
   {
     return Str::headline($this->name);
