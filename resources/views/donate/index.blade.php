@@ -2,6 +2,8 @@
 
 @section('content')
   <div class="card mt-4 mt-md-3 mb-4 mb-md-2 border-0 me-2 me-md-5 ms-2 ms-md-5 px-1 px-md-5">
+    @include('modals.login-reminder-modal')
+    @include('modals.donate.create-in-kind-donation-modal')
     <div class="card-body border-0 p-2 p-md-5 mx-auto">
       <div class="card-header border-0 bg-secondary">
         <h3 class="text-center fw-bolder display-6 font-monospace mb-4">Donate</h3>
@@ -23,7 +25,7 @@
               <div class="card-body d-flex flex-column text-center">
                 <p class="fs-2 fw-bold font-monospace mt-3 mb-3 p-0">In-kind Donation</p>
                 <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">In-kind donations keep our shelter running every day. Your gifts—whether it’s pet food, cleaning supplies, or medicine—help us care for animals who’ve been through so much. These essentials make their days healthier and happier. Your kindness brings hope and healing to our rescues. Be part of their journey from hardship to happiness.</p>
-                <a href="{{ route('donations.create') }}" class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto">Donate</a>
+                <a class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto" data-bs-toggle="modal" @guest data-bs-target="#loginReminderModal"@else data-bs-target="#createInKindDonationModal" @endguest >Donate</a>
               </div>
             </div>
           </div>
