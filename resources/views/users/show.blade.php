@@ -49,7 +49,7 @@
           </div>
         </div>
       </div>
-      @include('modals.users/delete-address-modal')
+      @include('modals.users.delete-address-modal')
       <div class="card-header align-items-start border-0 px-2 px-md-5 mx-0 mx-md-5 border-0 mb-0 bg-secondary mt-2">
         <h5 class="fw-bolder fs-3 font-monospace mb-2 mt-4 ms-md-5 ms-3"><span class="ms-md-5"></span><span class="ms-md-5"></span><strong class="text-start ms-md-5">Address Information</strong> </h5>
       </div>
@@ -140,7 +140,7 @@
           </div>
         </div>
       </div>
-
+      @include('modals.users.delete-household-modal')
       <div class="card-header align-items-start border-0 px-2 px-md-5 mx-0 mx-md-5 border-0 mb-0 bg-secondary mt-2">
         <h5 class="fw-bolder fs-3 font-monospace mb-2 mt-4 ms-md-5 ms-3"><span class="ms-md-5"></span><span class="ms-md-5"></span><strong class="text-start ms-md-5">Household Information</strong> </h5>
       </div>
@@ -201,11 +201,11 @@
                   <div class="card-footer border-0 bg-warning-subtle">
                     <div class="justify-content-end d-none d-md-flex mt-3 mt-md-0">
                       <button type="submit" class="btn btn-success fw-bolder me-2">Update Household</button>
-                      <button type="button" class="btn btn-danger fw-bolder">Delete Household</button>
+                      <button type="button" data-bs-toggle="modal" data-bs-target="#deleteHouseholdModal" data-household-id="{{ $household->id }}" class="btn btn-danger fw-bolder">Delete Household</button>
                     </div>
                     <div class="d-md-none">
                       <button type="submit" class="btn btn-success w-100 fw-bolder">Update Household</button>
-                      <button type="button" class="btn btn-danger w-100 fw-bolder mt-2">Delete Household</button>
+                      <button type="button" data-bs-toggle="modal" data-bs-target="#deleteHouseholdModal" data-household-id="{{ $household->id }}" class="btn btn-danger w-100 fw-bolder mt-2">Delete Household</button>
                     </div>
                   </div>
                 </form>

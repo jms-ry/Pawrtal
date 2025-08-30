@@ -34,7 +34,7 @@ class AddressController extends Controller
 
     $address = Address::create($requestData);
 
-    return redirect()->back()->with('success', 'Address created and assigned successfully!');
+    return redirect()->back()->with('success', 'Address information created and assigned successfully!');
   }
 
   /**
@@ -61,7 +61,7 @@ class AddressController extends Controller
     $requestData = $request->all();
     $address->update($requestData);
 
-    return redirect()->back()->with('success', 'Address updated successfully!');
+    return redirect()->back()->with('success', 'Address information updated successfully!');
   }
 
   /**
@@ -71,6 +71,6 @@ class AddressController extends Controller
   {
     $address->delete();
 
-    return redirect()->back()->with('success', 'Associated address was deleted successfully!');
+    return redirect()->back()->with('success', 'Address information was deleted successfully!');
   }
 }

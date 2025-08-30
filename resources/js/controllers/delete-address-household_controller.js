@@ -13,5 +13,16 @@ export default class extends Controller {
       const deleteAddressForm = this.element.querySelector('#deleteAddressForm');
       deleteAddressForm.action = `/addresses/${addressId}`;
     });
+
+    const deleteHouseholdModal = this.element.querySelector('#deleteHouseholdModal');
+
+    deleteHouseholdModal.addEventListener('show.bs.modal', (event) => {
+      const button = event.relatedTarget;
+
+      const householdId = button.getAttribute('data-household-id');
+
+      const deleteHouseholdForm = this.element.querySelector('#deleteHouseholdForm');
+      deleteHouseholdForm.action = `/households/${householdId}`;
+    });
   }
 }
