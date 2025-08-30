@@ -25,11 +25,25 @@ class StoreDonationRequest extends FormRequest
       'user_id' => 'required|exists:users,id',
       'donation_type' => 'required|in:monetary,in-kind',
       'amount' => 'nullable|numeric|min:0',
-      'item_description' => 'nullable|string|max:5000',
-      'item_quantity' => 'nullable|integer|min:1',
-      'status'=> 'required|in:pending,approved,picked_up,rejected',
-      'pick_up_location' => 'nullable|string|max:5000',
-      'contact_person' => 'nullable|string|max:255' 
+
+      // multiple items
+      'item_description'   => 'required_if:donation_type,in-kind|array',
+      'item_description.*' => 'string|max:5000',
+
+      'item_quantity'   => 'required_if:donation_type,in-kind|array',
+      'item_quantity.*' => 'integer|min:1',
+
+      'donation_image'   => 'required_if:donation_type,in-kind|array',
+      'donation_image.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
+
+      'pick_up_location'   => 'nullable|array',
+      'pick_up_location.*' => 'nullable|string|max:5000',
+
+      'contact_person'   => 'nullable|array',
+      'contact_person.*' => 'nullable|string|max:255',
+
+      'status' => 'required|in:pending,approved,picked_up,rejected',
     ];
   }
+
 }
