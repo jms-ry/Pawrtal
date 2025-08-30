@@ -31,11 +31,8 @@ class AddressController extends Controller
    public function store(StoreAddressRequest $request)
   {
     $requestData = $request->all();
-    $user = auth()->user();
 
     $address = Address::create($requestData);
-    $user->address()->associate($address);
-    $user->save();
 
     return redirect()->back()->with('success', 'Address created and assigned successfully!');
   }

@@ -63,6 +63,7 @@
                   @csrf
                   @method('PUT')
                   <div class="card bg-warning-subtle border-0 p-3 p-md-5">
+                    <input type="hidden" name="user_id" value="{{ $address?->user->id }}">
                     <div class="row g-2">
                       <div class="col-12 col-md-6 form-floating">
                         <input type="text" name="barangay" class="form-control" placeholder="Barangay" aria-label="Barangay" id="floating_barangay" value="{{ $address->barangay }}">
@@ -103,6 +104,7 @@
                 <form action="{{ route('addresses.store') }}" method="POST">
                   @csrf
                   <div class="card bg-warning-subtle border-0 p-3 p-md-5">
+                    <input type="hidden" name="user_id" class="form-control" value="{{ Auth::user()->id }}">
                     <div class="row g-2">
                       <div class="col-12 col-md-6 form-floating">
                         <input type="text" name="barangay" class="form-control" placeholder="Barangay" aria-label="Barangay" id="floating_barangay">
@@ -133,6 +135,15 @@
                     </div>
                   </div>
                 </form>
+                @if ($errors->any())
+  <div class="alert alert-danger">
+    <ul>
+      @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
               @endif
             </div>
           </div>

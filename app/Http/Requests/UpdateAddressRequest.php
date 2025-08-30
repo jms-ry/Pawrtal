@@ -26,6 +26,7 @@ class UpdateAddressRequest extends FormRequest
       'municipality' => 'nullable|string|max:255',
       'province' => 'nullable|string|max:255',
       'zip_code' => 'nullable|string|max:10',
+      'user_id' => 'required|exists:users,id',
     ];
   }
 }

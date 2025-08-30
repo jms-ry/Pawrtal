@@ -26,10 +26,8 @@ class User extends Authenticatable
     'last_name',
     'contact_number',
     'role',
-    'address_id',
     'email',
     'password',
-    'household_id'
   ];
 
   /**
@@ -70,9 +68,9 @@ class User extends Authenticatable
       return false;
     }
   }
-  public function household(): BelongsTo
+  public function household(): HasOne
   {
-    return $this->belongsTo(Household::class);
+    return $this->hasOne(Household::class);
   }
   public function address(): HasOne
   {

@@ -12,6 +12,7 @@ class Address extends Model
     'municipality',
     'province',
     'zip_code',
+    'user_id',
   ];
 
   public function user() : BelongsTo
