@@ -29,18 +29,43 @@ class DonationController extends Controller
   */
   public function store(StoreDonationRequest $request)
   {
-    $requestData = $request->all();
+    $userId = $request->input('user_id');
+    $donationType = $request->input('donation_type');
+    $status = $request->input('status');
 
-    if($request->hasFile('donation_image')){
-      $donationImagePath = $request->file('donation_image')->store('images/donation/donation_images','public');
+    // If it's in-kind donation with multiple items
+    if ($donationType === 'in-kind') {
+      $descriptions = $request->item_description;
+      $quantities   = $request->item_quantity;
+      $locations    = $request->pick_up_location;
+      $contacts     = $request->contact_person;
+      $images       = $request->file('donation_image');
 
-      $requestData['donation_image'] = $donationImagePath;
+      foreach ($descriptions as $index => $desc) {
+        $imagePath = null;
+        if (isset($images[$index])) {
+          $imagePath = $images[$index]->store('images/donation/donation_images', 'public');
+        }
+
+        Donation::create([
+          'user_id'          => $userId,
+          'donation_type'    => $donationType,
+          'status'           => $status,
+          'item_description' => $desc,
+          'item_quantity'    => $quantities[$index] ?? 1,
+          'pick_up_location' => $locations[$index] ?? null,
+          'contact_person'   => $contacts[$index] ?? null,
+          'donation_image'   => $imagePath,
+        ]);
+      }
+    } else {
+      // monetary donation (single record for now)
+      Donation::create($request->all());
     }
 
-    $donation = Donation::create($requestData);
-
-    return redirect()->back()->with('success',$donation->getDonationTypeFormatted(). ' Donation created successfully!');
+    return redirect()->back()->with('success', ucfirst($donationType).' Donation created successfully!');
   }
+
 
   /**
     * Display the specified resource.
