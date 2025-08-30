@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Address extends Model
 {
@@ -12,10 +12,11 @@ class Address extends Model
     'municipality',
     'province',
     'zip_code',
+    'user_id',
   ];
 
-  public function users(): HasMany
+  public function user() : BelongsTo
   {
-    return $this->hasMany(User::class);
+    return $this->belongsTo(User::class);
   }
 }

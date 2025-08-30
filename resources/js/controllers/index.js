@@ -8,6 +8,9 @@ import { Stimulus } from '../libs/stimulus'
 import AdoptionApplicationController from './adoption-application_controller'
 Stimulus.register('adoption-application', AdoptionApplicationController)
 
+import DeleteAddressHouseholdController from './delete-address-household_controller'
+Stimulus.register('delete-address-household', DeleteAddressHouseholdController)
+
 import DeleteModalController from './delete_modal_controller'
 Stimulus.register('delete-modal', DeleteModalController)
 

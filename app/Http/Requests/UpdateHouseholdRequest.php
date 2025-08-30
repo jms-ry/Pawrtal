@@ -29,6 +29,7 @@ class UpdateHouseholdRequest extends FormRequest
       'has_other_pets' => 'nullable|in:true,false',
       'current_pets' => 'nullable|string|max:255',
       'number_of_current_pets' => 'nullable|integer|min:1',
+      'user_id' => 'required|exists:users,id',
     ];
   }
 }
