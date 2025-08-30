@@ -31,11 +31,8 @@ class HouseholdController extends Controller
   public function store(StoreHouseholdRequest $request)
   {
     $requestData = $request->all();
-    $user = auth()->user();
 
     $household = Household::create($requestData);
-    $user->household()->associate($household);
-    $user->save();
 
     return redirect()->back()->with('success', 'Household information created and assigned successfully!');
   }
