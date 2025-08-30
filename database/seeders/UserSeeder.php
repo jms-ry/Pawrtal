@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
   */
   public function run(): void
   {
-    $addresses = Address::pluck('id')->toArray();
+    
     User::create(attributes:[
       'first_name' => 'Admin',
       'last_name' => 'User',
@@ -22,7 +22,6 @@ class UserSeeder extends Seeder
       'password' => bcrypt('password'),
       'contact_number' => '1234567890',
       'role' => 'admin',
-      'address_id' =>$addresses[0],
     ]);
 
     User::create(attributes:[
@@ -32,7 +31,6 @@ class UserSeeder extends Seeder
       'password' => bcrypt('password'),
       'contact_number' => '1235476543',
       'role' => 'staff',
-      'address_id' =>$addresses[1],
     ]);
 
     User::create(attributes:[
@@ -42,7 +40,6 @@ class UserSeeder extends Seeder
       'password' => bcrypt('password'),
       'contact_number' => '1234567890',
       'role' => 'regular_user',
-      'address_id' =>$addresses[2],
     ]);
 
     User::create(attributes:[
@@ -52,7 +49,6 @@ class UserSeeder extends Seeder
       'password' => bcrypt('password'),
       'contact_number' => '1234567890',
       'role' => 'regular_user',
-      'address_id' =>$addresses[2],
     ]);
   }
 }
