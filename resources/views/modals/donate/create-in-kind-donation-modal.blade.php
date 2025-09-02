@@ -8,7 +8,7 @@
       <form action="{{ route('donations.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="modal-body bg-info-subtle border-0" id="donationModalBody">
-          <input type="hidden" name="user_id" class="form-control" value="{{ Auth::user()->id }}">
+          <input type="hidden" name="user_id" class="form-control" value="{{ Auth::user()?->id }}">
           <input type="hidden" name="donation_type" class="form-control" value="in-kind">
           <input type="hidden" name="status" class="form-control" value="pending">
           <div id="donation-item" class="mb-4">

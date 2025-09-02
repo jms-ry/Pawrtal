@@ -29,6 +29,8 @@ class Rescue extends Model
     'images' => 'array',
   ];
 
+  protected $appends = ['profile_image_url'];
+
   public function adoptionApplications()
   {
     return $this->hasMany(AdoptionApplication::class);
