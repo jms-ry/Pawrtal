@@ -15,6 +15,7 @@
 
     <!-- Styles / Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @inertiaHead
   </head>
   <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100">
     <!--Large Screen Flash Message-->
@@ -37,7 +38,7 @@
 
     <main class="flex-grow-1 " data-controller="want-to-help-btn">
       @include('layouts.navigation')
-      @yield('content')
+      @inertia
     </main>
     @include('layouts.footer')
   </body>

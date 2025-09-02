@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Rescue;
-
+use Inertia\Inertia;
 
 class WelcomeController extends Controller
 {
@@ -16,6 +16,12 @@ class WelcomeController extends Controller
     $adoptedCount = Rescue::where('adoption_status', 'adopted')->count();
     $rescues = Rescue::orderBy('name', 'desc')->take(4)->get();
     
-    return view('welcome', compact('shelteredCount','spayedNeuteredCount','vaccinatedCount','adoptedCount','rescues'));
+    return Inertia::render('Welcome/Index',[
+      'shelteredCount' => $shelteredCount,
+      'spayedNeuteredCount' => $spayedNeuteredCount,
+      'vaccinatedCount' => $vaccinatedCount,
+      'adoptedCount' => $adoptedCount,
+      'rescues' => $rescues
+    ]);
   }
 }
