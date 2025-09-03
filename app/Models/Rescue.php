@@ -29,7 +29,21 @@ class Rescue extends Model
     'images' => 'array',
   ];
 
-  protected $appends = ['profile_image_url'];
+  protected $appends = ['profile_image_url','is_adopted','tag_label', 'is_unavailable'];
+
+  public function getIsAdoptedAttribute()
+  {
+    return $this->isAdopted();
+  }
+
+  public function getTagLabelAttribute()
+  {
+    return $this->tagLabel();
+  }
+  public function getIsUnavailableAttribute()
+  {
+    return $this->isUnavailable();
+  }
 
   public function adoptionApplications()
   {
