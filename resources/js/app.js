@@ -15,6 +15,7 @@ import { InertiaProgress } from '@inertiajs/progress'
 
 // Auto-register Vue pages with Vite
 const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
+const el = document.getElementById('app')
 
 InertiaProgress.init({
   delay: 250,        // only show if request > 250ms (to avoid flicker)
@@ -23,7 +24,8 @@ InertiaProgress.init({
   showSpinner: false // no spinner
 })
 
-createInertiaApp({
+if(el?.dataset?.page){
+  createInertiaApp({
   resolve: name => pages[`./Pages/${name}.vue`],
   setup({ el, App, props, plugin }) {
     const app = createApp({ render: () => h(App, props) })
@@ -32,3 +34,4 @@ createInertiaApp({
     app.mount(el)
   },
 })
+}

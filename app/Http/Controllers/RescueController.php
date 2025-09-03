@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateRescueRequest;
 use App\Models\Rescue;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class RescueController extends Controller
 {
@@ -17,7 +18,16 @@ class RescueController extends Controller
   {
     $rescues = Rescue::all();
     $user = Auth::user();
-    return view('rescues.index', compact('rescues','user'));
+
+    return Inertia::render('Rescues/Index', [
+      'rescues' => $rescues ,
+      'user' => $user ? [
+        'id' => $user->id,
+        'full_name' => $user->fullName(),
+        'isAdminOrStaff' => $user->isAdminOrStaff(),
+        'canAdopt' => $user->canAdopt(),
+      ] : null,
+    ]);
   }
 
   /**
