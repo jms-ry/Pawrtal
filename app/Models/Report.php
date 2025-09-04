@@ -29,7 +29,83 @@ class Report extends Model
     'status',
     'animal_name',
   ];
+
+  protected $appends = [
+    'type_formatted',
+    'image_url',
+    'is_lost_report',
+    'animal_name_formatted',
+    'sex_formatted',
+    'found_last_seen_location_formatted',
+    'found_last_seen_date',
+    'reported_date',
+    'status_label',
+    'is_still_active',
+    'owned_by_logged_user',
+    'breed_formatted',
+    'color_formatted',
+    'size_formatted',
+    'age_estimate_formatted',
+    'distinctive_features_formatted',
+    'condition_formatted',
+    'temporary_shelter_formatted',
+    'owner_full_name',
+    'owner_contact_number',
+    'owner_email',
+    'status_label',
+    'logged_user_is_admin_or_staff'
+
+  ];
   
+  public function getLoggedUserIsAdminOrStaffAttribute()
+  {
+    return $this->loggedUserIsAdminOrStaff();
+  }
+  public function getOwnerEmailAttribute()
+  {
+    return $this->getEmail();
+  }
+  public function getOwnerContactNumberAttribute()
+  {
+    return $this->getContactNumber();
+  }
+  public function getOwnerFullNameAttribute()
+  {
+    return $this->ownerFullName();
+  }
+  public function getDistinctiveFeaturesFormattedAttribute()
+  {
+    return $this->distinctiveFeatures();
+  }
+  public function getOwnedByLoggedUserAttribute()
+  {
+    return $this->ownedByLoggedUser();
+  }
+  public function getIsStillActiveAttribute()
+  {
+    return $this->isStillActive();
+  }
+  public function getReportedDateAttribute()
+  {
+    return $this->reportedDate();
+  }
+
+  public function getStatusLabelAttribute()
+  {
+    return $this->statusLabel();
+  }
+  public function getFoundLastSeenDateAttribute()
+  {
+    return $this->foundLastSeenDate();
+  }
+  public function getFoundLastSeenLocationFormattedAttribute()
+  {
+    return $this->foundLastSeenLocation();
+  }
+  public function getIsLostReportAttribute()
+  {
+    return $this->isLostReport();
+  }  
   public function getImageUrlAttribute()
   {
     if(str_contains($this->image,'reports_images/'))

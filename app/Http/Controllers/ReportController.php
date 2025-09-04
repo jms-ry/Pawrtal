@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateReportRequest;
 use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+
 class ReportController extends Controller
 {
   /**
@@ -18,7 +20,15 @@ class ReportController extends Controller
     $reports = Report::with('user')->orderBy('id','asc')->get();
     $lostModal = Auth::check() ? '#createLostAnimalReportModal' : '#loginReminderModal';
     $foundModal = Auth::check() ? '#createFoundAnimalReportModal' : '#loginReminderModal';
-    return view('reports.index', compact('reports','user','lostModal','foundModal'));
+
+    // return view('reports.index', compact('reports','user','lostModal','foundModal'));
+
+    return Inertia::render('Reports/Index',[
+      'lostModal' => $lostModal,
+      'foundModal' => $foundModal,
+      'user' => $user,
+      'reports' => $reports
+    ]);
   }
 
   /**
