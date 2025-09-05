@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -37,9 +39,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-      $address = $user?->address;
-      $household = $user?->household;
-      return view('users.show', compact('user', 'address', 'household'));
+      $user->load(['address', 'household']);
+      
+      return Inertia::render('User/Show',[
+        'user'=>$user,
+      ]);
     }
 
     /**

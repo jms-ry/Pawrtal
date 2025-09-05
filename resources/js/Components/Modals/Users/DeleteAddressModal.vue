@@ -1,9 +1,10 @@
-<div class="modal fade me-2" id="deleteAddressModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteAddressModalLabel" aria-hidden="true">
+<template>
+  <div class="modal fade me-2" id="deleteAddressModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteAddressModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-sm-scrollable">
     <div class="modal-content ">
       <form id="deleteAddressForm" method="POST" class="">
-        @csrf
-        @method('DELETE')
+        <input type="hidden" name="_token" :value="csrfToken" />
+        <input type="hidden" name="_method" value="DELETE" />
         <div class="modal-body bg-info-subtle border-0">
           <div class="d-flex d-flex-row justify-content-start align-items-center mt-4">
             <i class="bi bi-trash3-fill me-3 text-danger fs-2"></i>
@@ -18,3 +19,13 @@
     </div>
   </div>
 </div>
+</template>
+
+<script setup>
+  const props = defineProps({
+    csrfToken: {
+      type: String,
+      required: true
+    }
+  })
+</script>
