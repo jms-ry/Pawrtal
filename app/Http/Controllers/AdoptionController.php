@@ -13,8 +13,6 @@ class AdoptionController extends Controller
     $adoptables = Rescue::where('adoption_status','available')->get();
     $user = Auth::user();
 
-    //return view('adoption.index',compact('adoptables','user'));
-
     return Inertia::render('Adoption/Index',[
       'adoptables' => $adoptables,
       'user' => $user ? [
