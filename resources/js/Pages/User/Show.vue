@@ -1,0 +1,44 @@
+<template>
+  <Head title="User/Show"></Head>
+
+  <div class="container-fluid">
+    <div class="card border-0 p-md-5">
+      <PersonalInformationSection 
+        :user="user"
+        csrf-token="{{ csrf_token() }}"
+      />
+
+      <DeleteAddressModal 
+        csrf-token="{{ csrf_token() }}"
+      />
+
+      <AddressInformationSection 
+        :user="user"
+      />
+
+      <DeleteHouseholdModal 
+        csrf-token="{{ csrf_token() }}"
+      />
+
+      <HouseholdInformationSection 
+        :user="user"
+      />
+    </div>
+  </div>
+</template>
+
+<script setup>
+  import { Head } from '@inertiajs/vue3';
+  import PersonalInformationSection from '../../Components/User/PersonalInformationSection.vue';
+  import DeleteAddressModal from '../../Components/Modals/Users/DeleteAddressModal.vue';
+  import AddressInformationSection from '../../Components/User/AddressInformationSection.vue';
+  import DeleteHouseholdModal from '../../Components/Modals/Users/DeleteHouseholdModal.vue';
+  import HouseholdInformationSection from '../../Components/User/HouseholdInformationSection.vue';
+
+  const props = defineProps({
+    user: {
+      type: Object,
+      default: () => null
+    },
+  })
+</script>
