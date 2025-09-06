@@ -26,7 +26,7 @@
             </div>
             <div v-else class="d-flex justify-content-between">
               <i class="bi bi-x-circle me-2 text-danger fw-bold fs-2"></i>
-              <h4 class="fw-bold font-monospace mt-2 fs-6">Please add your household details..</h4>
+              <h4 class="fw-bold font-monospace mt-2 fs-6">Please add your household details.</h4>
             </div>
           </div>
 
