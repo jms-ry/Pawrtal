@@ -29,8 +29,31 @@ class Rescue extends Model
     'images' => 'array',
   ];
 
-  protected $appends = ['profile_image_url','is_adopted','tag_label', 'is_unavailable'];
+  protected $appends = [
+    'profile_image_url',
+    'is_adopted',
+    'tag_label', 
+    'is_unavailable',
+    'sex_formatted',
+    'age_formatted',
+    'color_formatted',
+    'description_formatted',
+    'size_formatted',
+    'distinctive_features_formatted',
+    'vaccination_status_formatted',
+    'spayed_neutered_formatted',
+    'is_available',
+    'name_formatted',
+  ];
 
+  public function getIsAvailableAttribute()
+  {
+    return $this->isAvailable();
+  }
+  public function getDistinctiveFeaturesFormattedAttribute()
+  {
+    return $this->distinctiveFeatures();
+  }
   public function getIsAdoptedAttribute()
   {
     return $this->isAdopted();

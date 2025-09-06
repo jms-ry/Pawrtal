@@ -83,8 +83,20 @@ class RescueController extends Controller
     }elseif (str_contains($previousUrl, '/adoption')) {
       $backContext = 'adoption';
     }
-    
-    return view('rescues.show', compact('rescue','randomImages','backContext','notEmpty','user'));
+
+    return Inertia::render('Rescues/Show',[
+      'user' => $user ? [
+        'id' => $user->id,
+        'isAdminOrStaff' => $user->isAdminOrStaff(),
+        'isNonAdminOrStaff' => $user->isNonAdminOrStaff(),
+        'canAdopt' => $user->canAdopt(),
+      ] : null,
+      'backContext' => $backContext,
+      'notEmpty' => $notEmpty,
+      'rescue' => $rescue,
+      'randomImages' => $randomImages,
+
+    ]);
   }
 
   /**
