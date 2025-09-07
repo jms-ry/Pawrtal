@@ -131,8 +131,10 @@
     methods: {
       submitForm (event){
         event.preventDefault()
-        const formData = new formData(event.target)
-        Inertia.post('/rescues', formData)
+        const formData = new FormData(event.target)
+        Inertia.post('/rescues', formData),{
+          forceFormData: true
+        }
       }
     }
   }
