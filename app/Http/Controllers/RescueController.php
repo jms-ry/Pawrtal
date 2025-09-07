@@ -43,7 +43,7 @@ class RescueController extends Controller
   */
   public function store(StoreRescueRequest $request)
   {
-    $requestData = $request->all();
+    $requestData = $request->validated();
 
     if ($request->hasFile('profile_image')) {
       $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');
@@ -110,10 +110,9 @@ class RescueController extends Controller
   /**
     * Update the specified resource in storage.
   */
-    public function update(UpdateRescueRequest $request, Rescue $rescue)
+  public function update(UpdateRescueRequest $request, Rescue $rescue)
   {
-    $rescue = Rescue::find($rescue->id);
-    $requestData = $request->all();
+    $requestData = $request->validated();
 
     if($request->hasFile('profile_image') && ($rescue->profile_image)){
       Storage::delete($rescue->profile_image);
@@ -134,7 +133,7 @@ class RescueController extends Controller
       }
       $requestData['images'] = array_merge($existingImages, $images);
     } else {
-      $requestData['images'] = $report->images ?? [];
+      $requestData['images'] = $rescue->images ?? [];
     }
 
     $rescue-> update($requestData);
