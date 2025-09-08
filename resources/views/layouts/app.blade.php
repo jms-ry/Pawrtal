@@ -16,7 +16,7 @@
     <!-- Styles / Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   </head>
-  <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100">
+  <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100 overflow-auto">
     <!--Large Screen Flash Message-->
     <div class="row d-flex flex-row-reverse d-none d-md-flex">
       <div class="col-3">
