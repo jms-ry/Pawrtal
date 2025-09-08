@@ -8,6 +8,6 @@ export default class extends Controller {
       this.element.addEventListener('transitionend', () => {
         this.element.remove();
       });
-    }, 2000);
+    }, 3000);
   }
 }
