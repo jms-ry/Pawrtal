@@ -123,19 +123,23 @@
     </div>
   </div>
 </template>
-<script>
-  import {Inertia} from '@inertiajs/inertia'
+<script setup>
+  import { router } from '@inertiajs/vue3'
+  import { Modal } from 'bootstrap'
+  function submitForm(event) {
+    event.preventDefault()
+    const form = event.target
+    const formData = new FormData(event.target)
 
-  export default{
-    name:'CreateRescueProfileModal',
-    methods: {
-      submitForm (event){
-        event.preventDefault()
-        const formData = new FormData(event.target)
-        Inertia.post('/rescues', formData, {
-          forceFormData: true
-        })
-      }
-    }
+    router.post('/rescues', formData, {
+      forceFormData: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        const modalEl = document.getElementById('createRescueProfileModal')
+        const modal = Modal.getInstance(modalEl)
+        modal.hide()
+        form.reset()
+      },
+    })
   }
 </script>
