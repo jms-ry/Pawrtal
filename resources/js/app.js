@@ -9,8 +9,6 @@ import './libs';
 
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
-import { ZiggyVue } from 'ziggy-js'
-import { Ziggy } from './ziggy'
 import { InertiaProgress } from '@inertiajs/progress'
 
 // Auto-register Vue pages with Vite
@@ -30,7 +28,6 @@ if(el?.dataset?.page){
   setup({ el, App, props, plugin }) {
     const app = createApp({ render: () => h(App, props) })
     app.use(plugin)
-    app.use(ZiggyVue,Ziggy)
     app.mount(el)
   },
 })

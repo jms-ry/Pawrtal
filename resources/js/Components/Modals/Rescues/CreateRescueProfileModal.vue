@@ -132,9 +132,9 @@
       submitForm (event){
         event.preventDefault()
         const formData = new FormData(event.target)
-        Inertia.post('/rescues', formData),{
+        Inertia.post('/rescues', formData, {
           forceFormData: true
-        }
+        })
       }
     }
   }

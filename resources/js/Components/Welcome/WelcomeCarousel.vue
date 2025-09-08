@@ -69,5 +69,5 @@
 </template>
 
 <script setup>
-import { route } from 'ziggy-js'
+  
 </script>

@@ -18,10 +18,11 @@
   import RescueCardHeader from '@/Components/Rescues/RescueCardHeader.vue';
   import RescuesDisplay from '@/Components/Rescues/RescuesDisplay.vue';
   const props = defineProps({
-  user: {
-    type: Object,
-  },
-  rescues: Array,
-});
+    user: {
+      type: Object,
+    },
+    rescues: Array,
+  });
+  
 </script>
 

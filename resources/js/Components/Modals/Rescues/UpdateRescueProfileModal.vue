@@ -107,7 +107,7 @@
               </div>
               <div class="col-12 col-md-6">
                 <label for="images" class="form-label fw-bold">Upload Additional Image/s</label>
-                <input type="file" name="images[]" id="images" class="form-control" accept="image/*" value="images" multiple>
+                <input type="file" name="images[]" id="images" class="form-control" accept="image/*" multiple>
               </div>
             </div>
 
@@ -158,9 +158,8 @@
 
   
   function submitForm() {
-    form.post(`/rescues/${props.rescue.id}`,{
+    form.put(`/rescues/${props.rescue.id}`,{
       forceFormData: true,
-      method: 'put'
     })
   }
 </script>

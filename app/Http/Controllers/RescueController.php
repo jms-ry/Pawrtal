@@ -64,7 +64,7 @@ class RescueController extends Controller
 
     $rescue = Rescue::create($requestData);
     
-    return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' created successfully!');
+    return redirect()->route('rescues.index')->with('success', 'Rescue profile for '. $rescue->name. ' created successfully!');
   }
 
   /**
