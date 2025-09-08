@@ -33,14 +33,6 @@ class AppServiceProvider extends ServiceProvider
           ] : null,
         ];
       },
-      
-      'flash' => function () {
-        return [
-          'success' => session('success'),
-          'error' => session('error'),
-        ];
-      },
-
     ]);
   }
 }

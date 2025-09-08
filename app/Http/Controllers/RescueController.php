@@ -138,7 +138,7 @@ class RescueController extends Controller
 
     $rescue-> update($requestData);
 
-    return redirect()->back()->with('success','Rescue Profile for '. $rescue->name. ' has been updated successfully!');
+    return redirect()->back()->with('info','Rescue Profile for '. $rescue->name. ' has been updated!');
   }
 
   /**
@@ -149,6 +149,6 @@ class RescueController extends Controller
     $rescue = Rescue::find($rescue->id);
     $rescue->delete();
 
-    return redirect()->route('rescues.index')->with('success', 'Rescue profile for '. $rescue->name. ' has been deleted successfully!');
+    return redirect()->route('rescues.index')->with('warning', 'Rescue profile for '. $rescue->name. ' has been deleted!');
   }
 }
