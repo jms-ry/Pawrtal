@@ -32,7 +32,7 @@
         </div>
         <div class="d-flex justify-content-center mt-5 mx-auto">
           <a
-            :href="route('rescues.index')"
+            :href="`/rescues`"
             class="btn btn-warning fw-bold rounded-pill px-4 mt-auto mx-auto"
           >
             See All Rescues

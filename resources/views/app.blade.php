@@ -18,29 +18,7 @@
     @inertiaHead
   </head>
   <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100">
-    <!--Large Screen Flash Message-->
-    <div class="row d-flex flex-row-reverse d-none d-md-flex">
-      <div class="col-4">
-        <div class="alert-container me-3">
-          @include('flash-messages')
-        </div>
-      </div>
-    </div>
-    <!--end large screen flash message-->
-
-    <!--Small Screen Flash Message-->
-    <div class="d-md-none d-sm-block">
-      <div class="alert-container">
-        @include('flash-messages')
-      </div>
-    </div>
-    <!--end small screen flash message-->
-
-    <main class="flex-grow-1 " data-controller="want-to-help-btn">
-      @include('layouts.navigation')
-      @inertia
-    </main>
-    @include('layouts.footer')
+    @inertia
   </body>
   
 </html>
