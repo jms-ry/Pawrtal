@@ -64,7 +64,7 @@ class RescueController extends Controller
 
     $rescue = Rescue::create($requestData);
     
-    return redirect()->route('rescues.index')->with('success', 'Rescue profile for '. $rescue->name. ' created successfully!');
+    return redirect()->route('rescues.index')->with('success', 'Rescue profile for '. $rescue->name. ' has been created!');
   }
 
   /**
@@ -111,17 +111,18 @@ class RescueController extends Controller
     * Update the specified resource in storage.
   */
   public function update(UpdateRescueRequest $request, Rescue $rescue)
-  {
-    $requestData = $request->validated();
+  { 
+    $requestData = $request->all();
 
-    if($request->hasFile('profile_image') && ($rescue->profile_image)){
-      Storage::delete($rescue->profile_image);
-    }
-    
-    if ($request->hasFile('profile_image')) {
+    if($request->hasFile('profile_image')){
+      if($rescue->profile_image){
+        Storage::delete($rescue->profile_image);
+      }
+
       $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');
-
       $requestData['profile_image'] = $profileImagePath;
+    }else{
+      unset($requestData['profile_image']);
     }
 
     if($request->hasFile('images')) {
@@ -132,13 +133,13 @@ class RescueController extends Controller
         $images[] = $imagePath;
       }
       $requestData['images'] = array_merge($existingImages, $images);
-    } else {
-      $requestData['images'] = $rescue->images ?? [];
+    }else{
+      unset($requestData['images']);
     }
-
+    
     $rescue-> update($requestData);
 
-    return redirect()->back()->with('info','Rescue Profile for '. $rescue->name. ' has been updated!');
+    return redirect()->route('rescues.show',$rescue->id)->with('info','Rescue Profile for '. $rescue->name. ' has been updated!');
   }
 
   /**

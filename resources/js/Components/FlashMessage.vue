@@ -36,7 +36,7 @@
       success.value = newFlash.success
       error.value = newFlash.error
       warning.value = newFlash.warning
-      info.value = newFlash.warning
+      info.value = newFlash.info
     }
   )
 </script>

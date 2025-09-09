@@ -6,7 +6,7 @@
           <i class="bi bi-plus-circle-fill me-3 text-primary fs-2"></i>
           <h5 class="modal-title">Create a New Rescue Profile</h5>
         </div>
-        <form @submit="submitForm" class="" enctype="multipart/form-data">
+        <form @submit="submitForm" class="">
         <div class="modal-body bg-info-subtle border-0">
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-4 form-floating">
@@ -134,10 +134,18 @@
     router.post('/rescues', formData, {
       forceFormData: true,
       preserveScroll: true,
+      preserveState: false,
       onSuccess: () => {
         const modalEl = document.getElementById('createRescueProfileModal')
         const modal = Modal.getInstance(modalEl)
-        modal.hide()
+        if (modal) {
+          modal.hide()
+        }
+
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+        document.body.classList.remove('modal-open')
+        document.body.style.removeProperty('overflow')
+        document.body.style.removeProperty('padding-right')
         form.reset()
       },
     })
