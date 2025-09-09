@@ -6,7 +6,7 @@
           <i class="bi bi-plus-circle-fill me-3 text-primary fs-2"></i>
           <h5 class="modal-title">Create a New Rescue Profile</h5>
         </div>
-        <form @submit="submitForm" class="" enctype="multipart/form-data">
+        <form @submit="submitForm" class="">
         <div class="modal-body bg-info-subtle border-0">
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-4 form-floating">
@@ -123,17 +123,31 @@
     </div>
   </div>
 </template>
-<script>
-  import {Inertia} from '@inertiajs/inertia'
+<script setup>
+  import { router } from '@inertiajs/vue3'
+  import { Modal } from 'bootstrap'
+  function submitForm(event) {
+    event.preventDefault()
+    const form = event.target
+    const formData = new FormData(event.target)
 
-  export default{
-    name:'CreateRescueProfileModal',
-    methods: {
-      submitForm (event){
-        event.preventDefault()
-        const formData = new formData(event.target)
-        Inertia.post('/rescues', formData)
-      }
-    }
+    router.post('/rescues', formData, {
+      forceFormData: true,
+      preserveScroll: true,
+      preserveState: false,
+      onSuccess: () => {
+        const modalEl = document.getElementById('createRescueProfileModal')
+        const modal = Modal.getInstance(modalEl)
+        if (modal) {
+          modal.hide()
+        }
+
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+        document.body.classList.remove('modal-open')
+        document.body.style.removeProperty('overflow')
+        document.body.style.removeProperty('padding-right')
+        form.reset()
+      },
+    })
   }
 </script>

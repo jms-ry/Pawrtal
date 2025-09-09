@@ -6,7 +6,7 @@
           <i class="bi bi-plus-circle-fill me-3 text-primary fs-2"></i>
           <h5 class="modal-title">Update {{ rescue.name_formatted }}'s Profile</h5>
         </div>
-        <form @submit.prevent="submitForm" enctype="multipart/form-data">
+        <form @submit.prevent="submitForm">
           <div class="modal-body bg-info-subtle border-0">
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
@@ -26,7 +26,7 @@
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
                 <select v-model="form.sex" name="sex" id="floating_sex" class="form-select" aria-label="sex-select" required>
-                  <option hidden  >Sex</option>
+                  <option value="" hidden  >Sex</option>
                   <option value="male" >Male</option>
                   <option value="female" >Female</option>
                 </select>
@@ -38,7 +38,7 @@
               </div>
               <div class="col-12 col-md-4 form-floating">
                 <select v-model="form.size" name="size" id="floating_rescue_size" class="form-select" aria-label="size-select" required>
-                  <option hidden >Size</option>
+                  <option value="" hidden >Size</option>
                   <option value="small" >Small</option>
                   <option value="medium" >Medium</option>
                   <option value="large" >Large</option>
@@ -58,7 +58,7 @@
               </div>
               <div class="col-12 col-md-4 form-floating">
                 <select v-model="form.health_status" name="health_status" id="floating_health_status" class="form-select" aria-label="health-status-select" required>
-                  <option hidden>Health Status</option>
+                  <option value="" hidden>Health Status</option>
                   <option value="healthy" >Healthy</option>
                   <option value="sick" >Sick </option>
                   <option value="injured" >Injured</option>
@@ -70,7 +70,7 @@
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
                 <select v-model="form.vaccination_status" name="vaccination_status" id="floating_vaccination_status" class="form-select" aria-label="vaccination-status-select" required>
-                  <option hidden>Vaccination Status</option>
+                  <option value="" hidden>Vaccination Status</option>
                   <option value="vaccinated" >Vaccinated</option>
                   <option value="partially_vaccinated">Partially Vaccinated</option>
                   <option value="not_vaccinated" >Not Vaccinated</option>
@@ -79,7 +79,7 @@
               </div>
               <div class="col-12 col-md-4 form-floating">
                 <select v-model="form.spayed_neutered" name="spayed_neutered" id="floating_spayed_neutered" class="form-select" aria-label="spayed-neutered-select" required>
-                  <option hidden>Spay/Neutered</option>
+                  <option value="" hidden>Spay/Neutered</option>
                   <option value="true" >Yes</option>
                   <option value="false">No</option>
                 </select>
@@ -87,7 +87,7 @@
               </div>
               <div class="col-12 col-md-4 form-floating">
                 <select v-model="form.adoption_status" name="adoption_status" id="floating_adoption_status" class="form-select" aria-label="adoption-status-select" required>
-                  <option hidden>Adoption Status</option>
+                  <option value="" hidden>Adoption Status</option>
                   <option value="available" >Available</option>
                   <option value="unavailable" >Unavailable</option>
                   <option value="adopted">Adopted</option>
@@ -99,15 +99,15 @@
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-6">
                 <label for="profile_image" class="form-label fw-bold">Change Profile Image</label>
-                <input type="file" name="profile_image" id="profile_image" class="form-control" accept="image/*">
+                <input type="file" name="profile_image" id="profile_image" class="form-control" accept="image/*" @change="handleProfileImageChange">
                 <small class="text-muted mt-3">Leave blank to keep existing image</small>
-                <div class="mb-2 mt-2 d-none" id="rescueProfileImageDiv">
-                  <img id="rescueProfileImage" class="w-100 h-100 object-fit-cover rounded-4" style="max-height: 150px;">
+                <div v-if="rescue.profile_image" class="mb-2 mt-2">
+                  <img :src="rescue.profile_image_url" :alt="rescue.name" id="rescueProfileImage" class="w-100 h-100 object-fit-cover rounded-4" style="max-height: 150px;">
                 </div>
               </div>
               <div class="col-12 col-md-6">
                 <label for="images" class="form-label fw-bold">Upload Additional Image/s</label>
-                <input type="file" name="images[]" id="images" class="form-control" accept="image/*" value="images" multiple>
+                <input type="file" name="images[]" id="images" class="form-control" accept="image/*" multiple @change="handleImagesChange">
               </div>
             </div>
 
@@ -124,6 +124,15 @@
             <button class="btn btn-primary me-1" type="submit">Update Rescue Profile</button>
             <button class="btn btn-danger" type="button"  data-bs-dismiss="modal">Close</button>
           </div>
+
+          <div v-if="form.errors && Object.keys(form.errors).length > 0" class="alert alert-danger m-3">
+            <ul class="mb-0">
+              <li v-for="(error, field) in form.errors" :key="field">
+                <strong>{{ field }}:</strong> {{ Array.isArray(error) ? error[0] : error }}
+              </li>
+            </ul>
+          </div>
+
         </form>
       </div>
     </div>
@@ -132,6 +141,8 @@
 
 <script setup>
   import { useForm } from '@inertiajs/vue3'
+  import { Modal } from 'bootstrap'
+  import { onMounted, watch } from 'vue'
 
   const props = defineProps({
     rescue: {
@@ -139,28 +150,135 @@
     }
   })
 
-  
   const form = useForm({
-    name: props.rescue.name ?? '',
-    species: props.rescue.species ?? '',
-    breed: props.rescue.breed ?? '',
-    sex: props.rescue.sex ?? '',
-    age: props.rescue.age ?? '',
-    size: props.rescue.size ?? '',
-    color: props.rescue.color,
-    distinctive_features: props.rescue.distinctive_features,
-    health_status: props.rescue.health_status,
-    vaccination_status: props.rescue.vaccination_status,
-    spayed_neutered: props.rescue.spayed_neutered,
-    adoption_status: props.rescue.adoption_status,
-    description: props.rescue.description,
+    name: '',
+    species: '',
+    breed: '',
+    sex: '',
+    age: '',
+    size: '',
+    color: '',
+    distinctive_features: '',
+    health_status: '',
+    vaccination_status: '',
+    spayed_neutered: '',
+    adoption_status: '',
+    description: '',
+    profile_image: null,
+    images: null,
+    _method: 'PUT'
+  })
+  // Initialize form with rescue data
+  onMounted(() => {
+    initializeForm()
   })
 
-  
+  // Watch for changes in rescue prop
+  watch(() => props.rescue, () => {
+    initializeForm()
+  }, { deep: true })
+
+  function initializeForm() {
+    if (props.rescue) {
+      form.name = props.rescue.name || ''
+      form.species = props.rescue.species || ''
+      form.breed = props.rescue.breed || ''
+      form.sex = props.rescue.sex || ''
+      form.age = props.rescue.age || ''
+      form.size = props.rescue.size || ''
+      form.color = props.rescue.color || ''
+      form.distinctive_features = props.rescue.distinctive_features || ''
+      form.health_status = props.rescue.health_status || ''
+      form.vaccination_status = props.rescue.vaccination_status || ''
+      form.spayed_neutered = props.rescue.spayed_neutered !== null && props.rescue.spayed_neutered !== undefined 
+        ? (props.rescue.spayed_neutered ? 'true' : 'false') 
+      : ''
+      form.adoption_status = props.rescue.adoption_status || ''
+      form.description = props.rescue.description || ''
+    
+      // Reset file inputs
+      form.profile_image = null
+      form.images = null
+    }
+  }
+
+  function handleProfileImageChange(event) {
+    const file = event.target.files[0]
+    if (file) {
+      form.profile_image = file
+    } else {
+      form.profile_image = null
+    }
+  }
+
+  function handleImagesChange(event) {
+    const files = event.target.files
+    if (files && files.length > 0) {
+      form.images = files
+    } else {
+      form.images = null
+    }
+  }
+
   function submitForm() {
-    form.post(`/rescues/${props.rescue.id}`,{
+    // Create FormData and manually append all fields
+    const formData = new FormData()
+  
+    // Append method override for Laravel
+    formData.append('_method', 'PUT')
+  
+    // Append all text fields
+    formData.append('name', form.name || '')
+    formData.append('species', form.species || '')
+    formData.append('breed', form.breed || '')
+    formData.append('sex', form.sex || '')
+    formData.append('age', form.age || '')
+    formData.append('size', form.size || '')
+    formData.append('color', form.color || '')
+    formData.append('distinctive_features', form.distinctive_features || '')
+    formData.append('health_status', form.health_status || '')
+    formData.append('vaccination_status', form.vaccination_status || '')
+    formData.append('spayed_neutered', form.spayed_neutered || '')
+    formData.append('adoption_status', form.adoption_status || '')
+    formData.append('description', form.description || '')
+  
+    // Append profile image if exists
+    if (form.profile_image instanceof File) {
+      formData.append('profile_image', form.profile_image)
+    }
+  
+    // Append additional images if exist
+    if (form.images && form.images.length > 0) {
+      for (let i = 0; i < form.images.length; i++) {
+        formData.append('images[]', form.images[i])
+      }
+    }
+  
+    // Use POST with method override instead of PUT
+    form.post(`/rescues/${props.rescue.id}`, {
+      data: formData,
       forceFormData: true,
-      method: 'put'
+      preserveScroll: true,
+      preserveState: false,
+      onSuccess: () => {
+        closeModal()
+     },
+      onError: (errors) => {
+        console.error("Validation errors:", errors)
+      }
     })
+  }
+
+  function closeModal() {
+    const modalEl = document.getElementById('editRescueProfileModal')
+    const modal = Modal.getInstance(modalEl)
+    if (modal) {
+      modal.hide()
+    }
+    // Clean up modal backdrop and body classes
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+    document.body.classList.remove('modal-open')
+    document.body.style.removeProperty('overflow')
+    document.body.style.removeProperty('padding-right')
   }
 </script>

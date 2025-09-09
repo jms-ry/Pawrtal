@@ -1,7 +1,7 @@
 <template>
   <div class="container px-md-5">
     <hr class="mt-0 mb-4">
-    <div class="bg-warning-subtle p-md-3 mt-3 mt-md-0 rounded-3" data-controller="edit-rescue-profile">
+    <div class="bg-warning-subtle p-md-3 mt-3 mt-md-0 rounded-3">
       <div class="row g-3">
         <div class="col-12 col-md-6 mt-md-5 py-md-5 px-2 px-md-0">
           <div class="card border-0 rounded-4 overflow-hidden m-md-5 m-2 mt-md-5" style="height: 350px;">

@@ -20,14 +20,30 @@
 </template>
 
 <script setup>
+  import { Modal } from 'bootstrap'
+  import { router } from '@inertiajs/vue3'
+
   const props = defineProps({
-    rescue:{
-      type: Object,
-      required: true
-    }
-  });
+    rescue: {
+    type: Object,
+    required: true,
+    },
+  })
 
   function submitForm() {
-    Inertia.delete(`/rescues/${props.rescue.id}`)
+    router.delete(`/rescues/${props.rescue.id}`, {
+      onSuccess: () => {
+        const modalEl = document.getElementById('deleteRescueProfileModal')
+        const modal = Modal.getInstance(modalEl)
+        if (modal) {
+          modal.hide()
+        }
+
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+        document.body.classList.remove('modal-open')
+        document.body.style.removeProperty('overflow')
+        document.body.style.removeProperty('padding-right')
+      }
+    })
   }
 </script>

@@ -16,11 +16,11 @@
     <!-- Styles / Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   </head>
-  <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100">
+  <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100 overflow-auto">
     <!--Large Screen Flash Message-->
     <div class="row d-flex flex-row-reverse d-none d-md-flex">
-      <div class="col-4">
-        <div class="alert-container me-3">
+      <div class="col-3">
+        <div class="alert-container me-3" data-controller="flash-message">
           @include('flash-messages')
         </div>
       </div>
@@ -29,7 +29,7 @@
 
     <!--Small Screen Flash Message-->
     <div class="d-md-none d-sm-block">
-      <div class="alert-container">
+      <div class="alert-container" data-controller="flash-message">
         @include('flash-messages')
       </div>
     </div>

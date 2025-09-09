@@ -1,30 +1,31 @@
 <template>
   <Head title="User/Show"></Head>
+  <AppLayout>
+    <div class="container-fluid">
+      <div class="card border-0 p-md-5">
+        <PersonalInformationSection 
+          :user="user"
+          csrf-token="{{ csrf_token() }}"
+        />
 
-  <div class="container-fluid">
-    <div class="card border-0 p-md-5">
-      <PersonalInformationSection 
-        :user="user"
-        csrf-token="{{ csrf_token() }}"
-      />
+        <DeleteAddressModal 
+          csrf-token="{{ csrf_token() }}"
+        />
 
-      <DeleteAddressModal 
-        csrf-token="{{ csrf_token() }}"
-      />
+        <AddressInformationSection 
+          :user="user"
+        />
 
-      <AddressInformationSection 
-        :user="user"
-      />
+        <DeleteHouseholdModal 
+          csrf-token="{{ csrf_token() }}"
+        />
 
-      <DeleteHouseholdModal 
-        csrf-token="{{ csrf_token() }}"
-      />
-
-      <HouseholdInformationSection 
-        :user="user"
-      />
+        <HouseholdInformationSection 
+          :user="user"
+        />
+      </div>
     </div>
-  </div>
+  </AppLayout>
 </template>
 
 <script setup>
@@ -34,6 +35,7 @@
   import AddressInformationSection from '../../Components/User/AddressInformationSection.vue';
   import DeleteHouseholdModal from '../../Components/Modals/Users/DeleteHouseholdModal.vue';
   import HouseholdInformationSection from '../../Components/User/HouseholdInformationSection.vue';
+  import AppLayout from '../../Layouts/AppLayout.vue';
 
   const props = defineProps({
     user: {

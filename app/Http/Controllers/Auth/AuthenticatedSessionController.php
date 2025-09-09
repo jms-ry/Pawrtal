@@ -48,7 +48,7 @@ class AuthenticatedSessionController extends Controller
 
     $request->session()->regenerateToken();
 
-    Session::flash('success', 'You logged out successfully!');
+    Session::flash('warning', 'You logged out successfully!');
     return redirect()->intended('/');
   }
 }
