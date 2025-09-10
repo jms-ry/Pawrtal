@@ -134,9 +134,7 @@
         </div>
       </div>
       <ViewReportModal />
-      <DeleteReportModal 
-        csrf-token="{{ csrf_token() }}"
-      />
+      
       <UpdateReportModal 
         :user="user"
         csrf-token="{{ csrf_token() }}"
@@ -152,7 +150,6 @@
 </template>
 
 <script setup>
-import DeleteReportModal from '../Modals/Reports/DeleteReportModal.vue';
 import UpdateReportModal from '../Modals/Reports/UpdateReportModal.vue';
 import ViewReportModal from '../Modals/Reports/ViewReportModal.vue';
 

@@ -21,8 +21,6 @@ class ReportController extends Controller
     $lostModal = Auth::check() ? '#createLostAnimalReportModal' : '#loginReminderModal';
     $foundModal = Auth::check() ? '#createFoundAnimalReportModal' : '#loginReminderModal';
 
-    // return view('reports.index', compact('reports','user','lostModal','foundModal'));
-
     return Inertia::render('Reports/Index',[
       'lostModal' => $lostModal,
       'foundModal' => $foundModal,
@@ -99,6 +97,6 @@ class ReportController extends Controller
   {
     $report->delete();
 
-    return redirect()->route('reports.index')->with('success', $report->getTypeFormattedAttribute() . ' Report has been deleted successfully!');
+    return redirect()->route('reports.index')->with('warning', $report->getTypeFormattedAttribute() . ' Report has been deleted successfully!');
   }
 }

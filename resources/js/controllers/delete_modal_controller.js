@@ -12,10 +12,6 @@ export default class extends Controller {
       const titleSpan = this.element.querySelector('#title');
 
       titleSpan.textContent = type === 'lost' ? 'Lost' : 'Found';
-
-      const reportId = button.getAttribute('data-report-id');
-      const deleteReportForm = this.element.querySelector('#deleteReportForm');
-      deleteReportForm.action = `/reports/${reportId}`;
       
     });
   }
