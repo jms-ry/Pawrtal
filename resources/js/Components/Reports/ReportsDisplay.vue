@@ -5,7 +5,7 @@
       <p class="fs-4 fw-semibold text-muted">No reports yet.</p>
       <a href="" class="btn btn-primary mt-2 fw-semibold">Create your first report</a>
     </div>
-    <div v-else class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center" data-controller="view-report-modal delete-modal update-report-modal">
+    <div v-else class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center" data-controller="view-report-modal delete-modal update-lost-report update-found-report">
       <div v-for="report in reports" :key="report.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
         <div class="card border-0 bg-warning-subtle h-100">
           <div class="card-header bg-warning-subtle border-0 d-flex justify-content-center mt-2">
@@ -57,9 +57,9 @@
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
-                <a class="btn btn-primary fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#updateReportModal"
+                <a class="btn btn-primary fw-bolder ms-1" data-bs-toggle="modal" 
+                  :data-bs-target="report.type == 'lost' ? '#updateLostReportModal' :'#updateFoundReportModal'"
                   :data-report-id="report.id"
-                  :data-report-type="report.report_type"
                   :data-report-status="report.status"
                   :data-report-animal-name="report.animal_name_formatted"
                   :data-report-species="report.species"
@@ -107,9 +107,9 @@
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
-                <a class="btn btn-primary fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#updateReportModal"
+                <a class="btn btn-primary fw-bolder ms-1" data-bs-toggle="modal" 
+                  :data-bs-target="report.type == 'lost' ? '#updateLostReportModal' :'#updateFoundReportModal'"
                   :data-report-id="report.id"
-                  :data-report-type="report.type"
                   :data-report-status="report.status"
                   :data-report-animal-name="report.animal_name_formatted"
                   :data-report-species="report.species"
@@ -135,9 +135,11 @@
       </div>
       <ViewReportModal />
       
-      <UpdateReportModal 
+      <UpdateLostReportModal 
         :user="user"
-        csrf-token="{{ csrf_token() }}"
+      />
+      <UpdateFoundReportModal
+        :user="user"
       />
     </div>
     <div class="d-flex justify-content-end mt-4 mt-md-5">
@@ -150,9 +152,10 @@
 </template>
 
 <script setup>
-import UpdateReportModal from '../Modals/Reports/UpdateReportModal.vue';
-import ViewReportModal from '../Modals/Reports/ViewReportModal.vue';
-
+  import UpdateFoundReportModal from '../Modals/Reports/UpdateFoundReportModal.vue';
+  import UpdateLostReportModal from '../Modals/Reports/UpdateLostReportModal.vue';
+  import ViewReportModal from '../Modals/Reports/ViewReportModal.vue';
+  
   const props = defineProps({
     reports: {
       type: Array,

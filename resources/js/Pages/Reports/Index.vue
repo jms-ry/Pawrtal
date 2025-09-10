@@ -10,6 +10,7 @@
         />
         <ReportsDisplay
           :reports = "reports"
+          :user="user"
         />
       </div>
     </div>

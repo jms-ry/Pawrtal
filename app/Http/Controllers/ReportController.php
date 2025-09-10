@@ -79,15 +79,18 @@ class ReportController extends Controller
     $requestData = $request->all();
 
     if ($request->hasFile('image')) {
-      Storage::delete($report->image);
-
+      if($report->image){
+        Storage::delete($report->image);
+      }
       $imagePath = $request->file('image')->store('images/reports/reports_images', 'public');
-
       $requestData['image'] = $imagePath;
+    }else{
+      unset($requestData['image']);
     }
 
     $report->update($requestData);
-    return redirect()->route('reports.index')->with('success', $report->getTypeFormattedAttribute() . ' Report updated successfully!');
+    
+    return redirect()->route('reports.index')->with('info', $report->getTypeFormattedAttribute() . ' Report updated successfully!');
   }
 
   /**
