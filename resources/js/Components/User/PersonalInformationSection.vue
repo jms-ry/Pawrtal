@@ -9,7 +9,6 @@
         <div class="container-fluid justify-content-center">
           <UpdatePersonalInfoForm 
             :user="user"
-            csrf-token="{{ csrf_token() }}"
           />
         </div>
       </div>
@@ -24,10 +23,6 @@
     user: {
       type: Object,
       default: () => null
-    },
-    csrfToken: {
-      type: String,
-      required: true
     },
   })
 

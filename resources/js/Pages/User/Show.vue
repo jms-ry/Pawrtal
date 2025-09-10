@@ -5,7 +5,6 @@
       <div class="card border-0 p-md-5">
         <PersonalInformationSection 
           :user="user"
-          csrf-token="{{ csrf_token() }}"
         />
 
         <DeleteAddressModal 
