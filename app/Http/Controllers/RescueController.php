@@ -19,6 +19,8 @@ class RescueController extends Controller
     $rescues = Rescue::all();
     $user = Auth::user();
 
+    $user = $user?->load('address', 'household');
+
     return Inertia::render('Rescues/Index', [
       'rescues' => $rescues ,
       'user' => $user ? [
@@ -26,6 +28,8 @@ class RescueController extends Controller
         'full_name' => $user->fullName(),
         'isAdminOrStaff' => $user->isAdminOrStaff(),
         'canAdopt' => $user->canAdopt(),
+        'address' => $user->address,
+        'household' => $user->household,
       ] : null,
     ]);
   }
@@ -83,6 +87,7 @@ class RescueController extends Controller
     }elseif (str_contains($previousUrl, '/adoption')) {
       $backContext = 'adoption';
     }
+    $user = $user?->load('address', 'household');
 
     return Inertia::render('Rescues/Show',[
       'user' => $user ? [
@@ -90,6 +95,8 @@ class RescueController extends Controller
         'isAdminOrStaff' => $user->isAdminOrStaff(),
         'isNonAdminOrStaff' => $user->isNonAdminOrStaff(),
         'canAdopt' => $user->canAdopt(),
+        'address' => $user->address,
+        'household' => $user->household,
       ] : null,
       'backContext' => $backContext,
       'notEmpty' => $notEmpty,
