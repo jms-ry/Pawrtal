@@ -135,7 +135,7 @@ export default class extends Controller {
         deleteButtonDiv.classList.add('d-none');
       }
 
-      const deleteReportButton = this.element.querySelector('.deleteReportButton');
+      const deleteReportButton = this.element.querySelector('#deleteReportButton');
 
       deleteReportButton.setAttribute('data-report-type', type);
       deleteReportButton.setAttribute('data-report-id', id);

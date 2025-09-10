@@ -221,13 +221,10 @@
   }
 
   function submitForm() {
-    // Create FormData and manually append all fields
     const formData = new FormData()
   
-    // Append method override for Laravel
     formData.append('_method', 'PUT')
   
-    // Append all text fields
     formData.append('name', form.name || '')
     formData.append('species', form.species || '')
     formData.append('breed', form.breed || '')
@@ -242,23 +239,20 @@
     formData.append('adoption_status', form.adoption_status || '')
     formData.append('description', form.description || '')
   
-    // Append profile image if exists
     if (form.profile_image instanceof File) {
       formData.append('profile_image', form.profile_image)
     }
   
-    // Append additional images if exist
     if (form.images && form.images.length > 0) {
       for (let i = 0; i < form.images.length; i++) {
         formData.append('images[]', form.images[i])
       }
     }
   
-    // Use POST with method override instead of PUT
     form.post(`/rescues/${props.rescue.id}`, {
       data: formData,
       forceFormData: true,
-      preserveScroll: true,
+      preserveScroll: false,
       preserveState: false,
       onSuccess: () => {
         closeModal()
@@ -275,7 +269,7 @@
     if (modal) {
       modal.hide()
     }
-    // Clean up modal backdrop and body classes
+    
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
     document.body.classList.remove('modal-open')
     document.body.style.removeProperty('overflow')

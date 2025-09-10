@@ -6,7 +6,7 @@
           <i class="bi bi-plus-circle-fill me-3 text-primary fs-2"></i>
           <h5 class="modal-title">Create a New Lost Animal Report!</h5>
         </div>
-        <form @submit="submitForm" enctype="multipart/form-data">
+        <form @submit="submitForm">
           <div class="modal-body bg-info-subtle border-0">
             <input type="hidden" name="type" class="form-control" value="lost">
             <input type="hidden" name="user_id" class="form-control" :value="user?.id">
@@ -90,7 +90,8 @@
 </template>
 
 <script setup>
-  import { Inertia } from '@inertiajs/inertia'
+  import { router } from '@inertiajs/vue3'
+  import { Modal } from 'bootstrap'
 
   const props = defineProps({
     user: {
@@ -101,7 +102,30 @@
 
   function submitForm(event) {
     event.preventDefault()
+    const form = event.target
     const formData = new FormData(event.target)
-    Inertia.post('/reports', formData)
+
+    router.post('/reports', formData, {
+      forceFormData: true,
+      preserveScroll: true,
+      preserveState: false,
+      onSuccess:() => {
+        closeModal()
+        form.reset()
+      },
+    })
+  }
+
+  function closeModal(){
+    const modalEl = document.getElementById('createLostAnimalReportModal')
+    const modal = Modal.getInstance(modalEl)
+    if (modal) {
+      modal.hide()
+    }
+
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+    document.body.classList.remove('modal-open')
+    document.body.style.removeProperty('overflow')
+    document.body.style.removeProperty('padding-right')
   }
 </script>
