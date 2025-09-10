@@ -1,5 +1,5 @@
 <template>
-  <form @submit="submitForm" method="POST">
+  <form @submit.prevent="submitForm" method="POST">
     <div class="card bg-warning-subtle border-0 p-3 p-md-5">
       <input type="hidden" name="user_id" class="form-control" :value="user.id">
       <div class="row g-2">
@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-  import {Inertia} from '@inertiajs/inertia'
+  import { router} from '@inertiajs/vue3'
 
   const props = defineProps({
     user: {
@@ -69,6 +69,9 @@
   function submitForm(event) {
     event.preventDefault()
     const formData = new FormData(event.target)
-    Inertia.post('/households', formData)
+    router.post('/households',formData,{
+      preserveScroll: false,
+      preserveState: false,
+    })
   }
 </script>

@@ -33,8 +33,6 @@
       const button = event.relatedTarget 
       
       addressId.value = button.getAttribute('data-address-id')
-
-      console.log('ADDRESS ID:', addressId.value)
     })
   })
 
@@ -68,6 +66,6 @@
     document.body.style.removeProperty('overflow')
     document.body.style.removeProperty('padding-right')
     
-    reportId.value = null
+    addressId.value = null
   }
 </script>

@@ -13,9 +13,7 @@
           :user="user"
         />
 
-        <DeleteHouseholdModal 
-          csrf-token="{{ csrf_token() }}"
-        />
+        <DeleteHouseholdModal/>
 
         <HouseholdInformationSection 
           :user="user"
