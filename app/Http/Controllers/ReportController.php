@@ -54,7 +54,7 @@ class ReportController extends Controller
 
     $report = Report::create($requestData);
 
-    return redirect()->back()->with('success', $report->getTypeFormattedAttribute() . ' Report created successfully!');
+    return redirect()->back()->with('success', $report->getTypeFormattedAttribute() . ' Report has been created!');
   }
 
   /**
