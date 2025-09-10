@@ -7,9 +7,7 @@
           :user="user"
         />
 
-        <DeleteAddressModal 
-          csrf-token="{{ csrf_token() }}"
-        />
+        <DeleteAddressModal/>
 
         <AddressInformationSection 
           :user="user"

@@ -3,26 +3,26 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="delete-address-household"
 export default class extends Controller {
   connect() {
-    const deleteAddressModal = this.element.querySelector('#deleteAddressModal');
+    // const deleteAddressModal = this.element.querySelector('#deleteAddressModal');
 
-    deleteAddressModal.addEventListener('show.bs.modal',(event) => {
-      const button = event.relatedTarget;
+    // deleteAddressModal.addEventListener('show.bs.modal',(event) => {
+    //   const button = event.relatedTarget;
 
-      const addressId = button.getAttribute('data-address-id');
+    //   const addressId = button.getAttribute('data-address-id');
 
-      const deleteAddressForm = this.element.querySelector('#deleteAddressForm');
-      deleteAddressForm.action = `/addresses/${addressId}`;
-    });
+    //   const deleteAddressForm = this.element.querySelector('#deleteAddressForm');
+    //   deleteAddressForm.action = `/addresses/${addressId}`;
+    // });
 
-    const deleteHouseholdModal = this.element.querySelector('#deleteHouseholdModal');
+    // const deleteHouseholdModal = this.element.querySelector('#deleteHouseholdModal');
 
-    deleteHouseholdModal.addEventListener('show.bs.modal', (event) => {
-      const button = event.relatedTarget;
+    // deleteHouseholdModal.addEventListener('show.bs.modal', (event) => {
+    //   const button = event.relatedTarget;
 
-      const householdId = button.getAttribute('data-household-id');
+    //   const householdId = button.getAttribute('data-household-id');
 
-      const deleteHouseholdForm = this.element.querySelector('#deleteHouseholdForm');
-      deleteHouseholdForm.action = `/households/${householdId}`;
-    });
+    //   const deleteHouseholdForm = this.element.querySelector('#deleteHouseholdForm');
+    //   deleteHouseholdForm.action = `/households/${householdId}`;
+    // });
   }
 }

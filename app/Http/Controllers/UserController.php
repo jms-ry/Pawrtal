@@ -67,7 +67,7 @@ class UserController extends Controller
 
       $user->update($requestData);
 
-      return redirect()->back()->with('success', 'User profile has been updated!');
+      return redirect()->back()->with('info', 'User profile has been updated!');
     }
 
     /**

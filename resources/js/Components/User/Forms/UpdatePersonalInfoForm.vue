@@ -1,5 +1,5 @@
 <template>
-  <form @submit="submitForm" class="">
+  <form @submit.prevent="submitForm" class="">
     <div class="card bg-warning-subtle border-0 p-3 p-md-5">
       <div class="row g-2">
         <div class="col-12 col-md-6 form-floating">
@@ -24,10 +24,10 @@
     </div>
     <div class="card-footer border-0 bg-warning-subtle">
       <div class="justify-content-end d-none d-md-flex mt-3 mt-md-0">
-        <button type="submit" class="btn btn-success fw-bolder">Update Information</button>
+        <button type="submit" class="btn btn-info fw-bolder">Update Information</button>
       </div>
       <div class="d-md-none">
-        <button type="submit" class="btn btn-success w-100 fw-bolder">Update Information</button>
+        <button type="submit" class="btn btn-info w-100 fw-bolder">Update Information</button>
       </div>
     </div>
   </form>
@@ -51,9 +51,10 @@
   })
 
   function submitForm(){
-    form.put(`/users/${props.user.id}`),{
-      preserveScroll: true
-    }
+    form.put(`/users/${props.user.id}`,{
+      preserveScroll: true,
+      preserveState: false,
+    })
   }
   
 </script>
