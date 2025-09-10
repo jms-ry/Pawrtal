@@ -6,7 +6,7 @@
           <i class="bi bi-house-add-fill me-2 text-primary fs-2"></i>
           <h5 class="modal-title">Submit Adoption Application for <strong id="adoption_form_adoptable-name">Rescue Name</strong></h5>
         </div>
-        <form @submit="submitForm" method="POST" enctype="multipart/form-data">
+        <form @submit="submitForm">
           <div class="modal-body bg-info-subtle border-0">
             <input type="hidden" name="user_id" class="form-control" id="adoption_form_user_id">
             <input type="hidden" name="rescue_id" class="form-control" id="adoption_form_rescue_id">
@@ -49,17 +49,39 @@
   </div>
 </template>
 
-<script>
-  import {Inertia} from '@inertiajs/inertia'
+<script setup>
+  import { router } from '@inertiajs/vue3'
+  import { Modal } from 'bootstrap'
 
-  export default{
-    name:'AdoptiionApplicationForm',
-    methods: {
-      submitForm (event){
-        event.preventDefault()
-        const formData = new formData(event.target)
-        Inertia.post('/adoption-applications', formData)
+  function submitForm(event) {
+    event.preventDefault()
+    const formData = new FormData(event.target)
+
+    router.post('/adoption-applications', formData, {
+      forceFormData: true,
+      preserveScroll: false,
+      preserveState: false,
+      onSuccess: () => {
+        closeModal()
+      },
+
+      onError: (errors) => {
+        console.error("Validation errors:", errors)
       }
+    })
+  }
+
+  function closeModal(){
+    const modalEl = document.getElementById('adoptionApplicationFormModal')
+    const modal = Modal.getInstance(modalEl)
+    if (modal) {
+      modal.hide()
     }
+
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+    document.body.classList.remove('modal-open')
+    document.body.style.removeProperty('overflow')
+    document.body.style.removeProperty('padding-right')
+    form.reset()
   }
 </script>

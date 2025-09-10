@@ -51,7 +51,7 @@ class AdoptionApplicationController extends Controller
 
       $adoption_application = AdoptionApplication::create($requestData);
 
-      return redirect()->back()->with('success', 'Adoption application for '. $adoption_application->rescue->name. ' was submitted successfully!');
+      return redirect()->back()->with('success', 'Adoption application for '. $adoption_application->rescue->name. ' was submitted!');
     }
 
     /**
