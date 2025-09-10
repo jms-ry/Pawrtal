@@ -34,7 +34,7 @@ class HouseholdController extends Controller
 
     $household = Household::create($requestData);
 
-    return redirect()->back()->with('success', 'Household information created and assigned successfully!');
+    return redirect()->back()->with('success', 'Household information has been created!');
   }
 
   /**
@@ -61,7 +61,7 @@ class HouseholdController extends Controller
     $requestData = $request->all();
     $household->update($requestData);
 
-    return redirect()->back()->with('success', 'Household information updated successfully!');
+    return redirect()->back()->with('info', 'Household information has been updated!');
   }
 
   /**
@@ -71,6 +71,6 @@ class HouseholdController extends Controller
   {
     $household->delete();
 
-    return redirect()->back()->with('success', 'Household information deleted successfully!');
+    return redirect()->back()->with('warning', 'Household information has been deleted!');
   }
 }

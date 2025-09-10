@@ -9,7 +9,6 @@
         <div v-if="user?.household" class="container-fluid justify-content-center">
           <UpdateHouseholdForm 
             :user="user"
-            csrf-token="{{ csrf_token() }}"
           />
         </div>
         <div v-else class="container-fluid justify-content-center">

@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-  import {Inertia} from '@inertiajs/inertia'
+  import { router} from '@inertiajs/vue3'
 
   const props = defineProps({
     user: {
@@ -47,6 +47,10 @@
   function submitForm(event) {
     event.preventDefault()
     const formData = new FormData(event.target)
-    Inertia.post('/addresses', formData)
+    
+    router.post('/addresses',formData,{
+      preserveScroll: false,
+      preserveState: false,
+    })
   }
 </script>

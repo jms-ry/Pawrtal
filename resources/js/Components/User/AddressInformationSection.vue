@@ -9,7 +9,6 @@
         <div v-if="user?.address" class="container-fluid justify-content-center">
           <UpdateAddressForm
             :user="user"
-            csrf-token="{{ csrf_token() }}"
           />
         </div>
         <div v-else class="container-fluid justify-content-center">
@@ -32,6 +31,5 @@
       required: true
     },
   })
-
    
 </script>

@@ -5,20 +5,15 @@
       <div class="card border-0 p-md-5">
         <PersonalInformationSection 
           :user="user"
-          csrf-token="{{ csrf_token() }}"
         />
 
-        <DeleteAddressModal 
-          csrf-token="{{ csrf_token() }}"
-        />
+        <DeleteAddressModal/>
 
         <AddressInformationSection 
           :user="user"
         />
 
-        <DeleteHouseholdModal 
-          csrf-token="{{ csrf_token() }}"
-        />
+        <DeleteHouseholdModal/>
 
         <HouseholdInformationSection 
           :user="user"
