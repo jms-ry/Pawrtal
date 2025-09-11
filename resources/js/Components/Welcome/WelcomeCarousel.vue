@@ -18,7 +18,7 @@
               <img src="/images/welcome/dog-2.png" alt="Happy pet" class="d-block w-100 h-100 object-fit-cover border-0">
               <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
                 <h1 class="display-5 fw-bold">You can’t buy love, but you’ll find it in a rescue.</h1>
-                <a class="btn btn-primary btn-lg fw-bolder mt-2">ADOPT FROM PAWRTAL</a>
+                <a :href="`/adoption`" class="btn btn-primary btn-lg fw-bolder mt-2">ADOPT FROM PAWRTAL</a>
               </div>
             </div>
 
@@ -27,7 +27,7 @@
               <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
                 <h1 class="display-5 fw-bold">Lost a Pet? Found One?</h1>
                 <p class="lead fs-4">Seen a wandering animal or lost your furry friend? Report it here so we can take action.</p>
-                <a  class="btn btn-primary btn-lg fw-bolder mt-2">VIEW OR SUBMIT A REPORT</a>
+                <a :href="`/reports`" class="btn btn-primary btn-lg fw-bolder mt-2">VIEW OR SUBMIT A REPORT</a>
               </div>
             </div>
 
@@ -36,7 +36,7 @@
               <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
                 <h1 class="display-5 fw-bold">Every Life Matters — Let's Save One Today.</h1>
                 <p class="lead fs-4">Even small acts of kindness can change lives — theirs and yours.</p>
-                <a class="btn btn-primary btn-lg fw-bolder mt-2">HELP US HELP THEM</a>
+                <a :href="`/donate`" class="btn btn-primary btn-lg fw-bolder mt-2">HELP US HELP THEM</a>
               </div>
             </div>
           </div>
