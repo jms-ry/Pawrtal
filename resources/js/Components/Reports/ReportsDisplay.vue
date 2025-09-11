@@ -6,7 +6,7 @@
       <a href="" class="btn btn-primary mt-2 fw-semibold">Create your first report</a>
     </div>
     <div v-else class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center" data-controller="view-report-modal delete-modal update-lost-report update-found-report">
-      <div v-for="report in reports" :key="report.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
+      <div v-for="report in reports.data" :key="report.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
         <div class="card border-0 bg-warning-subtle h-100">
           <div class="card-header bg-warning-subtle border-0 d-flex justify-content-center mt-2">
             <span class="text-dark text-uppercase fs-4 ms-2 p-2 fw-lighter">{{ report.type_formatted }}</span>
@@ -142,28 +142,84 @@
         :user="user"
       />
     </div>
-    <div class="d-flex justify-content-end mt-4 mt-md-5">
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-info"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
-        <button type="button" class="btn btn-info"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
+    <!--Large Screen Navigation-->
+    <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
+      <div class="text-dark">
+        <span v-if="reports.from === reports.to">
+          <strong>Showing {{ reports.from }} of {{ reports.total }} reports</strong>
+        </span>
+        <span v-else>
+          <strong>Showing {{ reports.from || 0 }} to {{ reports.to || 0 }} of {{ reports.total }} reports</strong>
+        </span>
+      </div>
+      <div class="btn-group" role="group" aria-label="Pagination">
+        <button type="button" class="btn btn-info" :disabled="!reports.prev_page_url" @click="goToPage(reports.current_page - 1)">
+          <span class="align-items-center">
+            <i class="bi bi-chevron-double-left"></i> 
+            Prev
+          </span>
+        </button>
+        <button type="button" class="btn btn-info" :disabled="!reports.next_page_url" @click="goToPage(reports.current_page + 1)">
+          <span class="align-items-center">Next 
+            <i class="bi bi-chevron-double-right"></i>
+          </span>
+        </button>
+      </div>
+    </div>
+    <!--Small Screen Navigation-->
+    <div class="d-md-none d-flex flex-column align-items-center mt-3">
+      <div class="text-dark">
+        <span v-if="reports.from === reports.to">
+          <strong>Showing {{ reports.from }} of {{ reports.total }} reports</strong>
+        </span>
+        <span v-else>
+          <strong>Showing {{ reports.from || 0 }} to {{ reports.to || 0 }} of {{ reports.total }} reports</strong>
+        </span>
+      </div>
+      <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
+        <button type="button" class="btn btn-info" :disabled="!reports.prev_page_url" @click="goToPage(reports.current_page - 1)">
+          <span class="align-items-center">
+            <i class="bi bi-chevron-double-left"></i> 
+            Prev
+          </span>
+        </button>
+
+        <button type="button" class="btn btn-info" :disabled="!reports.next_page_url" @click="goToPage(reports.current_page + 1)">
+          <span class="align-items-center">Next 
+            <i class="bi bi-chevron-double-right"></i>
+          </span>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+  import { router } from '@inertiajs/vue3';
   import UpdateFoundReportModal from '../Modals/Reports/UpdateFoundReportModal.vue';
   import UpdateLostReportModal from '../Modals/Reports/UpdateLostReportModal.vue';
   import ViewReportModal from '../Modals/Reports/ViewReportModal.vue';
   
   const props = defineProps({
     reports: {
-      type: Array,
-      default: () => []
+      type: Object,
+      default: () => null
     },
     user: {
       type: Object,
       default: () => null
     }
   })
+
+  const goToPage = (page) => {
+    if(page < 1 || page > props.reports.last_page){
+      return;
+    }
+    const params = page === 1 ? {} : { page };
+
+    router.get(`/reports`,params,{
+      preserveState:false,
+      preserveScroll:true,
+    })
+  };
 </script>

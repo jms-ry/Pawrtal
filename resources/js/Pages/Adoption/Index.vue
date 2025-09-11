@@ -23,8 +23,8 @@
 
   const props = defineProps({
     adoptables: {
-      type: Array,
-      default: () => []
+      type: Object,
+      default: () => null
     },
     user: {
       type: Object,
