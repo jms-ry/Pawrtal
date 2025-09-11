@@ -28,6 +28,6 @@ import AppLayout from '../../Layouts/AppLayout.vue';
   lostModal: String,
   foundModal: String,
   user: Object,
-  reports: Array,
+  reports: Object,
 })
 </script>
