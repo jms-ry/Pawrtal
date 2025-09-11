@@ -33,7 +33,8 @@ class DonationController extends Controller
     $donationType = $request->input('donation_type');
     $status = $request->input('status');
 
-    // If it's in-kind donation with multiple items
+    $createdCount = 0;
+
     if ($donationType === 'in-kind') {
       $descriptions = $request->item_description;
       $quantities   = $request->item_quantity;
@@ -57,13 +58,16 @@ class DonationController extends Controller
           'contact_person'   => $contacts[$index] ?? null,
           'donation_image'   => $imagePath,
         ]);
+
+        $createdCount++;
       }
     } else {
-      // monetary donation (single record for now)
       Donation::create($request->all());
+       $createdCount = 1;
     }
+    $message = $createdCount > 1 ? ucfirst($donationType)." Donations ($createdCount items) have been submitted!" : ucfirst($donationType)." Donation has been submitted!";
 
-    return redirect()->back()->with('success', ucfirst($donationType).' Donation created successfully!');
+    return redirect()->back()->with('success', $message);
   }
 
 

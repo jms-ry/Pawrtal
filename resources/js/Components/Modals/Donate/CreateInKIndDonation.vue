@@ -6,7 +6,7 @@
           <i class="bi bi-box-seam-fill me-2 text-primary fs-2"></i>
           <h5 class="modal-title"><strong>Make In-kind Donation for the rescues!</strong></h5>
         </div>
-        <form @submit="submitForm" enctype="multipart/form-data">
+        <form @submit.prevent="submitForm" enctype="multipart/form-data">
           <div class="modal-body bg-info-subtle border-0" id="donationModalBody">
             <input type="hidden" name="user_id" class="form-control" :value="user?.id">
             <input type="hidden" name="donation_type" class="form-control" value="in-kind">
@@ -14,7 +14,7 @@
             <div id="donation-item" class="mb-4">
               <div class="row g-2 mt-2">
                 <div class="col-12 col-md-6 form-floating">
-                  <input name="item_description[]" class="form-control" placeholder="Item Description" aria-label="Item Description" required></input>
+                  <input name="item_description[]" class="form-control" placeholder="Item Description" aria-label="Item Description" required ></input>
                   <label class="form-label fw-bold">Item Description</label>
                 </div>
                 <div class="col-12 col-md-6 form-floating">
@@ -68,8 +68,8 @@
 </template>
 
 <script setup>
-  import { Inertia } from '@inertiajs/inertia'
-
+  import { router } from '@inertiajs/vue3'
+  import { Modal } from 'bootstrap'
   const props = defineProps({
     user: {
       type: Object,
@@ -80,6 +80,32 @@
   function submitForm(event) {
     event.preventDefault()
     const formData = new FormData(event.target)
-    Inertia.post('/donations', formData)
+
+    router.post('/donations', formData, {
+      forceFormData: true,
+      preserveScroll: false,
+      preserveState: false,
+      onSuccess: () => {
+        closeModal()
+      },
+
+      onError: (errors) => {
+        console.error("Validation errors:", errors)
+      }
+    })
+  }
+
+  function closeModal(){
+    const modalEl = document.getElementById('createInKindDonationModal')
+    const modal = Modal.getInstance(modalEl)
+    if (modal) {
+      modal.hide()
+    }
+
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+    document.body.classList.remove('modal-open')
+    document.body.style.removeProperty('overflow')
+    document.body.style.removeProperty('padding-right')
+    form.reset()
   }
 </script>
