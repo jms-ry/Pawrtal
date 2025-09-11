@@ -24,7 +24,7 @@
     user: {
       type: Object,
     },
-    rescues: Array,
+    rescues: Object,
   });
   
 </script>

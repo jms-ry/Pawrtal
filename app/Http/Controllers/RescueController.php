@@ -16,7 +16,7 @@ class RescueController extends Controller
   */
   public function index()
   {
-    $rescues = Rescue::all();
+    $rescues = Rescue::paginate(9);
     $user = Auth::user();
 
     $user = $user?->load('address', 'household');

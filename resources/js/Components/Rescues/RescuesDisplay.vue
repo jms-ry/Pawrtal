@@ -6,7 +6,7 @@
     <LoginReminder />
     <AdoptionApplicationForm />
     <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
-      <div v-for="rescue in rescues" :key="rescue.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
+      <div v-for="rescue in rescues.data" :key="rescue.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
         <div class="my-2">
           <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ rescue.name }}</span>
           <span v-if="rescue.is_adopted" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-warning bg-opacity-75 text-dark fw-bold rounded"><i class="bi bi-heart-fill"></i></span>
@@ -41,24 +41,81 @@
         </div>
       </div>
     </div>
-
-    <div class="d-flex justify-content-end mt-4 mt-md-5">
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-info"><span class="align-items-center"><i class="bi bi-chevron-double-left"></i> Prev</span></button>
-        <button type="button" class="btn btn-info"><span class="align-items-center">Next <i class="bi bi-chevron-double-right"></i></span></button>
+    <!--Large Screen Navigation-->
+    <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
+      <div class="text-dark">
+        <span v-if="rescues.from === rescues.to">
+          <strong>Showing {{ rescues.from }} of {{ rescues.total }} rescues</strong>
+        </span>
+        <span v-else>
+          <strong>Showing {{ rescues.from || 0 }} to {{ rescues.to || 0 }} of {{ rescues.total }} rescues</strong>
+        </span>
+      </div>
+      <div class="btn-group" role="group" aria-label="Pagination">
+        <button type="button" class="btn btn-info" :disabled="!rescues.prev_page_url" @click="goToPage(rescues.current_page - 1)">
+          <span class="align-items-center">
+            <i class="bi bi-chevron-double-left"></i> 
+            Prev
+          </span>
+        </button>
+        <button type="button" class="btn btn-info" :disabled="!rescues.next_page_url" @click="goToPage(rescues.current_page + 1)">
+          <span class="align-items-center">Next 
+            <i class="bi bi-chevron-double-right"></i>
+          </span>
+        </button>
       </div>
     </div>
+    <!--Small Screen Navigation-->
+    <div class="d-md-none d-flex flex-column align-items-center mt-3">
+      <div class="text-dark">
+        <span v-if="rescues.from === rescues.to">
+          <strong>Showing {{ rescues.from }} of {{ rescues.total }} rescues</strong>
+        </span>
+        <span v-else>
+          <strong>Showing {{ rescues.from || 0 }} to {{ rescues.to || 0 }} of {{ rescues.total }} rescues</strong>
+        </span>
+      </div>
+      <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
+        <button type="button" class="btn btn-info" :disabled="!rescues.prev_page_url" @click="goToPage(rescues.current_page - 1)">
+          <span class="align-items-center">
+            <i class="bi bi-chevron-double-left"></i> 
+            Prev
+          </span>
+        </button>
+
+        <button type="button" class="btn btn-info" :disabled="!rescues.next_page_url" @click="goToPage(rescues.current_page + 1)">
+          <span class="align-items-center">Next 
+            <i class="bi bi-chevron-double-right"></i>
+          </span>
+        </button>
+      </div>
+    </div>
+
   </div>
 </template>
 <script setup>
+  import { router } from '@inertiajs/vue3';
+  import ProfileReminder from '@/Components/Modals/ProfileReminder.vue';
+  import LoginReminder from '@/Components/Modals/LoginReminder.vue';
+  import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
+
   const props = defineProps({
-    rescues: Array,
+    rescues: Object,
     user: {
       type: Object
     },
   });
 
-  import ProfileReminder from '@/Components/Modals/ProfileReminder.vue';
-  import LoginReminder from '@/Components/Modals/LoginReminder.vue';
-  import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
+  const goToPage = (page) => {
+    if(page < 1 || page > props.rescues.last_page){
+      return;
+    }
+    const params = page === 1 ? {} : { page };
+
+    router.get(`/rescues`,params,{
+      preserveState:false,
+      preserveScroll:true,
+    })
+  };
+  
 </script>
