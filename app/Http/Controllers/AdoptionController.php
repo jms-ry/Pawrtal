@@ -10,7 +10,7 @@ class AdoptionController extends Controller
 {
   public function index()
   {
-    $adoptables = Rescue::where('adoption_status','available')->get();
+    $adoptables = Rescue::where('adoption_status','available')->paginate(9);
     $user = Auth::user();
 
     $user = $user?->load('address', 'household');
