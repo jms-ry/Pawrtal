@@ -1,6 +1,22 @@
 <template>
   <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
-    <div v-if="!reports || reports.length === 0" class="d-flex flex-column align-items-center justify-content-center my-5">
+    <!-- No results message -->
+    <div v-if="reports.data.length === 0 && hasActiveFilters" class="text-center py-5">
+      <div class="mb-4">
+        <i class="bi bi-search display-1 text-muted"></i>
+      </div>
+      <h4 class="text-muted mb-3">No reports found</h4>
+      <p class="text-muted">
+        <span v-if="hasActiveFilters">
+          Try adjusting your search criteria or clearing some filters.
+        </span>
+        <span v-else>
+          There are currently no reports available.
+        </span>
+      </p>
+    </div>
+
+    <div v-if="(!reports || reports.data.length === 0) && !hasActiveFilters" class="d-flex flex-column align-items-center justify-content-center my-5">
       <i class="bi bi-exclamation-circle fs-1 text-muted mb-2"></i>
       <p class="fs-4 fw-semibold text-muted">No reports yet.</p>
       <a href="" class="btn btn-primary mt-2 fw-semibold">Create your first report</a>
@@ -142,53 +158,56 @@
         :user="user"
       />
     </div>
-    <!--Large Screen Navigation-->
-    <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
-      <div class="text-dark">
-        <span v-if="reports.from === reports.to">
-          <strong>Showing {{ reports.from }} of {{ reports.total }} reports</strong>
-        </span>
-        <span v-else>
-          <strong>Showing {{ reports.from || 0 }} to {{ reports.to || 0 }} of {{ reports.total }} reports</strong>
-        </span>
+    <!-- Pagination (only show if there are results) -->
+    <div v-if="reports.data.length > 0">
+      <!--Large Screen Navigation-->
+      <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
+        <div class="text-dark">
+          <span v-if="reports.from === reports.to">
+            <strong>Showing {{ reports.from }} of {{ reports.total }} reports</strong>
+          </span>
+          <span v-else>
+            <strong>Showing {{ reports.from || 0 }} to {{ reports.to || 0 }} of {{ reports.total }} reports</strong>
+          </span>
+        </div>
+        <div class="btn-group" role="group" aria-label="Pagination">
+          <button type="button" class="btn btn-info" :disabled="!reports.prev_page_url" @click="goToPage(reports.current_page - 1)">
+            <span class="align-items-center">
+              <i class="bi bi-chevron-double-left"></i> 
+              Prev
+            </span>
+          </button>
+          <button type="button" class="btn btn-info" :disabled="!reports.next_page_url" @click="goToPage(reports.current_page + 1)">
+            <span class="align-items-center">Next 
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </button>
+        </div>
       </div>
-      <div class="btn-group" role="group" aria-label="Pagination">
-        <button type="button" class="btn btn-info" :disabled="!reports.prev_page_url" @click="goToPage(reports.current_page - 1)">
-          <span class="align-items-center">
-            <i class="bi bi-chevron-double-left"></i> 
-            Prev
+      
+      <!--Small Screen Navigation-->
+      <div class="d-md-none d-flex flex-column align-items-center mt-3">
+        <div class="text-dark">
+          <span v-if="reports.from === reports.to">
+            <strong>Showing {{ reports.from || 0 }} of {{ reports.total }} {{ reports.total === 1 ? 'rescue' : 'reports' }}</strong>
           </span>
-        </button>
-        <button type="button" class="btn btn-info" :disabled="!reports.next_page_url" @click="goToPage(reports.current_page + 1)">
-          <span class="align-items-center">Next 
-            <i class="bi bi-chevron-double-right"></i>
+          <span v-else>
+            <strong>Showing {{ reports.from || 0 }} to {{ reports.to || 0 }} of {{ reports.total }} reports</strong>
           </span>
-        </button>
-      </div>
-    </div>
-    <!--Small Screen Navigation-->
-    <div class="d-md-none d-flex flex-column align-items-center mt-3">
-      <div class="text-dark">
-        <span v-if="reports.from === reports.to">
-          <strong>Showing {{ reports.from }} of {{ reports.total }} reports</strong>
-        </span>
-        <span v-else>
-          <strong>Showing {{ reports.from || 0 }} to {{ reports.to || 0 }} of {{ reports.total }} reports</strong>
-        </span>
-      </div>
-      <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
-        <button type="button" class="btn btn-info" :disabled="!reports.prev_page_url" @click="goToPage(reports.current_page - 1)">
-          <span class="align-items-center">
-            <i class="bi bi-chevron-double-left"></i> 
-            Prev
-          </span>
-        </button>
-
-        <button type="button" class="btn btn-info" :disabled="!reports.next_page_url" @click="goToPage(reports.current_page + 1)">
-          <span class="align-items-center">Next 
-            <i class="bi bi-chevron-double-right"></i>
-          </span>
-        </button>
+        </div>
+        <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
+          <button type="button" class="btn btn-info" :disabled="!reports.prev_page_url" @click="goToPage(reports.current_page - 1)">
+            <span class="align-items-center">
+              <i class="bi bi-chevron-double-left"></i> 
+              Prev
+            </span>
+          </button>
+          <button type="button" class="btn btn-info" :disabled="!reports.next_page_url" @click="goToPage(reports.current_page + 1)">
+            <span class="align-items-center">Next 
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -196,6 +215,7 @@
 
 <script setup>
   import { router } from '@inertiajs/vue3';
+  import { computed } from 'vue';
   import UpdateFoundReportModal from '../Modals/Reports/UpdateFoundReportModal.vue';
   import UpdateLostReportModal from '../Modals/Reports/UpdateLostReportModal.vue';
   import ViewReportModal from '../Modals/Reports/ViewReportModal.vue';
@@ -208,17 +228,41 @@
     user: {
       type: Object,
       default: () => null
+    },
+    filters: {
+      type: Object,
+      default: () => ({})
     }
   })
 
+  const hasActiveFilters = computed(() => {
+    return !!(props.filters.search || props.filters.type || props.filters.status || props.filters.sort);
+  });
   const goToPage = (page) => {
     if(page < 1 || page > props.reports.last_page){
       return;
     }
     const params = page === 1 ? {} : { page };
+  
+    // Preserve all active filters when navigating pages
+    if (props.filters.search) {
+      params.search = props.filters.search;
+    }
+  
+    if (props.filters.type) {
+      params.type = props.filters.type;
+    }
+  
+    if (props.filters.status) {
+      params.status = props.filters.status;
+    }
+
+    if (props.filters.sort) {
+      params.sort = props.filters.sort;
+    }
 
     router.get(`/reports`,params,{
-      preserveState:false,
+      preserveState:true,
       preserveScroll:true,
     })
   };

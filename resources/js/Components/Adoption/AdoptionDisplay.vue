@@ -6,7 +6,24 @@
     <LoginReminder />
     <AdoptionApplicationForm />
 
-    <div v-if="!adoptables || adoptables.length === 0" class="d-flex flex-column align-items-center justify-content-center my-5">
+    <!-- No results message -->
+    <div v-if="adoptables.data.length === 0 && hasActiveFilters" class="text-center py-5">
+      <div class="mb-4">
+        <i class="bi bi-search display-1 text-muted"></i>
+      </div>
+      <h4 class="text-muted mb-3">No adoptables found</h4>
+      <p class="text-muted">
+        <span v-if="hasActiveFilters">
+          Try adjusting your search criteria or clearing some filters.
+        </span>
+        <span v-else>
+          There are currently no adoptables available.
+        </span>
+      </p>
+    </div>
+
+
+    <div v-if="(!adoptables || adoptables.data.length === 0) && !hasActiveFilters" class="d-flex flex-column align-items-center justify-content-center my-5">
       <i class="bi bi-exclamation-circle fs-1 text-muted mb-2"></i>
       <p class="fs-4 fw-semibold text-muted">No adoptable rescues yet.</p>
       <a v-if="user?.isAdminOrStaff" href="" class="btn btn-primary mt-2">Add an adoptable rescue</a>
@@ -42,53 +59,56 @@
       </div>
     </div>
 
-    <!--Large Screen Navigation-->
-    <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
-      <div class="text-dark">
-        <span v-if="adoptables.from === adoptables.to">
-          <strong>Showing {{ adoptables.from }} of {{ adoptables.total }} adoptables</strong>
-        </span>
-        <span v-else>
-          <strong>Showing {{ adoptables.from || 0 }} to {{ adoptables.to || 0 }} of {{ adoptables.total }} adoptables</strong>
-        </span>
+    <!-- Pagination (only show if there are results) -->
+    <div v-if="adoptables.data.length > 0">
+      <!--Large Screen Navigation-->
+      <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
+        <div class="text-dark">
+          <span v-if="adoptables.from === adoptables.to">
+            <strong>Showing {{ adoptables.from }} of {{ adoptables.total }} adoptables</strong>
+          </span>
+          <span v-else>
+            <strong>Showing {{ adoptables.from || 0 }} to {{ adoptables.to || 0 }} of {{ adoptables.total }} adoptables</strong>
+          </span>
+        </div>
+        <div class="btn-group" role="group" aria-label="Pagination">
+          <button type="button" class="btn btn-info" :disabled="!adoptables.prev_page_url" @click="goToPage(adoptables.current_page - 1)">
+            <span class="align-items-center">
+              <i class="bi bi-chevron-double-left"></i> 
+              Prev
+            </span>
+          </button>
+          <button type="button" class="btn btn-info" :disabled="!adoptables.next_page_url" @click="goToPage(adoptables.current_page + 1)">
+            <span class="align-items-center">Next 
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </button>
+        </div>
       </div>
-      <div class="btn-group" role="group" aria-label="Pagination">
-        <button type="button" class="btn btn-info" :disabled="!adoptables.prev_page_url" @click="goToPage(adoptables.current_page - 1)">
-          <span class="align-items-center">
-            <i class="bi bi-chevron-double-left"></i> 
-            Prev
+      
+      <!--Small Screen Navigation-->
+      <div class="d-md-none d-flex flex-column align-items-center mt-3">
+        <div class="text-dark">
+          <span v-if="adoptables.from === adoptables.to">
+            <strong>Showing {{ adoptables.from || 0 }} of {{ adoptables.total }} {{ adoptables.total === 1 ? 'rescue' : 'adoptables' }}</strong>
           </span>
-        </button>
-        <button type="button" class="btn btn-info" :disabled="!adoptables.next_page_url" @click="goToPage(adoptables.current_page + 1)">
-          <span class="align-items-center">Next 
-            <i class="bi bi-chevron-double-right"></i>
+          <span v-else>
+            <strong>Showing {{ adoptables.from || 0 }} to {{ adoptables.to || 0 }} of {{ adoptables.total }} adoptables</strong>
           </span>
-        </button>
-      </div>
-    </div>
-    <!--Small Screen Navigation-->
-    <div class="d-md-none d-flex flex-column align-items-center mt-3">
-      <div class="text-dark">
-        <span v-if="adoptables.from === adoptables.to">
-          <strong>Showing {{ adoptables.from }} of {{ adoptables.total }} adoptables</strong>
-        </span>
-        <span v-else>
-          <strong>Showing {{ adoptables.from || 0 }} to {{ adoptables.to || 0 }} of {{ adoptables.total }} adoptables</strong>
-        </span>
-      </div>
-      <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
-        <button type="button" class="btn btn-info" :disabled="!adoptables.prev_page_url" @click="goToPage(adoptables.current_page - 1)">
-          <span class="align-items-center">
-            <i class="bi bi-chevron-double-left"></i> 
-            Prev
-          </span>
-        </button>
-
-        <button type="button" class="btn btn-info" :disabled="!adoptables.next_page_url" @click="goToPage(adoptables.current_page + 1)">
-          <span class="align-items-center">Next 
-            <i class="bi bi-chevron-double-right"></i>
-          </span>
-        </button>
+        </div>
+        <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
+          <button type="button" class="btn btn-info" :disabled="!adoptables.prev_page_url" @click="goToPage(adoptables.current_page - 1)">
+            <span class="align-items-center">
+              <i class="bi bi-chevron-double-left"></i> 
+              Prev
+            </span>
+          </button>
+          <button type="button" class="btn btn-info" :disabled="!adoptables.next_page_url" @click="goToPage(adoptables.current_page + 1)">
+            <span class="align-items-center">Next 
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -96,6 +116,7 @@
 
 <script setup>
   import { router } from '@inertiajs/vue3';
+  import { computed } from 'vue';
   import ProfileReminder from '@/Components/Modals/ProfileReminder.vue';
   import LoginReminder from '@/Components/Modals/LoginReminder.vue';
   import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
@@ -107,17 +128,37 @@
     user: {
       type: Object,
       default: () => null
+    },
+    filters: {
+      type: Object,
+      default: () => ({})
     }
   });
 
+  const hasActiveFilters = computed(() => {
+    return !!(props.filters.search || props.filters.sex || props.filters.size);
+  });
   const goToPage = (page) => {
     if(page < 1 || page > props.adoptables.last_page){
       return;
     }
     const params = page === 1 ? {} : { page };
+  
+    // Preserve all active filters when navigating pages
+    if (props.filters.search) {
+      params.search = props.filters.search;
+    }
+  
+    if (props.filters.sex) {
+      params.sex = props.filters.sex;
+    }
+  
+    if (props.filters.size) {
+      params.size = props.filters.size;
+    }
 
     router.get(`/adoption`,params,{
-      preserveState:false,
+      preserveState:true,
       preserveScroll:true,
     })
   };

@@ -1,11 +1,27 @@
 <template>
   <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="profile-reminder adoption-application">
-    <ProfileReminder
-      :user = "user"
-    />
+    <ProfileReminder :user="user" />
     <LoginReminder />
     <AdoptionApplicationForm />
-    <div class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
+    
+    <!-- No results message -->
+    <div v-if="rescues.data.length === 0" class="text-center py-5">
+      <div class="mb-4">
+        <i class="bi bi-search display-1 text-muted"></i>
+      </div>
+      <h4 class="text-muted mb-3">No rescues found</h4>
+      <p class="text-muted">
+        <span v-if="hasActiveFilters">
+          Try adjusting your search criteria or clearing some filters.
+        </span>
+        <span v-else>
+          There are currently no rescues available.
+        </span>
+      </p>
+    </div>
+
+    <!-- Rescues Grid -->
+    <div v-else class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
       <div v-for="rescue in rescues.data" :key="rescue.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
         <div class="my-2">
           <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ rescue.name }}</span>
@@ -41,60 +57,65 @@
         </div>
       </div>
     </div>
-    <!--Large Screen Navigation-->
-    <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
-      <div class="text-dark">
-        <span v-if="rescues.from === rescues.to">
-          <strong>Showing {{ rescues.from }} of {{ rescues.total }} rescues</strong>
-        </span>
-        <span v-else>
-          <strong>Showing {{ rescues.from || 0 }} to {{ rescues.to || 0 }} of {{ rescues.total }} rescues</strong>
-        </span>
+
+    <!-- Pagination (only show if there are results) -->
+    <div v-if="rescues.data.length > 0">
+      <!--Large Screen Navigation-->
+      <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
+        <div class="text-dark">
+          <span v-if="rescues.from === rescues.to">
+            <strong>Showing {{ rescues.from }} of {{ rescues.total }} rescues</strong>
+          </span>
+          <span v-else>
+            <strong>Showing {{ rescues.from || 0 }} to {{ rescues.to || 0 }} of {{ rescues.total }} rescues</strong>
+          </span>
+        </div>
+        <div class="btn-group" role="group" aria-label="Pagination">
+          <button type="button" class="btn btn-info" :disabled="!rescues.prev_page_url" @click="goToPage(rescues.current_page - 1)">
+            <span class="align-items-center">
+              <i class="bi bi-chevron-double-left"></i> 
+              Prev
+            </span>
+          </button>
+          <button type="button" class="btn btn-info" :disabled="!rescues.next_page_url" @click="goToPage(rescues.current_page + 1)">
+            <span class="align-items-center">Next 
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </button>
+        </div>
       </div>
-      <div class="btn-group" role="group" aria-label="Pagination">
-        <button type="button" class="btn btn-info" :disabled="!rescues.prev_page_url" @click="goToPage(rescues.current_page - 1)">
-          <span class="align-items-center">
-            <i class="bi bi-chevron-double-left"></i> 
-            Prev
+      
+      <!--Small Screen Navigation-->
+      <div class="d-md-none d-flex flex-column align-items-center mt-3">
+        <div class="text-dark">
+          <span v-if="rescues.from === rescues.to">
+            <strong>Showing {{ rescues.from || 0 }} of {{ rescues.total }} {{ rescues.total === 1 ? 'rescue' : 'rescues' }}</strong>
           </span>
-        </button>
-        <button type="button" class="btn btn-info" :disabled="!rescues.next_page_url" @click="goToPage(rescues.current_page + 1)">
-          <span class="align-items-center">Next 
-            <i class="bi bi-chevron-double-right"></i>
+          <span v-else>
+            <strong>Showing {{ rescues.from || 0 }} to {{ rescues.to || 0 }} of {{ rescues.total }} rescues</strong>
           </span>
-        </button>
+        </div>
+        <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
+          <button type="button" class="btn btn-info" :disabled="!rescues.prev_page_url" @click="goToPage(rescues.current_page - 1)">
+            <span class="align-items-center">
+              <i class="bi bi-chevron-double-left"></i> 
+              Prev
+            </span>
+          </button>
+          <button type="button" class="btn btn-info" :disabled="!rescues.next_page_url" @click="goToPage(rescues.current_page + 1)">
+            <span class="align-items-center">Next 
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
-    <!--Small Screen Navigation-->
-    <div class="d-md-none d-flex flex-column align-items-center mt-3">
-      <div class="text-dark">
-        <span v-if="rescues.from === rescues.to">
-          <strong>Showing {{ rescues.from }} of {{ rescues.total }} rescues</strong>
-        </span>
-        <span v-else>
-          <strong>Showing {{ rescues.from || 0 }} to {{ rescues.to || 0 }} of {{ rescues.total }} rescues</strong>
-        </span>
-      </div>
-      <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
-        <button type="button" class="btn btn-info" :disabled="!rescues.prev_page_url" @click="goToPage(rescues.current_page - 1)">
-          <span class="align-items-center">
-            <i class="bi bi-chevron-double-left"></i> 
-            Prev
-          </span>
-        </button>
-
-        <button type="button" class="btn btn-info" :disabled="!rescues.next_page_url" @click="goToPage(rescues.current_page + 1)">
-          <span class="align-items-center">Next 
-            <i class="bi bi-chevron-double-right"></i>
-          </span>
-        </button>
-      </div>
-    </div>
-
   </div>
 </template>
+
 <script setup>
   import { router } from '@inertiajs/vue3';
+  import { computed } from 'vue';
   import ProfileReminder from '@/Components/Modals/ProfileReminder.vue';
   import LoginReminder from '@/Components/Modals/LoginReminder.vue';
   import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
@@ -104,18 +125,43 @@
     user: {
       type: Object
     },
+    filters: {
+      type: Object,
+      default: () => ({})
+    }
+  });
+
+  const hasActiveFilters = computed(() => {
+    return !!(props.filters.search || props.filters.sex || props.filters.size || props.filters.status);
   });
 
   const goToPage = (page) => {
-    if(page < 1 || page > props.rescues.last_page){
+    if (page < 1 || page > props.rescues.last_page) {
       return;
     }
-    const params = page === 1 ? {} : { page };
-
-    router.get(`/rescues`,params,{
-      preserveState:false,
-      preserveScroll:true,
-    })
-  };
   
+    const params = page === 1 ? {} : { page };
+  
+    // Preserve all active filters when navigating pages
+    if (props.filters.search) {
+      params.search = props.filters.search;
+    }
+  
+    if (props.filters.sex) {
+      params.sex = props.filters.sex;
+    }
+  
+    if (props.filters.size) {
+      params.size = props.filters.size;
+    }
+  
+    if (props.filters.status) {
+      params.status = props.filters.status;
+    }
+
+    router.get('/rescues', params, {
+      preserveState: true,
+      preserveScroll: true,
+    });
+  };
 </script>

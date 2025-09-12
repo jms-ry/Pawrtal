@@ -1,7 +1,7 @@
 <template>
   <div class="card-header border-0 bg-secondary">
-    <h3 class="text-center fw-bolder display-6 font-monospace mb-3 mb-md-5 mt-3">Adopt a Rescue Today!</h3>
-
+    <h3 class="text-center fw-bolder display-6 font-monospace mb-4 mt-3">Meet Our Rescues!</h3>
+    
     <!-- Active Filters Display -->
     <div v-if="hasActiveFilters" class="mb-3">
       <div class="d-flex flex-wrap gap-2 align-items-center">
@@ -22,25 +22,30 @@
           <button @click="clearFilter('size')" class="btn-close btn-close-dark ms-1" aria-label="Clear size filter"></button>
         </span>
         
+        <span v-if="filters.status" class="badge bg-info text-dark d-flex flex-block align-items-center">
+          Status: {{ getStatusLabel(filters.status) }}
+          <button @click="clearFilter('status')" class="btn-close btn-close-dark ms-1" aria-label="Clear status filter"></button>
+        </span>
+        
         <button @click="clearAllFilters" class="btn btn-sm btn-outline-secondary ms-2">
           Clear All
         </button>
       </div>
     </div>
 
-    <div class="row g-3 g-md-5 mb-md-3 mb-3 justify-content-end">
+    <div class="row g-3 g-md-5 mb-4 justify-content-end">
       <div class="col-12 col-md-6">
         <fieldset class="p-1">
           <legend class="fs-6 fw-bold mx-2 font-monospace" id="filter-legend">Filter by</legend>
           <div class="row g-2 mt-0">
-            <div class="col-6 col-md-4">
+            <div class="col-12 col-md-4">
               <select v-model="selectedSex" @change="onFilterChange('sex', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
                 <option hidden selected value="">Sex</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
               </select>
             </div>
-            <div class="col-6 col-md-4">
+            <div class="col-12 col-md-4">
               <select v-model="selectedSize" 
                 @change="onFilterChange('size', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
                 <option hidden selected value="">Size</option>
@@ -49,17 +54,28 @@
                 <option value="large">Large</option>
               </select>
             </div>
+            <div class="col-12 col-md-4">
+              <select v-model="selectedStatus" @change="onFilterChange('status', $event.target.value)" class="form-select" aria-label="filter-select"aria-labelledby="filter-legend">
+                <option hidden selected value="">Adoption Status</option>
+                <option value="available">Available</option>
+                <option value="unavailable">Unavailable</option>
+                <option value="adopted">Adopted</option>
+              </select>
+            </div>
           </div>
         </fieldset>
       </div>
-      <div class="col-12 col-md-6 mt-3 mt-md-auto d-flex flex-column justify-content-end" data-controller="switch-search-button">
-        <div class="form-check form-switch align-self-start align-self-md-end mb-2 mb-md-3 me-md-1 ms-2 ms-md-auto ">
-          <input class="form-check-input " type="checkbox" value="" id="rescueSwitch" switch data-switch-search-button-target="switch" data-action="switch-search-button#toggleFields">
-          <label class="form-check-label mb-1 mb-md-0 ms-1 fw-bold font-monospace" for="rescueSwitch" id="switchLabel">Switch to AI recommendation?</label>
+      
+      <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end" v-bind:data-controller="props.user?.isAdminOrStaff ? 'rescue-switch' : null">
+        <CreateRescueProfileModal/>
+        <div v-if="user?.isAdminOrStaff" class="form-check form-switch align-self-start align-self-md-end mb-1 mb-md-3 me-md-1 ms-2 ms-md-auto">
+          <input class="form-check-input " type="checkbox" value="" id="rescueSwitch" switch data-rescue-switch-target="switch" data-action="rescue-switch#toggle">
+          <label class="form-check-label mb-1 mb-md-0 ms-1 fw-bold font-monospace" for="rescueSwitch" id="switchLabel">Switch to create new rescue profile!</label>
         </div>
         <div class="d-flex justify-content-md-end justify-content-start">
-          <button type="button" class="btn btn-primary fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none" id="matchRescueButton" data-switch-search-button-target="matchButton">Match Me a Rescue!</button>
+          <button type="button" class="btn btn-primary fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none" id="createRescueProfileButton" data-rescue-switch-target="createButton" data-bs-toggle="modal" data-bs-target="#createRescueProfileModal">Create Rescue Profile</button>
         </div>
+        
         <!-- Search input for larger screens -->
         <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
           <input 
@@ -105,15 +121,19 @@
             <i class="bi bi-x-lg fw-bolder fs-6"></i>
           </button>
         </div>
-      </div>
+      </div>  
     </div>
   </div>
 </template>
 
 <script setup>
   import { ref, watch, onMounted, computed } from 'vue';
+  import CreateRescueProfileModal from '../Modals/Rescues/CreateRescueProfileModal.vue';
 
   const props = defineProps({
+    user: {
+      type: Object
+    },
     filters: {
       type: Object,
       default: () => ({})
@@ -125,21 +145,24 @@
   const searchInput = ref('');
   const selectedSex = ref('');
   const selectedSize = ref('');
+  const selectedStatus = ref('');
 
   const hasActiveFilters = computed(() => {
-    return !!(props.filters.search || props.filters.sex || props.filters.size);
+    return !!(props.filters.search || props.filters.sex || props.filters.size || props.filters.status);
   });
 
   onMounted(() => {
     searchInput.value = props.filters.search || '';
     selectedSex.value = props.filters.sex || '';
     selectedSize.value = props.filters.size || '';
+    selectedStatus.value = props.filters.status || '';
   });
 
   watch(() => props.filters, (newFilters) => {
     searchInput.value = newFilters.search || '';
     selectedSex.value = newFilters.sex || '';
     selectedSize.value = newFilters.size || '';
+    selectedStatus.value = newFilters.status || '';
   }, { deep: true });
 
   const onSearchInput = () => {
@@ -173,6 +196,8 @@
       selectedSex.value = '';
     } else if (filterType === 'size') {
       selectedSize.value = '';
+    } else if (filterType === 'status') {
+      selectedStatus.value = '';
     }
   
   emit('filter', filterData);
@@ -182,7 +207,17 @@
     searchInput.value = '';
     selectedSex.value = '';
     selectedSize.value = '';
+    selectedStatus.value = '';
   
     emit('filter', {});
+  };
+
+  const getStatusLabel = (status) => {
+    const labels = {
+      'available': 'Available',
+      'unavailable': 'Unavailable', 
+      'adopted': 'Adopted'
+    };
+    return labels[status] || status;
   };
 </script>
