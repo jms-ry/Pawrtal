@@ -69,7 +69,7 @@
     <div class="d-md-none d-flex flex-column align-items-center mt-3">
       <div class="text-dark">
         <span v-if="rescues.from === rescues.to">
-          <strong>Showing {{ rescues.from }} of {{ rescues.total }} rescues</strong>
+          <strong>Showing {{ rescues.from || 0 }} of {{ rescues.total }} {{ rescues.total === 1 ? 'rescue' : 'rescues' }}</strong>
         </span>
         <span v-else>
           <strong>Showing {{ rescues.from || 0 }} to {{ rescues.to || 0 }} of {{ rescues.total }} rescues</strong>
@@ -113,7 +113,7 @@
     const params = page === 1 ? {} : { page };
 
     router.get(`/rescues`,params,{
-      preserveState:false,
+      preserveState:true,
       preserveScroll:true,
     })
   };

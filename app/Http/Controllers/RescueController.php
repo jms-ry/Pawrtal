@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRescueRequest;
 use App\Http\Requests\UpdateRescueRequest;
 use App\Models\Rescue;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -14,9 +15,14 @@ class RescueController extends Controller
   /**
     * Display a listing of the resource.
   */
-  public function index()
+  public function index(Request $request)
   {
-    $rescues = Rescue::paginate(9);
+    $search = $request->get('search');
+    $rescues = Rescue::query()
+      ->when($search,function ($query, $search){
+        return $query->where('name', 'ILIKE', '%' . $search . '%');
+      })
+    ->paginate(9)->withQueryString();
     $user = Auth::user();
 
     $user = $user?->load('address', 'household');
@@ -31,6 +37,9 @@ class RescueController extends Controller
         'address' => $user->address,
         'household' => $user->household,
       ] : null,
+      'filters' => [
+        'search' => $search,
+      ],
     ]);
   }
 
