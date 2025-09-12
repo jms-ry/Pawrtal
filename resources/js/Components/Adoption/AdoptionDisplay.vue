@@ -23,7 +23,7 @@
     </div>
 
 
-    <div v-if="!adoptables " class="d-flex flex-column align-items-center justify-content-center my-5">
+    <div v-if="(!adoptables || adoptables.data.length === 0) && !hasActiveFilters" class="d-flex flex-column align-items-center justify-content-center my-5">
       <i class="bi bi-exclamation-circle fs-1 text-muted mb-2"></i>
       <p class="fs-4 fw-semibold text-muted">No adoptable rescues yet.</p>
       <a v-if="user?.isAdminOrStaff" href="" class="btn btn-primary mt-2">Add an adoptable rescue</a>

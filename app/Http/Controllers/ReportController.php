@@ -8,16 +8,50 @@ use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
   /**
     * Display a listing of the resource.
   */
-  public function index()
+  public function index(Request $request)
   {
     $user = Auth::user();
-    $reports = Report::with('user')->orderBy('id','asc')->paginate(9);
+
+    $search = $request->get('search');
+    $typeFilter = $request->get('type');;
+    $statusFilter = $request->get('status');
+    $sortOrder = $request->get('sort');
+    $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $reports = Report::query()
+      ->with('user')
+      ->when($search, function ($query, $search) {
+        $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
+        $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+        return $query->where(function ($q) use ($keywords, $columns) {
+          foreach ($keywords as $word) {
+            $q->where(function ($subQ) use ($word, $columns) {
+              foreach ($columns as $col) {
+                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
+              }
+            });
+          }
+        });
+      })
+      ->when($typeFilter, function ($query, $typeFilter) {
+        return $query->where('type', $typeFilter);
+      })
+      ->when($statusFilter, function ($query, $statusFilter) {
+        return $query->where('status', $statusFilter);
+      })
+      ->when($sortOrder, function($query,$sortOrder){
+        return $query->orderBy('created_at',$sortOrder);
+      })
+      ->orderBy('created_at', 'desc')
+      ->paginate(9)
+    ->withQueryString();
+      
     $lostModal = Auth::check() ? '#createLostAnimalReportModal' : '#loginReminderModal';
     $foundModal = Auth::check() ? '#createFoundAnimalReportModal' : '#loginReminderModal';
 
@@ -25,7 +59,13 @@ class ReportController extends Controller
       'lostModal' => $lostModal,
       'foundModal' => $foundModal,
       'user' => $user,
-      'reports' => $reports
+      'reports' => $reports,
+      'filters' => [
+        'search' => $search,
+        'type' => $typeFilter,
+        'status' => $statusFilter,
+        'sort' => $sortOrder,
+      ],
     ]);
   }
 
