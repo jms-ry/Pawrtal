@@ -41,7 +41,7 @@
               <input type="text" name="age" :class="ageValidationClass" @blur="validateAge" v-model="ageValue" class="form-control" placeholder="Rescue age" aria-label="Rescue age" id="floating_rescue_age">
               <label for="floating_rescue_age" class="form-label fw-bold">Age (e.g 6 months old)</label>
               <small class="invalid-feedback fw-bold">{{ ageErrorMessage }}</small>
-               <small class="valid-feedback text-dark fw-light">{{ ageErrorMessage }}</small>
+              <small class="valid-feedback text-dark fw-light">{{ ageErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
               <select name="size" :class="sizeValidationClass" @blur="validateSize" v-model="sizeValue" id="floating_rescue_size" class="form-select" aria-label="size-select"  >
@@ -203,7 +203,7 @@
     
     if ( species.length < 2) {
        speciesIsValid.value = false
-       speciesErrorMessage.value = 'Species must be at least 2 characters long'
+       speciesErrorMessage.value = 'Species must be at least 3 characters long'
       return false
     }
     

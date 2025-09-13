@@ -10,129 +10,138 @@
           <div class="modal-body bg-info-subtle border-0">
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="name" class="form-control" placeholder="Rescue name" aria-label="Rescue name" id="floating_rescue_name" autocomplete="true" v-model="form.name" required>
+                <input type="text" name="name" class="form-control" placeholder="Rescue name" aria-label="Rescue name" id="floating_rescue_name" autocomplete="true" :class="nameValidationClass" @blur="validateName" v-model="form.name" required>
                 <label for="floating_rescue_name" class="form-label fw-bold">Name</label>
+                <small class="invalid-feedback fw-bold">{{ nameErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="species" id="floating_rescue_species" class="form-control" placeholder="Rescue name" aria-label="Rescue name" autocomplete="true" v-model="form.species" required>
+                <input type="text" name="species" id="floating_rescue_species" class="form-control" placeholder="Rescue name" aria-label="Rescue name" autocomplete="true" :class="speciesValidationClass" @blur="validateSpecies" v-model="form.species" required>
                 <label for="floating_rescue_species" class="form-label fw-bold">Species</label>
+                <small class="invalid-feedback fw-bold">{{ speciesErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="breed" class="form-control" placeholder="Rescue breed" aria-label="Rescue breed" id="floating_rescue_breed" v-model="form.breed">
+                <input type="text" name="breed" class="form-control" placeholder="Rescue breed" aria-label="Rescue breed" id="floating_rescue_breed" :class="breedValidationClass" @blur="validateBreed" v-model="form.breed">
                 <label for="floating_rescue_breed" class="form-label fw-bold">Breed</label>
+                <small class="invalid-feedback fw-bold">{{ breedErrorMessage }}</small>
+                <small class="valid-feedback text-dark fw-light">{{ breedErrorMessage }}</small>
               </div>
             </div>
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.sex" name="sex" id="floating_sex" class="form-select" aria-label="sex-select" required>
+                <select v-model="form.sex"  :class="sexValidationClass" @blur="validateSex" name="sex" id="floating_sex" class="form-select" aria-label="sex-select" required>
                   <option value="" hidden  >Sex</option>
                   <option value="male" >Male</option>
                   <option value="female" >Female</option>
                 </select>
                 <label for="floating_sex" class="form-label fw-bold">Select a sex</label>
+                <small class="invalid-feedback fw-bold">{{ sexErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="age" class="form-control" placeholder="Rescue age" aria-label="Rescue age" id="floating_rescue_age" v-model="form.age">
+                <input type="text" name="age" class="form-control" placeholder="Rescue age" aria-label="Rescue age" id="floating_rescue_age" :class="ageValidationClass" @blur="validateAge" v-model="form.age">
                 <label for="floating_rescue_age" class="form-label fw-bold">Age (e.g 6 months old)</label>
+                <small class="invalid-feedback fw-bold">{{ ageErrorMessage }}</small>
+                <small class="valid-feedback text-dark fw-light">{{ ageErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.size" name="size" id="floating_rescue_size" class="form-select" aria-label="size-select" required>
+                <select v-model="form.size" :class="sizeValidationClass" @blur="validateSize" name="size" id="floating_rescue_size" class="form-select" aria-label="size-select" required>
                   <option value="" hidden >Size</option>
                   <option value="small" >Small</option>
                   <option value="medium" >Medium</option>
                   <option value="large" >Large</option>
                 </select>
                 <label for="floating_rescue_size" class="form-label fw-bold">Select size</label>
+                <small class="valid-feedback text-dark fw-light">{{ sizeErrorMessage }}</small>
               </div>
             </div>
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="color" class="form-control" placeholder="Rescue color" aria-label="Rescue color" id="floating_rescue_color" v-model="form.color">
+                <input type="text" name="color" class="form-control" placeholder="Rescue color" aria-label="Rescue color" id="floating_rescue_color" :class="colorValidationClass" @blur="validateColor" v-model="form.color">
                 <label for="floating_rescue_color" class="form-label fw-bold">Color</label>
+                <small class="invalid-feedback fw-bold">{{ colorErrorMessage }}</small>
+                <small class="valid-feedback text-dark fw-light">{{ colorErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="distinctive_features" class="form-control" placeholder="Rescue distinctive features" aria-label="Rescue distinctive features" id="floating_rescue_distinctive_features" v-model="form.distinctive_features">
+                <input type="text" name="distinctive_features" class="form-control" placeholder="Rescue distinctive features" aria-label="Rescue distinctive features" id="floating_rescue_distinctive_features" :class="distinctiveFeaturesValidationClass" @blur="validateDistinctiveFeatures" v-model="form.distinctive_features">
                 <label for="floating_rescue_distinctive_features" class="form-label fw-bold">Distinctive Features</label>
+                <small class="invalid-feedback fw-bold">{{ distinctiveFeaturesErrorMessage }}</small>
+                <small class="valid-feedback text-dark fw-light">{{ distinctiveFeaturesErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.health_status" name="health_status" id="floating_health_status" class="form-select" aria-label="health-status-select" required>
+                <select v-model="form.health_status" :class="healthStatusValidationClass" @blur="validateHealthStatus" name="health_status" id="floating_health_status" class="form-select" aria-label="health-status-select" required>
                   <option value="" hidden>Health Status</option>
                   <option value="healthy" >Healthy</option>
                   <option value="sick" >Sick </option>
                   <option value="injured" >Injured</option>
                 </select>
                 <label for="floating_health_status" class="form-label fw-bold">Select health status</label>
+                <small class="invalid-feedback fw-bold">{{ healthStatusErrorMessage }}</small>
               </div>
             </div>
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.vaccination_status" name="vaccination_status" id="floating_vaccination_status" class="form-select" aria-label="vaccination-status-select" required>
+                <select v-model="form.vaccination_status" :class="vaccinationStatusValidationClass" @blur="validateVaccinationStatus" name="vaccination_status" id="floating_vaccination_status" class="form-select" aria-label="vaccination-status-select" required>
                   <option value="" hidden>Vaccination Status</option>
                   <option value="vaccinated" >Vaccinated</option>
                   <option value="partially_vaccinated">Partially Vaccinated</option>
                   <option value="not_vaccinated" >Not Vaccinated</option>
                 </select>
                 <label for="floating_vaccination_status" class="form-label fw-bold">Select vaccination status</label>
+                <small class="invalid-feedback fw-bold">{{ vaccinationStatusErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.spayed_neutered" name="spayed_neutered" id="floating_spayed_neutered" class="form-select" aria-label="spayed-neutered-select" required>
+                <select v-model="form.spayed_neutered" :class="spayedNeuteredValidationClass" @blur="validateSpayedNeutered" name="spayed_neutered" id="floating_spayed_neutered" class="form-select" aria-label="spayed-neutered-select" required>
                   <option value="" hidden>Spay/Neutered</option>
                   <option value="true" >Yes</option>
                   <option value="false">No</option>
                 </select>
                 <label for="floating_spayed_neutered" class="form-label fw-bold">Is it spayed/neutered?</label>
+                <small class="invalid-feedback fw-bold">{{ spayedNeuteredErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.adoption_status" name="adoption_status" id="floating_adoption_status" class="form-select" aria-label="adoption-status-select" required>
+                <select v-model="form.adoption_status" :class="adoptionStatusValidationClass" @blur="validateAdoptionStatus"  name="adoption_status" id="floating_adoption_status" class="form-select" aria-label="adoption-status-select" required>
                   <option value="" hidden>Adoption Status</option>
                   <option value="available" >Available</option>
                   <option value="unavailable" >Unavailable</option>
                   <option value="adopted">Adopted</option>
                 </select>
                 <label for="floating_adoption_status" class="form-label fw-bold">Select adoption status</label>
+                <small class="invalid-feedback fw-bold">{{ adoptionStatusErrorMessage }}</small>
               </div>
             </div>
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-6">
                 <label for="profile_image" class="form-label fw-bold">Change Profile Image</label>
-                <input type="file" name="profile_image" id="profile_image" class="form-control" accept="image/*" @change="handleProfileImageChange">
+                <input type="file" name="profile_image" id="profile_image" class="form-control" :class="{'is-invalid':profileImageError}" accept="image/*" @change="handleProfileImageChange" >
                 <small class="text-muted mt-3">Leave blank to keep existing image</small>
+                <small class="invalid-feedback fw-bold">{{ profileImageError }}</small>
                 <div v-if="rescue.profile_image" class="mb-2 mt-2">
                   <img :src="rescue.profile_image_url" :alt="rescue.name" id="rescueProfileImage" class="w-100 h-100 object-fit-cover rounded-4" style="max-height: 150px;">
                 </div>
               </div>
               <div class="col-12 col-md-6">
                 <label for="images" class="form-label fw-bold">Upload Additional Image/s</label>
-                <input type="file" name="images[]" id="images" class="form-control" accept="image/*" multiple @change="handleImagesChange">
+                <input type="file" name="images[]" id="images" class="form-control" accept="image/*" multiple @change="handleImagesChange" :class="{'is-invalid': imagesError}">
+                <small class="invalid-feedback fw-bold">{{ imagesError }}</small>
               </div>
             </div>
 
             <div class="row g-2 mt-2">
               <div class="col-12 form-floating">
-                <textarea v-model="form.description" name="description" id="floating_rescue_description" class="form-control" placeholder="Rescue description" aria-label="Rescue description" style="height: 100px" required></textarea>
+                <textarea v-model="form.description" :class="descriptionValidationClass" @blur="validateDescription" name="description" id="floating_rescue_description" class="form-control" placeholder="Rescue description" aria-label="Rescue description" style="height: 100px" required></textarea>
                 <label for="floating_rescue_description" class="form-label fw-bold">Description</label>
+                <small class="invalid-feedback fw-bold">{{ descriptionErrorMessage }}</small>
               </div>
             </div>
-
           </div>
 
           <div class="modal-footer bg-info-subtle">
             <button class="btn btn-primary me-1" type="submit">Update Rescue Profile</button>
             <button class="btn btn-danger" type="button"  data-bs-dismiss="modal">Close</button>
           </div>
-
-          <div v-if="form.errors && Object.keys(form.errors).length > 0" class="alert alert-danger m-3">
-            <ul class="mb-0">
-              <li v-for="(error, field) in form.errors" :key="field">
-                <strong>{{ field }}:</strong> {{ Array.isArray(error) ? error[0] : error }}
-              </li>
-            </ul>
-          </div>
-
         </form>
       </div>
     </div>
@@ -142,7 +151,7 @@
 <script setup>
   import { useForm } from '@inertiajs/vue3'
   import { Modal } from 'bootstrap'
-  import { onMounted, watch } from 'vue'
+  import { onMounted, watch, ref, computed } from 'vue'
 
   const props = defineProps({
     rescue: {
@@ -202,22 +211,438 @@
     }
   }
 
+  const profileImageError = ref(null)
+
   function handleProfileImageChange(event) {
     const file = event.target.files[0]
-    if (file) {
-      form.profile_image = file
-    } else {
+    
+    if (!file) {
       form.profile_image = null
+      profileImageError.value = null
+      return
+    }
+
+    // Example validations:
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+    const maxSize = 2 * 1024 * 1024 // 2MB
+
+    if (!allowedTypes.includes(file.type)) {
+      profileImageError.value = 'Only JPG and PNG images are allowed.'
+      form.profile_image = null
+      return
+    }
+
+    if (file.size > maxSize) {
+      profileImageError.value = 'Image size must be less than 2MB.'
+      form.profile_image = null
+      return
+    }
+
+    // Passed validation
+    form.profile_image = file
+    profileImageError.value = null
+  }
+
+   const imagesError = ref(null)
+  function handleImagesChange(event) {
+    const files = event.target.files
+
+    if (!files || files.length === 0) {
+      form.images = null
+      imagesError.value = null 
+      return
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
+    const maxSize = 2 * 1024 * 1024 // 2MB
+    let errors = []
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+
+      if (!allowedTypes.includes(file.type)) {
+        errors.push(`${file.name}: Only JPG or PNG images are allowed.`)
+      }
+
+      if (file.size > maxSize) {
+        errors.push(`${file.name}: File size must be less than 2MB.`)
+      }
+    }
+
+    if (errors.length > 0) {
+      imagesError.value = errors.join(' ')
+      form.images = null
+    } else {
+      imagesError.value = null
+      form.images = files
     }
   }
 
-  function handleImagesChange(event) {
-    const files = event.target.files
-    if (files && files.length > 0) {
-      form.images = files
-    } else {
-      form.images = null
+  const nameIsValid = ref(null) 
+  const nameErrorMessage = ref('')
+
+  const nameValidationClass = computed(() => {
+    if (nameIsValid.value === true) return 'is-valid'
+    if (nameIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateName(){
+    const name = form.name.trim()
+    
+    if(!name){
+      nameIsValid.value = false
+      nameErrorMessage.value = 'Name is required'
+      return false
     }
+
+    if (name.length < 2) {
+      nameIsValid.value = false
+      nameErrorMessage.value = 'Name must be at least 2 characters long'
+      return false
+    }
+    
+    if (/^\d/.test(name)) {
+      nameIsValid.value = false
+      nameErrorMessage.value = 'Name must not start with a number'
+      return false
+    }
+    
+    nameIsValid.value = true
+    return true
+  }
+
+  const  speciesIsValid = ref(null) 
+  const  speciesErrorMessage = ref('')
+
+  const speciesValidationClass = computed(() => {
+    if (speciesIsValid.value === true) return 'is-valid'
+    if (speciesIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateSpecies() {
+    const  species =  form.species.trim()
+    if(!species){
+      speciesIsValid.value = false
+      speciesErrorMessage.value = 'Species is required'
+      return false
+    }
+    
+    if ( species.length < 2) {
+       speciesIsValid.value = false
+       speciesErrorMessage.value = 'Species must be at least 3 characters long'
+      return false
+    }
+    
+    if (/^\d/.test( species)) {
+       speciesIsValid.value = false
+       speciesErrorMessage.value = 'Species must not start with a number'
+      return false
+    }
+    
+     speciesIsValid.value = true
+    return true
+  }
+
+  const breedIsValid = ref(null)
+  const breedErrorMessage = ref('')
+
+  const breedValidationClass = computed(() => {
+    if (breedIsValid.value === true) return 'is-valid'
+    if (breedIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateBreed() {
+    const breed = form.breed.trim()
+
+    breedIsValid.value = null
+
+    if (breed === '') {
+      breedIsValid.value = true
+      breedErrorMessage.value = 'This field can be empty.'
+      return true
+    }
+
+    if (breed.length < 3) {
+      breedIsValid.value = false
+      breedErrorMessage.value = 'Breed must be at least 3 characters long'
+      return false
+    }
+
+    breedIsValid.value = true
+    return true
+  }
+
+  const sexIsValid = ref(null)
+  const sexErrorMessage = ref('')
+
+  const sexValidationClass = computed(() => {
+    if (sexIsValid.value === true) return 'is-valid'
+    if (sexIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateSex() {
+    const sex = form.sex
+
+    sexIsValid.value = null
+    sexErrorMessage.value = ''
+
+    if (!sex) {
+      sexIsValid.value = false
+      sexErrorMessage.value = 'Sex is required'
+      return false
+    }
+
+    sexIsValid.value = true
+    return true
+  }
+
+  const ageIsValid = ref(null)
+  const ageErrorMessage = ref('')
+
+  const ageValidationClass = computed(() => {
+    if (ageIsValid.value === true) return 'is-valid'
+    if (ageIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateAge() {
+    const age = form.age.trim()
+
+    ageIsValid.value = null
+    ageErrorMessage.value = 'This field can be empty.'
+
+    if (age === '') {
+      ageIsValid.value = true
+    } else {
+      const regex = /^\d+\s+(weeks?|months?|years?)\s+old$/i
+      if (regex.test(age)) {
+        ageIsValid.value = true
+      } else {
+        ageIsValid.value = false
+        ageErrorMessage.value = 'Age must be like "6 months old", "2 years old", or "10 weeks old"'
+      }
+    }
+
+    return ageIsValid.value
+  }
+
+  const sizeIsValid = ref(null)
+  const sizeErrorMessage = ref('')
+
+  const sizeValidationClass = computed(() => {
+    if (sizeIsValid.value === true) return 'is-valid'
+    if (sizeIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateSize(){
+    const size = form.size
+    
+    if(!size){
+      sizeIsValid.value = true
+      sizeErrorMessage.value = 'This field can be empty.'
+      return true
+    }
+    sizeIsValid.value = true
+    return true
+  }
+
+  const colorIsValid = ref(null)
+  const colorErrorMessage = ref('')
+
+  const colorValidationClass = computed(() => {
+    if (colorIsValid.value === true) return 'is-valid'
+    if (colorIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateColor() {
+    const color = form.color.trim()
+
+    colorIsValid.value = null
+
+    if (color === '') {
+      colorIsValid.value = true
+      colorErrorMessage.value = 'This field can be empty.'
+      return true
+    }
+
+    if (color.length < 3) {
+      colorIsValid.value = false
+      colorErrorMessage.value = 'Color must be at least 3 characters long'
+      return false
+    }
+
+    colorIsValid.value = true
+    return true
+  }
+
+  const distinctiveFeaturesIsValid = ref(null)
+  const distinctiveFeaturesErrorMessage = ref('')
+
+  const distinctiveFeaturesValidationClass = computed(() => {
+    if (distinctiveFeaturesIsValid.value === true) return 'is-valid'
+    if (distinctiveFeaturesIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateDistinctiveFeatures() {
+    const distinctiveFeatures = form.distinctive_features.trim()
+
+    distinctiveFeaturesIsValid.value = null
+
+    if (distinctiveFeatures === '') {
+      distinctiveFeaturesIsValid.value = true
+      distinctiveFeaturesErrorMessage.value = 'This field can be empty.'
+      return true
+    }
+
+    if (distinctiveFeatures.length < 3) {
+      distinctiveFeaturesIsValid.value = false
+      distinctiveFeaturesErrorMessage.value = 'Distinctive Features must be at least 3 characters long'
+      return false
+    }
+
+    distinctiveFeaturesIsValid.value = true
+    return true
+  }
+
+  const healthStatusIsValid = ref(null)
+  const healthStatusErrorMessage = ref('')
+
+  const healthStatusValidationClass = computed(() => {
+    if (healthStatusIsValid.value === true) return 'is-valid'
+    if (healthStatusIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateHealthStatus() {
+    const healthStatus = form.health_status
+
+    healthStatusIsValid.value = null
+    healthStatusErrorMessage.value = ''
+
+    if (!healthStatus) {
+      healthStatusIsValid.value = false
+      healthStatusErrorMessage.value = 'Health Status is required'
+      return false
+    }
+
+    healthStatusIsValid.value = true
+    return true
+  }
+
+  const vaccinationStatusIsValid = ref(null)
+  const vaccinationStatusErrorMessage = ref('')
+
+  const vaccinationStatusValidationClass = computed(() => {
+    if (vaccinationStatusIsValid.value === true) return 'is-valid'
+    if (vaccinationStatusIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateVaccinationStatus() {
+    const vaccinationStatus = form.vaccination_status
+
+    vaccinationStatusIsValid.value = null
+    vaccinationStatusErrorMessage.value = ''
+
+    if (!vaccinationStatus) {
+      vaccinationStatusIsValid.value = false
+      vaccinationStatusErrorMessage.value = 'Vaccination Status is required'
+      return false
+    }
+
+    vaccinationStatusIsValid.value = true
+    return true
+  }
+
+  const spayedNeuteredIsValid = ref(null)
+  const spayedNeuteredErrorMessage = ref('')
+
+  const spayedNeuteredValidationClass = computed(() => {
+    if (spayedNeuteredIsValid.value === true) return 'is-valid'
+    if (spayedNeuteredIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateSpayedNeutered() {
+    const spayedNeutered = form.spayed_neutered
+
+    spayedNeuteredIsValid.value = null
+    spayedNeuteredErrorMessage.value = ''
+
+    if (!spayedNeutered) {
+      spayedNeuteredIsValid.value = false
+      spayedNeuteredErrorMessage.value = 'Spayed/Neutered is required'
+      return false
+    }
+
+    spayedNeuteredIsValid.value = true
+    return true
+  }
+
+  const adoptionStatusIsValid = ref(null)
+  const adoptionStatusErrorMessage = ref('')
+
+  const adoptionStatusValidationClass = computed(() => {
+    if (adoptionStatusIsValid.value === true) return 'is-valid'
+    if (adoptionStatusIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateAdoptionStatus() {
+    const adoptionStatus = form.adoption_status
+
+    adoptionStatusIsValid.value = null
+    adoptionStatusErrorMessage.value = ''
+
+    if (!adoptionStatus) {
+      adoptionStatusIsValid.value = false
+      adoptionStatusErrorMessage.value = 'Adoption Status is required'
+      return false
+    }
+
+    adoptionStatusIsValid.value = true
+    return true
+  }
+
+  const descriptionIsValid = ref(null) 
+  const descriptionErrorMessage = ref('')
+
+  const descriptionValidationClass = computed(() => {
+    if (descriptionIsValid.value === true) return 'is-valid'
+    if (descriptionIsValid.value === false) return 'is-invalid'
+    return ''
+  })
+
+  function validateDescription() {
+    const description = form.description.trim()
+    
+    if(!description){
+      descriptionIsValid.value = false
+      descriptionErrorMessage.value = 'Description is required'
+      return false
+    }
+
+    if (description.length < 2) {
+      descriptionIsValid.value = false
+      descriptionErrorMessage.value = 'Description must be at least 2 characters long'
+      return false
+    }
+    
+    if (/^\d/.test(description)) {
+      descriptionIsValid.value = false
+      descriptionErrorMessage.value = 'Description must not start with a number'
+      return false
+    }
+    
+    descriptionIsValid.value = true
+    return true
   }
 
   function submitForm() {
@@ -248,7 +673,43 @@
         formData.append('images[]', form.images[i])
       }
     }
-  
+    
+    const isNameValid = validateName()
+    const isSpeciesValid = validateSpecies()
+    const isBreedValid = validateBreed()
+    const isSexValid = validateSex()
+    const isAgeValid = validateAge()
+    const isSizeValid = validateSize()
+    const isColorValid = validateColor()
+    const isDistinctiveFeaturesValid = validateDistinctiveFeatures()
+    const isHealthStatusValid = validateHealthStatus()
+    const isVaccinationStatusValid = validateVaccinationStatus()
+    const isAdoptionStatusValid = validateAdoptionStatus()
+    const isSpayedNeuteredValid = validateSpayedNeutered()
+    const isDescriptionValid = validateDescription()
+    const isProfileImageInvalid = profileImageError.value
+    const isImagesInvalid = imagesError.value
+
+    if (!isNameValid 
+        || !isSpeciesValid 
+        || !isBreedValid 
+        || !isSexValid 
+        || !isAgeValid 
+        || !isSizeValid
+        || !isColorValid
+        || !isDistinctiveFeaturesValid
+        || !isHealthStatusValid
+        || !isVaccinationStatusValid
+        || !isAdoptionStatusValid
+        || !isSpayedNeuteredValid
+        || !isDescriptionValid
+        || isProfileImageInvalid
+        || isImagesInvalid
+
+      ) {
+      return 
+    }
+
     form.post(`/rescues/${props.rescue.id}`, {
       data: formData,
       forceFormData: true,
@@ -256,10 +717,7 @@
       preserveState: false,
       onSuccess: () => {
         closeModal()
-     },
-      onError: (errors) => {
-        console.error("Validation errors:", errors)
-      }
+     }
     })
   }
 
