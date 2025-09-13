@@ -22,6 +22,9 @@ export default class extends Controller {
   }
 
   validateFirstName(){
+
+    if (!this.hasFirstNameInputTarget || !this.hasFirstNameFeedbackTarget) return
+
     const input = this.firstNameInputTarget
     const feedback = this.firstNameFeedbackTarget
     const value = input.value.trim()
@@ -44,6 +47,9 @@ export default class extends Controller {
   }
 
   validateLastName(){
+    
+    if (!this.hasLastNameInputTarget || !this.hasLastNameFeedbackTarget) return
+
     const input = this.lastNameInputTarget
     const feedback = this.lastNameFeedbackTarget
     const value = input.value.trim()
@@ -66,6 +72,9 @@ export default class extends Controller {
   }
 
   validateEmail(){
+
+    if (!this.hasEmailInputTarget || !this.hasEmailFeedbackTarget) return
+
     const input = this.emailInputTarget
     const feedback = this.emailFeedbackTarget
     const value = input.value.trim()
@@ -84,6 +93,9 @@ export default class extends Controller {
   }
 
   validateContactNumber() {
+
+    if (!this.hasContactNumberInputTarget || !this.hasContactNumberFeedbackTarget) return
+    
     const input = this.contactNumberInputTarget
     const feedback = this.contactNumberFeedbackTarget
     const value = input.value.trim()
@@ -107,6 +119,9 @@ export default class extends Controller {
   }
 
   validatePassword() {
+    
+    if (!this.hasPasswordInputTarget || !this.hasPasswordFeedbackTarget) return
+
     const input = this.passwordInputTarget
     const feedback = this.passwordFeedbackTarget
     const value = input.value.trim()
@@ -128,6 +143,9 @@ export default class extends Controller {
   }
 
   validatePasswordConfirmation() {
+    
+    if (!this.hasPasswordConfirmatioInputTarget || !this.hasPasswordConfirmatioFeedbackTarget) return
+
     const input = this.passwordConfirmationInputTarget
     const feedback = this.passwordConfirmationFeedbackTarget
     const password = this.passwordInputTarget.value.trim()
@@ -165,7 +183,7 @@ export default class extends Controller {
   const hasInvalid = this.element.querySelectorAll(".is-invalid").length > 0
 
   if (hasInvalid) {
-    this.formFeedbackTarget.textContent = "Please correct the errors above before submitting."
+    this.formFeedbackTarget.textContent = "Please correct the errors above."
     this.formFeedbackTarget.style.display = "block"
   } else {
     this.formFeedbackTarget.textContent = ""
