@@ -17,6 +17,9 @@ Stimulus.register('donation-modal', DonationModalController)
 import FlashMessageController from './flash_message_controller'
 Stimulus.register('flash-message', FlashMessageController)
 
+import FormValidationController from './form-validation_controller'
+Stimulus.register('form-validation', FormValidationController)
+
 import HouseholdController from './household_controller'
 Stimulus.register('household', HouseholdController)
 
