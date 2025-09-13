@@ -107,7 +107,10 @@ class Rescue extends Model
 
   public function getAgeFormattedAttribute ()
   {
-    return Str::ucfirst(Str::lower($this->age)) .' ' .'old';
+    if($this->age){
+      return Str::ucfirst(Str::lower($this->age));
+    }
+    return "Unknown";
   }
 
   public function getColorFormattedAttribute ()
@@ -138,7 +141,11 @@ class Rescue extends Model
 
   public function getSizeFormattedAttribute ()
   {
-    return Str::headline($this->size);
+    if($this->size){
+      return Str::headline($this->size);
+    }else{
+      return "Unknown";
+    }
   }
 
   public function getVaccinationStatusFormattedAttribute ()
