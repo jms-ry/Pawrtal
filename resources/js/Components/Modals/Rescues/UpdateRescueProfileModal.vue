@@ -289,7 +289,8 @@
 
   function validateName(){
     const name = form.name.trim()
-    
+    const regex = /^[A-Za-z0-9\s'-]+$/
+
     if(!name){
       nameIsValid.value = false
       nameErrorMessage.value = 'Name is required'
@@ -302,13 +303,14 @@
       return false
     }
     
-    if (/^\d/.test(name)) {
+    if (!regex.test(name)) {
       nameIsValid.value = false
-      nameErrorMessage.value = 'Name must not start with a number'
+      nameErrorMessage.value = 'Name must not start with a number and no special characters'
       return false
     }
     
     nameIsValid.value = true
+    nameErrorMessage.value = ''
     return true
   }
 
@@ -323,6 +325,8 @@
 
   function validateSpecies() {
     const  species =  form.species.trim()
+    const regex = /^[A-Za-z\s]+$/
+
     if(!species){
       speciesIsValid.value = false
       speciesErrorMessage.value = 'Species is required'
@@ -335,13 +339,13 @@
       return false
     }
     
-    if (/^\d/.test( species)) {
+    if (!regex.test( species)) {
        speciesIsValid.value = false
-       speciesErrorMessage.value = 'Species must not start with a number'
+       speciesErrorMessage.value = 'Species must not start with a number and no special characters'
       return false
     }
     
-     speciesIsValid.value = true
+    speciesIsValid.value = true
     return true
   }
 
@@ -356,12 +360,11 @@
 
   function validateBreed() {
     const breed = form.breed.trim()
-
-    breedIsValid.value = null
+    const regex = /^[A-Za-z\s]+$/
 
     if (breed === '') {
-      breedIsValid.value = true
       breedErrorMessage.value = 'This field can be empty.'
+      breedIsValid.value = true
       return true
     }
 
@@ -370,8 +373,13 @@
       breedErrorMessage.value = 'Breed must be at least 3 characters long'
       return false
     }
-
+    if(!regex.test(breed)){
+      breedIsValid.value = false
+      breedErrorMessage.value = 'Breed must not start with a number and no special characters'
+      return false
+    }
     breedIsValid.value = true
+    breedErrorMessage.value = ''
     return true
   }
 
@@ -411,23 +419,23 @@
 
   function validateAge() {
     const age = form.age.trim()
-
-    ageIsValid.value = null
-    ageErrorMessage.value = 'This field can be empty.'
-
+    const regex = /^\d+\s+(weeks?|months?|years?)\s+old$/i
+    
     if (age === '') {
       ageIsValid.value = true
-    } else {
-      const regex = /^\d+\s+(weeks?|months?|years?)\s+old$/i
-      if (regex.test(age)) {
-        ageIsValid.value = true
-      } else {
-        ageIsValid.value = false
-        ageErrorMessage.value = 'Age must be like "6 months old", "2 years old", or "10 weeks old"'
-      }
+      ageErrorMessage.value = 'This field can be empty.'
+      return true
     }
 
-    return ageIsValid.value
+    if (!regex.test(age)) {
+      ageIsValid.value = false
+      ageErrorMessage.value = 'Age must be like "6 months old", "2 years old", or "10 weeks old"'
+      return false
+    }
+
+    ageIsValid.value = true
+    ageErrorMessage.value = ''
+    return true
   }
 
   const sizeIsValid = ref(null)
@@ -448,6 +456,7 @@
       return true
     }
     sizeIsValid.value = true
+    sizeErrorMessage.value = ''
     return true
   }
 
@@ -462,8 +471,7 @@
 
   function validateColor() {
     const color = form.color.trim()
-
-    colorIsValid.value = null
+    const regex = /^[A-Za-z\s]+$/
 
     if (color === '') {
       colorIsValid.value = true
@@ -477,6 +485,13 @@
       return false
     }
 
+    if(!regex.test(color)){
+      colorIsValid.value = false
+      colorErrorMessage.value = 'Color must not start with a number and no number and special characters'
+      return false
+    }
+
+    colorErrorMessage.value = ''
     colorIsValid.value = true
     return true
   }
@@ -493,7 +508,7 @@
   function validateDistinctiveFeatures() {
     const distinctiveFeatures = form.distinctive_features.trim()
 
-    distinctiveFeaturesIsValid.value = null
+    const regex = /^(?!\d)[A-Za-z0-9\s'-]+$/
 
     if (distinctiveFeatures === '') {
       distinctiveFeaturesIsValid.value = true
@@ -507,7 +522,14 @@
       return false
     }
 
+    if(!regex.test(distinctiveFeatures)){
+      distinctiveFeaturesIsValid.value = false
+      distinctiveFeaturesErrorMessage.value = 'Distinctive Features must not start with numbers'
+      return false
+    }
+
     distinctiveFeaturesIsValid.value = true
+    distinctiveFeaturesErrorMessage.value = ''
     return true
   }
 
@@ -622,7 +644,7 @@
 
   function validateDescription() {
     const description = form.description.trim()
-    
+
     if(!description){
       descriptionIsValid.value = false
       descriptionErrorMessage.value = 'Description is required'
@@ -635,13 +657,18 @@
       return false
     }
     
-    if (/^\d/.test(description)) {
-      descriptionIsValid.value = false
-      descriptionErrorMessage.value = 'Description must not start with a number'
-      return false
+    const sentences = description.split(/(?<=[.!?])\s+/)
+    for (const sentence of sentences) {
+      const trimmed = sentence.trim()
+      if (trimmed && /^\d/.test(trimmed)) {
+        descriptionIsValid.value = false
+        descriptionErrorMessage.value = 'Each sentence must not start with a number'
+        return false
+      }
     }
     
     descriptionIsValid.value = true
+    descriptionErrorMessage.value = ''
     return true
   }
 
