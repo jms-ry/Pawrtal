@@ -21,25 +21,25 @@
           </select>
           <label for="floating_have_children" class="form-label">Are there children in the house?</label>
         </div>
-        <div class="col-12 col-md-6 form-floating d-none" id="number_of_children_div">
+        <div class="col-12 col-md-6 form-floating" v-show="form.have_children === 'true'">
           <input type="number" min="1" name="number_of_children" class="form-control" placeholder="Number of Children" aria-label="Number of Children" id="floating_number_of_children"  v-model="form.number_of_children">
           <label for="floating_number_of_children" class="form-label">Number of Children</label>
         </div>
       </div>
       <div class="row g-2 mt-2">
         <div class="col-12 col-md-4 form-floating">
-          <select v-model="form.has_other_pets" name="has_other_pets" id="floating_has_other_pets" class="form-select" aria-label="other-pet-select" data-action="change->household#togglePetsFields" required>
+          <select v-model="form.has_other_pets" name="has_other_pets" id="floating_has_other_pets" class="form-select" aria-label="other-pet-select">
             <option hidden >Do you have other pets?</option>
             <option value="true">Yes</option>
             <option value="false">No</option>
           </select>
           <label for="floating_has_other_pets" class="form-label">Do you have other pets?</label>
         </div>
-        <div class="col-12 col-md-4 form-floating d-none" id="current_pets_div">
+        <div class="col-12 col-md-4 form-floating" v-show="form.has_other_pets === 'true'">
           <input type="text" id="floating_current_pets" name="current_pets" class="form-control" placeholder="Current Pet/s" aria-label="Current Pet/s"  v-model="form.current_pets">
           <label for="floating_current_pets" class="form-label">Current Pet/s (Separate with , if more than one) </label>
         </div>
-        <div class="col-12 col-md-4 form-floating d-none" id="number_of_current_pets_div">
+        <div class="col-12 col-md-4 form-floating" v-show="form.has_other_pets === 'true'">
           <input type="number" min="1" id="floating_number_of_current_pets" name="number_of_current_pets" class="form-control" placeholder="Number of Current Pet/s" aria-label="Number of Current Pet/s"  v-model="form.number_of_current_pets">
           <label for="floating_number_of_current_pets" class="form-label">Number of Current Pet/s</label>
         </div>

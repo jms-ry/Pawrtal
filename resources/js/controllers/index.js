@@ -20,9 +20,6 @@ Stimulus.register('flash-message', FlashMessageController)
 import FormValidationController from './form-validation_controller'
 Stimulus.register('form-validation', FormValidationController)
 
-import HouseholdController from './household_controller'
-Stimulus.register('household', HouseholdController)
-
 import ProfileReminderController from './profile-reminder_controller'
 Stimulus.register('profile-reminder', ProfileReminderController)
 
