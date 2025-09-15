@@ -40,6 +40,8 @@ class UserController extends Controller
     public function show(User $user)
     {
       $previousUrl = url()->previous();
+      $ableToBack = str_contains($previousUrl,'/users/') ? false : true;
+      
       $path = parse_url($previousUrl, PHP_URL_PATH);
       $lastSegment = collect(explode('/', trim($path, '/')))->last();
       $urlText = $lastSegment ?"To " . ucfirst($lastSegment) : '';
@@ -50,6 +52,7 @@ class UserController extends Controller
         'user'=>$user,
         'previousUrl'=>$previousUrl,
         'urlText'=>$urlText,
+        'ableToBack' => $ableToBack,
       ]);
     }
 
