@@ -37,7 +37,7 @@ export default class extends Controller {
       this.setInvalid(
         input,
         feedback,
-        "First name must be at least 2 characters and start with a letter."
+        "First name must be at least 2 characters, starts with a letter and no numbers."
       )
     } else {
       this.setValid(input, feedback)
@@ -62,7 +62,7 @@ export default class extends Controller {
       this.setInvalid(
         input,
         feedback,
-        "Last name must be at least 2 characters and start with a letter."
+        "Last name must be at least 2 characters, starts with a letter and no numbers."
       )
     } else {
       this.setValid(input, feedback)
@@ -100,8 +100,7 @@ export default class extends Controller {
     const feedback = this.contactNumberFeedbackTarget
     const value = input.value.trim()
 
-    // Accepts "09xxxxxxxxx" or "+639xxxxxxxxx"
-    const regex = /^(09\d{9}|\+639\d{9})$/
+    const regex = /^09\d{9}$/
 
     if (value === "") {
       this.setInvalid(input, feedback, "Contact number is required.")
@@ -109,7 +108,7 @@ export default class extends Controller {
       this.setInvalid(
         input,
         feedback,
-        "Please enter a valid PH mobile number (e.g., 09171234567 or +639171234567)."
+        "Please enter a valid PH mobile number (e.g., 09171234567)."
       )
     } else {
       this.setValid(input, feedback)
@@ -144,7 +143,7 @@ export default class extends Controller {
 
   validatePasswordConfirmation() {
     
-    if (!this.hasPasswordConfirmatioInputTarget || !this.hasPasswordConfirmatioFeedbackTarget) return
+    if (!this.hasPasswordConfirmationInputTarget || !this.hasPasswordConfirmationFeedbackTarget) return
 
     const input = this.passwordConfirmationInputTarget
     const feedback = this.passwordConfirmationFeedbackTarget
