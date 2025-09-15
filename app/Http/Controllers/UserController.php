@@ -43,8 +43,12 @@ class UserController extends Controller
       $ableToBack = str_contains($previousUrl,'/users/') ? false : true;
       
       $path = parse_url($previousUrl, PHP_URL_PATH);
-      $lastSegment = collect(explode('/', trim($path, '/')))->last();
-      $urlText = $lastSegment ?"To " . ucfirst($lastSegment) : '';
+      $segments = collect(explode('/', trim($path, '/')));
+      $urlText = '';
+    
+      if ($segments->isNotEmpty()) {
+        $urlText = is_numeric($segments->last()) ? '' : "to " . ucfirst($segments->last());
+      }
 
       $user->load(['address', 'household']);
       
