@@ -24,7 +24,7 @@
           <label for="floating_have_children" class="form-label">Are there children in the house?</label>
           <small class="invalid-feedback fw-bold">{{ haveChildrenErrorMessage }}</small>
         </div>
-        <div class="col-12 col-md-6 form-floating" v-show="haveChildrenValue === 'true'" >
+        <div class="col-12 col-md-6 form-floating" v-show="haveChildrenValue === 'true'" id="number_of_children_div">
           <input type="number" min="1" name="number_of_children" :class="numberOfChildrenValidationClass" @blur="validateNumberOfChildren" v-model="numberOfChildrenValue" class="form-control" placeholder="Number of Children" aria-label="Number of Children" id="floating_number_of_children">
           <label for="floating_number_of_children" class="form-label">Number of Children</label>
           <small class="invalid-feedback fw-bold" id="numberOfChildrenFeedback">{{ numberOfChildrenErrorMessage }}</small>
@@ -40,12 +40,12 @@
           <label for="floating_has_other_pets" class="form-label">Do you have other pets?</label>
           <small class="invalid-feedback fw-bold">{{ hasOtherPetsErrorMessage }}</small>
         </div>
-        <div class="col-12 col-md-4 form-floating" v-show="hasOtherPetsValue === 'true'">
+        <div class="col-12 col-md-4 form-floating" v-show="hasOtherPetsValue === 'true'" id="current_pets_div">
           <input type="text" id="floating_current_pets" name="current_pets" :class="currentPetsValidationClass" @blur="validateCurrentPets" v-model="currentPetsValue" class="form-control" placeholder="Current Pet/s" aria-label="Current Pet/s">
           <label for="floating_current_pets" class="form-label">Current Pet/s (Separate with comma(,) if more than one) </label>
           <small class="invalid-feedback fw-bold">{{ currentPetsErrorMessage }}</small>
         </div>
-        <div class="col-12 col-md-4 form-floating" v-show="hasOtherPetsValue === 'true'">
+        <div class="col-12 col-md-4 form-floating" v-show="hasOtherPetsValue === 'true'" id="number_of_current_pets_div">
           <input type="number" min="1" id="floating_number_of_current_pets" name="number_of_current_pets" :class="numberOfCurrentPetsValidationClass" @blur="validateNumberOfCurrentPets" v-model="numberOfCurrentPetsValue" class="form-control" placeholder="Number of Current Pet/s" aria-label="Number of Current Pet/s">
           <label for="floating_number_of_current_pets" class="form-label">Number of Current Pet/s</label>
           <small class="invalid-feedback fw-bold">{{ numberOfCurrentPetsErrorMessage }}</small>
@@ -65,7 +65,7 @@
 
 <script setup>
   import { router} from '@inertiajs/vue3'
-  import { ref, computed, watch} from 'vue'
+  import { ref, computed,} from 'vue'
   const props = defineProps({
     user: {
       type: Object,
