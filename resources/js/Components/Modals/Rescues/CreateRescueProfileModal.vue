@@ -746,7 +746,7 @@
 
     imagesError.value = ''
     const imageInput = document.getElementById('images')
-    if (fileInput) {
+    if (imageInput) {
       imageInput.value = ''
       imageInput.classList.remove('is-valid', 'is-invalid')
     }
