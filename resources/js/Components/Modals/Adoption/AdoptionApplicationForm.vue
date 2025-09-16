@@ -290,7 +290,7 @@
       fileInput.classList.remove('is-valid', 'is-invalid')
     }
 
-    imagesError.value = ''
+    supportingDocumentsErrorMessage.value = ''
     const imageInput = document.getElementById('supporting_documents')
     if (imageInput) {
       imageInput.value = ''
