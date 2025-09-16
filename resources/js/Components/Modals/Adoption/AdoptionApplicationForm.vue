@@ -142,7 +142,7 @@
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']
     const fileExtension = file.name.split('.').pop().toLowerCase()
     if (!allowedExtensions.includes(fileExtension)) {
-      validIdIsValid.value = false
+      input.classList.add('is-invalid')
       validIdErrorMessage.value = "Only JPG, JPEG, PNG, PDF, DOC, and DOCX are allowed."
       return false
     }

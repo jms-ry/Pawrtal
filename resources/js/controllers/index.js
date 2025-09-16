@@ -11,9 +11,6 @@ Stimulus.register('adoption-application', AdoptionApplicationController)
 import DeleteModalController from './delete_modal_controller'
 Stimulus.register('delete-modal', DeleteModalController)
 
-import DonationModalController from './donation-modal_controller'
-Stimulus.register('donation-modal', DonationModalController)
-
 import FlashMessageController from './flash_message_controller'
 Stimulus.register('flash-message', FlashMessageController)
 
