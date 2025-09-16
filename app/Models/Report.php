@@ -237,7 +237,7 @@ class Report extends Model
   }
   public function getAgeEstimateFormattedAttribute ()
   {
-    return Str::ucfirst(Str::lower($this->age_estimate)) .' ' .'old';
+    return Str::ucfirst(Str::lower($this->age_estimate));
   }
 
   public function getSizeFormattedAttribute ()

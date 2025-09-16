@@ -39,10 +39,24 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+      $previousUrl = url()->previous();
+      $ableToBack = str_contains($previousUrl,'/users/') ? false : true;
+      
+      $path = parse_url($previousUrl, PHP_URL_PATH);
+      $segments = collect(explode('/', trim($path, '/')));
+      $urlText = '';
+    
+      if ($segments->isNotEmpty()) {
+        $urlText = is_numeric($segments->last()) ? '' : "to " . ucfirst($segments->last());
+      }
+
       $user->load(['address', 'household']);
       
       return Inertia::render('User/Show',[
         'user'=>$user,
+        'previousUrl'=>$previousUrl,
+        'urlText'=>$urlText,
+        'ableToBack' => $ableToBack,
       ]);
     }
 

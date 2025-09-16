@@ -5,7 +5,8 @@
       <div class="card border-0 p-md-5">
         <RescueCardHeader 
           :rescue="rescue"
-          :backContext="backContext"
+          :previousUrl="previousUrl"
+          :urlText="urlText"
         />
 
         <div class="card-body border-0 px-md-5 mx-md-5">
@@ -41,12 +42,8 @@
       type: Object,
       required: true
     },
-
-    backContext: {
-      type: String,
-      default: null,
-    },
-
+    previousUrl: String,
+    urlText: String,
     notEmpty: {
       type: Boolean,
       default: null,

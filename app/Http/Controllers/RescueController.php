@@ -108,10 +108,12 @@ class RescueController extends Controller
 
     $previousUrl = url()->previous();
     $backContext = null;
-    if (str_contains($previousUrl, '/rescues')) {
-      $backContext = 'rescues';
-    }elseif (str_contains($previousUrl, '/adoption')) {
-      $backContext = 'adoption';
+    $path = parse_url($previousUrl, PHP_URL_PATH);
+    $segments = collect(explode('/', trim($path, '/')));
+    $urlText = '';
+    
+    if ($segments->isNotEmpty()) {
+      $urlText = is_numeric($segments->last()) ? '' : "to " . ucfirst($segments->last());
     }
     $user = $user?->load('address', 'household');
 
@@ -128,6 +130,8 @@ class RescueController extends Controller
       'notEmpty' => $notEmpty,
       'rescue' => $rescue,
       'randomImages' => $randomImages,
+      'previousUrl' => $previousUrl,
+      'urlText' => $urlText,
 
     ]);
   }
