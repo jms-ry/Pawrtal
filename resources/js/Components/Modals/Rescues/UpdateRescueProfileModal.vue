@@ -10,12 +10,12 @@
           <div class="modal-body bg-info-subtle border-0">
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="name" class="form-control" placeholder="Rescue name" aria-label="Rescue name" id="floating_rescue_name" autocomplete="true" :class="nameValidationClass" @blur="validateName" v-model="form.name" required>
+                <input type="text" name="name" class="form-control" placeholder="Rescue name" aria-label="Rescue name" id="floating_rescue_name" autocomplete="true" :class="nameValidationClass" @blur="validateName" v-model="form.name">
                 <label for="floating_rescue_name" class="form-label fw-bold">Name</label>
                 <small class="invalid-feedback fw-bold">{{ nameErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="species" id="floating_rescue_species" class="form-control" placeholder="Rescue name" aria-label="Rescue name" autocomplete="true" :class="speciesValidationClass" @blur="validateSpecies" v-model="form.species" required>
+                <input type="text" name="species" id="floating_rescue_species" class="form-control" placeholder="Rescue name" aria-label="Rescue name" autocomplete="true" :class="speciesValidationClass" @blur="validateSpecies" v-model="form.species">
                 <label for="floating_rescue_species" class="form-label fw-bold">Species</label>
                 <small class="invalid-feedback fw-bold">{{ speciesErrorMessage }}</small>
               </div>
@@ -29,7 +29,7 @@
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.sex"  :class="sexValidationClass" @blur="validateSex" name="sex" id="floating_sex" class="form-select" aria-label="sex-select" required>
+                <select v-model="form.sex"  :class="sexValidationClass" @blur="validateSex" name="sex" id="floating_sex" class="form-select" aria-label="sex-select">
                   <option value="" hidden  >Sex</option>
                   <option value="male" >Male</option>
                   <option value="female" >Female</option>
@@ -44,7 +44,7 @@
                 <small class="valid-feedback text-dark fw-light">{{ ageErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.size" :class="sizeValidationClass" @blur="validateSize" name="size" id="floating_rescue_size" class="form-select" aria-label="size-select" required>
+                <select v-model="form.size" :class="sizeValidationClass" @blur="validateSize" name="size" id="floating_rescue_size" class="form-select" aria-label="size-select"  >
                   <option value="" hidden >Size</option>
                   <option value="small" >Small</option>
                   <option value="medium" >Medium</option>
@@ -69,7 +69,7 @@
                 <small class="valid-feedback text-dark fw-light">{{ distinctiveFeaturesErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.health_status" :class="healthStatusValidationClass" @blur="validateHealthStatus" name="health_status" id="floating_health_status" class="form-select" aria-label="health-status-select" required>
+                <select v-model="form.health_status" :class="healthStatusValidationClass" @blur="validateHealthStatus" name="health_status" id="floating_health_status" class="form-select" aria-label="health-status-select"  >
                   <option value="" hidden>Health Status</option>
                   <option value="healthy" >Healthy</option>
                   <option value="sick" >Sick </option>
@@ -82,7 +82,7 @@
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.vaccination_status" :class="vaccinationStatusValidationClass" @blur="validateVaccinationStatus" name="vaccination_status" id="floating_vaccination_status" class="form-select" aria-label="vaccination-status-select" required>
+                <select v-model="form.vaccination_status" :class="vaccinationStatusValidationClass" @blur="validateVaccinationStatus" name="vaccination_status" id="floating_vaccination_status" class="form-select" aria-label="vaccination-status-select"  >
                   <option value="" hidden>Vaccination Status</option>
                   <option value="vaccinated" >Vaccinated</option>
                   <option value="partially_vaccinated">Partially Vaccinated</option>
@@ -92,7 +92,7 @@
                 <small class="invalid-feedback fw-bold">{{ vaccinationStatusErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.spayed_neutered" :class="spayedNeuteredValidationClass" @blur="validateSpayedNeutered" name="spayed_neutered" id="floating_spayed_neutered" class="form-select" aria-label="spayed-neutered-select" required>
+                <select v-model="form.spayed_neutered" :class="spayedNeuteredValidationClass" @blur="validateSpayedNeutered" name="spayed_neutered" id="floating_spayed_neutered" class="form-select" aria-label="spayed-neutered-select"  >
                   <option value="" hidden>Spay/Neutered</option>
                   <option value="true" >Yes</option>
                   <option value="false">No</option>
@@ -101,7 +101,7 @@
                 <small class="invalid-feedback fw-bold">{{ spayedNeuteredErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select v-model="form.adoption_status" :class="adoptionStatusValidationClass" @blur="validateAdoptionStatus"  name="adoption_status" id="floating_adoption_status" class="form-select" aria-label="adoption-status-select" required>
+                <select v-model="form.adoption_status" :class="adoptionStatusValidationClass" @blur="validateAdoptionStatus"  name="adoption_status" id="floating_adoption_status" class="form-select" aria-label="adoption-status-select"  >
                   <option value="" hidden>Adoption Status</option>
                   <option value="available" >Available</option>
                   <option value="unavailable" >Unavailable</option>
@@ -131,7 +131,7 @@
 
             <div class="row g-2 mt-2">
               <div class="col-12 form-floating">
-                <textarea v-model="form.description" :class="descriptionValidationClass" @blur="validateDescription" name="description" id="floating_rescue_description" class="form-control" placeholder="Rescue description" aria-label="Rescue description" style="height: 100px" required></textarea>
+                <textarea v-model="form.description" :class="descriptionValidationClass" @blur="validateDescription" name="description" id="floating_rescue_description" class="form-control" placeholder="Rescue description" aria-label="Rescue description" style="height: 100px"  ></textarea>
                 <label for="floating_rescue_description" class="form-label fw-bold">Description</label>
                 <small class="invalid-feedback fw-bold">{{ descriptionErrorMessage }}</small>
               </div>
@@ -140,7 +140,7 @@
 
           <div class="modal-footer bg-info-subtle">
             <button class="btn btn-primary me-1" type="submit">Update Rescue Profile</button>
-            <button class="btn btn-danger" type="button"  data-bs-dismiss="modal">Close</button>
+            <button class="btn btn-danger" type="button"  @click="closeModal">Close</button>
           </div>
         </form>
       </div>
@@ -215,11 +215,11 @@
 
   function handleProfileImageChange(event) {
     const file = event.target.files[0]
-    
+    const input = document.getElementById('profile_image')
     if (!file) {
-      form.profile_image = null
+      input.classList.add('is-invalid')
       profileImageError.value = null
-      return
+      return false
     }
 
     // Example validations:
@@ -228,19 +228,21 @@
 
     if (!allowedTypes.includes(file.type)) {
       profileImageError.value = 'Only JPG and PNG images are allowed.'
-      form.profile_image = null
-      return
+      input.classList.add('is-invalid')
+      return false
     }
 
     if (file.size > maxSize) {
       profileImageError.value = 'Image size must be less than 2MB.'
-      form.profile_image = null
-      return
+      input.classList.add('is-invalid')
+      return false
     }
 
     // Passed validation
     form.profile_image = file
-    profileImageError.value = null
+    input.classList.add('is-valid')
+    profileImageError.value = ''
+    return true
   }
 
    const imagesError = ref(null)
@@ -759,5 +761,63 @@
     document.body.classList.remove('modal-open')
     document.body.style.removeProperty('overflow')
     document.body.style.removeProperty('padding-right')
+
+    nameIsValid.value = null
+    nameErrorMessage.value = ''
+
+    speciesIsValid.value = null
+    speciesErrorMessage.value = ''
+
+    
+    breedIsValid.value = null
+    breedErrorMessage.value = ''
+
+   
+    sexIsValid.value = null
+    sexErrorMessage.value = ''
+   
+    ageIsValid.value = null
+    ageErrorMessage.value = ''
+
+   
+    sizeIsValid.value = null
+    sizeErrorMessage.value = ''
+
+    colorIsValid.value = null
+    colorErrorMessage.value = ''
+
+   
+    distinctiveFeaturesIsValid.value = null
+    distinctiveFeaturesErrorMessage.value = ''
+
+    healthStatusIsValid.value = null
+    healthStatusErrorMessage.value = ''
+
+    vaccinationStatusIsValid.value = null
+    vaccinationStatusErrorMessage.value = ''
+
+    spayedNeuteredIsValid.value = null
+    spayedNeuteredErrorMessage.value = ''
+
+    adoptionStatusIsValid.value = null
+    adoptionStatusErrorMessage.value = ''
+
+    descriptionIsValid.value = null
+    descriptionErrorMessage.value = ''
+    
+    profileImageError.value = ''
+    const fileInput = document.getElementById('profile_image')
+    if (fileInput) {
+      fileInput.value = ''
+      fileInput.classList.remove('is-valid', 'is-invalid')
+    }
+
+    imagesError.value = ''
+    const imageInput = document.getElementById('images')
+    if (imageInput) {
+      imageInput.value = ''
+      imageInput.classList.remove('is-valid', 'is-invalid')
+    }
+
   }
 </script>
