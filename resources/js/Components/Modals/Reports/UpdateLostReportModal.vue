@@ -238,7 +238,7 @@
 
     // Passed validation
     form.image = file
-     input.classList.remove('is-invalid')
+    input.classList.remove('is-invalid')
     input.classList.add('is-valid')
     imageErrorMessage.value = ''
     return true

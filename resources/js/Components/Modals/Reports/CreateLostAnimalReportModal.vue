@@ -430,8 +430,10 @@
 
     const selectedDate = new Date(date)
     const today = new Date()
+    selectedDate.setHours(0, 0, 0, 0)
+    today.setHours(0, 0, 0, 0)
 
-    if(selectedDate.getHours() > today.getHours()){
+    if(selectedDate > today){
       dateIsValid.value = false
       dateErrorMessage.value = "Last seen date can't in the future."
       return false
