@@ -40,23 +40,12 @@ class UserController extends Controller
   public function show(User $user)
     {
       $previousUrl = url()->previous();
-      $ableToBack = str_contains($previousUrl,'/users/') ? false : true;
       
-      $path = parse_url($previousUrl, PHP_URL_PATH);
-      $segments = collect(explode('/', trim($path, '/')));
-      $urlText = '';
-    
-      if ($segments->isNotEmpty()) {
-        $urlText = is_numeric($segments->last()) ? '' : "to " . ucfirst($segments->last());
-      }
-
       $user->load(['address', 'household']);
       
       return Inertia::render('User/Show',[
         'user'=>$user,
         'previousUrl'=>$previousUrl,
-        'urlText'=>$urlText,
-        'ableToBack' => $ableToBack,
       ]);
   }
 
@@ -95,6 +84,7 @@ class UserController extends Controller
   /**My Reports function */
   public function myReports(Request $request)
   { 
+    $previousUrl = url()->previous();
     $user = Auth::user();
     $search = $request->get('search');
     $typeFilter = $request->get('type');;
@@ -139,6 +129,7 @@ class UserController extends Controller
         'status' => $statusFilter,
         'sort' => $sortOrder,
       ],
+      'previousUrl' => $previousUrl,
     ]);
   }
 
