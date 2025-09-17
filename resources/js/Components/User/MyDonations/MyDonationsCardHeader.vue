@@ -3,7 +3,8 @@
     <h4 class="fs-5 mb-md-4 mb-4 mt-3 mt-md-0 me-5 align-items-start">
       <a :href="previousUrl" class="text-decoration-none font-monospace fw-bolder text-danger fs-4"><i class="bi bi-chevron-left"></i><span class="ms-0">Back </span></a>
     </h4>
-    <h3 class="text-center fw-bolder display-6 font-monospace mb-4 mt-3">{{ user?.fullName }}'s Reports!</h3>
+    <h3 class="text-center fw-bolder display-6 font-monospace mb-4 mt-3">{{ user?.fullName }}'s Donations!</h3>
+
     <!-- Active Filters Display -->
     <div v-if="hasActiveFilters" class="mb-3">
       <div class="d-flex flex-wrap gap-2 align-items-center">
@@ -14,9 +15,9 @@
           <button @click="clearFilter('search')" class="btn-close btn-close-dark ms-1" aria-label="Clear search"></button>
         </span>
         
-        <span v-if="filters.type" class="badge bg-info text-dark d-flex flex-block align-items-center">
-          Type: {{ filters.type }}
-          <button @click="clearFilter('type')" class="btn-close btn-close-dark ms-1" aria-label="Clear size filter"></button>
+        <span v-if="filters.donation_type" class="badge bg-info text-dark d-flex flex-block align-items-center">
+          Type: {{ filters.donation_type }}
+          <button @click="clearFilter('donation_type')" class="btn-close btn-close-dark ms-1" aria-label="Clear size filter"></button>
         </span>
         
         <span v-if="filters.status" class="badge bg-info text-dark d-flex flex-block align-items-center">
@@ -34,24 +35,26 @@
         </button>
       </div>
     </div>
-    
+
     <div class="row g-3 g-md-5 mb-md-2 mb-1 justify-content-end mt-md-0">
       <div class="col-12 col-md-6 d-flex flex-column flex-md-row">
         <fieldset class="p-1 mt-0 mb-0">
           <legend class="fs-6 fw-bold mx-2 font-monospace" id="filter-legend">Filter by</legend>
           <div class="row g-2 mt-0">
             <div class="col-6">
-              <select v-model="selectedType" @change="onFilterChange('type', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
+              <select v-model="selectedType" @change="onFilterChange('donation_type', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
                 <option selected hidden value="">Type</option>
-                <option value="lost">Lost Reports</option>
-                <option value="found">Found Reports</option>
+                <option value="monetary">Monetary</option>
+                <option value="in-kind">In-kind</option>
               </select>
             </div>
             <div class="col-6">
               <select v-model="selectedStatus" @change="onFilterChange('status', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
                 <option selected hidden value="">Status</option>
-                <option value="active">Active</option>
-                <option value="resolved">Resolved</option>
+                <option value="pending">Pending</option>
+                <option value="picked_up">Picked Up</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
               </select>
             </div>
           </div>
@@ -61,7 +64,7 @@
           <div class="row g-2 mt-0">
             <div class="col-12">
               <select v-model="selectedSort" @change="onSortChange($event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
-                <option selected hidden value="">Report Date</option>
+                <option selected hidden value="">Donation Date</option>
                 <option value="desc">Newest</option>
                 <option value="asc">Oldest</option>
               </select>
@@ -73,7 +76,7 @@
       <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end">
         <!-- Search input for larger screens -->
         <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
-          <input type="text" v-model="searchInput" @input="onSearchInput" name="reportsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control">
+          <input type="text" v-model="searchInput" @input="onSearchInput" name="donationsSearchField" aria-label="Search" placeholder="Search Donations" class="form-control">
           <button 
             v-if="searchInput" 
             @click="clearSearch" 
@@ -87,7 +90,7 @@
         
         <!-- Search input for smaller screens -->
         <div class="input-group w-100 d-flex d-md-none px-1">
-          <input type="text" v-model="searchInput" @input="onSearchInput" name="reportsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control">
+          <input type="text" v-model="searchInput" @input="onSearchInput" name="donationsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control">
           <button 
             v-if="searchInput" 
             @click="clearSearch" 
@@ -125,19 +128,19 @@
   const selectedSort = ref('');
 
   const hasActiveFilters = computed(() => {
-    return !!(props.filters.search || props.filters.type || props.filters.status || props.filters.sort);
+    return !!(props.filters.search || props.filters.donation_type || props.filters.status || props.filters.sort);
   });
 
   onMounted(() => {
     searchInput.value = props.filters.search || '';
-    selectedType.value = props.filters.type || '';
+    selectedType.value = props.filters.donation_type || '';
     selectedStatus.value = props.filters.status || '';
     selectedSort.value = props.filters.sort || '';
   });
 
   watch(() => props.filters, (newFilters) => {
     searchInput.value = newFilters.search || '';
-    selectedType.value = newFilters.type || '';
+    selectedType.value = newFilters.donation_type || '';
     selectedStatus.value = newFilters.status || '';
     selectedSort.value = newFilters.sort || '';
   }, { deep: true });
@@ -179,7 +182,7 @@
   
     if (filterType === 'search') {
       searchInput.value = '';
-    } else if (filterType === 'type') {
+    } else if (filterType === 'donation_type') {
       selectedType.value = '';
     } else if (filterType === 'status') {
       selectedStatus.value = '';
@@ -201,8 +204,10 @@
 
   const getStatusLabel = (status) => {
     const labels = {
-      'active': 'Active',
-      'resolved': 'Resolved'
+      'pending': 'Pending',
+      'picked_up': 'Picked Up',
+      'approved': 'Approved',
+      'rejected': 'Rejected'
     };
     return labels[status] || status;
   };

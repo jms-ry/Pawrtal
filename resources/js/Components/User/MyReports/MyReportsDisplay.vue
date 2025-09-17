@@ -3,10 +3,10 @@
     <div v-if="(!reports || reports.data.length === 0) && !hasActiveFilters" class="d-flex flex-column align-items-center justify-content-center my-5">
       <i class="bi bi-exclamation-circle fs-1 text-muted mb-2"></i>
       <p class="fs-4 fw-semibold text-muted">No reports yet.</p>
-      <a href="" class="btn btn-primary mt-2 fw-semibold">Create your first report</a>
+      <a :href="`/reports`" class="btn btn-primary mt-2 fw-semibold">Create your first report!</a>
     </div>
     <!-- No results message -->
-    <div v-if="reports.data.length === 0 && hasActiveFilters" class="text-center py-5">
+    <div v-else-if="reports.data.length === 0 && hasActiveFilters" class="text-center py-5">
       <div class="mb-4">
         <i class="bi bi-search display-1 text-muted"></i>
       </div>
@@ -23,21 +23,21 @@
     <div v-else data-controller="view-report-modal delete-modal update-lost-report update-found-report">
       <!--Large Screen Table-->
       <div class="d-none d-md-block">
-        <table class="table table-striped align-middle text-center">
-          <thead class="table-dark">
+        <table class="table table-striped table-hover align-middle text-center">
+          <thead class="table-primary">
             <tr>
-              <th>#</th>
-              <th>Type</th>
-              <th>Animal Name</th>
-              <th>Location</th>
-              <th>Date Reported</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th scope="col">#</th>
+              <th scope="col">Type</th>
+              <th scope="col">Animal Name</th>
+              <th scope="col">Location</th>
+              <th scope="col">Date Reported</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(report, index) in reports.data" :key="report.id">
-              <td>{{ index + 1 }}</td>
+              <th scope="row">{{ index + 1 }}</th>
               <td>{{ report.type_formatted }}</td>
               <td>{{ report.animal_name_formatted }}</td>
               <td>{{ report.found_last_seen_location_formatted }}</td>
@@ -45,7 +45,7 @@
               <td>{{ report.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light me-1"
+                  <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light fw-bolder me-1"
                     :data-report-id="report.id"
                     :data-report-type="report.type"
                     :data-report-animal-name="report.animal_name_formatted"
@@ -98,22 +98,22 @@
       </div>
       <!--Small Screen Table-->
       <div class="d-md-none d-block">
-        <table class="table table-striped align-middle text-center">
-          <thead class="table-dark">
+        <table class="table table-striped table-hover align-middle text-center">
+          <thead class="table-primary">
             <tr>
-              <th>#</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th scope="col">#</th>
+              <th scope="col">Type</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(report, index) in reports.data" :key="report.id">
-              <td >{{ index + 1 }}</td>
+              <th scope="row">{{ index + 1 }}</th>
               <td>{{ report.type_formatted }}</td>
               <td>{{ report.status_label }}</td>
               <td>
-                <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light mb-1 w-100"
+                <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light fw-bolder mb-1 w-100"
                   :data-report-id="report.id"
                   :data-report-type="report.type"
                   :data-report-animal-name="report.animal_name_formatted"
