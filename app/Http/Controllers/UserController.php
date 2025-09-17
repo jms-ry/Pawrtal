@@ -10,34 +10,34 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+  /**
+    * Display a listing of the resource.
+  */
+  public function index()
+  {
+    //
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+  /**
+    * Show the form for creating a new resource.
+  */
+  public function create()
+  {
+    //
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  /**
+    * Store a newly created resource in storage.
+  */
+  public function store(Request $request)
+  {
+    //
+  }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
+  /**
+    * Display the specified resource.
+  */
+  public function show(User $user)
     {
       $previousUrl = url()->previous();
       $ableToBack = str_contains($previousUrl,'/users/') ? false : true;
@@ -58,20 +58,20 @@ class UserController extends Controller
         'urlText'=>$urlText,
         'ableToBack' => $ableToBack,
       ]);
-    }
+  }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
+  /**
+    * Show the form for editing the specified resource.
+  */
+  public function edit(User $user)
     {
         //
-    }
+  }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
+  /**
+    * Update the specified resource in storage.
+  */
+  public function update(UpdateUserRequest $request, User $user)
     {
       $requestData = $request->all();
 
@@ -82,13 +82,32 @@ class UserController extends Controller
       $user->update($requestData);
 
       return redirect()->back()->with('info', 'User profile has been updated!');
-    }
+  }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
-    }
+  /**
+    * Remove the specified resource from storage.
+  */
+  public function destroy(User $user)
+  {
+    //
+  }
+
+  /**My Reports function */
+  public function myReports()
+  {
+
+    return Inertia::render('User/MyReports');
+  }
+
+  public function myDonations()
+  {
+
+    return Inertia::render('User/MyDonations');
+  }
+
+  public function myAdoptionApplications()
+  {
+
+    return Inertia::render('User/MyAdoptionApp');
+  }
 }

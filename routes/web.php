@@ -34,6 +34,11 @@ Route::get('login', function () {
 
 Route::middleware(['auth'])->group(function () {
   Route::get('/dashboard',[AdminStaffController::class, 'index']);
+  Route::prefix('users')->group(function () {
+    Route::get('my-reports', [UserController::class, 'myReports'])->name('users.myReports');
+    Route::get('my-donations', [UserController::class, 'myDonations'])->name('users.myDonations');
+    Route::get('my-adoption-applications', [UserController::class, 'myAdoptionApplications'])->name('users.myAdoptionApplications');
+  });
   Route::resource('users',UserController::class)->except('create','edit');
 });
 

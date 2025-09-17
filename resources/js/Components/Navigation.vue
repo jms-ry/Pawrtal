@@ -32,12 +32,14 @@
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
-                <li v-if="user.isAdminOrStaff"><a class="dropdown-item" href="#">Manage</a></li>
-                <template v-else>
-                  <li><a class="dropdown-item" href="#">Adoption Applications</a></li>
-                  <li><a class="dropdown-item" href="#">Donation History</a></li>
-                  <li><a class="dropdown-item" href="#">My Reports</a></li>
+                <template v-if="user.isAdminOrStaff">
+                  <li ><a class="dropdown-item" href="#">Manage</a></li>
                 </template>
+                <template v-else>
+                  <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">Adoption Applications</a></li>
+                </template>
+                <li><a class="dropdown-item" :href="`/users/my-donations`">My Donation History</a></li>
+                <li><a class="dropdown-item" :href="`/users/my-reports`">My Reports</a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
                   <form method="POST" action="/logout">
@@ -77,12 +79,14 @@
               </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
-                <li v-if="user.isAdminOrStaff"><Link class="dropdown-item" href="#">Manage</Link></li>
-                <template v-else>
-                  <li><a class="dropdown-item" :href="`#`">Adoption Applications</a></li>
-                  <li><a class="dropdown-item" :href="`#`">Donation History</a></li>
-                  <li><a class="dropdown-item" :href="`#`">My Reports</a></li>
+                <template v-if="user.isAdminOrStaff">
+                  <li ><a class="dropdown-item" href="#">Manage</a></li>
                 </template>
+                <template v-else>
+                  <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">Adoption Applications</a></li>
+                </template>
+                <li><a class="dropdown-item" :href="`/users/my-donations`">My Donation History</a></li>
+                <li><a class="dropdown-item" :href="`/users/my-reports`">My Reports</a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
                   <form method="POST" action="/logout">
@@ -100,7 +104,7 @@
 </template>
 
 <script setup>
-  import { usePage, Link } from '@inertiajs/vue3'
+  import { usePage} from '@inertiajs/vue3'
   import { computed } from 'vue'
 
   const page = usePage()
