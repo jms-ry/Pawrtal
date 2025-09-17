@@ -130,7 +130,7 @@ class ReportController extends Controller
 
     $report->update($requestData);
     
-    return redirect()->route('reports.index')->with('info', $report->getTypeFormattedAttribute() . ' Report updated successfully!');
+    return redirect()->back()->with('info', $report->getTypeFormattedAttribute() . ' Report updated successfully!');
   }
 
   /**
@@ -140,6 +140,6 @@ class ReportController extends Controller
   {
     $report->delete();
 
-    return redirect()->route('reports.index')->with('warning', $report->getTypeFormattedAttribute() . ' Report has been deleted successfully!');
+    return redirect()->back()->with('warning', $report->getTypeFormattedAttribute() . ' Report has been deleted successfully!');
   }
 }

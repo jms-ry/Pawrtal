@@ -73,7 +73,7 @@
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
-                <a class="btn btn-primary fw-bolder ms-1" data-bs-toggle="modal" 
+                <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" 
                   :data-bs-target="report.type == 'lost' ? '#updateLostReportModal' :'#updateFoundReportModal'"
                   :data-report-id="report.id"
                   :data-report-status="report.status"
@@ -96,7 +96,7 @@
                 </a>
               </div>
               <div v-else>
-                <a class="btn btn-info fw-bolder ms-1">Alert Owner</a> 
+                <a class="btn btn-warning fw-bolder ms-1">Alert Owner</a> 
               </div>
             </div>
             <div v-else class="d-flex">
@@ -123,7 +123,7 @@
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
-                <a class="btn btn-primary fw-bolder ms-1" data-bs-toggle="modal" 
+                <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" 
                   :data-bs-target="report.type == 'lost' ? '#updateLostReportModal' :'#updateFoundReportModal'"
                   :data-report-id="report.id"
                   :data-report-status="report.status"
@@ -262,7 +262,7 @@
     }
 
     router.get(`/reports`,params,{
-      preserveState:true,
+      preserveState:false,
       preserveScroll:true,
     })
   };

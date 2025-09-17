@@ -209,7 +209,10 @@ class Report extends Model
 
   public function getAnimalNameFormattedAttribute(): string
   {
-    return Str::headline($this->animal_name);
+    if($this->animal_name){
+      return Str::headline($this->animal_name);
+    }
+    return "Unknown";
   }
 
   public function statusLabel()

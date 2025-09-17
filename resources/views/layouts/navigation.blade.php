@@ -38,10 +38,10 @@
                 @if(Auth::user()->isAdminOrStaff())
                   <li><a class="dropdown-item" href="#">Manage</a></li>
                 @else
-                  <li><a class="dropdown-item" href="#">Adoption Applications</a></li>
-                  <li><a class="dropdown-item" href="#">Donation History</a></li>
-                  <li><a class="dropdown-item" href="#">My Reports</a></li>
+                  <li><a class="dropdown-item" href="{{ route('users.myAdoptionApplications') }}">Adoption Applications</a></li>
                 @endif
+                <li><a class="dropdown-item" href="{{ route('users.myDonations') }}">My Donation History</a></li>
+                <li><a class="dropdown-item" href="{{ route('users.myReports') }}">My Reports</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                   <form action="{{ route('logout') }}" method="POST">
@@ -81,10 +81,10 @@
               @if(Auth::user()->isAdminOrStaff())
                 <li><a class="dropdown-item" href="#">Manage</a></li>
               @else
-                <li><a class="dropdown-item" href="#">Adoption Applications</a></li>
-                <li><a class="dropdown-item" href="#">Donation History</a></li>
-                <li><a class="dropdown-item" href="#">My Reports</a></li>
+                <li><a class="dropdown-item" href="{{ route('users.myAdoptionApplications') }}">Adoption Applications</a></li>
               @endif
+              <li><a class="dropdown-item" href="{{ route('users.myDonations') }}">My Donation History</a></li>
+              <li><a class="dropdown-item" href="{{ route('users.myReports') }}">My Reports</a></li>
               <li><hr class="dropdown-divider"></li>
               <li>
                 <form action="{{ route('logout') }}" method="POST">
