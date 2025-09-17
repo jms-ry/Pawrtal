@@ -183,9 +183,51 @@ class UserController extends Controller
     ]);
   }
 
-  public function myAdoptionApplications()
+  public function myAdoptionApplications(Request $request)
   {
+    $previousUrl = url()->previous();
+    $user = Auth::user();
+    $search = $request->get('search');
+    $statusFilter = $request->get('status');
+    $sortOrder = $request->get('sort');
+    $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $adoptionApplications = $user->adoptionApplications()
+      ->with(['user','rescue'])
+      ->when($search, function ($query, $search) {
+        $columns = ['reason_for_adoption','status',];
+        $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
 
-    return Inertia::render('User/MyAdoptionApp');
+        return $query->where(function ($q) use ($keywords, $columns) {
+          foreach ($keywords as $word) {
+            $q->where(function ($subQ) use ($word, $columns) {
+              foreach ($columns as $col) {
+                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
+              }
+            })
+            ->orWhereHas('rescue', function ($rescueQ) use ($word) {
+              $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
+            });;
+          }
+        });
+      })
+      ->when($statusFilter, function ($query, $statusFilter) {
+        return $query->where('status', $statusFilter);
+      })
+      ->when($sortOrder, function($query,$sortOrder){
+        return $query->orderBy('application_date',$sortOrder);
+      })
+      ->orderBy('application_date', 'desc')
+      ->paginate(5)
+    ->withQueryString();
+    return Inertia::render('User/MyAdoptionApp',[
+      'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,] : null,
+      'adoptionApplications' => $adoptionApplications,
+      'filters' => [
+        'search' => $search,
+        'status' => $statusFilter,
+        'sort' => $sortOrder,
+      ],
+      'previousUrl' => $previousUrl,
+    ]);
   }
 }
