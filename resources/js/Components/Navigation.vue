@@ -36,7 +36,7 @@
                   <li ><a class="dropdown-item" href="#">Manage</a></li>
                 </template>
                 <template v-else>
-                  <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">Adoption Applications</a></li>
+                  <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">My Adoption Applications</a></li>
                 </template>
                 <li><a class="dropdown-item" :href="`/users/my-donations`">My Donation History</a></li>
                 <li><a class="dropdown-item" :href="`/users/my-reports`">My Reports</a></li>
@@ -83,7 +83,7 @@
                   <li ><a class="dropdown-item" href="#">Manage</a></li>
                 </template>
                 <template v-else>
-                  <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">Adoption Applications</a></li>
+                  <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">My Adoption Applications</a></li>
                 </template>
                 <li><a class="dropdown-item" :href="`/users/my-donations`">My Donation History</a></li>
                 <li><a class="dropdown-item" :href="`/users/my-reports`">My Reports</a></li>

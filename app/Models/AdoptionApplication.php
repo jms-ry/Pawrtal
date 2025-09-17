@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use PhpParser\Node\Expr\Cast;
+use Str;
 
 class AdoptionApplication extends Model
 {
@@ -23,7 +24,11 @@ class AdoptionApplication extends Model
     'review_date',
     'review_notes',
   ];
-
+  protected $appends = [
+    'status_label',
+    'application_date_formatted',
+    'rescue_name_formatted'
+  ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
@@ -34,5 +39,20 @@ class AdoptionApplication extends Model
   public function rescue()
   {
     return $this->belongsTo(Rescue::class);
+  }
+
+  public function getStatusLabelAttribute()
+  {
+    return Str::of($this->status)->replace('_',' ')->ucfirst();
+  }
+
+  public function getApplicationDateFormattedAttribute()
+  {
+    return \Carbon\Carbon::parse($this->application_date)->format('M d, Y');
+  }
+
+  public function getRescueNameFormattedAttribute()
+  {
+    return Str::headline($this->rescue->name);
   }
 }

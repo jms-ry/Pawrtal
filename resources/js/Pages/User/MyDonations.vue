@@ -27,7 +27,7 @@
   import { ref } from 'vue';
   import MyDonationsCardHeader from '../../Components/User/MyDonations/MyDonationsCardHeader.vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
-import MyDonationsDisplay from '../../Components/User/MyDonations/MyDonationsDisplay.vue';
+  import MyDonationsDisplay from '../../Components/User/MyDonations/MyDonationsDisplay.vue';
 
   const props = defineProps({
     user: {
