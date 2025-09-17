@@ -93,10 +93,53 @@ class UserController extends Controller
   }
 
   /**My Reports function */
-  public function myReports()
-  {
+  public function myReports(Request $request)
+  { 
+    $user = Auth::user();
+    $search = $request->get('search');
+    $typeFilter = $request->get('type');;
+    $statusFilter = $request->get('status');
+    $sortOrder = $request->get('sort');
+    $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
 
-    return Inertia::render('User/MyReports');
+    $reports = $user->reports()
+      ->with('user')
+      ->when($search, function ($query, $search) {
+        $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
+        $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+        return $query->where(function ($q) use ($keywords, $columns) {
+          foreach ($keywords as $word) {
+            $q->where(function ($subQ) use ($word, $columns) {
+              foreach ($columns as $col) {
+                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
+              }
+            });
+          }
+        });
+      })
+      ->when($typeFilter, function ($query, $typeFilter) {
+        return $query->where('type', $typeFilter);
+      })
+      ->when($statusFilter, function ($query, $statusFilter) {
+        return $query->where('status', $statusFilter);
+      })
+      ->when($sortOrder, function($query,$sortOrder){
+        return $query->orderBy('created_at',$sortOrder);
+      })
+      ->orderBy('created_at', 'desc')
+      ->paginate(5)
+    ->withQueryString();
+    
+    return Inertia::render('User/MyReports',[
+      'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,] : null,
+      'reports' => $reports,
+      'filters' => [
+        'search' => $search,
+        'type' => $typeFilter,
+        'status' => $statusFilter,
+        'sort' => $sortOrder,
+      ],
+    ]);
   }
 
   public function myDonations()

@@ -92,7 +92,7 @@ class User extends Authenticatable
 
   public function fullName(): string
   {
-    return $this->first_name . ' ' . $this->last_name;
+    return Str::headline($this->first_name . ' ' . $this->last_name);
   }
 
   public function getRole()

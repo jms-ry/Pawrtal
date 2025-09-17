@@ -92,7 +92,7 @@
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-8">
-                <label for="image_found" class="form-label fw-bold">Update Image</label>
+                <label for="found_image" class="form-label fw-bold">Update Image</label>
                 <input type="file" name="image" id="found_image" class="form-control" accept="image/*" @change="handleImageChange" :class="{'is-invalid': imageErrorMessage}">
                 <small class="invalid-feedback fw-bold">{{ imageErrorMessage }}</small>
                 <div v-if="!imageErrorMessage">
