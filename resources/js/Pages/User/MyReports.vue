@@ -8,6 +8,7 @@
           :filters="filters"
           @search="handleSearch"
           @filter="handleFilter"
+          :previousUrl="previousUrl"
         />
 
         <MyReportsDisplay
@@ -36,7 +37,8 @@
     filters: {
       type: Object,
       default: () => ({})
-    }
+    },
+    previousUrl:String,
   })
 
   let searchTimeout = ref(null);

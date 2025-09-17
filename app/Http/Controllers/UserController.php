@@ -40,23 +40,12 @@ class UserController extends Controller
   public function show(User $user)
     {
       $previousUrl = url()->previous();
-      $ableToBack = str_contains($previousUrl,'/users/') ? false : true;
       
-      $path = parse_url($previousUrl, PHP_URL_PATH);
-      $segments = collect(explode('/', trim($path, '/')));
-      $urlText = '';
-    
-      if ($segments->isNotEmpty()) {
-        $urlText = is_numeric($segments->last()) ? '' : "to " . ucfirst($segments->last());
-      }
-
       $user->load(['address', 'household']);
       
       return Inertia::render('User/Show',[
         'user'=>$user,
         'previousUrl'=>$previousUrl,
-        'urlText'=>$urlText,
-        'ableToBack' => $ableToBack,
       ]);
   }
 
@@ -95,6 +84,7 @@ class UserController extends Controller
   /**My Reports function */
   public function myReports(Request $request)
   { 
+    $previousUrl = url()->previous();
     $user = Auth::user();
     $search = $request->get('search');
     $typeFilter = $request->get('type');;
@@ -139,13 +129,58 @@ class UserController extends Controller
         'status' => $statusFilter,
         'sort' => $sortOrder,
       ],
+      'previousUrl' => $previousUrl,
     ]);
   }
 
-  public function myDonations()
+  public function myDonations(Request $request)
   {
+    $previousUrl = url()->previous();
+    $user = Auth::user();
+    $search = $request->get('search');
+    $typeFilter = $request->get('donation_type');;
+    $statusFilter = $request->get('status');
+    $sortOrder = $request->get('sort');
+    $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $donations = $user->donations()
+      ->with('user')
+      ->when($search, function ($query, $search) {
+        $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
+        $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+        return $query->where(function ($q) use ($keywords, $columns) {
+          foreach ($keywords as $word) {
+            $q->where(function ($subQ) use ($word, $columns) {
+              foreach ($columns as $col) {
+                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
+              }
+            });
+          }
+        });
+      })
+      ->when($typeFilter, function ($query, $typeFilter) {
+        return $query->where('donation_type', $typeFilter);
+      })
+      ->when($statusFilter, function ($query, $statusFilter) {
+        return $query->where('status', $statusFilter);
+      })
+      ->when($sortOrder, function($query,$sortOrder){
+        return $query->orderBy('donation_date',$sortOrder);
+      })
+      ->orderBy('donation_date', 'desc')
+      ->paginate(5)
+    ->withQueryString();
 
-    return Inertia::render('User/MyDonations');
+    return Inertia::render('User/MyDonations',[
+      'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,] : null,
+      'donations' => $donations,
+      'filters' => [
+        'search' => $search,
+        'donation_type' => $typeFilter,
+        'status' => $statusFilter,
+        'sort' => $sortOrder,
+      ],
+      'previousUrl' => $previousUrl,
+    ]);
   }
 
   public function myAdoptionApplications()
