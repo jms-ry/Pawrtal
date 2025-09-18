@@ -27,7 +27,8 @@ class Donation extends Model
     'status_label',
     'amount_formatted',
     'item_description_formatted',
-    'item_quantity_formatted'
+    'item_quantity_formatted',
+    'donation_date_formatted'
   ];
   public function user() : BelongsTo
   {
@@ -70,5 +71,10 @@ class Donation extends Model
     }
 
     return 'N/A';
+  }
+
+  public function getDonationDateFormattedAttribute()
+  {
+    return \Carbon\Carbon::parse($this->donation_date)->format('M d, Y');
   }
 }

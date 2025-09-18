@@ -43,7 +43,7 @@
               <td>{{ donation.amount_formatted }}</td>
               <td>{{ donation.item_description_formatted }}</td>
               <td>{{ donation.item_quantity_formatted }}</td>
-              <td>{{ donation.donation_date }}</td>
+              <td>{{ donation.donation_date_formatted }}</td>
               <td>{{ donation.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">

@@ -54,6 +54,8 @@
                 <option value="pending">Pending</option>
                 <option value="picked_up">Picked Up</option>
                 <option value="approved">Approved</option>
+                <option value="archived">Archived</option>
+                <option value="cancelled">cancelled</option>
                 <option value="rejected">Rejected</option>
               </select>
             </div>
@@ -207,6 +209,8 @@
       'pending': 'Pending',
       'picked_up': 'Picked Up',
       'approved': 'Approved',
+      'archived': 'Archived',
+      'cancelled': 'Cancelled',
       'rejected': 'Rejected'
     };
     return labels[status] || status;

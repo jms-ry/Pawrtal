@@ -67,7 +67,7 @@ class DonationController extends Controller
     }
     $message = $createdCount > 1 ? ucfirst($donationType)." Donations ($createdCount items) have been submitted!" : ucfirst($donationType)." Donation has been submitted!";
 
-    return redirect()->back()->with('success', $message);
+    return redirect()->route('users.myDonations')->with('success', $message);
   }
 
 
