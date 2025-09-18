@@ -19,7 +19,8 @@ class Donation extends Model
     'status',
     'donation_date',
     'pick_up_location',
-    'contact_person'
+    'contact_person',
+    'donation_image'
   ];
 
   protected $appends = [
@@ -28,7 +29,10 @@ class Donation extends Model
     'amount_formatted',
     'item_description_formatted',
     'item_quantity_formatted',
-    'donation_date_formatted'
+    'donation_date_formatted',
+    'pick_up_location_formatted',
+    'contact_person_formatted',
+    'donation_image_url'
   ];
   public function user() : BelongsTo
   {
@@ -76,5 +80,25 @@ class Donation extends Model
   public function getDonationDateFormattedAttribute()
   {
     return \Carbon\Carbon::parse($this->donation_date)->format('M d, Y');
+  }
+
+  public function getPickUpLocationFormattedAttribute()
+  {
+    return Str::headline($this->pick_up_location);
+  }
+
+  public function getContactPersonFormattedAttribute()
+  {
+    return Str::headline($this->contact_person);
+  }
+
+  public function getDonationImageUrlAttribute()
+  {
+    if(str_contains($this->donation_image,'donation_images/'))
+    {
+      return asset('storage/'. $this->donation_image);
+    }
+
+    return asset($this->donation_image);
   }
 }
