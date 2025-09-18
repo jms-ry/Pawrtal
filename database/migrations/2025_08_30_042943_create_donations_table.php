@@ -18,9 +18,10 @@ return new class extends Migration
       $table->float('amount')->nullable();
       $table->text('item_description')->nullable();
       $table->integer('item_quantity')->nullable();
-      $table->enum('status',['pending','approved','picked_up','rejected']);
+      $table->enum('status',['pending','approved','picked_up','rejected','archived','cancelled']);
       $table->string('pick_up_location')->nullable();
       $table->string('contact_person')->nullable();
+      $table->string('donation_image')->nullable();
 
       $table->timestamp('donation_date')->useCurrent();
       $table->timestamp('updated_at')->nullable();

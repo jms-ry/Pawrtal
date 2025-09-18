@@ -43,11 +43,21 @@
               <td>{{ donation.amount_formatted }}</td>
               <td>{{ donation.item_description_formatted }}</td>
               <td>{{ donation.item_quantity_formatted }}</td>
-              <td>{{ donation.donation_date }}</td>
+              <td>{{ donation.donation_date_formatted }}</td>
               <td>{{ donation.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a class="btn btn-light fw-bolder me-1">View </a>
+                  <a class="btn btn-light fw-bolder me-1" data-bs-toggle="modal" data-bs-target="#viewDonationModal"
+                    :data-donation-id="donation.id"
+                    :data-donation-type-formatted="donation.donation_type_formatted"
+                    :data-donation-item-description="donation.item_description_formatted"
+                    :data-donation-item-quantity="donation.item_quantity_formatted"
+                    :data-donation-pick-up-location="donation.pick_up_location_formatted"
+                    :data-donation-contact-person="donation.contact_person_formatted"
+                    :data-donation-status="donation.status"
+                    :data-donation-type="donation.donation_type"
+                    :data-donation-image="donation.donation_image_url"
+                  >View </a>
                   <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" >Update </a>
                 </div>
               </td>
@@ -72,13 +82,24 @@
               <td>{{ donation.donation_type_formatted }}</td>
               <td>{{ donation.status_label }}</td>
               <td>
-                <a class="btn btn-light fw-bolder mb-1 w-100">View </a>
-                <a class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal">Update</a>
+                <a class="btn btn-light fw-bolder me-1 mb-2 w-100" data-bs-toggle="modal" data-bs-target="#viewDonationModal"
+                  :data-donation-id="donation.id"
+                  :data-donation-type-formatted="donation.donation_type_formatted"
+                  :data-donation-item-description="donation.item_description_formatted"
+                  :data-donation-item-quantity="donation.item_quantity_formatted"
+                  :data-donation-pick-up-location="donation.pick_up_location_formatted"
+                  :data-donation-contact-person="donation.contact_person_formatted"
+                  :data-donation-status="donation.status"
+                  :data-donation-type="donation.donation_type"
+                  :data-donation-image="donation.donation_image_url"
+                >View </a>
+                <a class="btn btn-info fw-bolder mb-1 w-100">Update</a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+      <ViewDonationModal/>
       <!-- Pagination (only show if there are results) -->
       <div v-if="donations.data.length > 0">
         <!--Large Screen Navigation-->
@@ -138,6 +159,7 @@
 <script setup>
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
+  import ViewDonationModal from '../../Modals/Users/MyDonations/ViewDonationModal.vue';
 
   const props = defineProps({
     donations: {
