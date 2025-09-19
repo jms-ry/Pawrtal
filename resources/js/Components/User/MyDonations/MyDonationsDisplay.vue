@@ -68,7 +68,7 @@
                     :data-donation-type="donation.donation_type"
                     :data-donation-image="donation.donation_image_url"
                   >Update </a>
-                  <a v-else class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
+                  <a v-else-if="donation.status !== 'archived'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
                 </div>
               </td>
             </tr>
