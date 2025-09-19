@@ -32,20 +32,22 @@
           </div>
         </div>
         <div class="modal-footer border-0 bg-info-subtle">
-          <div class="align-self-start">
-            <button type="button" class="btn btn-danger" id="cancelDonationBtn">Cancel Donation</button>
+          <div v-if="donationStatus === 'pending'" class="align-self-start">
+            <button type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
           </div>
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <CancelDonationModal />
 </template>
 
 <script setup>
   import { ref, onMounted} from 'vue'
+  import CancelDonationModal from './CancelDonationModal.vue'
 
   const donationId = ref(null)
   const donationType = ref(null)

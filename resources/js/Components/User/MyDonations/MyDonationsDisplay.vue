@@ -47,7 +47,7 @@
               <td>{{ donation.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a class="btn btn-light fw-bolder me-1" data-bs-toggle="modal" data-bs-target="#viewDonationModal"
+                  <a class="btn btn-success fw-bolder me-1" data-bs-toggle="modal" data-bs-target="#viewDonationModal"
                     :data-donation-id="donation.id"
                     :data-donation-type-formatted="donation.donation_type_formatted"
                     :data-donation-item-description="donation.item_description_formatted"
@@ -58,7 +58,8 @@
                     :data-donation-type="donation.donation_type"
                     :data-donation-image="donation.donation_image_url"
                   >View </a>
-                  <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" >Update </a>
+                  <a v-if="donation.status === 'pending'" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" >Update </a>
+                  <a v-else class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
                 </div>
               </td>
             </tr>
@@ -82,7 +83,7 @@
               <td>{{ donation.donation_type_formatted }}</td>
               <td>{{ donation.status_label }}</td>
               <td>
-                <a class="btn btn-light fw-bolder me-1 mb-2 w-100" data-bs-toggle="modal" data-bs-target="#viewDonationModal"
+                <a class="btn btn-success fw-bolder me-1 mb-2 w-100" data-bs-toggle="modal" data-bs-target="#viewDonationModal"
                   :data-donation-id="donation.id"
                   :data-donation-type-formatted="donation.donation_type_formatted"
                   :data-donation-item-description="donation.item_description_formatted"
@@ -93,13 +94,15 @@
                   :data-donation-type="donation.donation_type"
                   :data-donation-image="donation.donation_image_url"
                 >View </a>
-                <a class="btn btn-info fw-bolder mb-1 w-100">Update</a>
+                <a v-if="donation.status === 'pending'" class="btn btn-info fw-bolder mb-1 w-100">Update</a>
+                <a v-else class="btn btn-light fw-bolder ms-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id" >Archive </a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <ViewDonationModal/>
+      <ArchiveDonationModal/>
       <!-- Pagination (only show if there are results) -->
       <div v-if="donations.data.length > 0">
         <!--Large Screen Navigation-->
@@ -160,6 +163,7 @@
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
   import ViewDonationModal from '../../Modals/Users/MyDonations/ViewDonationModal.vue';
+  import ArchiveDonationModal from '../../Modals/Users/MyDonations/ArchiveDonationModal.vue';
 
   const props = defineProps({
     donations: {
