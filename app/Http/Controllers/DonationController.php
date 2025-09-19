@@ -6,6 +6,7 @@ use App\Http\Requests\StoreDonationRequest;
 use App\Http\Requests\UpdateDonationRequest;
 use App\Models\Donation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DonationController extends Controller
 {
@@ -105,6 +106,18 @@ class DonationController extends Controller
       $donation->update($requestData);
       return redirect()->back()->with('warning','Donation has been archived.');
     }
+
+    if ($request->hasFile('donation_image')) {
+      if($donation->donation_image){
+        Storage::delete($donation->donation_image);
+      }
+      $imagePath = $request->file('donation_image')->store('images/donation/donation_images', 'public');
+      $requestData['donation_image'] = $imagePath;
+    }else{
+      unset($requestData['donation_image']);
+    }
+
+    $donation->update($requestData);
 
     return redirect()->back()->with('info','Donation has been updated.');
   }
