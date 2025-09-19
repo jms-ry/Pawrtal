@@ -142,8 +142,12 @@ class UserController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+
     $donations = $user->donations()
       ->with('user')
+      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
+        $query->where('status', '!=', 'archived');
+      })
       ->when($search, function ($query, $search) {
         $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);

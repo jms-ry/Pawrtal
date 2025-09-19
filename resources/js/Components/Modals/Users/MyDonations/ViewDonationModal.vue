@@ -32,20 +32,22 @@
           </div>
         </div>
         <div class="modal-footer border-0 bg-info-subtle">
-          <div class="align-self-start">
-            <button type="button" class="btn btn-danger" id="cancelDonationBtn">Cancel Donation</button>
+          <div v-if="donationStatus === 'pending'" class="align-self-start">
+            <button type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
           </div>
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <CancelDonationModal />
 </template>
 
 <script setup>
   import { ref, onMounted} from 'vue'
+  import CancelDonationModal from './CancelDonationModal.vue'
 
   const donationId = ref(null)
   const donationType = ref(null)
@@ -57,56 +59,56 @@
   const type = ref(null)
   const donationImage = ref(null)
   onMounted(() => {
-  const modalEl = document.getElementById('viewDonationModal')
+    const modalEl = document.getElementById('viewDonationModal')
 
-  modalEl.addEventListener('show.bs.modal', (event) => { 
-    const button = event.relatedTarget
+    modalEl.addEventListener('show.bs.modal', (event) => { 
+      const button = event.relatedTarget
 
-    donationId.value = button.getAttribute('data-donation-id')
-    donationType.value = button.getAttribute('data-donation-type-formatted')
-    donationItemDescription.value = button.getAttribute('data-donation-item-description')
-    donationItemQuantity.value = button.getAttribute('data-donation-item-quantity')
-    pickUpLocation.value = button.getAttribute('data-donation-pick-up-location')
-    contactPerson.value = button.getAttribute('data-donation-contact-person')
-    donationStatus.value = button.getAttribute('data-donation-status')
-    type.value = button.getAttribute('data-donation-type')
-    donationImage.value = button.getAttribute('data-donation-image')
-    
-    const donationTypeField = document.getElementById('donationType')
-    donationTypeField.textContent = donationType.value + ' Donation'
-    
-    const donationStatusBadge =  document.getElementById('donationStatusLabel')
-    if(donationStatus.value === 'pending'){
-      donationStatusBadge.classList.add('text-bg-info')
-      const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-      donationStatusBadge.innerHTML = `<i class="bi bi-hourglass-split me-1"></i> ${formattedStatus}`
-
-    }else if(donationStatus.value === 'approved'){
-      donationStatusBadge.classList.add('text-bg-success')
-      const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-      donationStatusBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${formattedStatus}`
-
-    }else if(donationStatus.value === 'picked-up'){
-      donationStatusBadge.classList.add('text-bg-success')
-      const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-      donationStatusBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${formattedStatus}`
-
-    }else if(donationStatus.value === 'rejected'){
-      donationStatusBadge.classList.add('text-bg-danger')
-      const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-      donationStatusBadge.innerHTML = `<i class="bi bi-x-circle me-1"></i> ${formattedStatus}`
-
-    }else if(donationStatus.value === 'archived'){
-      donationStatusBadge.classList.add('text-bg-light')
-      const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-      donationStatusBadge.innerHTML = `<i class="bi bi-archive-fill me-1"></i> ${formattedStatus}`
+      donationId.value = button.getAttribute('data-donation-id')
+      donationType.value = button.getAttribute('data-donation-type-formatted')
+      donationItemDescription.value = button.getAttribute('data-donation-item-description')
+      donationItemQuantity.value = button.getAttribute('data-donation-item-quantity')
+      pickUpLocation.value = button.getAttribute('data-donation-pick-up-location')
+      contactPerson.value = button.getAttribute('data-donation-contact-person')
+      donationStatus.value = button.getAttribute('data-donation-status')
+      type.value = button.getAttribute('data-donation-type')
+      donationImage.value = button.getAttribute('data-donation-image')
       
-    }else{
-      donationStatusBadge.classList.add('text-bg-warning')
-      const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-      donationStatusBadge.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${formattedStatus}`
-    }
+      const donationTypeField = document.getElementById('donationType')
+      donationTypeField.textContent = donationType.value + ' Donation'
+      
+      const donationStatusBadge =  document.getElementById('donationStatusLabel')
+      if(donationStatus.value === 'pending'){
+        donationStatusBadge.classList.add('text-bg-info')
+        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
+        donationStatusBadge.innerHTML = `<i class="bi bi-hourglass-split me-1"></i> ${formattedStatus}`
+
+      }else if(donationStatus.value === 'approved'){
+        donationStatusBadge.classList.add('text-bg-success')
+        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
+        donationStatusBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${formattedStatus}`
+
+      }else if(donationStatus.value === 'picked-up'){
+        donationStatusBadge.classList.add('text-bg-success')
+        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
+        donationStatusBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${formattedStatus}`
+
+      }else if(donationStatus.value === 'rejected'){
+        donationStatusBadge.classList.add('text-bg-danger')
+        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
+        donationStatusBadge.innerHTML = `<i class="bi bi-x-circle me-1"></i> ${formattedStatus}`
+
+      }else if(donationStatus.value === 'archived'){
+        donationStatusBadge.classList.add('text-bg-light')
+        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
+        donationStatusBadge.innerHTML = `<i class="bi bi-archive-fill me-1"></i> ${formattedStatus}`
+        
+      }else{
+        donationStatusBadge.classList.add('text-bg-warning')
+        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
+        donationStatusBadge.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${formattedStatus}`
+      }
+    })
   })
-})
 
 </script>

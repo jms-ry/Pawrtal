@@ -41,7 +41,7 @@
               <td>{{ adoptionApplication.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a class="btn btn-light fw-bolder me-1">View </a>
+                  <a class="btn btn-success fw-bolder me-1">View </a>
                   <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" >Update </a>
                 </div>
               </td>
@@ -66,7 +66,7 @@
               <td>{{ adoptionApplication.rescue_name_formatted }}</td>
               <td>{{ adoptionApplication.status_label }}</td>
               <td>
-                <a class="btn btn-light fw-bolder mb-1 w-100">View </a>
+                <a class="btn btn-success fw-bolder mb-1 w-100">View </a>
                 <a class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal">Update</a>
               </td>
             </tr>
