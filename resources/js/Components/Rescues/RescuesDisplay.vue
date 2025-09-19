@@ -37,14 +37,14 @@
 
         <div class="row g-2 p-2 mt-1 mb-1">
           <div v-if="user?.isAdminOrStaff" class="col-12 text-center mx-auto">
-            <a :href="`/rescues/${rescue.id}`" class="btn btn-light w-50">View Profile</a>
+            <a :href="`/rescues/${rescue.id}`" class="btn btn-success w-50">View Profile</a>
           </div>
           <div v-else >
             <div v-if="rescue.is_adopted || rescue.is_unavailable" class="col-12 text-center mx-auto">
-              <a :href="`/rescues/${rescue.id}`" class="btn btn-light w-50">View Profile</a>
+              <a :href="`/rescues/${rescue.id}`" class="btn btn-success w-50">View Profile</a>
             </div>
             <div v-else class="col-12 text-center mx-auto d-flex gap-2 flex-row">
-              <a :href="`/rescues/${rescue.id}`" class="btn btn-light w-100">View Profile</a>
+              <a :href="`/rescues/${rescue.id}`" class="btn btn-success w-100">View Profile</a>
               <a class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal"
                 :data-user-id="user?.id"
                 :data-adoptable-name="rescue.name"

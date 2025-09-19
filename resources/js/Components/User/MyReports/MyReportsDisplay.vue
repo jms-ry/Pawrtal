@@ -45,7 +45,7 @@
               <td>{{ report.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light fw-bolder me-1"
+                  <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-success fw-bolder me-1"
                     :data-report-id="report.id"
                     :data-report-type="report.type"
                     :data-report-animal-name="report.animal_name_formatted"
@@ -113,7 +113,7 @@
               <td>{{ report.type_formatted }}</td>
               <td>{{ report.status_label }}</td>
               <td>
-                <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light fw-bolder mb-1 w-100"
+                <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-success fw-bolder mb-1 w-100"
                   :data-report-id="report.id"
                   :data-report-type="report.type"
                   :data-report-animal-name="report.animal_name_formatted"

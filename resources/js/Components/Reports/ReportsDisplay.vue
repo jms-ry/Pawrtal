@@ -48,7 +48,7 @@
           </div>
           <div class="card-footer bg-warning-subtle border-0 d-flex gap-2 justify-content-between px-3 mt-auto mx-auto mb-2">
             <div v-if="report.is_still_active" class="d-flex justify-content-between">
-              <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light me-1"
+              <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-success me-1"
                 :data-report-id="report.id"
                 :data-report-type="report.type"
                 :data-report-animal-name="report.animal_name_formatted"
@@ -100,7 +100,7 @@
               </div>
             </div>
             <div v-else class="d-flex">
-              <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-light me-1"
+              <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-success me-1"
                 :data-report-id="report.id"
                 :data-report-type="report.type"
                 :data-report-animal-name="report.animal_name_formatted"
