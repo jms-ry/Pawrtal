@@ -9,7 +9,7 @@
     <!--end large screen flash message-->
 
     <!--Small Screen Flash Message-->
-    <div class="d-md-none d-sm-block">
+    <div class="d-md-none d-sm-block ms-3">
       <FlashMessage class="alert-container me-3" data-controller="flash-message"/>
     </div>
     <!--end small screen flash message-->

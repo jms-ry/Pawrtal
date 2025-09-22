@@ -197,6 +197,9 @@ class UserController extends Controller
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
     $adoptionApplications = $user->adoptionApplications()
       ->with(['user','rescue'])
+      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
+        $query->where('status', '!=', 'archived');
+      })
       ->when($search, function ($query, $search) {
         $columns = ['reason_for_adoption','status',];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);

@@ -43,6 +43,8 @@
                 <option value="under_review">Under Review</option>
                 <option value="approved">Approved</option>
                 <option value="rejected">Rejected</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="archived">Archived</option>
               </select>
             </div>
           </div>
@@ -189,7 +191,9 @@
       'pending': 'Pending',
       'under_review': 'Under Review',
       'approved': 'Approved',
-      'rejected': 'Rejected'
+      'rejected': 'Rejected',
+      'cancelled': 'Cancelled',
+      'archived': 'Archived'
     };
     return labels[status] || status;
   };
