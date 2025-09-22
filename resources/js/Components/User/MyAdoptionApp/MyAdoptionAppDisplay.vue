@@ -41,8 +41,19 @@
               <td>{{ adoptionApplication.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a class="btn btn-success fw-bolder me-1">View </a>
-                  <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" >Update </a>
+                  <a class="btn btn-success fw-bolder me-1" data-bs-toggle="modal" data-bs-target="#viewApplicationModal"
+                    :data-application-id="adoptionApplication.id"
+                    :data-application-rescue-name="adoptionApplication.rescue_name_formatted"
+                    :data-application-status="adoptionApplication.status"
+                    :data-application-status-label="adoptionApplication.status_label"
+                    :data-application-application-date="adoptionApplication.application_date_formatted"
+                    :data-application-start-date="adoptionApplication.inspection_start_date_formatted"
+                    :data-application-end-date="adoptionApplication.inspection_end_date_formatted"
+                    :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
+                   >View 
+                  </a>
+                  <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" >Update </a>
+                  <a v-else-if="adoptionApplication.status !== 'archived'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
                 </div>
               </td>
             </tr>
@@ -66,8 +77,19 @@
               <td>{{ adoptionApplication.rescue_name_formatted }}</td>
               <td>{{ adoptionApplication.status_label }}</td>
               <td>
-                <a class="btn btn-success fw-bolder mb-1 w-100">View </a>
-                <a class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal">Update</a>
+                <a class="btn btn-success fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#viewApplicationModal"
+                  :data-application-id="adoptionApplication.id"
+                  :data-application-rescue-name="adoptionApplication.rescue_name_formatted"
+                  :data-application-status="adoptionApplication.status"
+                  :data-application-status-label="adoptionApplication.status_label"
+                  :data-application-application-date="adoptionApplication.application_date_formatted"
+                  :data-application-start-date="adoptionApplication.inspection_start_date_formatted"
+                  :data-application-end-date="adoptionApplication.inspection_end_date_formatted"
+                  :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
+                  >View 
+                </a>
+                <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal">Update</a>
+                <a v-else-if="adoptionApplication.status !== 'archived'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
               </td>
             </tr>
           </tbody>
@@ -79,10 +101,10 @@
         <div class="d-none d-md-flex justify-content-between align-items-center mt-md-5">
           <div class="text-dark">
             <span v-if="adoptionApplications.from === adoptionApplications.to">
-              <strong>Showing {{ adoptionApplications.from }} of {{ adoptionApplications.total }} donations</strong>
+              <strong>Showing {{ adoptionApplications.from }} of {{ adoptionApplications.total }} applications</strong>
             </span>
             <span v-else>
-              <strong>Showing {{ adoptionApplications.from || 0 }} to {{ adoptionApplications.to || 0 }} of {{ adoptionApplications.total }} donations</strong>
+              <strong>Showing {{ adoptionApplications.from || 0 }} to {{ adoptionApplications.to || 0 }} of {{ adoptionApplications.total }} applications</strong>
             </span>
           </div>
           <div class="btn-group" role="group" aria-label="Pagination">
@@ -107,7 +129,7 @@
               <strong>Showing {{ adoptionApplications.from || 0 }} of {{ adoptionApplications.total }} {{ adoptionApplications.total === 1 ? 'rescue' : 'adoptionApplications' }}</strong>
             </span>
             <span v-else>
-              <strong>Showing {{ adoptionApplications.from || 0 }} to {{ adoptionApplications.to || 0 }} of {{ adoptionApplications.total }} donations</strong>
+              <strong>Showing {{ adoptionApplications.from || 0 }} to {{ adoptionApplications.to || 0 }} of {{ adoptionApplications.total }} applications</strong>
             </span>
           </div>
           <div class="btn-group mt-3 w-100" role="group" aria-label="Pagination">
@@ -126,12 +148,16 @@
         </div>
       </div>
     </div>
+    <ViewApplicationModal/>
+    <ArchiveApplicationModal/>
   </div>
 </template>
 
 <script setup>
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
+  import ViewApplicationModal from '../../Modals/Users/MyAdoptionApplications/ViewApplicationModal.vue';
+import ArchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/ArchiveApplicationModal.vue';
 
   const props = defineProps({
     adoptionApplications: {

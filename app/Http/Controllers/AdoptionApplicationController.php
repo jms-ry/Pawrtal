@@ -24,65 +24,76 @@ class AdoptionApplicationController extends Controller
 
   }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-      $requestData = $request->all();
+  /**
+    * Store a newly created resource in storage.
+  */
+  public function store(Request $request)
+  {
+    $requestData = $request->all();
 
-      if($request->hasFile('valid_id')){
-        $validIdPath = $request->file('valid_id')->store('images/adoption_applications/valid_ids','public');
+    if($request->hasFile('valid_id')){
+      $validIdPath = $request->file('valid_id')->store('images/adoption_applications/valid_ids','public');
 
-        $requestData['valid_id'] = $validIdPath;
+      $requestData['valid_id'] = $validIdPath;
+    }
+
+    if($request->hasFile('supporting_documents')){
+      $supporting_documents = [];
+
+      foreach ($request->file('supporting_documents') as $supporting_document){
+        $supportingDocumentPath = $supporting_document->store('images/adoption_applications/supporting_documents','public');
+        $supporting_documents [] = $supportingDocumentPath;
       }
-
-      if($request->hasFile('supporting_documents')){
-        $supporting_documents = [];
-
-        foreach ($request->file('supporting_documents') as $supporting_document){
-          $supportingDocumentPath = $supporting_document->store('images/adoption_applications/supporting_documents','public');
-          $supporting_documents [] = $supportingDocumentPath;
-        }
-        $requestData['supporting_documents'] = $supporting_documents;
-      }else{
-        $requestData['supporting_documents'] = [];
-      }
-
-      $adoption_application = AdoptionApplication::create($requestData);
-
-      return redirect()->route('users.myAdoptionApplications')->with('success', 'Adoption application for '. $adoption_application->rescue->name. ' was submitted!');
+      $requestData['supporting_documents'] = $supporting_documents;
+    }else{
+      $requestData['supporting_documents'] = [];
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(AdoptionApplication $adoptionApplication)
-    {
-        //
+    $adoption_application = AdoptionApplication::create($requestData);
+
+    return redirect()->route('users.myAdoptionApplications')->with('success', 'Adoption application for '. $adoption_application->rescue->name. ' was submitted!');
+  }
+
+  /**
+    * Display the specified resource.
+  */
+  public function show(AdoptionApplication $adoptionApplication)
+  {
+    //
+  }
+
+  /**
+    * Show the form for editing the specified resource.
+  */
+  public function edit(AdoptionApplication $adoptionApplication)
+  {
+    //
+  }
+
+  /**
+    * Update the specified resource in storage.
+  */
+  public function update(Request $request, AdoptionApplication $adoptionApplication)
+  {
+    $requestData = $request->all();
+
+    //if the request status is "cancelled", update the status to "cancelled"
+    if($request->status === 'cancelled'){
+      $adoptionApplication->update($requestData);
+      return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been cancelled.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(AdoptionApplication $adoptionApplication)
-    {
-        //
+    if($request->status === 'archived'){
+      $adoptionApplication->update($requestData);
+      return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been archived.');
     }
+  }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, AdoptionApplication $adoptionApplication)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(AdoptionApplication $adoptionApplication)
-    {
-        //
-    }
+  /**
+    * Remove the specified resource from storage.
+  */
+  public function destroy(AdoptionApplication $adoptionApplication)
+  {
+    //
+  }
 }

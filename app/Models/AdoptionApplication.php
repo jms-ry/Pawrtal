@@ -27,7 +27,10 @@ class AdoptionApplication extends Model
   protected $appends = [
     'status_label',
     'application_date_formatted',
-    'rescue_name_formatted'
+    'rescue_name_formatted',
+    'inspection_start_date_formatted',
+    'inspection_end_date_formatted',
+    'reason_for_adoption_formatted'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
@@ -54,5 +57,20 @@ class AdoptionApplication extends Model
   public function getRescueNameFormattedAttribute()
   {
     return Str::headline($this->rescue->name);
+  }
+
+  public function getInspectionStartDateFormattedAttribute()
+  {
+    return \Carbon\Carbon::parse($this->preferred_inspection_start_date)->format('M d, Y');
+  }
+
+  public function getInspectionEndDateFormattedAttribute()
+  {
+    return \Carbon\Carbon::parse($this->preferred_inspection_end_date)->format('M d, Y');
+  }
+
+  public function getReasonForAdoptionFormattedAttribute()
+  {
+    return Str::of($this->reason_for_adoption)->replace('_',' ')->ucfirst();
   }
 }
