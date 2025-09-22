@@ -34,6 +34,7 @@
       <div v-for="adoptable in adoptables.data" :key="adoptable.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
         <div class="my-2">
           <span class="text-dark fw-bolder text-uppercase fs-4 ms-2 mt-5 p-2 font-monospace">{{ adoptable.name }}</span>
+          <span class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-info fs-6 bg-opacity-75 text-dark fw-bold rounded">{{adoptable.adoption_applications_count}}</span>
         </div>
         <div class="p-2 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
           <img :src="adoptable.profile_image_url" :alt="adoptable.name" class="w-100 h-100 object-fit-cover rounded-4">

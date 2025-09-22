@@ -105,6 +105,7 @@
 
   function validateEndDate(){
     const end_date = endDateValue.value
+    const start_date = startDateValue.value
 
     if(!end_date){
       endDateIsValid.value = false
@@ -115,10 +116,17 @@
     const selectedEndDate = new Date(end_date)
     const today = new Date()
     today.setHours(0,0,0,0)
+    const selectedStartDate = new Date(start_date)
 
     if(selectedEndDate < today){
       endDateIsValid.value = false
       endDateErrorMessage.value = "End Date can't be in the past."
+      return false
+    }
+
+    if(selectedEndDate < selectedStartDate){
+      endDateIsValid.value = false
+      endDateErrorMessage.value = "End Date must be later than or the same with the start date."
       return false
     }
 

@@ -17,6 +17,7 @@ class AdoptionController extends Controller
 
     $adoptables = Rescue::query()
       ->where('adoption_status','available')
+      ->withCount('adoptionApplications')
       ->when($search, function($query,$search){
         return $query->whereRaw('LOWER(name) LIKE LOWER(?)', ['%' . $search . '%']);
       })

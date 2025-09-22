@@ -16,49 +16,50 @@ class RescueController extends Controller
     * Display a listing of the resource.
   */
   public function index(Request $request)
-{
+  {
     $search = $request->get('search');
     $sexFilter = $request->get('sex');
     $sizeFilter = $request->get('size');
     $statusFilter = $request->get('status');
 
     $rescues = Rescue::query()
-        ->when($search, function ($query, $search) {
-            return $query->whereRaw('LOWER(name) LIKE LOWER(?)', ['%' . $search . '%']);
-        })
-        ->when($sexFilter, function ($query, $sexFilter) {
-            return $query->where('sex', $sexFilter);
-        })
-        ->when($sizeFilter, function ($query, $sizeFilter) {
-            return $query->where('size', $sizeFilter);
-        })
-        ->when($statusFilter, function ($query, $statusFilter) {
-            return $query->where('adoption_status', $statusFilter);
-        })
-        ->paginate(9)
-        ->withQueryString();
+      ->withCount('adoptionApplications')
+      ->when($search, function ($query, $search) {
+        return $query->whereRaw('LOWER(name) LIKE LOWER(?)', ['%' . $search . '%']);
+      })
+      ->when($sexFilter, function ($query, $sexFilter) {
+        return $query->where('sex', $sexFilter);
+      })
+      ->when($sizeFilter, function ($query, $sizeFilter) {
+        return $query->where('size', $sizeFilter);
+      })
+      ->when($statusFilter, function ($query, $statusFilter) {
+        return $query->where('adoption_status', $statusFilter);
+      })
+    ->paginate(9)
+    ->withQueryString();
 
     $user = Auth::user();
     $user = $user?->load('address', 'household');
 
     return Inertia::render('Rescues/Index', [
-        'rescues' => $rescues,
-        'user' => $user ? [
-            'id' => $user->id,
-            'full_name' => $user->fullName(),
-            'isAdminOrStaff' => $user->isAdminOrStaff(),
-            'canAdopt' => $user->canAdopt(),
-            'address' => $user->address,
-            'household' => $user->household,
-        ] : null,
-        'filters' => [
-            'search' => $search,
-            'sex' => $sexFilter,
-            'size' => $sizeFilter,
-            'status' => $statusFilter,
-        ],
+      'rescues' => $rescues,
+      'user' => $user ? [
+        'id' => $user->id,
+        'full_name' => $user->fullName(),
+        'isAdminOrStaff' => $user->isAdminOrStaff(),
+        'canAdopt' => $user->canAdopt(),
+        'address' => $user->address,
+        'household' => $user->household,
+      ] : null,
+      'filters' => [
+        'search' => $search,
+        'sex' => $sexFilter,
+        'size' => $sizeFilter,
+        'status' => $statusFilter,
+      ],
     ]);
-}
+  }
 
   /**
     * Show the form for creating a new resource.
