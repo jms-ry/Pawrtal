@@ -17,18 +17,20 @@
               <span class="mt-2 ms-2 me-4">Reason for Adoption: </span>
               <textarea readonly class="form-control mt-2 fw-bolder">{{ reasonForAdoption }}</textarea>
             </div>
-            <hr class="text-dark mt-3 mb-2">
-            <h6 class="fw-bolder text-uppercase font-monospace">Inspection Details:</h6>
-            <div class="d-flex flex-column align-items-start ms-2">
-              <span class="mt-2 ms-2 me-4">Inspection Date:  </span>
-              <span class="mt-2 ms-2 me-4">Inspection Location:  </span>
-              <span class="mt-2 ms-2 me-4">Inspection Officer:  </span>
-            </div>
-            <hr class="text-dark mt-3 mb-2">
-            <h6 class="fw-bolder text-uppercase font-monospace">Review Details:</h6>
-            <div class="d-flex flex-column align-items-start ms-2">
-              <span class="mt-2 ms-2 me-4">Review Notes:  </span>
-              <span class="mt-2 ms-2 me-4">Reviewed By:  </span>
+            <div v-show="applicationStatus !== 'pending'" >
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace">Inspection Details:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">Inspection Date:  </span>
+                <span class="mt-2 ms-2 me-4">Inspection Location:  </span>
+                <span class="mt-2 ms-2 me-4">Inspection Officer:  </span>
+              </div>
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace">Review Details:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">Review Notes:  </span>
+                <span class="mt-2 ms-2 me-4">Reviewed By:  </span>
+              </div>
             </div>
           </div>
         </div>
