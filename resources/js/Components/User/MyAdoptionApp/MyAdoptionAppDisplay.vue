@@ -52,7 +52,15 @@
                     :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                    >View 
                   </a>
-                  <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" >Update </a>
+                  <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#updateAdoptionApplicationFormModal"
+                    :data-application-rescue-id="adoptionApplication.rescue.id"
+                    :data-application-id="adoptionApplication.id"
+                    :data-application-rescue-name="adoptionApplication.rescue_name_formatted"
+                    :data-application-start-date="adoptionApplication.preferred_inspection_start_date"
+                    :data-application-end-date="adoptionApplication.preferred_inspection_end_date"
+                    :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
+                    >Update 
+                  </a>
                   <a v-else-if="adoptionApplication.status !== 'archived'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
                 </div>
               </td>
@@ -88,7 +96,15 @@
                   :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                   >View 
                 </a>
-                <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal">Update</a>
+                <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#updateAdoptionApplicationFormModal"
+                  :data-application-rescue-id="adoptionApplication.rescue.id"
+                  :data-application-id="adoptionApplication.id"
+                  :data-application-rescue-name="adoptionApplication.rescue_name_formatted"
+                  :data-application-start-date="adoptionApplication.preferred_inspection_start_date"
+                  :data-application-end-date="adoptionApplication.preferred_inspection_end_date"
+                  :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
+                  >Update
+                </a>
                 <a v-else-if="adoptionApplication.status !== 'archived'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
               </td>
             </tr>
@@ -150,6 +166,9 @@
     </div>
     <ViewApplicationModal/>
     <ArchiveApplicationModal/>
+    <UpdateAdoptionApplicationForm 
+      :user="user"
+    />
   </div>
 </template>
 
@@ -157,7 +176,8 @@
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
   import ViewApplicationModal from '../../Modals/Users/MyAdoptionApplications/ViewApplicationModal.vue';
-import ArchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/ArchiveApplicationModal.vue';
+  import ArchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/ArchiveApplicationModal.vue';
+  import UpdateAdoptionApplicationForm from '../../Modals/Adoption/UpdateAdoptionApplicationForm.vue';
 
   const props = defineProps({
     adoptionApplications: {

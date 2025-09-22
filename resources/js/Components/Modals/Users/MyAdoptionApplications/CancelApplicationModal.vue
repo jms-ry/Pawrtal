@@ -59,7 +59,7 @@
   }
 
   function closeModal(){
-    const modalEl = document.getElementById('cancelDonationModal')
+    const modalEl = document.getElementById('cancelApplicationModal')
     const modal = Modal.getInstance(modalEl)
     if (modal) {
       modal.hide()
