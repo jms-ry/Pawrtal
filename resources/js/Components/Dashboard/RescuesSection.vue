@@ -37,8 +37,22 @@
     </div>
     <div class="col-12 mt-3">
       <div class="card">
-        <div class="card-header">
-          <h5>Rescues by Month</h5>
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Rescues by Month</h5>
+          <div class="d-flex align-items-center">
+            <label for="yearSelect" class="form-label me-2 mb-0 text-muted">Year:</label>
+            <select 
+              id="yearSelect"
+              v-model="selectedYear" 
+              @change="updateChart"
+              class="form-select form-select-sm"
+              style="width: auto; min-width: 100px;"
+            >
+              <option v-for="year in availableYears" :key="year" :value="year">
+                {{ year }}
+              </option>
+            </select>
+          </div>
         </div>
         <div class="card-body">
           <canvas ref="rescuesChart" height="100"></canvas>
@@ -49,7 +63,7 @@
 </template>
 
 <script setup>
-  import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+  import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 
   const props = defineProps({
     rescues: {
@@ -64,6 +78,7 @@
   })
 
   const rescuesChart = ref(null)
+  const selectedYear = ref(new Date().getFullYear())
   let chartInstance = null 
 
   const rescueStats = computed(() => ({
@@ -73,9 +88,25 @@
     inShelter: props.rescues.filter(r => r.adoption_status !== 'adopted').length
   }))
 
+  const availableYears = computed(() => {
+    const currentYear = new Date().getFullYear()
+    const years = []
+    for (let year = currentYear; year >= 2018; year--) {
+      years.push(year)
+    }
+    return years
+  })
+
+  const filteredRescues = computed(() => {
+    return props.rescues.filter(r => {
+      const rescueYear = new Date(r.created_at).getFullYear()
+      return rescueYear === selectedYear.value
+    })
+  })
+
   const rescuesByMonth = computed(() => {
     const counts = Array(12).fill(0)
-    props.rescues.forEach(r => {
+    filteredRescues.value.forEach(r => {
       const month = new Date(r.created_at).getMonth()
       counts[month]++
     })
@@ -84,7 +115,7 @@
 
   const availableByMonth = computed(() => {
     const counts = Array(12).fill(0)
-    props.rescues
+    filteredRescues.value
       .filter(r => r.adoption_status === 'available')
       .forEach(r => {
         const month = new Date(r.created_at).getMonth()
@@ -96,7 +127,6 @@
   const createRescuesChart = () => {
     if (!rescuesChart.value) return
 
-    // destroy old chart if exists (important for resize handling)
     if (chartInstance) {
       chartInstance.destroy()
     }
@@ -136,11 +166,24 @@
     })
   }
 
+  const updateChart = () => {
+    createRescuesChart()
+  }
+
   const handleResize = () => {
     createRescuesChart()
   }
 
+  watch([rescuesByMonth, availableByMonth], () => {
+    if (chartInstance) {
+      createRescuesChart()
+    }
+  })
+
   onMounted(() => {
+    if (availableYears.value.length > 0) {
+      selectedYear.value = availableYears.value[0] 
+    }
     createRescuesChart()
     window.addEventListener('resize', handleResize)
   })
@@ -173,5 +216,10 @@
   canvas {
     width: 100% !important;
     height: 400px !important; 
+  }
+
+  .form-select-sm {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
   }
 </style>
