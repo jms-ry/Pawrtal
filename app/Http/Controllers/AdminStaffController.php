@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdoptionApplication;
 use App\Models\Donation;
 use App\Models\Report;
 use Illuminate\Support\Facades\Gate;
@@ -19,12 +20,14 @@ class AdminStaffController extends Controller
     }
     $rescues = Rescue::all();
     $reports = Report::all();
-    $donatons = Donation::all();
+    $donatons = Donation::whereNotIn('status', ['archived', 'cancelled'])->get();
+    $applications = AdoptionApplication::whereNotIn('status', ['archived', 'cancelled'])->get();
 
     return Inertia::render('AdminStaff/Dashboard',[
       'rescues' => $rescues,
       'reports' => $reports,
-      'donations' => $donatons
+      'donations' => $donatons,
+      'applications' => $applications
 
     ]);
   }

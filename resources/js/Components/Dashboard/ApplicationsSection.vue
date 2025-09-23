@@ -1,24 +1,24 @@
 <template>
   <div class="row mb-5">
     <div class="col-12">
-      <h2 class="mb-3">Donations</h2>
+      <h2 class="mb-3">Adoption Applications</h2>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card bg-info text-dark">
         <div class="card-body">
-          <h5 class="card-title">Total Donations</h5>
+          <h5 class="card-title">Total Application</h5>
           <h2 class="card-text">
-            <CountUp :value="donationStats.total" :duration="1200" />
+            <CountUp :value="applicationStats.total" :duration="1200" />
           </h2>
         </div>
       </div>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
-      <div class="card bg-danger text-dark">
+      <div class="card bg-success text-dark">
         <div class="card-body">
-          <h5 class="card-title">Monetary Donations</h5>
+          <h5 class="card-title">Approved Applications</h5>
           <h2 class="card-text">
-            <CountUp :value="donationStats.monetary" :duration="1200" />
+            <CountUp :value="applicationStats.approved" :duration="1200" />
           </h2>
         </div>
       </div>
@@ -26,9 +26,9 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card bg-warning text-dark">
         <div class="card-body">
-          <h5 class="card-title">In-kind Donations</h5>
+          <h5 class="card-title">Pending Applications</h5>
           <h2 class="card-text">
-            <CountUp :value="donationStats.inKind" :duration="1200" />
+            <CountUp :value="applicationStats.pending" :duration="1200" />
           </h2>
         </div>
       </div>
@@ -36,9 +36,9 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card bg-primary text-dark">
         <div class="card-body">
-          <h5 class="card-title">Pending Donations</h5>
+          <h5 class="card-title">Under Review Applications</h5>
           <h2 class="card-text">
-            <CountUp :value="donationStats.pending" :duration="1200" />
+            <CountUp :value="applicationStats.underReview" :duration="1200" />
           </h2>
         </div>
       </div>
@@ -46,13 +46,13 @@
     <div class="col-12 mt-3">
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">Donations by Month</h5>
+          <h5 class="mb-0">Adoption Applications by Month</h5>
           <div class="d-flex align-items-center">
-            <label for="yearSelect" class="form-label me-2 mb-0 text-muted">Year:</label>
+            <label for="yearSelectApplications" class="form-label me-2 mb-0 text-muted">Year:</label>
             <select 
-              id="yearSelectDonation"
+              id="yearSelectApplications"
               v-model="selectedYear" 
-              @change="updateDonationChart"
+              @change="updateChart"
               class="form-select form-select-sm"
               style="width: auto; min-width: 100px;"
             >
@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="card-body">
-          <canvas ref="donationsChart" height="100"></canvas>
+          <canvas ref="applicationsChart" height="100"></canvas>
         </div>
       </div>
     </div>
@@ -73,9 +73,9 @@
 <script setup>
   import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
   import CountUp from './CountUp.vue'
-  
+
   const props = defineProps({
-    donations:{
+    applications: {
       type: Array,
       required: true
     }
@@ -83,16 +83,16 @@
 
   const Chart = window.Chart
 
-  const donationsChart = ref(null)
+  const applicationsChart = ref(null)
   const selectedYear = ref(new Date().getFullYear())
-  let chartInstance = null
+  let chartInstance = null 
   let observer = null
-
-  const donationStats = computed(() => ({
-    total: props.donations.length,
-    inKind: props.donations.filter(r => r.donation_type === 'in-kind').length,
-    monetary: props.donations.filter(r => r.donation_type === 'monetary').length,
-    pending: props.donations.filter(r => r.status === 'pending').length,
+  
+  const applicationStats = computed(() => ({
+    total: props.applications.length,
+    approved: props.applications.filter(a => a.status === 'approved').length,
+    pending: props.applications.filter(a => a.status === 'pending').length,
+    underReview: props.applications.filter(a => a.status === 'under_review').length
   }))
 
   const availableYears = computed(() => {
@@ -103,57 +103,63 @@
     }
     return years
   })
-
-  const filteredDonations = computed(() => {
-    return props.donations.filter(r => {
-      const donationYear = new Date(r.donation_date).getFullYear()
-      return donationYear === selectedYear.value
+  const filteredApplications = computed(() => {
+    return props.applications.filter(a => {
+      const applicationYear = new Date(a.application_date).getFullYear()
+      return applicationYear === selectedYear.value
     })
   })
 
-  const monetaryDonationByMonth = computed(() => {
+  const approvedApplicationsByMonth = computed(() => {
     const counts = Array(12).fill(0)
-    filteredDonations.value
-      .filter(r => r.donation_type === 'monetary')
-      .forEach(r => {
-        const month = new Date(r.donation_date).getMonth()
+    filteredApplications.value
+      .filter(a => a.status === 'approved')
+      .forEach(a => {
+        const month = new Date(a.application_date).getMonth()
         counts[month]++
       })
     return counts
   })
 
-  const inKindDonationByMonth = computed(() => {
+  const pendingApplicationsByMonth = computed(() => {
     const counts = Array(12).fill(0)
-    filteredDonations.value
-      .filter(r => r.donation_type === 'in-kind')
-      .forEach(r => {
-        const month = new Date(r.donation_date).getMonth()
+    filteredApplications.value
+      .filter(a => a.status === 'pending')
+      .forEach(a => {
+        const month = new Date(a.application_date).getMonth()
         counts[month]++
       })
     return counts
   })
 
-  const createDonationsChart = () => {
-    if (!donationsChart.value) return
-    
+  const createApplicationsChart = () => {
+    if (!applicationsChart.value) return
+
     if (chartInstance) {
       chartInstance.destroy()
     }
-    const ctx = donationsChart.value.getContext('2d')
-    chartInstance = new Chart(ctx, {
-      type: 'bar',
+
+    chartInstance = new Chart(applicationsChart.value, {
+      type: 'line',
       data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: [
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
+        ],
         datasets: [
           {
-            label: 'Monetary Donations',
-            data: monetaryDonationByMonth.value,
-            backgroundColor: 'rgba(220, 53, 69, 0.8)'
+            label: 'Approved Applications',
+            data: approvedApplicationsByMonth.value,
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.1
           },
           {
-            label: 'In-Kind Donations',
-            data: inKindDonationByMonth.value,
-            backgroundColor: 'rgba(255, 193, 7, 0.8)'
+            label: 'Pending Applications',
+            data: pendingApplicationsByMonth.value,
+            borderColor: 'rgb(255, 159, 64)',
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            tension: 0.1
           }
         ]
       },
@@ -166,36 +172,37 @@
         },
         plugins: {
           legend: {
-            position: 'top',
+            position: 'top'
           },
           title: {
             display: true,
-            text: `Donations in ${selectedYear.value}`
+            text: `Adoption Applications in ${selectedYear.value}`
           }
         },
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            precision: 0
           }
         }
       }
     })
   }
 
-  const updateDonationChart = () => {
+  const updateChart = () => {
     if (chartInstance) {
       chartInstance.destroy()
       chartInstance = null
     }
-    createDonationsChart()
+    createApplicationsChart()
   }
 
   const handleResize = () => {
-    createDonationsChart()
+    createApplicationsChart()
   }
 
-  watch([monetaryDonationByMonth,inKindDonationByMonth,selectedYear], () => {
-    updateDonationChart()
+  watch([approvedApplicationsByMonth, pendingApplicationsByMonth,selectedYear], () => {
+    updateChart()
   })
 
   onMounted(() => {
@@ -205,7 +212,7 @@
     observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          createDonationsChart()
+          createApplicationsChart()
         } else {
           // Optional: destroy when leaving so it re-animates next time
           if (chartInstance) {
@@ -214,10 +221,10 @@
           }
         }
       })
-    }, { threshold: 0.3 }) // fire when 30% visible
+    }, { threshold: 0.3 })
 
-    if (donationsChart.value) {
-      observer.observe(donationsChart.value)
+    if (applicationsChart.value) {
+      observer.observe(applicationsChart.value)
     }
 
     window.addEventListener('resize', handleResize)
@@ -225,11 +232,12 @@
 
   onBeforeUnmount(() => {
     window.removeEventListener('resize', handleResize)
-    if (observer && donationsChart.value) {
-      observer.unobserve(donationsChart.value)
+    if (observer && applicationsChart.value) {
+      observer.unobserve(applicationsChart.value)
     }
     if (chartInstance) {
       chartInstance.destroy()
+      chartInstance = null
     }
   })
 

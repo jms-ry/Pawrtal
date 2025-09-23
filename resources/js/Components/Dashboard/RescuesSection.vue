@@ -170,6 +170,10 @@
         plugins: {
           legend: { 
             position: 'top' 
+          },
+          title: {
+            display: true,
+            text: `Rescues in ${selectedYear.value}`
           }
         },
         scales: {
@@ -182,6 +186,10 @@
   }
 
   const updateChart = () => {
+    if (chartInstance) {
+      chartInstance.destroy()
+      chartInstance = null
+    }
     createRescuesChart()
   }
 
@@ -189,10 +197,8 @@
     createRescuesChart()
   }
 
-  watch([rescuesByMonth, availableByMonth], () => {
-    if (chartInstance) {
-      createRescuesChart()
-    }
+  watch([rescuesByMonth, availableByMonth,selectedYear], () => {
+    updateChart()
   })
 
   onMounted(() => {

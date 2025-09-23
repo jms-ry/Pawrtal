@@ -167,6 +167,10 @@
         plugins: {
           legend: {
             position: 'top',
+          },
+          title: {
+            display: true,
+            text: `Lost-and-Found Reports in ${selectedYear.value}`
           }
         },
         scales: {
@@ -203,14 +207,14 @@
         if (entry.isIntersecting) {
           createReportsChart()
         } else {
-          // Optional: destroy when leaving so it re-animates next time
+          
           if (chartInstance) {
             chartInstance.destroy()
             chartInstance = null
           }
         }
       })
-    }, { threshold: 0.3 }) // fire when 30% visible
+    }, { threshold: 0.3 }) 
 
     if (reportsChart.value) {
       observer.observe(reportsChart.value)
