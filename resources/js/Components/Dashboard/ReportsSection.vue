@@ -148,7 +148,7 @@
           {
             label: 'Lost Reports',
             data: lostReportByMonth.value,
-            backgroundColor: 'rgba(220, 53, 69, 0.8)'
+            backgroundColor: 'rgba(255, 199, 0, 1)'
           },
           {
             label: 'Found Reports',
