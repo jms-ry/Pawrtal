@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdoptionApplication;
+use App\Models\Donation;
+use App\Models\Report;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Inertia\Inertia;
+use App\Models\Rescue;
 class AdminStaffController extends Controller
 {
   public function index()
@@ -14,6 +18,19 @@ class AdminStaffController extends Controller
     {
       return redirect('/')->with('error', 'You do not have authorization. Access denied!');
     }
-    return view('admin-staff.dashboard');
+    $rescues = Rescue::all();
+    $reports = Report::all();
+    $donatons = Donation::whereNotIn('status', ['archived', 'cancelled'])->get();
+    $applications = AdoptionApplication::whereNotIn('status', ['archived', 'cancelled'])->get();
+    $preiviousUrl = url()->previous();
+
+    return Inertia::render('AdminStaff/Dashboard',[
+      'rescues' => $rescues,
+      'reports' => $reports,
+      'donations' => $donatons,
+      'applications' => $applications,
+      'previousUrl' => $preiviousUrl,
+
+    ]);
   }
 }

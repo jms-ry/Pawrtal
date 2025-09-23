@@ -33,7 +33,7 @@
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
                 <template v-if="user.isAdminOrStaff">
-                  <li ><a class="dropdown-item" href="#">Manage</a></li>
+                  <li ><a class="dropdown-item" :href="`/dashboard`">Manage</a></li>
                 </template>
                 <template v-else>
                   <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">My Adoption Applications</a></li>
@@ -80,7 +80,7 @@
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
                 <template v-if="user.isAdminOrStaff">
-                  <li ><a class="dropdown-item" href="#">Manage</a></li>
+                  <li ><a class="dropdown-item" :href="`/dashboard`">Manage</a></li>
                 </template>
                 <template v-else>
                   <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">My Adoption Applications</a></li>
