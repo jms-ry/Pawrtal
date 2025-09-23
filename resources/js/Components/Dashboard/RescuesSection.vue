@@ -7,7 +7,9 @@
       <div class="card bg-primary text-dark">
         <div class="card-body">
           <h5 class="card-title">Total Rescues</h5>
-          <h2 class="card-text">{{ rescueStats.total }}</h2>
+          <h2 class="card-text">
+            <CountUp :value="rescueStats.total" :duration="1200" />
+          </h2>
         </div>
       </div>
     </div>
@@ -15,7 +17,9 @@
       <div class="card bg-success text-dark">
         <div class="card-body">
           <h5 class="card-title">Adopted</h5>
-          <h2 class="card-text">{{ rescueStats.adopted }}</h2>
+          <h2 class="card-text">
+            <CountUp :value="rescueStats.adopted" :duration="1200" />
+          </h2>
         </div>
       </div>
     </div>
@@ -23,7 +27,9 @@
       <div class="card bg-warning text-dark">
         <div class="card-body">
           <h5 class="card-title">Available for Adoption</h5>
-          <h2 class="card-text">{{ rescueStats.available }}</h2>
+          <h2 class="card-text">
+            <CountUp :value="rescueStats.available" :duration="1200" />
+          </h2>
         </div>
       </div>
     </div>
@@ -31,7 +37,9 @@
       <div class="card bg-info text-dark">
         <div class="card-body">
           <h5 class="card-title">In Shelter</h5>
-          <h2 class="card-text">{{ rescueStats.inShelter }}</h2>
+          <h2 class="card-text">
+            <CountUp :value="rescueStats.inShelter" :duration="1200" />
+          </h2>
         </div>
       </div>
     </div>
@@ -64,7 +72,8 @@
 
 <script setup>
   import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
-
+  import CountUp from './CountUp.vue'
+  
   const props = defineProps({
     rescues: {
       type: Array,
@@ -72,14 +81,12 @@
     }
   })
 
-  const Chart = window.Chart || (() => {
-    console.warn('Chart.js not loaded')
-    return { register: () => {}, Chart: class {} }
-  })
+  const Chart = window.Chart
 
   const rescuesChart = ref(null)
   const selectedYear = ref(new Date().getFullYear())
   let chartInstance = null 
+  let observer = null
 
   const rescueStats = computed(() => ({
     total: props.rescues.length,
@@ -156,6 +163,10 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 1200,
+          easing: "easeOutQuart"
+        },
         plugins: {
           legend: { 
             position: 'top' 
@@ -188,12 +199,34 @@
     if (availableYears.value.length > 0) {
       selectedYear.value = availableYears.value[0] 
     }
-    createRescuesChart()
+
+    observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          createRescuesChart()
+        } else {
+          if (chartInstance) {
+            chartInstance.destroy()
+            chartInstance = null
+          }
+        }
+      })
+    }, { threshold: 0.3 })
+
+    if (rescuesChart.value) {
+      observer.observe(rescuesChart.value)
+    }
+
     window.addEventListener('resize', handleResize)
   })
 
   onBeforeUnmount(() => {
     window.removeEventListener('resize', handleResize)
+
+    if (observer && rescuesChart.value) {
+      observer.unobserve(rescuesChart.value)
+    }
+
     if (chartInstance) {
       chartInstance.destroy()
     }

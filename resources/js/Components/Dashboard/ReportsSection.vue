@@ -7,7 +7,9 @@
       <div class="card bg-primary text-dark">
         <div class="card-body">
           <h5 class="card-title">Total Reports</h5>
-          <h2 class="card-text">{{ reportStats.total }}</h2>
+          <h2 class="card-text">
+            <CountUp :value="reportStats.total" :duration="1200" />
+          </h2>
         </div>
       </div>
     </div>
@@ -15,7 +17,9 @@
       <div class="card bg-warning text-dark">
         <div class="card-body">
           <h5 class="card-title">Lost Reports</h5>
-          <h2 class="card-text">{{ reportStats.lost }}</h2>
+          <h2 class="card-text">
+            <CountUp :value="reportStats.lost" :duration="1200" />
+          </h2>
         </div>
       </div>
     </div>
@@ -23,7 +27,9 @@
       <div class="card bg-success text-dark">
         <div class="card-body">
           <h5 class="card-title">Found Reports</h5>
-          <h2 class="card-text">{{ reportStats.found }}</h2>
+          <h2 class="card-text">
+            <CountUp :value="reportStats.found" :duration="1200" />
+          </h2>
         </div>
       </div>
     </div>
@@ -31,7 +37,9 @@
       <div class="card bg-info text-dark">
         <div class="card-body">
           <h5 class="card-title">Active Reports</h5>
-          <h2 class="card-text">{{ reportStats.active }}</h2>
+          <h2 class="card-text">
+            <CountUp :value="reportStats.active" :duration="1200" />
+          </h2>
         </div>
       </div>
     </div>
@@ -64,6 +72,7 @@
 
 <script setup>
   import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
+  import CountUp from './CountUp.vue'
 
   const props = defineProps({
     reports:{
@@ -72,15 +81,13 @@
     }
   })
 
-  const Chart = window.Chart || (() => {
-    console.warn('Chart.js not loaded')
-    return { register: () => {}, Chart: class {} }
-  })
+  const Chart = window.Chart
 
   const reportsChart = ref(null)
   const selectedYear = ref(new Date().getFullYear())
   let chartInstance = null
-  
+  let observer = null
+
   const reportStats = computed(() => ({
     total: props.reports.length,
     lost: props.reports.filter(r => r.type === 'lost').length,
@@ -153,6 +160,10 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 1200,
+          easing: "easeOutQuart"
+        },
         plugins: {
           legend: {
             position: 'top',
@@ -185,12 +196,32 @@
     if (availableYears.value.length > 0) {
       selectedYear.value = availableYears.value[0] 
     }
-    createReportsChart()
+    observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          createReportsChart()
+        } else {
+          // Optional: destroy when leaving so it re-animates next time
+          if (chartInstance) {
+            chartInstance.destroy()
+            chartInstance = null
+          }
+        }
+      })
+    }, { threshold: 0.3 }) // fire when 30% visible
+
+    if (reportsChart.value) {
+      observer.observe(reportsChart.value)
+    }
+
     window.addEventListener('resize', handleResize)
   })
 
   onBeforeUnmount(() => {
     window.removeEventListener('resize', handleResize)
+    if (observer && reportsChart.value) {
+      observer.unobserve(reportsChart.value)
+    }
     if (chartInstance) {
       chartInstance.destroy()
     }
