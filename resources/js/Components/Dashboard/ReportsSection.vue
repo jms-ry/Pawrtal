@@ -73,7 +73,7 @@
 <script setup>
   import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
   import CountUp from './CountUp.vue'
-
+  
   const props = defineProps({
     reports:{
       type: Array,
@@ -179,6 +179,10 @@
   }
 
   const updateReportChart = () => {
+    if (chartInstance) {
+      chartInstance.destroy()
+      chartInstance = null
+    }
     createReportsChart()
   }
 
@@ -186,10 +190,8 @@
     createReportsChart()
   }
 
-  watch([lostReportByMonth,foundReportByMonth], () => {
-    if (chartInstance) {
-      createReportsChart()
-    }
+  watch([lostReportByMonth,foundReportByMonth,selectedYear], () => {
+    updateReportChart()
   })
 
   onMounted(() => {
