@@ -4,7 +4,7 @@
       <h2 class="mb-3">Reports</h2>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
-      <div class="card bg-primary text-dark">
+      <div class="card bg-info text-dark">
         <div class="card-body">
           <h5 class="card-title">Total Reports</h5>
           <h2 class="card-text">
@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
-      <div class="card bg-info text-dark">
+      <div class="card bg-primary text-dark">
         <div class="card-body">
           <h5 class="card-title">Active Reports</h5>
           <h2 class="card-text">
