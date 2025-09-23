@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Report;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,11 @@ class AdminStaffController extends Controller
       return redirect('/')->with('error', 'You do not have authorization. Access denied!');
     }
     $rescues = Rescue::all();
+    $reports = Report::all();
+
     return Inertia::render('AdminStaff/Dashboard',[
       'rescues' => $rescues,
+      'reports' => $reports,
 
     ]);
   }

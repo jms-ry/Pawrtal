@@ -10,6 +10,9 @@
           <RescuesSection
             :rescues="rescues"
           />
+          <ReportsSection
+            :reports="reports"
+          />
         </div>
       </div>
     </div>
@@ -19,11 +22,16 @@
 <script setup>
   import { Head } from '@inertiajs/vue3';
   import AppLayout from '../../Layouts/AppLayout.vue';
-import RescuesSection from '../../Components/Dashboard/RescuesSection.vue';
+  import RescuesSection from '../../Components/Dashboard/RescuesSection.vue';
+import ReportsSection from '../../Components/Dashboard/ReportsSection.vue';
 
   const props = defineProps({
     rescues: {
       type: Array,
+      required: true
+    },
+    reports: {
+      type:Array,
       required: true
     }
   })

@@ -1,50 +1,50 @@
 <template>
   <div class="row mb-5">
     <div class="col-12">
-      <h2 class="mb-3">Rescues</h2>
+      <h2 class="mb-3">Reports</h2>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card bg-primary text-dark">
         <div class="card-body">
-          <h5 class="card-title">Total Rescues</h5>
-          <h2 class="card-text">{{ rescueStats.total }}</h2>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-      <div class="card bg-success text-dark">
-        <div class="card-body">
-          <h5 class="card-title">Adopted</h5>
-          <h2 class="card-text">{{ rescueStats.adopted }}</h2>
+          <h5 class="card-title">Total Reports</h5>
+          <h2 class="card-text">{{ reportStats.total }}</h2>
         </div>
       </div>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card bg-warning text-dark">
         <div class="card-body">
-          <h5 class="card-title">Available for Adoption</h5>
-          <h2 class="card-text">{{ rescueStats.available }}</h2>
+          <h5 class="card-title">Lost Reports</h5>
+          <h2 class="card-text">{{ reportStats.lost }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card bg-success text-dark">
+        <div class="card-body">
+          <h5 class="card-title">Found Reports</h5>
+          <h2 class="card-text">{{ reportStats.found }}</h2>
         </div>
       </div>
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card bg-info text-dark">
         <div class="card-body">
-          <h5 class="card-title">In Shelter</h5>
-          <h2 class="card-text">{{ rescueStats.inShelter }}</h2>
+          <h5 class="card-title">Active Reports</h5>
+          <h2 class="card-text">{{ reportStats.active }}</h2>
         </div>
       </div>
     </div>
     <div class="col-12 mt-3">
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-          <h5 class="mb-0">Rescues by Month</h5>
+          <h5 class="mb-0">Reports by Month</h5>
           <div class="d-flex align-items-center">
             <label for="yearSelect" class="form-label me-2 mb-0 text-muted">Year:</label>
             <select 
-              id="yearSelect"
+              id="yearSelectReport"
               v-model="selectedYear" 
-              @change="updateChart"
+              @change="updateReportChart"
               class="form-select form-select-sm"
               style="width: auto; min-width: 100px;"
             >
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="card-body">
-          <canvas ref="rescuesChart" height="100"></canvas>
+          <canvas ref="reportsChart" height="100"></canvas>
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@
   import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 
   const props = defineProps({
-    rescues: {
+    reports:{
       type: Array,
       required: true
     }
@@ -77,15 +77,15 @@
     return { register: () => {}, Chart: class {} }
   })
 
-  const rescuesChart = ref(null)
+  const reportsChart = ref(null)
   const selectedYear = ref(new Date().getFullYear())
-  let chartInstance = null 
-
-  const rescueStats = computed(() => ({
-    total: props.rescues.length,
-    adopted: props.rescues.filter(r => r.adoption_status === 'adopted').length,
-    available: props.rescues.filter(r => r.adoption_status === 'available').length,
-    inShelter: props.rescues.filter(r => r.adoption_status !== 'adopted').length
+  let chartInstance = null
+  
+  const reportStats = computed(() => ({
+    total: props.reports.length,
+    lost: props.reports.filter(r => r.type === 'lost').length,
+    found: props.reports.filter(r => r.type === 'found').length,
+    active: props.reports.filter(r => r.status === 'active').length,
   }))
 
   const availableYears = computed(() => {
@@ -97,26 +97,17 @@
     return years
   })
 
-  const filteredRescues = computed(() => {
-    return props.rescues.filter(r => {
-      const rescueYear = new Date(r.created_at).getFullYear()
-      return rescueYear === selectedYear.value
+  const filteredReports = computed(() => {
+    return props.reports.filter(r => {
+      const reportYear = new Date(r.created_at).getFullYear()
+      return reportYear === selectedYear.value
     })
   })
 
-  const rescuesByMonth = computed(() => {
+  const lostReportByMonth = computed(() => {
     const counts = Array(12).fill(0)
-    filteredRescues.value.forEach(r => {
-      const month = new Date(r.created_at).getMonth()
-      counts[month]++
-    })
-    return counts
-  })
-
-  const availableByMonth = computed(() => {
-    const counts = Array(12).fill(0)
-    filteredRescues.value
-      .filter(r => r.adoption_status === 'available')
+    filteredReports.value
+      .filter(r => r.type === 'lost')
       .forEach(r => {
         const month = new Date(r.created_at).getMonth()
         counts[month]++
@@ -124,32 +115,38 @@
     return counts
   })
 
-  const createRescuesChart = () => {
-    if (!rescuesChart.value) return
+  const foundReportByMonth = computed(() => {
+    const counts = Array(12).fill(0)
+    filteredReports.value
+      .filter(r => r.type === 'found')
+      .forEach(r => {
+        const month = new Date(r.created_at).getMonth()
+        counts[month]++
+      })
+    return counts
+  })
 
+  const createReportsChart = () => {
+    if (!reportsChart.value) return
+    
     if (chartInstance) {
       chartInstance.destroy()
     }
-
-    const ctx = rescuesChart.value.getContext('2d')
+    const ctx = reportsChart.value.getContext('2d')
     chartInstance = new Chart(ctx, {
-      type: 'line',
+      type: 'bar',
       data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
           {
-            label: 'Total Rescues',
-            data: rescuesByMonth.value,
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            tension: 0.1
+            label: 'Lost Reports',
+            data: lostReportByMonth.value,
+            backgroundColor: 'rgba(220, 53, 69, 0.8)'
           },
           {
-            label: 'Available for Adoption',
-            data: availableByMonth.value,
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            tension: 0.1
+            label: 'Found Reports',
+            data: foundReportByMonth.value,
+            backgroundColor: 'rgba(25, 135, 84, 0.8)'
           }
         ]
       },
@@ -157,30 +154,30 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { 
-            position: 'top' 
+          legend: {
+            position: 'top',
           }
         },
         scales: {
-          y: { 
-            beginAtZero: true 
+          y: {
+            beginAtZero: true
           }
         }
       }
     })
   }
 
-  const updateChart = () => {
-    createRescuesChart()
+  const updateReportChart = () => {
+    createReportsChart()
   }
 
   const handleResize = () => {
-    createRescuesChart()
+    createReportsChart()
   }
 
-  watch([rescuesByMonth, availableByMonth], () => {
+  watch([lostReportByMonth,foundReportByMonth], () => {
     if (chartInstance) {
-      createRescuesChart()
+      createReportsChart()
     }
   })
 
@@ -188,7 +185,7 @@
     if (availableYears.value.length > 0) {
       selectedYear.value = availableYears.value[0] 
     }
-    createRescuesChart()
+    createReportsChart()
     window.addEventListener('resize', handleResize)
   })
 
@@ -198,6 +195,7 @@
       chartInstance.destroy()
     }
   })
+
 </script>
 
 <style scoped>
