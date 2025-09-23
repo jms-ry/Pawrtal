@@ -13,6 +13,10 @@
           <ReportsSection
             :reports="reports"
           />
+
+          <DonationsSection
+            :donations="donations"
+          />
         </div>
       </div>
     </div>
@@ -24,6 +28,7 @@
   import AppLayout from '../../Layouts/AppLayout.vue';
   import RescuesSection from '../../Components/Dashboard/RescuesSection.vue';
   import ReportsSection from '../../Components/Dashboard/ReportsSection.vue';
+  import DonationsSection from '../../Components/Dashboard/DonationsSection.vue';
 
   const props = defineProps({
     rescues: {
@@ -32,6 +37,10 @@
     },
     reports: {
       type:Array,
+      required: true
+    },
+    donations: {
+      type: Array,
       required: true
     }
   })

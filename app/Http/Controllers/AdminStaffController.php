@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Donation;
 use App\Models\Report;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
@@ -18,10 +19,12 @@ class AdminStaffController extends Controller
     }
     $rescues = Rescue::all();
     $reports = Report::all();
+    $donatons = Donation::all();
 
     return Inertia::render('AdminStaff/Dashboard',[
       'rescues' => $rescues,
       'reports' => $reports,
+      'donations' => $donatons
 
     ]);
   }
