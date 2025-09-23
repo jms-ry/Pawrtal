@@ -22,12 +22,14 @@ class AdminStaffController extends Controller
     $reports = Report::all();
     $donatons = Donation::whereNotIn('status', ['archived', 'cancelled'])->get();
     $applications = AdoptionApplication::whereNotIn('status', ['archived', 'cancelled'])->get();
+    $preiviousUrl = url()->previous();
 
     return Inertia::render('AdminStaff/Dashboard',[
       'rescues' => $rescues,
       'reports' => $reports,
       'donations' => $donatons,
-      'applications' => $applications
+      'applications' => $applications,
+      'previousUrl' => $preiviousUrl,
 
     ]);
   }
