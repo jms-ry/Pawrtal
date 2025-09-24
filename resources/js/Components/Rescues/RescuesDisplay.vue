@@ -26,7 +26,7 @@
         <div class="my-2">
           <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ rescue.name }}</span>
           <span v-if="rescue.is_adopted" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-warning bg-opacity-75 text-dark fw-bold rounded"><i class="bi bi-heart-fill"></i></span>
-          <span v-else-if="rescue.is_available" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-info fs-6 bg-opacity-75 text-dark fw-bold rounded">{{rescue.adoption_applications_count}}</span>
+          <span v-else-if="rescue.adoption_applications_count > 0" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-info fs-6 bg-opacity-75 text-dark fw-bold rounded">{{rescue.adoption_applications_count}}</span>
         </div>
 
         <div class="p-2 mt-1 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
