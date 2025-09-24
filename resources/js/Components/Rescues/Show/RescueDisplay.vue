@@ -48,6 +48,9 @@
                     <span class="fw-bolder me-2">Spayed/Neutered:</span>
                     <span> {{ rescue.spayed_neutered_formatted }}</span>
                   </p>
+                  <p v-show="rescue.is_available" class="fs-5 lead font-monospace fst-italic mt-4">
+                    <span> {{ rescue.adoption_applications_count_formatted }}</span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -93,7 +96,7 @@
             </a>
           </div>
           <div class="d-flex justify-content-center me-1">
-            <a class="btn btn-lg btn-danger fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#deleteRescueProfileModal">Delete Rescue Profile</a>
+            <a class="btn btn-lg btn-danger fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#deleteRescueProfileModal" :class="{'disabled' : rescue.adoption_applications_count > 0}">Delete Rescue Profile</a>
           </div>
         </div>
       </div>

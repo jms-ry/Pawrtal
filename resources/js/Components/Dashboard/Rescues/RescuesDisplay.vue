@@ -1,9 +1,5 @@
 <template>
-  <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="profile-reminder adoption-application">
-    <ProfileReminder :user="user" />
-    <LoginReminder />
-    <AdoptionApplicationForm />
-    
+  <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
     <!-- No results message -->
     <div v-if="rescues.data.length === 0" class="text-center py-5">
       <div class="mb-4">
@@ -19,46 +15,64 @@
         </span>
       </p>
     </div>
-
-    <!-- Rescues Grid -->
-    <div v-else class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
-      <div v-for="rescue in rescues.data" :key="rescue.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
-        <div class="my-2">
-          <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ rescue.name }}</span>
-          <span v-if="rescue.is_adopted" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-warning bg-opacity-75 text-dark fw-bold rounded"><i class="bi bi-heart-fill"></i></span>
-          <span v-else-if="rescue.adoption_applications_count > 0" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-info fs-6 bg-opacity-75 text-dark fw-bold rounded">{{rescue.adoption_applications_count}}</span>
-        </div>
-
-        <div class="p-2 mt-1 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
-          <img :src="rescue.profile_image_url" :alt="rescue.name" class="w-100 h-100 object-fit-cover rounded-4">
-          <div class="position-absolute bottom-0 start-0 end-0 bg-warning-subtle bg-opacity-0 text-dark p-2 text-center">
-            <strong>{{ rescue.tag_label }}</strong>
-          </div>
-        </div>
-
-        <div class="row g-2 p-2 mt-1 mb-1">
-          <div v-if="user?.isAdminOrStaff" class="col-12 text-center mx-auto">
-            <a :href="`/rescues/${rescue.id}`" class="btn btn-success w-50">View Profile</a>
-          </div>
-          <div v-else >
-            <div v-if="rescue.is_adopted || rescue.is_unavailable" class="col-12 text-center mx-auto">
-              <a :href="`/rescues/${rescue.id}`" class="btn btn-success w-50">View Profile</a>
-            </div>
-            <div v-else class="col-12 text-center mx-auto d-flex gap-2 flex-row">
-              <a :href="`/rescues/${rescue.id}`" class="btn btn-success w-100">View Profile</a>
-              <a class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal"
-                :data-user-id="user?.id"
-                :data-adoptable-name="rescue.name"
-                :data-adoptable-id="rescue.id"
-                :data-bs-target="!user ? '#loginReminderModal' : (user.canAdopt ? '#adoptionApplicationFormModal' : '#profileReminderModal')">
-                Adopt Me!
-              </a>
-            </div>
-          </div>
-        </div>
+    <div v-else>
+      <!--Large Screen Table-->
+      <div class="d-none d-md-block">
+        <table class="table table-striped table-hover align-middle text-center">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Breed</th>
+              <th scope="col">Sex</th>
+              <th scope="col">Age</th>
+              <th scope="col">Adoption Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(rescue, index) in rescues.data" :key="rescue.id">
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ rescue.name_formatted }}</td>
+              <td>{{ rescue.breed_formatted }}</td>
+              <td>{{ rescue.sex_formatted }}</td>
+              <td>{{ rescue.age_formatted }}</td>
+              <td>{{ rescue.adoption_status_formatted }}</td>
+              <td>
+                <div class="d-flex justify-content-center align-items-center">
+                  <a :href="`/rescues/${rescue.id}`" class="btn btn-success fw-bolder me-1">View Profile</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--Small Screen Table-->
+      <div class="d-md-none d-block">
+        <table class="table table-striped table-hover align-middle text-center">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Adoption Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(rescue, index) in rescues.data" :key="rescue.id">
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ rescue.name_formatted }}</td>
+              <td>{{ rescue.adoption_status_formatted }}</td>
+              <td>
+                <div class="d-flex justify-content-center align-items-center">
+                  <a :href="`/rescues/${rescue.id}`" class="btn btn-success fw-bolder w-100">View Profile</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-
     <!-- Pagination (only show if there are results) -->
     <div v-if="rescues.data.length > 0">
       <!--Large Screen Navigation-->
@@ -117,15 +131,9 @@
 <script setup>
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
-  import ProfileReminder from '@/Components/Modals/ProfileReminder.vue';
-  import LoginReminder from '@/Components/Modals/LoginReminder.vue';
-  import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
 
   const props = defineProps({
     rescues: Object,
-    user: {
-      type: Object
-    },
     filters: {
       type: Object,
       default: () => ({})
@@ -160,7 +168,7 @@
       params.status = props.filters.status;
     }
 
-    router.get('/rescues', params, {
+    router.get('/dashboard/rescues', params, {
       preserveState: false,
       preserveScroll: true,
     });

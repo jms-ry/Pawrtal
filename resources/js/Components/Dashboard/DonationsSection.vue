@@ -6,7 +6,10 @@
     <div class="col-lg-3 col-md-6 mb-3">
       <div class="card bg-info text-dark">
         <div class="card-body">
-          <h5 class="card-title">Total Donations</h5>
+          <div class="d-flex justify-content-between">
+            <h5 class="card-title">Total Donations</h5>
+            <a :href="`/dashboard/donations`" class="fs-6 text-dark font-monospace fw-bold">Manage Donations</a>
+          </div>
           <h2 class="card-text">
             <CountUp :value="donationStats.total" :duration="1200" />
           </h2>

@@ -24,15 +24,23 @@ Route::resource('households',HouseholdController::class)->except('index','show',
 Route::resource('adoption-applications',AdoptionApplicationController::class)->except('create','edit');
 
 
-Route::get('register', function () {
-  return view('register');
-});
+Route::middleware('guest')->group(function () {
+  Route::get('register', function () {
+    return view('register');
+  })->name('register');
 
-Route::get('login', function () {
-  return view('sign_in');
+  Route::get('login', function () {
+    return view('sign_in');
+  })->name('login');
 });
 
 Route::middleware(['auth'])->group(function () {
+  Route::prefix('dashboard')->group(function () {
+    Route::get('rescues', [AdminStaffController::class, 'rescues'])->name('dashboard.rescues');
+    Route::get('reports', [AdminStaffController::class, 'reports'])->name('dashboard.reports');
+    Route::get('donations', [AdminStaffController::class, 'donations'])->name('dashboard.donations');
+    Route::get('adoption-applications', [AdminStaffController::class, 'adoptionApplications'])->name('dashboard.adoptionApplications');
+  });
   Route::get('/dashboard',[AdminStaffController::class, 'index']);
   Route::prefix('users')->group(function () {
     Route::get('my-reports', [UserController::class, 'myReports'])->name('users.myReports');

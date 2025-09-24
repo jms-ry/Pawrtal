@@ -1,9 +1,9 @@
 <template>
   <Head title="Dashboard"></Head>
   <AppLayout>
-    <div class="card mt-2 mt-md-3 mb-4 mb-md-2 border-0 me-2 me-md-5 ms-2 ms-md-5 px-1 px-md-5">
+    <div class="card mt-2 mt-md-5 mb-4 mb-md-5 border-0 me-2 me-md-5 ms-2 ms-md-5 px-1 px-md-5">
       <div class="card-body border-0 p-2 p-md-5">
-        <a :href="previousUrl" class="text-decoration-none font-monospace fw-bolder mb-md-0 mb-5 text-danger fs-4"><i class="bi bi-chevron-left"></i><span class="ms-0">Back </span></a>
+        <a :href="previousUrl" v-if="showBackNav" class="text-decoration-none font-monospace fw-bolder mb-md-0 mb-5 text-danger fs-4"><i class="bi bi-chevron-left"></i><span class="ms-0">Back </span></a>
         <div class="container-fluid py-4">
           <div class="card-header border-0 bg-secondary">
             <h3 class="text-center fw-bolder display-6 font-monospace mb-4">Organizational Dashboard</h3>
@@ -54,6 +54,7 @@
       required: true
     },
     previousUrl: String,
+    showBackNav: Boolean
   })
 </script>
 

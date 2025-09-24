@@ -32,8 +32,14 @@ class Donation extends Model
     'donation_date_formatted',
     'pick_up_location_formatted',
     'contact_person_formatted',
-    'donation_image_url'
+    'donation_image_url',
+    'donor_name_formatted',
   ];
+
+  public function getDonorNameFormattedAttribute()
+  {
+    return $this->user ? $this->user->fullName() : 'N/A';
+  }
   public function user() : BelongsTo
   {
     return $this->belongsTo(User::class);

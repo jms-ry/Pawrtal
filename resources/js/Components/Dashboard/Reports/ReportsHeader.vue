@@ -1,7 +1,10 @@
 <template>
   <div class="card-header border-0 bg-secondary">
-    <h3 class="text-center fw-bolder display-6 font-monospace mb-4 mt-3">Meet Our Rescues!</h3>
-    
+    <h4 class="fs-5 mb-md-4 mb-4 mt-3 mt-md-0 me-5 align-items-start">
+      <a :href="previousUrl" v-if="showBackNav" class="text-decoration-none font-monospace fw-bolder mb-md-0 mb-5 text-danger fs-4"><i class="bi bi-chevron-left"></i><span class="ms-0">Back </span></a>
+    </h4>
+    <h3 class="text-center fw-bolder display-6 font-monospace mb-4 mt-3">Manage Reports</h3>
+
     <!-- Active Filters Display -->
     <div v-if="hasActiveFilters" class="mb-3">
       <div class="d-flex flex-wrap gap-2 align-items-center">
@@ -12,19 +15,19 @@
           <button @click="clearFilter('search')" class="btn-close btn-close-dark ms-1" aria-label="Clear search"></button>
         </span>
         
-        <span v-if="filters.sex" class="badge bg-info text-dark d-flex flex-block align-items-center">
-          Sex: {{ filters.sex }}
-          <button @click="clearFilter('sex')" class="btn-close btn-close-dark ms-1" aria-label="Clear sex filter"></button>
-        </span>
-        
-        <span v-if="filters.size" class="badge bg-info text-dark d-flex flex-block align-items-center">
-          Size: {{ filters.size }}
-          <button @click="clearFilter('size')" class="btn-close btn-close-dark ms-1" aria-label="Clear size filter"></button>
+        <span v-if="filters.type" class="badge bg-info text-dark d-flex flex-block align-items-center">
+          Type: {{ filters.type }}
+          <button @click="clearFilter('type')" class="btn-close btn-close-dark ms-1" aria-label="Clear size filter"></button>
         </span>
         
         <span v-if="filters.status" class="badge bg-info text-dark d-flex flex-block align-items-center">
           Status: {{ getStatusLabel(filters.status) }}
           <button @click="clearFilter('status')" class="btn-close btn-close-dark ms-1" aria-label="Clear status filter"></button>
+        </span>
+
+        <span v-if="filters.sort" class="badge bg-info text-dark d-flex flex-block align-items-center">
+          Sort By: {{ getSortLabel(filters.sort) }}
+          <button @click="clearFilter('sort')" class="btn-close btn-close-dark ms-1" aria-label="Clear sort filter"></button>
         </span>
         
         <button @click="clearAllFilters" class="btn btn-sm btn-outline-secondary ms-2">
@@ -33,52 +36,45 @@
       </div>
     </div>
 
-    <div class="row g-3 g-md-5 mb-4 justify-content-end">
-      <div class="col-12 col-md-6">
-        <fieldset class="p-1">
+    <div class="row g-3 g-md-5 mb-md-2 mb-1 justify-content-end mt-md-0">
+      <div class="col-12 col-md-6 d-flex flex-column flex-md-row">
+        <fieldset class="p-1 mt-0 mb-0">
           <legend class="fs-6 fw-bold mx-2 font-monospace" id="filter-legend">Filter by</legend>
           <div class="row g-2 mt-0">
-            <div class="col-12 col-md-4">
-              <select v-model="selectedSex" @change="onFilterChange('sex', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
-                <option hidden selected value="">Sex</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
+            <div class="col-6">
+              <select v-model="selectedType" @change="onFilterChange('type', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
+                <option selected hidden value="">Type</option>
+                <option value="lost">Lost Reports</option>
+                <option value="found">Found Reports</option>
               </select>
             </div>
-            <div class="col-12 col-md-4">
-              <select v-model="selectedSize" 
-                @change="onFilterChange('size', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
-                <option hidden selected value="">Size</option>
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
+            <div class="col-6">
+              <select v-model="selectedStatus" @change="onFilterChange('status', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
+                <option selected hidden value="">Status</option>
+                <option value="active">Active</option>
+                <option value="resolved">Resolved</option>
               </select>
             </div>
-            <div class="col-12 col-md-4">
-              <select v-model="selectedStatus" @change="onFilterChange('status', $event.target.value)" class="form-select" aria-label="filter-select"aria-labelledby="filter-legend">
-                <option hidden selected value="">Adoption Status</option>
-                <option value="available">Available</option>
-                <option value="unavailable">Unavailable</option>
-                <option value="adopted">Adopted</option>
+          </div>
+        </fieldset>
+        <fieldset class="ms-md-3 p-1 mt-0 mb-0">
+          <legend class="fs-6 fw-bold mx-2" id="sort-legend">Sort by</legend>
+          <div class="row g-2 mt-0">
+            <div class="col-12">
+              <select v-model="selectedSort" @change="onSortChange($event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
+                <option selected hidden value="">Report Date</option>
+                <option value="desc">Newest</option>
+                <option value="asc">Oldest</option>
               </select>
             </div>
           </div>
         </fieldset>
       </div>
-      
+
       <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end">
         <!-- Search input for larger screens -->
         <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
-          <input 
-            type="text" 
-            v-model="searchInput" 
-            @input="onSearchInput" 
-            name="rescueSearchField" 
-            aria-label="Search" 
-            placeholder="Search Rescues" 
-            class="form-control" 
-            data-rescue-switch-target="searchField"
-          >
+          <input type="text" v-model="searchInput" @input="onSearchInput" name="reportsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control">
           <button 
             v-if="searchInput" 
             @click="clearSearch" 
@@ -92,16 +88,7 @@
         
         <!-- Search input for smaller screens -->
         <div class="input-group w-100 d-flex d-md-none px-1">
-          <input 
-            type="text" 
-            v-model="searchInput" 
-            @input="onSearchInput" 
-            name="rescueSearchField" 
-            aria-label="Search" 
-            placeholder="Search Rescues" 
-            class="form-control" 
-            data-rescue-switch-target="searchField"
-          >
+          <input type="text" v-model="searchInput" @input="onSearchInput" name="reportsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control">
           <button 
             v-if="searchInput" 
             @click="clearSearch" 
@@ -111,48 +98,58 @@
           > 
             <i class="bi bi-x-lg fw-bolder fs-6"></i>
           </button>
-        </div>
-      </div>  
+         </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
   import { ref, watch, onMounted, computed } from 'vue';
+
   const props = defineProps({
-    user: {
-      type: Object
-    },
+    previousUrl: String,
+    showBackNav: Boolean,
     filters: {
       type: Object,
       default: () => ({})
     }
-  });
+  })
 
   const emit = defineEmits(['search', 'filter']);
 
   const searchInput = ref('');
-  const selectedSex = ref('');
-  const selectedSize = ref('');
+  const selectedType = ref('');
   const selectedStatus = ref('');
+  const selectedSort = ref('');
 
   const hasActiveFilters = computed(() => {
-    return !!(props.filters.search || props.filters.sex || props.filters.size || props.filters.status);
+    return !!(props.filters.search || props.filters.type || props.filters.status || props.filters.sort);
   });
 
   onMounted(() => {
     searchInput.value = props.filters.search || '';
-    selectedSex.value = props.filters.sex || '';
-    selectedSize.value = props.filters.size || '';
+    selectedType.value = props.filters.type || '';
     selectedStatus.value = props.filters.status || '';
+    selectedSort.value = props.filters.sort || '';
   });
 
   watch(() => props.filters, (newFilters) => {
     searchInput.value = newFilters.search || '';
-    selectedSex.value = newFilters.sex || '';
-    selectedSize.value = newFilters.size || '';
+    selectedType.value = newFilters.type || '';
     selectedStatus.value = newFilters.status || '';
+    selectedSort.value = newFilters.sort || '';
   }, { deep: true });
+
+  const onSortChange = (value) => {
+    const filterData = { ...props.filters };
+    if (value) {
+      filterData.sort = value;
+    } else {
+      delete filterData.sort;
+    }
+    emit('filter', filterData);
+  };
 
   const onSearchInput = () => {
     emit('search', searchInput.value);
@@ -181,12 +178,12 @@
   
     if (filterType === 'search') {
       searchInput.value = '';
-    } else if (filterType === 'sex') {
-      selectedSex.value = '';
-    } else if (filterType === 'size') {
-      selectedSize.value = '';
+    } else if (filterType === 'type') {
+      selectedType.value = '';
     } else if (filterType === 'status') {
       selectedStatus.value = '';
+    }else if (filterType === 'sort') {
+      selectedSort.value = '';
     }
   
   emit('filter', filterData);
@@ -194,19 +191,27 @@
 
   const clearAllFilters = () => {
     searchInput.value = '';
-    selectedSex.value = '';
-    selectedSize.value = '';
+    selectedType.value = '';
     selectedStatus.value = '';
+    selectedSort.value = '';
   
     emit('filter', {});
   };
 
   const getStatusLabel = (status) => {
     const labels = {
-      'available': 'Available',
-      'unavailable': 'Unavailable', 
-      'adopted': 'Adopted'
+      'active': 'Active',
+      'resolved': 'Resolved'
     };
     return labels[status] || status;
   };
+
+  const getSortLabel = (sort) => {
+    const labels = {
+      'desc' : 'Newest',
+      'asc': 'Oldest'
+    };
+
+    return labels[sort] || sort;
+  }
 </script>

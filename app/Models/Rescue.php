@@ -44,8 +44,29 @@ class Rescue extends Model
     'spayed_neutered_formatted',
     'is_available',
     'name_formatted',
+    'breed_formatted',
+    'adoption_status_formatted',
+    'adoption_applications_count_formatted',
   ];
 
+  public function getAdoptionApplicationsCountFormattedAttribute()
+  {
+    if($this->adoption_applications_count > 0){
+      return "This rescue has " . $this->adoption_applications_count . " adoption application" . ($this->adoption_applications_count > 1 ? 's' : '') . ".";
+    }
+
+    return "This rescue has no adoption applications.";
+    
+  }
+  public function getBreedFormattedAttribute()
+  {
+    return Str::headline($this->breed);
+  }
+
+  public function getAdoptionStatusFormattedAttribute()
+  {
+    return Str::headline($this->adoption_status);
+  }
   public function getIsAvailableAttribute()
   {
     return $this->isAvailable();
