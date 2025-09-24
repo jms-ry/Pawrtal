@@ -1,23 +1,24 @@
 <template>
-  <Head title="Dashboard/Reports"></Head>
+  <Head title="Dashboard/Donations"></Head>
+
   <AppLayout>
     <div class="container-fluid">
       <div class="card border-0 p-md-5">
-        <ReportsHeader 
+        <DonationsHeader 
           :previousUrl="previousUrl"
           :showBackNav="showBackNav"
           :filters="filters"
           @search="handleSearch"
           @filter="handleFilter"
         />
-
-        <ReportsDisplay 
-          :reports = "reports"
+        <DonationsDisplay
+          :donations = "donations"
           :filters="filters"
         />
       </div>
     </div>
   </AppLayout>
+
 </template>
 
 <script setup>
@@ -25,10 +26,11 @@
   import { router } from '@inertiajs/vue3';
   import { ref } from 'vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
-  import ReportsHeader from '../../Components/Dashboard/Reports/ReportsHeader.vue';
-  import ReportsDisplay from '../../Components/Dashboard/Reports/ReportsDisplay.vue';
+  import DonationsHeader from '../../Components/Dashboard/Donations/DonationsHeader.vue';
+  import DonationsDisplay from '../../Components/Dashboard/Donations/DonationsDisplay.vue';
+
   const props = defineProps({
-    reports: {
+    donations: {
       type: Object,
       required: true
     },
@@ -68,8 +70,8 @@
       params.search = newFilters.search.trim();
     }
 
-    if (newFilters.type) {
-      params.type = newFilters.type;
+    if (newFilters.donation_type) {
+      params.donation_type = newFilters.donation_type;
     }
 
     if (newFilters.status) {
@@ -80,7 +82,7 @@
       params.sort = newFilters.sort;
     }
   
-    router.get('/dashboard/reports', params, {
+    router.get('/dashboard/donations', params, {
       preserveState: true,
       preserveScroll: false,
       replace: true,

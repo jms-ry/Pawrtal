@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
   Route::prefix('dashboard')->group(function () {
     Route::get('rescues', [AdminStaffController::class, 'rescues'])->name('dashboard.rescues');
     Route::get('reports', [AdminStaffController::class, 'reports'])->name('dashboard.reports');
+    Route::get('donations', [AdminStaffController::class, 'donations'])->name('dashboard.donations');
   });
   Route::get('/dashboard',[AdminStaffController::class, 'index']);
   Route::prefix('users')->group(function () {

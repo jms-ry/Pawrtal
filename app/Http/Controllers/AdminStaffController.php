@@ -21,7 +21,7 @@ class AdminStaffController extends Controller
     }
     $rescues = Rescue::all();
     $reports = Report::all();
-    $donatons = Donation::whereNotIn('status', ['archived', 'cancelled'])->get();
+    $donatons = Donation::whereNotIn('status', ['archived'])->get();
     $applications = AdoptionApplication::whereNotIn('status', ['archived', 'cancelled'])->get();
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard']);
@@ -137,6 +137,66 @@ class AdminStaffController extends Controller
       'filters' => [
         'search' => $search,
         'type' => $typeFilter,
+        'status' => $statusFilter,
+        'sort' => $sortOrder,
+      ],
+    ]);
+  }
+
+  public function donations(Request $request)
+  {
+    if(Gate::denies('admin-staff-access',Auth::user()))
+    {
+      return redirect('/')->with('error', 'You do not have authorization. Access denied!');
+    }
+
+    $search = $request->get('search');
+    $typeFilter = $request->get('donation_type');;
+    $statusFilter = $request->get('status');
+    $sortOrder = $request->get('sort');
+    $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+
+    $donations = Donation::query()
+      ->with('user')
+      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
+        $query->where('status', '!=', 'archived');
+      })
+      ->when($search, function ($query, $search) {
+        $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
+        $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+        return $query->where(function ($q) use ($keywords, $columns) {
+          foreach ($keywords as $word) {
+            $q->where(function ($subQ) use ($word, $columns) {
+              foreach ($columns as $col) {
+                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
+              }
+            });
+          }
+        });
+      })
+      ->when($typeFilter, function ($query, $typeFilter) {
+        return $query->where('donation_type', $typeFilter);
+      })
+      ->when($statusFilter, function ($query, $statusFilter) {
+        return $query->where('status', $statusFilter);
+      })
+      ->when($sortOrder, function($query,$sortOrder){
+        return $query->orderBy('donation_date',$sortOrder);
+      })
+
+      ->paginate(9)
+    ->withQueryString();
+
+    $previousUrl = url()->previous();
+    $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/donations']);
+
+    return Inertia::render('AdminStaff/Donations',[
+      'donations' => $donations,
+      'previousUrl' => $previousUrl,
+      'showBackNav' => $showBackNav,
+      'filters' => [
+        'search' => $search,
+        'donation_type' => $typeFilter,
         'status' => $statusFilter,
         'sort' => $sortOrder,
       ],
