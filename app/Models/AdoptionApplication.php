@@ -31,7 +31,8 @@ class AdoptionApplication extends Model
     'inspection_start_date_formatted',
     'inspection_end_date_formatted',
     'reason_for_adoption_formatted',
-    'valid_id_url'
+    'valid_id_url',
+    'applicant_full_name'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
@@ -45,6 +46,13 @@ class AdoptionApplication extends Model
     return $this->belongsTo(Rescue::class);
   }
 
+  public function getApplicantFullNameAttribute()
+  {
+    if($this->user){
+      return $this->user->fullName();
+    }
+    return "Deleted User";
+  }
   public function getStatusLabelAttribute()
   {
     return Str::of($this->status)->replace('_',' ')->ucfirst();

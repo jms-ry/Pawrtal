@@ -22,7 +22,7 @@ class AdminStaffController extends Controller
     $rescues = Rescue::all();
     $reports = Report::all();
     $donatons = Donation::whereNotIn('status', ['archived'])->get();
-    $applications = AdoptionApplication::whereNotIn('status', ['archived', 'cancelled'])->get();
+    $applications = AdoptionApplication::whereNotIn('status', ['archived'])->get();
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard']);
 
@@ -201,5 +201,64 @@ class AdminStaffController extends Controller
         'sort' => $sortOrder,
       ],
     ]);
+  }
+
+  public function adoptionApplications(Request $request)
+  {
+    if(Gate::denies('admin-staff-access',Auth::user()))
+    {
+      return redirect('/')->with('error', 'You do not have authorization. Access denied!');
+    }
+
+    $search = $request->get('search');
+    $statusFilter = $request->get('status');
+    $sortOrder = $request->get('sort');
+    $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+
+    $adoptionApplications = AdoptionApplication::query()
+      ->with(['user','rescue'])
+      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
+        $query->where('status', '!=', 'archived');
+      })
+      ->when($search, function ($query, $search) {
+        $columns = ['reason_for_adoption','status',];
+        $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+
+        return $query->where(function ($q) use ($keywords, $columns) {
+          foreach ($keywords as $word) {
+            $q->where(function ($subQ) use ($word, $columns) {
+              foreach ($columns as $col) {
+                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
+              }
+            })
+            ->orWhereHas('rescue', function ($rescueQ) use ($word) {
+              $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
+            });;
+          }
+        });
+      })
+      ->when($statusFilter, function ($query, $statusFilter) {
+        return $query->where('status', $statusFilter);
+      })
+      ->when($sortOrder, function($query,$sortOrder){
+        return $query->orderBy('application_date',$sortOrder);
+      })
+      ->orderBy('application_date', 'desc')
+      ->paginate(9)
+    ->withQueryString();
+
+    $previousUrl = url()->previous();
+    $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/adoption-applications']);
+
+    return Inertia::render('AdminStaff/AdoptionApplications',[
+      'adoptionApplications' => $adoptionApplications,
+      'previousUrl' => $previousUrl,
+      'showBackNav' => $showBackNav,
+      'filters' => [
+        'search' => $search,
+        'status' => $statusFilter,
+        'sort' => $sortOrder,
+      ],
+    ]); 
   }
 }
