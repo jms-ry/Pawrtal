@@ -117,7 +117,8 @@ class RescueController extends Controller
       $urlText = is_numeric($segments->last()) ? '' : "to " . ucfirst($segments->last());
     }
     $user = $user?->load('address', 'household');
-
+    $rescue->loadCount('adoptionApplications');
+    
     return Inertia::render('Rescues/Show',[
       'user' => $user ? [
         'id' => $user->id,

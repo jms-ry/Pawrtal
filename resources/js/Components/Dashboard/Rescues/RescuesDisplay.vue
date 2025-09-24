@@ -47,6 +47,31 @@
           </tbody>
         </table>
       </div>
+      <!--Small Screen Table-->
+      <div class="d-md-none d-block">
+        <table class="table table-striped table-hover align-middle text-center">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Adoption Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(rescue, index) in rescues.data" :key="rescue.id">
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ rescue.name_formatted }}</td>
+              <td>{{ rescue.adoption_status_formatted }}</td>
+              <td>
+                <div class="d-flex justify-content-center align-items-center">
+                  <a :href="`/rescues/${rescue.id}`" class="btn btn-success fw-bolder w-100">View Profile</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <!-- Pagination (only show if there are results) -->
     <div v-if="rescues.data.length > 0">

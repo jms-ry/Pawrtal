@@ -57,7 +57,10 @@ class AdoptionApplication extends Model
 
   public function getRescueNameFormattedAttribute()
   {
-    return Str::headline($this->rescue->name);
+    if($this->rescue){
+      return Str::headline($this->rescue->name);
+    }
+    return "Deleted Rescue";
   }
 
   public function getInspectionStartDateFormattedAttribute()
