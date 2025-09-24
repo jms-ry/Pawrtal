@@ -95,7 +95,7 @@ class RescueController extends Controller
 
     $rescue = Rescue::create($requestData);
     
-    return redirect()->route('rescues.index')->with('success', 'Rescue profile for '. $rescue->name. ' has been created!');
+    return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' has been created!');
   }
 
   /**
@@ -188,6 +188,6 @@ class RescueController extends Controller
     $rescue = Rescue::find($rescue->id);
     $rescue->delete();
 
-    return redirect()->route('rescues.index')->with('warning', 'Rescue profile for '. $rescue->name. ' has been deleted!');
+    return redirect()->route('dashboard.rescues')->with('warning', 'Rescue profile for '. $rescue->name. ' has been deleted!');
   }
 }
