@@ -85,4 +85,61 @@ class AdminStaffController extends Controller
       ],
     ]);
   }
+
+  public function reports(Request $request)
+  {
+    if(Gate::denies('admin-staff-access',Auth::user()))
+    {
+      return redirect('/')->with('error', 'You do not have authorization. Access denied!');
+    }
+
+    $search = $request->get('search');
+    $statusFilter = $request->get('status');
+    $typeFilter = $request->get('type');;
+    $statusFilter = $request->get('status');
+    $sortOrder = $request->get('sort');
+    $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+
+    $reports = Report::query()
+      ->when($search, function ($query, $search) {
+        $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
+        $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+        return $query->where(function ($q) use ($keywords, $columns) {
+          foreach ($keywords as $word) {
+            $q->where(function ($subQ) use ($word, $columns) {
+              foreach ($columns as $col) {
+                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
+              }
+            });
+          }
+        });
+      })
+      ->when($typeFilter, function ($query, $typeFilter) {
+        return $query->where('type', $typeFilter);
+      })
+      ->when($statusFilter, function ($query, $statusFilter) {
+        return $query->where('status', $statusFilter);
+      })
+      ->when($sortOrder, function($query,$sortOrder){
+        return $query->orderBy('created_at',$sortOrder);
+      })
+      ->orderBy('created_at', 'desc')
+      ->paginate(9)
+    ->withQueryString();
+
+    $previousUrl = url()->previous();
+    $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/reports']);
+
+    return Inertia::render('AdminStaff/Reports',[
+      'reports' => $reports,
+      'previousUrl' => $previousUrl,
+      'showBackNav' => $showBackNav,
+      'filters' => [
+        'search' => $search,
+        'type' => $typeFilter,
+        'status' => $statusFilter,
+        'sort' => $sortOrder,
+      ],
+    ]);
+  }
 }

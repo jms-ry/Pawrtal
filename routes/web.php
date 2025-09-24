@@ -37,6 +37,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth'])->group(function () {
   Route::prefix('dashboard')->group(function () {
     Route::get('rescues', [AdminStaffController::class, 'rescues'])->name('dashboard.rescues');
+    Route::get('reports', [AdminStaffController::class, 'reports'])->name('dashboard.reports');
   });
   Route::get('/dashboard',[AdminStaffController::class, 'index']);
   Route::prefix('users')->group(function () {
