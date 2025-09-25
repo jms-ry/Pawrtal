@@ -43,7 +43,7 @@ class AdoptionApplication extends Model
   }
   public function rescue()
   {
-    return $this->belongsTo(Rescue::class);
+    return $this->belongsTo(Rescue::class)->withTrashed();
   }
 
   public function getApplicantFullNameAttribute()
@@ -65,10 +65,10 @@ class AdoptionApplication extends Model
 
   public function getRescueNameFormattedAttribute()
   {
-    if($this->rescue){
-      return Str::headline($this->rescue->name);
+    if($this->rescue && $this->rescue->trashed()){
+      return Str::headline($this->rescue->name) . ' (Archived)';
     }
-    return "Deleted Rescue";
+    return $this->rescue ? Str::headline($this->rescue->name) : '(Rescue Profile Permanently Deleted)';
   }
 
   public function getInspectionStartDateFormattedAttribute()

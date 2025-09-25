@@ -21,8 +21,12 @@ class RescueController extends Controller
     $sexFilter = $request->get('sex');
     $sizeFilter = $request->get('size');
     $statusFilter = $request->get('status');
+    
+    $user = Auth::user();
+    $user = $user?->load('address', 'household');
 
     $rescues = Rescue::query()
+      ->visibleTo($user)
       ->withCount('adoptionApplications')
       ->when($search, function ($query, $search) {
         return $query->whereRaw('LOWER(name) LIKE LOWER(?)', ['%' . $search . '%']);
@@ -36,11 +40,11 @@ class RescueController extends Controller
       ->when($statusFilter, function ($query, $statusFilter) {
         return $query->where('adoption_status', $statusFilter);
       })
-    ->paginate(9)
+      ->orderBy('id', 'asc')
+      ->paginate(9)
     ->withQueryString();
 
-    $user = Auth::user();
-    $user = $user?->load('address', 'household');
+    
 
     return Inertia::render('Rescues/Index', [
       'rescues' => $rescues,
@@ -102,11 +106,15 @@ class RescueController extends Controller
     * Display the specified resource.
   */
   public function show(Rescue $rescue)
-  {
+  { 
+    $user = Auth::user();
+    
+    if (!$user?->can('view', $rescue)) {
+        return redirect()->back()->with('error', 'You are not authorized to view this rescue profile.');
+    }
     $randomImages = collect($rescue->images_url)->shuffle()->take(3);
     $notEmpty = $randomImages->isNotEmpty();
-    $user = Auth::user();
-
+    
     $previousUrl = url()->previous();
     $backContext = null;
     $path = parse_url($previousUrl, PHP_URL_PATH);
@@ -189,6 +197,13 @@ class RescueController extends Controller
     $rescue = Rescue::find($rescue->id);
     $rescue->delete();
 
-    return redirect()->route('dashboard.rescues')->with('warning', 'Rescue profile for '. $rescue->name. ' has been deleted!');
+    return redirect()->back()->with('warning', 'Rescue profile for '. $rescue->name. ' has been archived!');
+  }
+
+  public function restore(Rescue $rescue)
+  {
+    $rescue->restore();
+
+    return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' has been restored!');
   }
 }

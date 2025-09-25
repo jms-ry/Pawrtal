@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Rescue extends Model
 {
+  use SoftDeletes;
   protected $fillable = [
     'name',
     'species',
@@ -49,6 +50,14 @@ class Rescue extends Model
     'adoption_applications_count_formatted',
   ];
 
+  public function scopeVisibleTo($query, $user)
+  {
+    return $user && $user->isAdminOrStaff() ? $query->withTrashed() :$query;
+  }
+  public function resolveRouteBinding($value, $field = null)
+  {
+    return $this->withTrashed()->where($field ?? $this->getRouteKeyName(), $value)->firstOrFail();
+  }
   public function getAdoptionApplicationsCountFormattedAttribute()
   {
     if($this->adoption_applications_count > 0){

@@ -19,7 +19,7 @@ class AdminStaffController extends Controller
     {
       return redirect('/')->with('error', 'You do not have authorization. Access denied!');
     }
-    $rescues = Rescue::all();
+    $rescues = Rescue::withTrashed()->get();
     $reports = Report::all();
     $donatons = Donation::whereNotIn('status', ['archived'])->get();
     $applications = AdoptionApplication::whereNotIn('status', ['archived'])->get();
@@ -48,6 +48,7 @@ class AdminStaffController extends Controller
     $statusFilter = $request->get('status');
 
     $rescues = Rescue::query()
+      ->withTrashed()
       ->withCount('adoptionApplications')
       ->when($search, function ($query, $search) {
         return $query->whereRaw('LOWER(name) LIKE LOWER(?)', ['%' . $search . '%']);
@@ -61,7 +62,8 @@ class AdminStaffController extends Controller
       ->when($statusFilter, function ($query, $statusFilter) {
         return $query->where('adoption_status', $statusFilter);
       })
-    ->paginate(9)
+      ->orderBy('id', 'asc')
+      ->paginate(9)
     ->withQueryString();
 
     $previousUrl = url()->previous();

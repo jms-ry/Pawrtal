@@ -24,4 +24,9 @@ class AuthServiceProvider extends ServiceProvider
       return $user->isAdminOrStaff();
     });
   }
+
+  protected $policies = [
+    \App\Models\Rescue::class => \App\Policies\RescuePolicy::class,
+  ];
+
 }
