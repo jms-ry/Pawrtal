@@ -199,4 +199,11 @@ class RescueController extends Controller
 
     return redirect()->back()->with('warning', 'Rescue profile for '. $rescue->name. ' has been archived!');
   }
+
+  public function restore(Rescue $rescue)
+  {
+    $rescue->restore();
+
+    return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' has been restored!');
+  }
 }

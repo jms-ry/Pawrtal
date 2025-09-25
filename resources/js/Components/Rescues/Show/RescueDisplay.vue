@@ -92,11 +92,12 @@
             <a class="btn btn-lg btn-info fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#editRescueProfileModal"
               :data-rescue-profile-image="rescue.profile_image_url"
               :data-rescue-name="rescue.name"
-              >Update Rescue Profile
+              >Update Profile
             </a>
           </div>
           <div class="d-flex justify-content-center me-1">
-            <a class="btn btn-lg btn-light fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#archiveRescueProfileModal" >Archive Rescue Profile</a>
+            <a v-if=!rescue.deleted_at class="btn btn-lg btn-light fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#archiveRescueProfileModal" >Archive Profile</a>
+            <a v-else class="btn btn-lg btn-success fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#restoreRescueProfileModal" >Restore Profile</a>
           </div>
         </div>
       </div>
@@ -105,6 +106,10 @@
       />
 
       <UpdateRescueProfileModal
+        :rescue="rescue"
+      />
+
+      <RestoreRescueProfileModal
         :rescue="rescue"
       />
     </div>
@@ -129,4 +134,5 @@
   import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
   import ArchiveRescueProfileModal from '../../Modals/Rescues/ArchiveRescueProfileModal.vue';
   import UpdateRescueProfileModal from '../../Modals/Rescues/UpdateRescueProfileModal.vue';
+  import RestoreRescueProfileModal from '../../Modals/Rescues/RestoreRescueProfileModal.vue';
 </script>
