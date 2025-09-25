@@ -43,7 +43,7 @@ class AdoptionApplication extends Model
   }
   public function rescue()
   {
-    return $this->belongsTo(Rescue::class);
+    return $this->belongsTo(Rescue::class)->withTrashed();
   }
 
   public function getApplicantFullNameAttribute()

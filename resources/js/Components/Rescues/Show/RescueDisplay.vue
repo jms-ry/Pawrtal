@@ -96,11 +96,11 @@
             </a>
           </div>
           <div class="d-flex justify-content-center me-1">
-            <a class="btn btn-lg btn-danger fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#deleteRescueProfileModal" :class="{'disabled' : rescue.adoption_applications_count > 0}">Delete Rescue Profile</a>
+            <a class="btn btn-lg btn-light fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#archiveRescueProfileModal" >Archive Rescue Profile</a>
           </div>
         </div>
       </div>
-      <DeleteRescueProfileModal 
+      <ArchiveRescueProfileModal 
         :rescue="rescue"
       />
 
@@ -127,6 +127,6 @@
   import ProfileReminder from '@/Components/Modals/ProfileReminder.vue';
   import LoginReminder from '@/Components/Modals/LoginReminder.vue';
   import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
-  import DeleteRescueProfileModal from '../../Modals/Rescues/DeleteRescueProfileModal.vue';
+  import ArchiveRescueProfileModal from '../../Modals/Rescues/ArchiveRescueProfileModal.vue';
   import UpdateRescueProfileModal from '../../Modals/Rescues/UpdateRescueProfileModal.vue';
 </script>
