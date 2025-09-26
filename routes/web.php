@@ -23,6 +23,7 @@ Route::resource('addresses',AddressController::class)->except('index','show','cr
 Route::resource('households',HouseholdController::class)->except('index','show','create','edit');
 Route::resource('adoption-applications',AdoptionApplicationController::class)->except('create','edit');
 Route::patch('/rescues/{rescue}/restore', [RescueController::class, 'restore'])->name('rescues.restore');
+Route::patch('/reports/{report}/restore', [ReportController::class, 'restore'])->name('reports.restore');
 
 Route::middleware('guest')->group(function () {
   Route::get('register', function () {

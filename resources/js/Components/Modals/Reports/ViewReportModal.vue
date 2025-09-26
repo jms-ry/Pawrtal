@@ -46,7 +46,8 @@
         </div>
         <div class="modal-footer border-0 bg-info-subtle">
           <div class="align-self-start d-none" id="deleteReportButtonDiv">
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteReportModal" id="deleteReportButton" >Delete Report</button>
+            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#deleteReportModal" id="deleteReportButton" >Archive Report</button>
+            <button type="button" class="btn btn-success d-none" data-bs-toggle="modal" data-bs-target="#unarchiveReportModal" id="unarchiveReportButton" >Unarchive Report</button>
           </div>
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
@@ -56,8 +57,10 @@
     </div>
   </div>
   <DeleteReportModal/>
+  <UnarchiveReportModal/>
 </template>
 
 <script setup>
   import DeleteReportModal from './DeleteReportModal.vue';
+  import UnarchiveReportModal from './UnarchiveReportModal.vue';
 </script>

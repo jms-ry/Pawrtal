@@ -93,6 +93,7 @@ class UserController extends Controller
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
 
     $reports = $user->reports()
+      ->withTrashed()
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
