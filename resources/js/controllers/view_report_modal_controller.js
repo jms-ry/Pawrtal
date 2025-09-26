@@ -136,9 +136,22 @@ export default class extends Controller {
       }
 
       const deleteReportButton = this.element.querySelector('#deleteReportButton');
-
       deleteReportButton.setAttribute('data-report-type', type);
       deleteReportButton.setAttribute('data-report-id', id);
+
+      const unarchiveButton = this.element.querySelector('#unarchiveReportButton');
+      unarchiveButton.setAttribute('data-report-id', id);
+      unarchiveButton.setAttribute('data-report-type', type);
+      
+      const isTrashed = button.getAttribute('data-report-trashed') === "true";
+      
+      if(isTrashed){
+        unarchiveButton.classList.remove('d-none');
+        deleteReportButton.classList.add('d-none');
+      }else{
+        unarchiveButton.classList.add('d-none');
+        deleteReportButton.classList.remove('d-none');
+      }
     });
   }
 }

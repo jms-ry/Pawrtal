@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
 class Report extends Model
 {
+  use SoftDeletes;
   protected $fillable = [
     'user_id',
     'type',
@@ -57,6 +59,25 @@ class Report extends Model
 
   ];
   
+  public function scopeVisibleTo($query, $user)
+  {
+    if(!$user){
+      return $query;
+    }
+
+    if($user->isAdminOrStaff()){
+      return $query->withTrashed();
+    }
+
+    return $query->withTrashed()->where(function ($q) use ($user) {
+      $q->whereNull('deleted_at')
+      ->orWhere('user_id', $user->id);
+    });
+  }
+  public function resolveRouteBinding($value, $field = null)
+  {
+    return $this->withTrashed()->where($field ?? $this->getRouteKeyName(), $value)->firstOrFail();
+  }
   public function getLoggedUserIsAdminOrStaffAttribute()
   {
     return $this->loggedUserIsAdminOrStaff();
@@ -125,6 +146,10 @@ class Report extends Model
   {
     $type = Str::ucfirst(Str::lower($this->type));
     $species = Str::ucfirst(Str::lower($this->species));
+
+    if($this->trashed()){
+     return "{$type} {$species}" . ' (Archived)';
+    }
     return "{$type} {$species}";
   }
 

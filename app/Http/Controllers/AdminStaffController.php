@@ -20,7 +20,7 @@ class AdminStaffController extends Controller
       return redirect('/')->with('error', 'You do not have authorization. Access denied!');
     }
     $rescues = Rescue::withTrashed()->get();
-    $reports = Report::all();
+    $reports = Report::withTrashed()->get();
     $donatons = Donation::whereNotIn('status', ['archived'])->get();
     $applications = AdoptionApplication::whereNotIn('status', ['archived'])->get();
     $previousUrl = url()->previous();
@@ -103,6 +103,8 @@ class AdminStaffController extends Controller
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
 
     $reports = Report::query()
+      ->withTrashed()
+      ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);

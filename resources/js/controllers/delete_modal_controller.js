@@ -14,5 +14,17 @@ export default class extends Controller {
       titleSpan.textContent = type === 'lost' ? 'Lost' : 'Found';
       
     });
+
+    const unarchiveModal = document.getElementById('unarchiveReportModal');
+
+    unarchiveModal.addEventListener('show.bs.modal', (event) => {
+      const button = event.relatedTarget;
+
+      const type = button.getAttribute('data-report-type');
+      const titleSpan = this.element.querySelector('#unarchiveTitle');
+
+      titleSpan.textContent = type === 'lost' ? 'Lost' : 'Found';
+      
+    });
   }
 }

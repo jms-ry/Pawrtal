@@ -25,6 +25,7 @@ class ReportController extends Controller
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
     $reports = Report::query()
+      ->visibleTo($user)
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
@@ -140,6 +141,13 @@ class ReportController extends Controller
   {
     $report->delete();
 
-    return redirect()->back()->with('warning', $report->getTypeFormattedAttribute() . ' Report has been deleted successfully!');
+    return redirect()->back()->with('warning',  'Report has been archived!');
+  }
+
+  public function restore(Report $report)
+  {
+    $report->restore();
+
+    return redirect()->back()->with('success',  'Report has been restored!');
   }
 }
