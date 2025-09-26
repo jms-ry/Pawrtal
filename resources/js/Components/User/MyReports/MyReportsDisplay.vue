@@ -66,7 +66,7 @@
                     :data-report-status="report.report_status"
                     :data-report-status-label="report.status_label"
                     :data-report-owned-by-logged-user="report.owned_by_logged_user ? 'true': 'false'"
-                    :data-report-logged-user-is-admin-or-staff="report.logged_user_is_admin_or_staff ? 'true' : 'false'"
+                    :data-report-logged-user-is-adminstaff="report.logged_user_is_admin_or_staff ? 'true' : 'false'"
                     :data-report-trashed="report.deleted_at ? 'true' : 'false'"
                     >View 
                   </a>

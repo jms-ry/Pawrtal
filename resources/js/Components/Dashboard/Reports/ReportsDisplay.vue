@@ -19,7 +19,7 @@
         </span>
       </p>
     </div>
-    <div v-else>
+    <div v-else data-controller="view-report-modal delete-modal">
       <!--Large Screen Table-->
       <div class="d-none d-md-block">
         <table class="table table-striped table-hover align-middle text-center">
@@ -27,7 +27,7 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Type</th>
-              <th scope="col">Animal Name</th>
+              <th scope="col">Reporter Name</th>
               <th scope="col">Location</th>
               <th scope="col">Date Reported</th>
               <th scope="col">Status</th>
@@ -38,14 +38,37 @@
             <tr v-for="(report, index) in reports.data" :key="report.id">
               <th scope="row">{{ index + 1 }}</th>
               <td>{{ report.type_formatted }}</td>
-              <td>{{ report.animal_name_formatted }}</td>
+              <td>{{ report.owner_full_name }}</td>
               <td>{{ report.found_last_seen_location_formatted }}</td>
               <td>{{ report.reported_date }}</td>
               <td>{{ report.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a class="btn btn-success fw-bolder me-1">View </a>
-                  <a class="btn btn-light fw-bolder ms-1">Archive</a>
+                  <a data-bs-toggle="modal" data-bs-target="#viewReportModal" class="btn btn-success fw-bolder me-1"
+                    :data-report-id="report.id"
+                    :data-report-type="report.type"
+                    :data-report-animal-name="report.animal_name_formatted"
+                    :data-report-species="report.species"
+                    :data-report-location="report.found_last_seen_location_formatted"
+                    :data-report-seen-date="report.found_last_seen_date"
+                    :data-report-breed="report.breed_formatted"
+                    :data-report-color="report.color_formatted"
+                    :data-report-sex="report.sex_formatted"
+                    :data-report-age-estimate="report.age_estimate_formatted"
+                    :data-report-size="report.size_formatted"
+                    :data-report-distinctive-features="report.distinctive_features_formatted"
+                    :data-report-condition="report.condition_formatted"
+                    :data-report-temporary-shelter="report.temporary_shelter_formatted"
+                    :data-report-owner-name="report.owner_full_name"
+                    :data-report-owner-contact-number="report.owner_contact_number"
+                    :data-report-owner-email="report.owner_email"
+                    :data-report-status="report.report_status"
+                    :data-report-status-label="report.status_label"
+                    :data-report-owned-by-logged-user="report.owned_by_logged_user ? 'true': 'false'"
+                    :data-report-logged-user-is-adminstaff="report.logged_user_is_admin_or_staff ? 'true' : 'false'"
+                    :data-report-trashed="report.deleted_at ? 'true' : 'false'"
+                    >View Report
+                  </a>
                 </div>
               </td>
             </tr>
@@ -69,13 +92,37 @@
               <td>{{ report.type_formatted }}</td>
               <td>{{ report.status_label }}</td>
               <td>
-                <a class="btn btn-success fw-bolder mb-1 w-100">View </a>
-                <a class="btn btn-light fw-bolder mb-1 w-100">Archive</a>
+                <a class="btn btn-success fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#viewReportModal"
+                  :data-report-id="report.id"
+                  :data-report-type="report.type"
+                  :data-report-animal-name="report.animal_name_formatted"
+                  :data-report-species="report.species"
+                  :data-report-location="report.found_last_seen_location_formatted"
+                  :data-report-seen-date="report.found_last_seen_date"
+                  :data-report-breed="report.breed_formatted"
+                  :data-report-color="report.color_formatted"
+                  :data-report-sex="report.sex_formatted"
+                  :data-report-age-estimate="report.age_estimate_formatted"
+                  :data-report-size="report.size_formatted"
+                  :data-report-distinctive-features="report.distinctive_features_formatted"
+                  :data-report-condition="report.condition_formatted"
+                  :data-report-temporary-shelter="report.temporary_shelter_formatted"
+                  :data-report-owner-name="report.owner_full_name"
+                  :data-report-owner-contact-number="report.owner_contact_number"
+                  :data-report-owner-email="report.owner_email"
+                  :data-report-status="report.report_status"
+                  :data-report-status-label="report.status_label"
+                  :data-report-owned-by-logged-user="report.owned_by_logged_user ? 'true': 'false'"
+                  :data-report-logged-user-is-adminstaff="report.logged_user_is_admin_or_staff ? 'true' : 'false'"
+                  :data-report-trashed="report.deleted_at ? 'true' : 'false'"
+                 >View Report
+                </a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+      <ViewReportModal/>
       <!-- Pagination (only show if there are results) -->
       <div v-if="reports.data.length > 0">
         <!--Large Screen Navigation-->
@@ -135,6 +182,7 @@
 <script setup>
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
+  import ViewReportModal from '../../Modals/Reports/ViewReportModal.vue';
 
   const props = defineProps({
     reports: {
