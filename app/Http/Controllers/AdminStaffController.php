@@ -161,6 +161,7 @@ class AdminStaffController extends Controller
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
 
     $donations = Donation::query()
+      ->withTrashed()
       ->with('user')
       ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
         $query->where('status', '!=', 'archived');

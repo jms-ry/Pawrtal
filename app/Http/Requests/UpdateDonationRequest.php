@@ -30,7 +30,7 @@ class UpdateDonationRequest extends FormRequest
       'donation_image.*' => 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048',
       'pick_up_location.*' => 'nullable|string|max:5000',
       'contact_person.*' => 'nullable|string|max:255',
-      'status' => 'nullable|in:pending,approved,picked_up,rejected,cancelled,archived',
+      'status' => 'nullable|in:pending,accepted,rejected,cancelled',
     ];
   }
 }

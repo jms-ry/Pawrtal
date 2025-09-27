@@ -31,23 +31,41 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer border-0 bg-info-subtle">
-          <div v-if="donationStatus === 'pending'" class="align-self-start">
-            <button type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
+        <!--Large Screen-->
+          <div class="modal-footer bg-info-subtle d-none d-md-flex">
+            <div class="d-flex justify-content-start align-self-start" v-if="donationStatus === 'pending' && loggedUserIsAdminOrStaff === 'true'">
+              <button class="btn btn-success me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#acceptDonationModal">Accept Donation</button>
+              <button class="btn btn-warning me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#rejectDonationModal">Reject Donation</button>
+            </div>
+            <div class="d-flex justify-content-end align-self-end ms-auto">
+              <button  v-if="donationStatus === 'pending' && isOwnedByLoggedUser === 'true'" type="button" class="btn btn-warning me-1" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
           </div>
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <!--Small Screen-->
+          <div class="modal-footer bg-info-subtle d-md-none d-flex justify-content-center">
+            <div>
+              <button class="btn btn-success me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#acceptDonationModal">Accept Donation</button>
+              <button class="btn btn-warning me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#rejectDonationModal">Reject Donation</button>
+            </div>
+            <div>
+              <button  v-if="donationStatus === 'pending' && isOwnedByLoggedUser === 'true'" type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
           </div>
-        </div>
       </div>
     </div>
   </div>
   <CancelDonationModal />
+  <AcceptDonationModal />
+  <RejectDonationModal />
 </template>
 
 <script setup>
   import { ref, onMounted} from 'vue'
   import CancelDonationModal from './CancelDonationModal.vue'
+  import AcceptDonationModal from '../../Donate/AcceptDonationModal.vue'
+  import RejectDonationModal from '../../Donate/RejectDonationModal.vue'
 
   const donationId = ref(null)
   const donationType = ref(null)
@@ -58,6 +76,8 @@
   const contactPerson = ref(null)
   const type = ref(null)
   const donationImage = ref(null)
+  const isOwnedByLoggedUser = ref(null)
+  const loggedUserIsAdminOrStaff = ref(null)
   onMounted(() => {
     const modalEl = document.getElementById('viewDonationModal')
 
@@ -83,12 +103,7 @@
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
         donationStatusBadge.innerHTML = `<i class="bi bi-hourglass-split me-1"></i> ${formattedStatus}`
 
-      }else if(donationStatus.value === 'approved'){
-        donationStatusBadge.classList.add('text-bg-success')
-        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-        donationStatusBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${formattedStatus}`
-
-      }else if(donationStatus.value === 'picked-up'){
+      }else if(donationStatus.value === 'accepted'){
         donationStatusBadge.classList.add('text-bg-success')
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
         donationStatusBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${formattedStatus}`
@@ -96,18 +111,16 @@
       }else if(donationStatus.value === 'rejected'){
         donationStatusBadge.classList.add('text-bg-danger')
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-        donationStatusBadge.innerHTML = `<i class="bi bi-x-circle me-1"></i> ${formattedStatus}`
+        donationStatusBadge.innerHTML = `<i class="bi bi-x-circle-fill me-1"></i> ${formattedStatus}`
 
-      }else if(donationStatus.value === 'archived'){
-        donationStatusBadge.classList.add('text-bg-light')
-        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-        donationStatusBadge.innerHTML = `<i class="bi bi-archive-fill me-1"></i> ${formattedStatus}`
-        
       }else{
         donationStatusBadge.classList.add('text-bg-warning')
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
         donationStatusBadge.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${formattedStatus}`
       }
+
+      isOwnedByLoggedUser.value = button.getAttribute('data-donation-is-owned-by-logged-user')
+      loggedUserIsAdminOrStaff.value = button.getAttribute('data-donation-logged-user-is-admin-or-staff')
     })
   })
 

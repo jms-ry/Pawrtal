@@ -52,9 +52,7 @@
               <select v-model="selectedStatus" @change="onFilterChange('status', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
                 <option selected hidden value="">Status</option>
                 <option value="pending">Pending</option>
-                <option value="picked_up">Picked Up</option>
-                <option value="approved">Approved</option>
-                <option value="archived">Archived</option>
+                <option value="accepted">Accepted</option>
                 <option value="cancelled">Cancelled</option>
                 <option value="rejected">Rejected</option>
               </select>
@@ -214,9 +212,7 @@
   const getStatusLabel = (status) => {
     const labels = {
       'pending': 'Pending',
-      'picked_up': 'Picked Up',
-      'approved': 'Approved',
-      'archived': 'Archived',
+      'accepted': 'Accepted',
       'cancelled': 'Cancelled',
       'rejected': 'Rejected'
     };

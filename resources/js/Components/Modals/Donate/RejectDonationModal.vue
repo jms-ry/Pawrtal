@@ -1,12 +1,13 @@
 <template>
-  <div class="modal fade me-2" id="archiveDonationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="archiveDonationModalLabel" aria-hidden="true">
+  <div class="modal fade me-2" id="rejectDonationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="rejectDonationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-sm-scrollable">
     <div class="modal-content ">
       <form @submit.prevent="submitForm">
         <div class="modal-body bg-info-subtle border-0">
+          <input type="hidden" name="status" class="form-control" v-model="form.status">
           <div class="d-flex d-flex-row justify-content-start align-items-center mt-4">
-            <i class="bi bi-archive-fill me-3 text-warning fs-2"></i>
-            <p class="fw-bold font-monospace mt-2 fs-5 text-start">Archive this donation?</p>
+            <i class="bi bi-x-circle-fill me-3 text-danger fs-2"></i>
+            <p class="fw-bold font-monospace mt-2 fs-5 text-start">Reject this in-kind donation?</p>
           </div>
           <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
             <button class="btn btn-warning me-1" type="submit">Yes</button>
@@ -21,13 +22,13 @@
 
 <script setup>
   import { Modal } from 'bootstrap'
-  import { router } from '@inertiajs/vue3'
+  import { useForm } from '@inertiajs/vue3'
   import { ref, onMounted } from 'vue'
 
   const donationId = ref(null)
 
   onMounted(() => {
-    const modalEl = document.getElementById('archiveDonationModal')
+    const modalEl = document.getElementById('rejectDonationModal')
     
     modalEl.addEventListener('show.bs.modal', (event) => {
       const button = event.relatedTarget 
@@ -36,13 +37,19 @@
     })
   })
 
+  const form = useForm({
+    status: 'rejected',
+    _method:'PUT'
+
+  })
+
   function submitForm() {
     if (!donationId.value) {
       console.error('No ID available')
       return
     }
     
-    router.delete(`/donations/${donationId.value}`, {
+    form.put(`/donations/${donationId.value}`, {
       preserveScroll: false,
       preserveState: false,
       onSuccess: () => {
@@ -52,7 +59,7 @@
   }
 
   function closeModal(){
-    const modalEl = document.getElementById('archiveDonationModal')
+    const modalEl = document.getElementById('rejectDonationModal')
     const modal = Modal.getInstance(modalEl)
     if (modal) {
       modal.hide()
