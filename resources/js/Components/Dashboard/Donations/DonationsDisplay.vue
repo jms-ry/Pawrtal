@@ -48,7 +48,19 @@
               <td>{{ donation.status_label }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a class="btn btn-success fw-bolder me-1">View </a>
+                  <a class="btn btn-success fw-bolder me-1"data-bs-toggle="modal" data-bs-target="#viewDonationModal"
+                    :data-donation-id="donation.id"
+                    :data-donation-type-formatted="donation.donation_type_formatted"
+                    :data-donation-item-description="donation.item_description_formatted"
+                    :data-donation-item-quantity="donation.item_quantity_formatted"
+                    :data-donation-pick-up-location="donation.pick_up_location_formatted"
+                    :data-donation-contact-person="donation.contact_person_formatted"
+                    :data-donation-status="donation.status"
+                    :data-donation-type="donation.donation_type"
+                    :data-donation-image="donation.donation_image_url"
+                    :data-donation-is-owned-by-logged-user="donation.is_owned_by_logged_user"
+                    :data-donation-logged-user-is-admin-or-staff="donation.logged_user_is_admin_or_staff"
+                  >View </a>
                   <a class="btn btn-light fw-bolder ms-1">Archive </a>
                 </div>
               </td>
@@ -131,6 +143,7 @@
             </button>
           </div>
         </div>
+        <ViewDonationModal/>
       </div>
     </div>
   </div>
@@ -138,6 +151,7 @@
 <script setup>
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
+  import ViewDonationModal from '../../Modals/Users/MyDonations/ViewDonationModal.vue';
 
   const props = defineProps({
     donations: {

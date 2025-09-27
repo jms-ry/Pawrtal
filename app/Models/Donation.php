@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Auth;
 class Donation extends Model
 {
   public const CREATED_AT = 'donation_date';
@@ -34,8 +34,23 @@ class Donation extends Model
     'contact_person_formatted',
     'donation_image_url',
     'donor_name_formatted',
+    'is_owned_by_logged_user',
+    'logged_user_is_admin_or_staff'
   ];
 
+  public function getIsOwnedByLoggedUserAttribute()
+  {
+    $user = Auth::user();
+
+    return $user?->id === $this->user_id ? 'true' : 'false';
+  }
+
+  public function getLoggedUserIsAdminOrStaffAttribute()
+  {
+    $user = Auth::user();
+
+    return $user?->isAdminOrStaff() ? 'true' : 'false';
+  }
   public function getDonorNameFormattedAttribute()
   {
     return $this->user ? $this->user->fullName() : 'N/A';

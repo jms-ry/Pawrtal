@@ -31,14 +31,28 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer border-0 bg-info-subtle">
-          <div v-if="donationStatus === 'pending'" class="align-self-start">
-            <button type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
+        <!--Large Screen-->
+          <div class="modal-footer bg-info-subtle d-none d-md-flex">
+            <div class="d-flex justify-content-start align-self-start" v-if="donationStatus === 'pending' && loggedUserIsAdminOrStaff === 'true'">
+              <button class="btn btn-success me-1" type="button" >Accept Donation</button>
+              <button class="btn btn-warning me-1" type="button" >Reject Donation</button>
+            </div>
+            <div class="d-flex justify-content-end align-self-end ms-auto">
+              <button  v-if="donationStatus === 'pending' && isOwnedByLoggedUser === 'true'" type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
           </div>
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <!--Small Screen-->
+          <div class="modal-footer bg-info-subtle d-md-none d-flex justify-content-center">
+            <div>
+              <button class="btn btn-success me-1" type="button" >Accept Donation</button>
+              <button class="btn btn-warning me-1" type="button" >Reject Donation</button>
+            </div>
+            <div>
+              <button  v-if="donationStatus === 'pending' && isOwnedByLoggedUser === 'true'" type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
           </div>
-        </div>
       </div>
     </div>
   </div>
@@ -58,6 +72,8 @@
   const contactPerson = ref(null)
   const type = ref(null)
   const donationImage = ref(null)
+  const isOwnedByLoggedUser = ref(null)
+  const loggedUserIsAdminOrStaff = ref(null)
   onMounted(() => {
     const modalEl = document.getElementById('viewDonationModal')
 
@@ -108,6 +124,9 @@
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
         donationStatusBadge.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${formattedStatus}`
       }
+
+      isOwnedByLoggedUser.value = button.getAttribute('data-donation-is-owned-by-logged-user')
+      loggedUserIsAdminOrStaff.value = button.getAttribute('data-donation-logged-user-is-admin-or-staff')
     })
   })
 
