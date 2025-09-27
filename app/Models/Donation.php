@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 class Donation extends Model
 {
+  use SoftDeletes;
   public const CREATED_AT = 'donation_date';
   public const UPDATED_AT = 'updated_at';
   protected $fillable = [
@@ -38,6 +40,10 @@ class Donation extends Model
     'logged_user_is_admin_or_staff'
   ];
 
+  public function resolveRouteBinding($value, $field = null)
+  {
+    return $this->withTrashed()->where($field ?? $this->getRouteKeyName(), $value)->firstOrFail();
+  }
   public function getIsOwnedByLoggedUserAttribute()
   {
     $user = Auth::user();
@@ -62,6 +68,9 @@ class Donation extends Model
 
   public function getDonationTypeFormattedAttribute()
   {
+    if($this->trashed()){
+      return Str::ucfirst($this->donation_type) . ' (Archived)';
+    }
     return Str::ucfirst($this->donation_type);
   }
 

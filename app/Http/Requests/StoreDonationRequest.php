@@ -42,7 +42,7 @@ class StoreDonationRequest extends FormRequest
       'contact_person'   => 'nullable|array',
       'contact_person.*' => 'nullable|string|max:255',
 
-      'status' => 'required|in:pending,accepted,rejected,cancelled,archived',
+      'status' => 'required|in:pending,accepted,rejected,cancelled',
     ];
   }
 

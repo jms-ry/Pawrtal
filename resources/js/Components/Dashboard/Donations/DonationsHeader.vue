@@ -53,7 +53,6 @@
                 <option selected hidden value="">Status</option>
                 <option value="pending">Pending</option>
                 <option value="accepted">Accepted</option>
-                <option value="archived">Archived</option>
                 <option value="cancelled">Cancelled</option>
                 <option value="rejected">Rejected</option>
               </select>
@@ -212,7 +211,6 @@
     const labels = {
       'pending': 'Pending',
       'accepted': 'Accepted',
-      'archived': 'Archived',
       'cancelled': 'Cancelled',
       'rejected': 'Rejected'
     };

@@ -38,7 +38,7 @@
               <button class="btn btn-warning me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#rejectDonationModal">Reject Donation</button>
             </div>
             <div class="d-flex justify-content-end align-self-end ms-auto">
-              <button  v-if="donationStatus === 'pending' && isOwnedByLoggedUser === 'true'" type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
+              <button  v-if="donationStatus === 'pending' && isOwnedByLoggedUser === 'true'" type="button" class="btn btn-warning me-1" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
@@ -103,12 +103,7 @@
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
         donationStatusBadge.innerHTML = `<i class="bi bi-hourglass-split me-1"></i> ${formattedStatus}`
 
-      }else if(donationStatus.value === 'approved'){
-        donationStatusBadge.classList.add('text-bg-success')
-        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-        donationStatusBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${formattedStatus}`
-
-      }else if(donationStatus.value === 'picked-up'){
+      }else if(donationStatus.value === 'accepted'){
         donationStatusBadge.classList.add('text-bg-success')
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
         donationStatusBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> ${formattedStatus}`
@@ -116,13 +111,8 @@
       }else if(donationStatus.value === 'rejected'){
         donationStatusBadge.classList.add('text-bg-danger')
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-        donationStatusBadge.innerHTML = `<i class="bi bi-x-circle me-1"></i> ${formattedStatus}`
+        donationStatusBadge.innerHTML = `<i class="bi bi-x-circle-fill me-1"></i> ${formattedStatus}`
 
-      }else if(donationStatus.value === 'archived'){
-        donationStatusBadge.classList.add('text-bg-light')
-        const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)
-        donationStatusBadge.innerHTML = `<i class="bi bi-archive-fill me-1"></i> ${formattedStatus}`
-        
       }else{
         donationStatusBadge.classList.add('text-bg-warning')
         const formattedStatus = donationStatus.value.charAt(0).toUpperCase() + donationStatus.value.slice(1)

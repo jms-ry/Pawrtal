@@ -102,11 +102,6 @@ class DonationController extends Controller
       return redirect()->back()->with('warning','Donation has been cancelled.');
     }
 
-    if($request->status === 'archived'){
-      $donation->update($requestData);
-      return redirect()->back()->with('warning','Donation has been archived.');
-    }
-
     if($request->status === 'accepted'){
       $donation->update($requestData);
       return redirect()->back()->with('success','Donation has been accepted.');
@@ -135,8 +130,10 @@ class DonationController extends Controller
   /**
     * Remove the specified resource from storage.
   */
-  public function destroy(string $id)
+  public function destroy(Donation $donation)
   {
-    //
+    $donation->delete();
+
+    return redirect()->back()->with('warning',  'Donation has been archived!');
   }
 }

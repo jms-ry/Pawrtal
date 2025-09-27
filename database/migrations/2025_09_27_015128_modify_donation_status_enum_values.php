@@ -13,7 +13,7 @@ return new class extends Migration
   {
     Schema::table('donations', function (Blueprint $table) {
       DB::statement("ALTER TABLE donations DROP CONSTRAINT donations_status_check");
-      DB::statement("ALTER TABLE donations ADD CONSTRAINT donations_status_check CHECK (status IN ('pending','rejected','cancelled','archived','accepted'))");
+      DB::statement("ALTER TABLE donations ADD CONSTRAINT donations_status_check CHECK (status IN ('pending','accepted','rejected','cancelled'))");
     });
   }
 
@@ -24,7 +24,7 @@ return new class extends Migration
   {
     Schema::table('donations', function (Blueprint $table) {
       DB::statement("ALTER TABLE donations DROP CONSTRAINT donations_status_check");
-      DB::statement("ALTER TABLE donations ADD CONSTRAINT donations_status_check CHECK (status IN ('pending','approved','rejected','cancelled','archived','picked_up'))");
+      DB::statement("ALTER TABLE donations ADD CONSTRAINT donations_status_check CHECK (status IN ('pending','approved','picked_up','rejected','archived','cancelled'))");
     });
   }
 };

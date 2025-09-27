@@ -4,10 +4,9 @@
     <div class="modal-content ">
       <form @submit.prevent="submitForm">
         <div class="modal-body bg-info-subtle border-0">
-          <input type="hidden" name="status" class="form-control" v-model="form.status">
           <div class="d-flex d-flex-row justify-content-start align-items-center mt-4">
             <i class="bi bi-archive-fill me-3 text-warning fs-2"></i>
-            <p class="fw-bold font-monospace mt-2 fs-5 text-start">Wanna archive your donation?</p>
+            <p class="fw-bold font-monospace mt-2 fs-5 text-start">Archive this donation?</p>
           </div>
           <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
             <button class="btn btn-warning me-1" type="submit">Yes</button>
@@ -22,7 +21,7 @@
 
 <script setup>
   import { Modal } from 'bootstrap'
-  import { useForm } from '@inertiajs/vue3'
+  import { router } from '@inertiajs/vue3'
   import { ref, onMounted } from 'vue'
 
   const donationId = ref(null)
@@ -37,19 +36,13 @@
     })
   })
 
-  const form = useForm({
-    status: 'archived',
-    _method:'PUT'
-
-  })
-
   function submitForm() {
     if (!donationId.value) {
       console.error('No ID available')
       return
     }
     
-    form.put(`/donations/${donationId.value}`, {
+    router.delete(`/donations/${donationId.value}`, {
       preserveScroll: false,
       preserveState: false,
       onSuccess: () => {

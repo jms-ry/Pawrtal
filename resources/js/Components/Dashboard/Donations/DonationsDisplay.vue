@@ -58,10 +58,9 @@
                     :data-donation-status="donation.status"
                     :data-donation-type="donation.donation_type"
                     :data-donation-image="donation.donation_image_url"
-                    :data-donation-is-owned-by-logged-user="donation.is_owned_by_logged_user"
                     :data-donation-logged-user-is-admin-or-staff="donation.logged_user_is_admin_or_staff"
                   >View </a>
-                  <a class="btn btn-light fw-bolder ms-1">Archive </a>
+                  <a v-show="donation.status !== 'pending' && !donation.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
                 </div>
               </td>
             </tr>
@@ -144,6 +143,7 @@
           </div>
         </div>
         <ViewDonationModal/>
+        <ArchiveDonationModal/>
       </div>
     </div>
   </div>
@@ -152,6 +152,7 @@
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
   import ViewDonationModal from '../../Modals/Users/MyDonations/ViewDonationModal.vue';
+  import ArchiveDonationModal from '../../Modals/Users/MyDonations/ArchiveDonationModal.vue';
 
   const props = defineProps({
     donations: {
