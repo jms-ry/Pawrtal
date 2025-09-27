@@ -107,6 +107,16 @@ class DonationController extends Controller
       return redirect()->back()->with('warning','Donation has been archived.');
     }
 
+    if($request->status === 'accepted'){
+      $donation->update($requestData);
+      return redirect()->back()->with('success','Donation has been accepted.');
+    }
+
+    if($request->status === 'rejected'){
+      $donation->update($requestData);
+      return redirect()->back()->with('error','Donation has been rejected.');
+    }
+
     if ($request->hasFile('donation_image')) {
       if($donation->donation_image){
         Storage::delete($donation->donation_image);

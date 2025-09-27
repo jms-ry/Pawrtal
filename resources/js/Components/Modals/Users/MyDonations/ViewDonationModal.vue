@@ -34,8 +34,8 @@
         <!--Large Screen-->
           <div class="modal-footer bg-info-subtle d-none d-md-flex">
             <div class="d-flex justify-content-start align-self-start" v-if="donationStatus === 'pending' && loggedUserIsAdminOrStaff === 'true'">
-              <button class="btn btn-success me-1" type="button" >Accept Donation</button>
-              <button class="btn btn-warning me-1" type="button" >Reject Donation</button>
+              <button class="btn btn-success me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#acceptDonationModal">Accept Donation</button>
+              <button class="btn btn-warning me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#rejectDonationModal">Reject Donation</button>
             </div>
             <div class="d-flex justify-content-end align-self-end ms-auto">
               <button  v-if="donationStatus === 'pending' && isOwnedByLoggedUser === 'true'" type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
@@ -45,8 +45,8 @@
           <!--Small Screen-->
           <div class="modal-footer bg-info-subtle d-md-none d-flex justify-content-center">
             <div>
-              <button class="btn btn-success me-1" type="button" >Accept Donation</button>
-              <button class="btn btn-warning me-1" type="button" >Reject Donation</button>
+              <button class="btn btn-success me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#acceptDonationModal">Accept Donation</button>
+              <button class="btn btn-warning me-1" type="button" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#rejectDonationModal">Reject Donation</button>
             </div>
             <div>
               <button  v-if="donationStatus === 'pending' && isOwnedByLoggedUser === 'true'" type="button" class="btn btn-warning" :data-donation-id="donationId" data-bs-toggle="modal" data-bs-target="#cancelDonationModal">Cancel Donation</button>
@@ -57,11 +57,15 @@
     </div>
   </div>
   <CancelDonationModal />
+  <AcceptDonationModal />
+  <RejectDonationModal />
 </template>
 
 <script setup>
   import { ref, onMounted} from 'vue'
   import CancelDonationModal from './CancelDonationModal.vue'
+  import AcceptDonationModal from '../../Donate/AcceptDonationModal.vue'
+  import RejectDonationModal from '../../Donate/RejectDonationModal.vue'
 
   const donationId = ref(null)
   const donationType = ref(null)
