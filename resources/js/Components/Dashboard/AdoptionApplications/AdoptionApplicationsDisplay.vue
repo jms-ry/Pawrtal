@@ -30,6 +30,7 @@
               <th scope="col">Applicant Name</th>
               <th scope="col">Application Date</th>
               <th scope="col">Status</th>
+              <th scope="col">Archived?</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
@@ -40,11 +41,22 @@
               <td>{{ adoptionApplication.applicant_full_name }}</td>
               <td>{{ adoptionApplication.application_date_formatted }}</td>
               <td>{{ adoptionApplication.status_label }}</td>
+              <td>{{ adoptionApplication.archived }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a class="btn btn-success fw-bolder me-1">View 
+                  <a class="btn btn-success fw-bolder me-1"data-bs-toggle="modal" data-bs-target="#viewApplicationModal"
+                    :data-application-id="adoptionApplication.id"
+                    :data-application-rescue-name="adoptionApplication.rescue_name_formatted"
+                    :data-application-status="adoptionApplication.status"
+                    :data-application-status-label="adoptionApplication.status_label"
+                    :data-application-application-date="adoptionApplication.application_date_formatted"
+                    :data-application-start-date="adoptionApplication.inspection_start_date_formatted"
+                    :data-application-end-date="adoptionApplication.inspection_end_date_formatted"
+                    :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
+                  >View
                   </a>
-                  <a class="btn btn-light fw-bolder ms-1">Archive</a>
+                  <a v-if="!adoptionApplication.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                  <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
                 </div>
               </td>
             </tr>
@@ -68,8 +80,19 @@
               <td>{{ adoptionApplication.rescue_name_formatted }}</td>
               <td>{{ adoptionApplication.applicant_full_name }}</td>
               <td>
-                <a class="btn btn-success fw-bolder mb-1 w-100">View </a>
-                <a class="btn btn-light fw-bolder mb-1 w-100">Archive</a>
+                <a class="btn btn-success fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#viewApplicationModal"
+                  :data-application-id="adoptionApplication.id"
+                  :data-application-rescue-name="adoptionApplication.rescue_name_formatted"
+                  :data-application-status="adoptionApplication.status"
+                  :data-application-status-label="adoptionApplication.status_label"
+                  :data-application-application-date="adoptionApplication.application_date_formatted"
+                  :data-application-start-date="adoptionApplication.inspection_start_date_formatted"
+                  :data-application-end-date="adoptionApplication.inspection_end_date_formatted"
+                  :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
+                  >View 
+                </a>
+                <a v-if="!adoptionApplication.deleted_at" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                <a v-else class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
               </td>
             </tr>
           </tbody>
@@ -126,6 +149,9 @@
             </button>
           </div>
         </div>
+        <ViewApplicationModal/>
+        <ArchiveApplicationModal/>
+        <UnarchiveApplicationModal/>
       </div>
     </div>
   </div>
@@ -134,6 +160,9 @@
 <script setup>
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
+  import ViewApplicationModal from '../../Modals/Users/MyAdoptionApplications/ViewApplicationModal.vue';
+  import ArchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/ArchiveApplicationModal.vue';
+  import UnarchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/UnarchiveApplicationModal.vue';
 
   const props = defineProps({
     adoptionApplications: {

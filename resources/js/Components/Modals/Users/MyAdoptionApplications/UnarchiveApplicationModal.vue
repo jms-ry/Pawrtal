@@ -1,12 +1,12 @@
 <template>
-  <div class="modal fade me-2" id="archiveApplicationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="archiveApplicationModalLabel" aria-hidden="true">
+  <div class="modal fade me-2" id="restoreApplicationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="restoreApplicationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-sm-scrollable">
     <div class="modal-content ">
       <form @submit.prevent="submitForm">
         <div class="modal-body bg-info-subtle border-0">
           <div class="d-flex d-flex-row justify-content-start align-items-center mt-4">
-            <i class="bi bi-archive-fill me-3 text-warning fs-2"></i>
-            <p class="fw-bold font-monospace mt-2 fs-5 text-start">Wanna archive this application?</p>
+            <i class="bi bi-archive-fill me-3 text-success fs-2"></i>
+            <p class="fw-bold font-monospace mt-2 fs-5 text-start">Wanna Unarchive this application?</p>
           </div>
           <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
             <button class="btn btn-warning me-1" type="submit">Yes</button>
@@ -27,7 +27,7 @@
   const applicationId = ref(null)
 
   onMounted(() => {
-    const modalEl = document.getElementById('archiveApplicationModal')
+    const modalEl = document.getElementById('restoreApplicationModal')
     
     modalEl.addEventListener('show.bs.modal', (event) => {
       const button = event.relatedTarget 
@@ -42,7 +42,7 @@
       return
     }
     
-    router.delete(`/adoption-applications/${applicationId.value}`, {
+    router.patch(`/adoption-applications/${applicationId.value}/restore`, {}, {
       preserveScroll: false,
       preserveState: false,
       onSuccess: () => {
@@ -52,7 +52,7 @@
   }
 
   function closeModal(){
-    const modalEl = document.getElementById('archiveApplicationModal')
+    const modalEl = document.getElementById('restoreApplicationModal')
     const modal = Modal.getInstance(modalEl)
     if (modal) {
       modal.hide()
