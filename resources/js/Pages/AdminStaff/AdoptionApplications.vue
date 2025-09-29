@@ -14,6 +14,7 @@
         <AdoptionApplicationsDisplay
           :adoptionApplications="adoptionApplications"
           :filters="filters"
+          :inspectors="inspectors"
         />
       </div>
     </div>
@@ -40,6 +41,7 @@
     },
     previousUrl:String,
     showBackNav:Boolean,
+    inspectors:Object,
   })
 
   let searchTimeout = ref(null);

@@ -53,6 +53,10 @@
                     :data-application-end-date="adoptionApplication.inspection_end_date_formatted"
                     :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                     :data-application-logged-user-is-admin-or-staff="adoptionApplication.logged_user_is_admin_or_staff"
+                    :data-applicaiton-inspection-schedule-count="adoptionApplication.inspection_schedule_count"
+                    :data-application-inspection-location="adoptionApplication.inspection_location"
+                    :data-application-inspector-name="adoptionApplication.inspector_name"
+                    :data-application-inspection-date="adoptionApplication.inspection_date"
                    >View 
                   </a>
                   <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#updateAdoptionApplicationFormModal"
@@ -99,6 +103,10 @@
                   :data-application-end-date="adoptionApplication.inspection_end_date_formatted"
                   :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                   :data-application-logged-user-is-admin-or-staff="adoptionApplication.logged_user_is_admin_or_staff"
+                  :data-applicaiton-inspection-schedule-count="adoptionApplication.inspection_schedule_count"
+                  :data-application-inspection-location="adoptionApplication.inspection_location"
+                  :data-application-inspector-name="adoptionApplication.inspector_name"
+                  :data-application-inspection-date="adoptionApplication.inspection_date"
                   >View 
                 </a>
                 <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#updateAdoptionApplicationFormModal"

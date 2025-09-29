@@ -53,6 +53,10 @@ class User extends Authenticatable
     ];
   }
 
+  public function inspectionSchedules()
+  {
+    return $this->hasMany(InspectionSchedule::class,'inspector_id');
+  }
   public function donations() : HasMany
   {
     return $this->hasMany(Donation::class);

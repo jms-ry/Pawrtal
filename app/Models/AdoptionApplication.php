@@ -43,12 +43,34 @@ class AdoptionApplication extends Model
     'applicant_number_of_children',
     'applicant_number_of_current_pets',
     'applicant_current_pets',
-    'logged_user_is_admin_or_staff'
+    'logged_user_is_admin_or_staff',
+    'inspection_location',
+    'inspector_name',
+    'inspection_date'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
+  
+  public function inspectionSchedule()
+  {
+    return $this->hasOne(InspectionSchedule::class,'application_id');
+  }
 
+  public function getInspectionLocationAttribute()
+  {
+    return $this->inspectionSchedule?->inspectionLocation();
+  }
+
+  public function getInspectorNameAttribute()
+  {
+    return $this->inspectionSchedule?->inspectorName();
+  }
+
+  public function getInspectionDateAttribute()
+  {
+    return $this->inspectionSchedule?->inspectionDate();
+  }
   public function getLoggedUserIsAdminOrStaffAttribute()
   {
     $user = Auth::user();
@@ -111,7 +133,7 @@ class AdoptionApplication extends Model
   }
   public function getStatusLabelAttribute()
   {
-    return Str::of($this->status)->replace('_',' ')->ucfirst();
+    return Str::of($this->status)->replace('_',' ')->title();
   }
 
   public function getApplicationDateFormattedAttribute()
