@@ -19,4 +19,9 @@ class Address extends Model
   {
     return $this->belongsTo(User::class);
   }
+
+  public function fullAddress() : string
+  {
+    return "{$this->barangay}, {$this->municipality}, {$this->province}, {$this->zip_code}";
+  }
 }

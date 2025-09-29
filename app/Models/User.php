@@ -104,4 +104,12 @@ class User extends Authenticatable
   {
     return $this->role !== 'admin' && $this->role !== 'staff';
   }
+
+  public function fullAddress()
+  {
+    if($this->address){
+      return $this->address->fullAddress();
+    }
+    return null;
+  }
 }

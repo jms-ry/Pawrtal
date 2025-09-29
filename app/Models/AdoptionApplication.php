@@ -35,12 +35,47 @@ class AdoptionApplication extends Model
     'reason_for_adoption_formatted',
     'valid_id_url',
     'applicant_full_name',
-    'archived'
+    'archived',
+    'applicant_full_address',
+    'applicant_house_structure',
+    'applicant_household_members',
+    'applicant_number_of_children',
+    'applicant_number_of_current_pets',
+    'applicant_current_pets'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
 
+  public function getApplicantFullAddressAttribute()
+  {
+    return $this->user?->fullAddress();
+  }
+
+  public function getApplicantHouseStructureAttribute()
+  {
+    return $this->user?->household?->houseStructure();
+  }
+
+  public function getApplicantHouseholdMembersAttribute()
+  {
+    return $this->user?->household?->householdMembers();
+  }
+
+  public function getApplicantNumberOfChildrenAttribute()
+  {
+    return $this->user?->household?->numberOfChildren();
+  }
+
+  public function getApplicantNumberOfCurrentPetsAttribute()
+  {
+    return $this->user?->household?->numberOfCurrentPets();
+  }
+
+  public function getApplicantCurrentPetsAttribute()
+  {
+    return $this->user?->household?->currentPets();
+  }
   public function getArchivedAttribute()
   {
     return $this->trashed() ? 'Yes' : 'No';
