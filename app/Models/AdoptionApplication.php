@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use PhpParser\Node\Expr\Cast;
 use Str;
 
 class AdoptionApplication extends Model
 {
+  use SoftDeletes;
   public const CREATED_AT = 'application_date';
   public const UPDATED_AT = 'updated_at';
   protected $fillable = [
@@ -32,11 +34,22 @@ class AdoptionApplication extends Model
     'inspection_end_date_formatted',
     'reason_for_adoption_formatted',
     'valid_id_url',
-    'applicant_full_name'
+    'applicant_full_name',
+    'archived'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
+
+  public function getArchivedAttribute()
+  {
+    return $this->trashed() ? 'Yes' : 'No';
+  }
+
+  public function resolveRouteBinding($value, $field = null)
+  {
+    return $this->withTrashed()->where($field ?? $this->getRouteKeyName(), $value)->firstOrFail();
+  }
   public function user()
   {
     return $this->belongsTo(User::class);

@@ -134,6 +134,17 @@
     return counts
   })
 
+  const adoptedByMonth = computed(() => {
+    const counts = Array(12).fill(0)
+    filteredRescues.value
+      .filter(r => r.adoption_status === 'adopted')
+      .forEach(r => {
+        const month = new Date(r.created_at).getMonth()
+        counts[month]++
+      })
+    return counts
+  })
+
   const createRescuesChart = () => {
     if (!rescuesChart.value) return
 
@@ -159,6 +170,13 @@
             data: availableByMonth.value,
             borderColor: 'rgb(255, 99, 132)',
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            tension: 0.1
+          },
+          {
+            label: 'Adopted',
+            data: adoptedByMonth.value,
+            borderColor: 'rgb(104, 211, 145)',
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
             tension: 0.1
           }
         ]

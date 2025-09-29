@@ -24,7 +24,7 @@ class UpdateAdoptionApplicationRequest extends FormRequest
     return [
       'user_id' => 'nullable|exists:users,id',
       'rescue_id' => 'nullable|exists:rescues,id',
-      'status' => 'nullable|in:pending,approved,rejected,under_review,cancelled,archived',
+      'status' => 'nullable|in:pending,approved,rejected,under_review,cancelled',
       'reason_for_adoption' => 'nullable|string|max:5000',
       'preferred_inspection_start_date' => 'nullable|date',
       'preferred_inspection_end_date' => 'nullable|date',

@@ -83,11 +83,6 @@ class AdoptionApplicationController extends Controller
       return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been cancelled.');
     }
 
-    if($request->status === 'archived'){
-      $adoptionApplication->update($requestData);
-      return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been archived.');
-    }
-
     if($request->hasFile('valid_id')){
       if($adoptionApplication->valid_id){
         Storage::delete($adoptionApplication->valid_id);
@@ -121,6 +116,15 @@ class AdoptionApplicationController extends Controller
   */
   public function destroy(AdoptionApplication $adoptionApplication)
   {
-    //
+    $adoptionApplication->delete();
+
+    return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been archived.');
+  }
+
+  public function restore(AdoptionApplication $adoptionApplication)
+  {
+    $adoptionApplication->restore();
+
+    return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been restored.');
   }
 }

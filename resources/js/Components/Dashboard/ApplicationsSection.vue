@@ -135,6 +135,18 @@
     return counts
   })
 
+  const underReviewApplicationsByMonth = computed(() => {
+    const counts = Array(12).fill(0)
+    filteredApplications.value
+      .filter(a => a.status === 'under_review')
+      .forEach(a => {
+        const month = new Date(a.application_date).getMonth()
+        counts[month]++
+      })
+    return counts
+  })
+
+
   const createApplicationsChart = () => {
     if (!applicationsChart.value) return
 
@@ -162,6 +174,13 @@
             data: pendingApplicationsByMonth.value,
             borderColor: 'rgb(255, 159, 64)',
             backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            tension: 0.1
+          },
+          {
+            label: 'Under Review Applications',
+            data: underReviewApplicationsByMonth.value,
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
             tension: 0.1
           }
         ]
