@@ -59,6 +59,7 @@
                     :data-applicant-number-of-children="adoptionApplication.applicant_number_of_children"
                     :data-applicant-current-pets="adoptionApplication.applicant_current_pets"
                     :data-applicant-number-of-current-pets="adoptionApplication.applicant_number_of_current_pets"
+                    :data-application-logged-user-is-admin-or-staff="adoptionApplication.logged_user_is_admin_or_staff"
                   >View
                   </a>
                   <a v-if="!adoptionApplication.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
@@ -96,6 +97,7 @@
                   :data-application-end-date="adoptionApplication.inspection_end_date_formatted"
                   :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                   :data-applicant-full-address="adoptionApplication.applicant_full_address"
+                  :data-application-logged-user-is-admin-or-staff="adoptionApplication.logged_user_is_admin_or_staff"
                   >View 
                 </a>
                 <a v-if="!adoptionApplication.deleted_at" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>

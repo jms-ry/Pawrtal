@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use PhpParser\Node\Expr\Cast;
+use Illuminate\Support\Facades\Auth;
 use Str;
 
 class AdoptionApplication extends Model
@@ -41,12 +42,19 @@ class AdoptionApplication extends Model
     'applicant_household_members',
     'applicant_number_of_children',
     'applicant_number_of_current_pets',
-    'applicant_current_pets'
+    'applicant_current_pets',
+    'logged_user_is_admin_or_staff'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
 
+  public function getLoggedUserIsAdminOrStaffAttribute()
+  {
+    $user = Auth::user();
+
+    return $user?->isAdminOrStaff() ? 'true' : 'false';
+  }
   public function getApplicantFullAddressAttribute()
   {
     return $this->user?->fullAddress();

@@ -33,7 +33,7 @@
                 <span class="mt-2 ms-2 me-4">Number of Current Pets: <strong class="ms-1">{{ numberOfCurrentPets }}</strong> </span>
               </div>
             </div>
-            <div v-show="applicationStatus !== ('pending' && 'cancelled')" >
+            <div class="d-none" > <!--Show only when there's scheduled inspection, remove d-none-->
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace">Inspection Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
@@ -51,8 +51,11 @@
           </div>
         </div>
         <div class="modal-footer border-0 bg-info-subtle">
-          <div v-if="applicationStatus === 'pending'" class="align-self-start">
+          <div v-if="isAdminStaff === 'false' && applicationStatus === 'pending'" class="align-self-start">
             <button type="button" class="btn btn-warning" :data-application-id="applicationId" data-bs-toggle="modal" data-bs-target="#cancelApplicationModal">Cancel Application</button>
+          </div>
+          <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="align-self-start">
+            <button type="button" class="btn btn-info" :data-application-id="applicationId" >Set Inspection Schedule</button>
           </div>
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -88,6 +91,7 @@
   const numberOfChildren = ref(null)
   const currentPets = ref(null)
   const numberOfCurrentPets = ref(null)
+  const isAdminStaff = ref(null)
   onMounted(() => {
     const viewApplicationModal = document.getElementById('viewApplicationModal');
     viewApplicationModal.addEventListener('show.bs.modal', (event) => {
@@ -126,6 +130,8 @@
       numberOfChildren.value = button.getAttribute('data-applicant-number-of-children');
       currentPets.value = button.getAttribute('data-applicant-current-pets');
       numberOfCurrentPets.value = button.getAttribute('data-applicant-number-of-current-pets');
+
+      isAdminStaff.value = button.getAttribute('data-application-logged-user-is-admin-or-staff');
     });
   });
 </script>
