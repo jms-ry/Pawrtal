@@ -70,6 +70,7 @@
                     :data-donation-image="donation.donation_image_url"
                   >Update </a>
                   <a v-else-if ="!donation.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
+                  <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
                 </div>
               </td>
             </tr>
@@ -114,7 +115,8 @@
                   :data-donation-type="donation.donation_type"
                   :data-donation-image="donation.donation_image_url"
                 >Update</a>
-                <a v-else class="btn btn-light fw-bolder ms-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id" >Archive </a>
+                <a v-else-if ="!donation.deleted_at" class="btn btn-light fw-bolder ms-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id" >Archive </a>
+                <a v-else class="btn btn-info fw-bolder w-100" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
               </td>
             </tr>
           </tbody>
@@ -125,6 +127,7 @@
       <UpdateInKindDonation
         :user="user"
       />
+      <UnarchiveDonationModal/>
       <!-- Pagination (only show if there are results) -->
       <div v-if="donations.data.length > 0">
         <!--Large Screen Navigation-->
@@ -187,6 +190,7 @@
   import ViewDonationModal from '../../Modals/Users/MyDonations/ViewDonationModal.vue';
   import ArchiveDonationModal from '../../Modals/Users/MyDonations/ArchiveDonationModal.vue';
   import UpdateInKindDonation from '../../Modals/Donate/UpdateInKindDonation.vue';
+  import UnarchiveDonationModal from '../../Modals/Users/MyDonations/UnarchiveDonationModal.vue';
 
   const props = defineProps({
     donations: {

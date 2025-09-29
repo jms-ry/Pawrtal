@@ -136,4 +136,13 @@ class DonationController extends Controller
 
     return redirect()->back()->with('warning',  'Donation has been archived!');
   }
+
+  //Restore or unarchive a donation
+
+  public function restore(Donation $donation)
+  {
+    $donation->restore();
+    
+    return redirect()->back()->with('success',  'Donation has been restored!');
+  }
 }

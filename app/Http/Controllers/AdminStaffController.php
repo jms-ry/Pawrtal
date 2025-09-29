@@ -21,7 +21,7 @@ class AdminStaffController extends Controller
     }
     $rescues = Rescue::withTrashed()->get();
     $reports = Report::withTrashed()->get();
-    $donatons = Donation::whereNotIn('status', ['archived'])->get();
+    $donatons = Donation::withTrashed()->get();
     $applications = AdoptionApplication::whereNotIn('status', ['archived'])->get();
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard']);

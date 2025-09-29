@@ -24,6 +24,7 @@ Route::resource('households',HouseholdController::class)->except('index','show',
 Route::resource('adoption-applications',AdoptionApplicationController::class)->except('create','edit');
 Route::patch('/rescues/{rescue}/restore', [RescueController::class, 'restore'])->name('rescues.restore');
 Route::patch('/reports/{report}/restore', [ReportController::class, 'restore'])->name('reports.restore');
+Route::patch('/donations/{donation}/restore', [DonationController::class, 'restore'])->name('donations.restore');
 
 Route::middleware('guest')->group(function () {
   Route::get('register', function () {
