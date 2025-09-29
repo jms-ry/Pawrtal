@@ -22,7 +22,7 @@ class AdminStaffController extends Controller
     $rescues = Rescue::withTrashed()->get();
     $reports = Report::withTrashed()->get();
     $donatons = Donation::withTrashed()->get();
-    $applications = AdoptionApplication::whereNotIn('status', ['archived'])->get();
+    $applications = AdoptionApplication::withTrashed()->get();
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard']);
 
@@ -221,6 +221,7 @@ class AdminStaffController extends Controller
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
 
     $adoptionApplications = AdoptionApplication::query()
+      ->withTrashed()
       ->with(['user','rescue'])
       ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
         $query->where('status', '!=', 'archived');

@@ -198,6 +198,7 @@ class UserController extends Controller
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
     $adoptionApplications = $user->adoptionApplications()
+      ->withTrashed()
       ->with(['user','rescue'])
       ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
         $query->where('status', '!=', 'archived');

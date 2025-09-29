@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use PhpParser\Node\Expr\Cast;
 use Str;
 
 class AdoptionApplication extends Model
 {
+  use SoftDeletes;
   public const CREATED_AT = 'application_date';
   public const UPDATED_AT = 'updated_at';
   protected $fillable = [
