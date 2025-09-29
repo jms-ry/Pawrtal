@@ -17,6 +17,22 @@
               <span class="mt-2 ms-2 me-4">Reason for Adoption: </span>
               <textarea readonly class="form-control mt-2 fw-bolder">{{ reasonForAdoption }}</textarea>
             </div>
+            <div v-show="user?.role !== 'regular_user'" >
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace">Applicant Address Details:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">Full Address:  </span>
+              </div>
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace">Applicant Household Details:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">House Structure:  </span>
+                <span class="mt-2 ms-2 me-4">Household members:  </span>
+                <span class="mt-2 ms-2 me-4">Number of children in the house:  </span>
+                <span class="mt-2 ms-2 me-4">Current Pets:  </span>
+                <span class="mt-2 ms-2 me-4">Number of Current Pets:  </span>
+              </div>
+            </div>
             <div v-show="applicationStatus !== ('pending' && 'cancelled')" >
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace">Inspection Details:</h6>
@@ -52,7 +68,11 @@
   import { ref, onMounted} from 'vue'
   import CancelApplicationModal from './CancelApplicationModal.vue'
 
-
+  const props = defineProps({
+    user: {
+      type: Object,
+    }
+  })
 
   const applicationId = ref(null)
   const applicationRescueName = ref(null)
@@ -90,9 +110,6 @@
       }else if (applicationStatus.value === 'under review'){
         statusLabelBadge.classList.add('text-bg-primary')
         statusLabelBadge.innerHTML = `<i class="bi bi-search me-1"></i> ${applicationStatusLabel.value}`
-      }else if(applicationStatus.value === 'archived'){
-        statusLabelBadge.classList.add('text-bg-light')
-        statusLabelBadge.innerHTML = `<i class="bi bi-archive-fill me-1"></i> ${applicationStatusLabel.value}`
       }else{
         statusLabelBadge.classList.add('text-bg-warning')
         statusLabelBadge.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${applicationStatusLabel.value}`

@@ -230,7 +230,7 @@ class UserController extends Controller
       ->paginate(5)
     ->withQueryString();
     return Inertia::render('User/MyAdoptionApp',[
-      'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,] : null,
+      'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,'role' =>$user->role] : null,
       'adoptionApplications' => $adoptionApplications,
       'filters' => [
         'search' => $search,

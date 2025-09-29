@@ -252,7 +252,7 @@ class AdminStaffController extends Controller
       ->orderBy('application_date', 'desc')
       ->paginate(9)
     ->withQueryString();
-
+    $user = Auth::user();
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/adoption-applications']);
 
@@ -265,6 +265,9 @@ class AdminStaffController extends Controller
         'status' => $statusFilter,
         'sort' => $sortOrder,
       ],
+      'user' => $user?[
+        'role' => $user->role
+      ]:null
     ]); 
   }
 }

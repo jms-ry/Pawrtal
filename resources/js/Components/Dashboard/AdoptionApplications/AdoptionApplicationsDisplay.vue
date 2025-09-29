@@ -150,7 +150,9 @@
           </div>
         </div>
         <ViewApplicationModal/>
-        <ArchiveApplicationModal/>
+        <ArchiveApplicationModal
+          :user="user"
+        />
         <UnarchiveApplicationModal/>
       </div>
     </div>
@@ -172,6 +174,9 @@
     filters: {
       type: Object,
       default: () => ({})
+    },
+    user: {
+      type: Object,
     }
   })
 

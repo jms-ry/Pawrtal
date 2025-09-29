@@ -168,7 +168,9 @@
         </div>
       </div>
     </div>
-    <ViewApplicationModal/>
+    <ViewApplicationModal
+      :user="user"
+    />
     <ArchiveApplicationModal/>
     <UpdateAdoptionApplicationForm 
       :user="user"
