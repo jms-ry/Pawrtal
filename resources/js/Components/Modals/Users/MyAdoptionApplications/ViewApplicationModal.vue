@@ -67,7 +67,7 @@
             </button>
           </div>
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" @click="closeModal">Close</button>
           </div>
         </div>
       </div>
@@ -83,6 +83,7 @@
   import { ref, onMounted} from 'vue'
   import CancelApplicationModal from './CancelApplicationModal.vue'
   import SetInspectionSchedule from '../../SetInspectionSchedule.vue'
+  import { Modal } from 'bootstrap'
 
   const props = defineProps({
     user: {
@@ -124,7 +125,13 @@
       reasonForAdoption.value = button.getAttribute('data-application-reason-for-adoption');
 
       const statusLabelBadge = document.getElementById('applicationStatusLabel');
-
+      statusLabelBadge.classList.remove(
+        'text-bg-info',
+        'text-bg-success',
+        'text-bg-danger',
+        'text-bg-primary',
+        'text-bg-warning'
+      )
       if(applicationStatus.value === 'pending'){
         statusLabelBadge.classList.add('text-bg-info')
         statusLabelBadge.innerHTML = `<i class="bi bi-hourglass-split me-1"></i> ${applicationStatusLabel.value}`
@@ -157,4 +164,37 @@
       inspectionDate.value = button.getAttribute('data-application-inspection-date')
     });
   });
+
+  function closeModal(){
+    const modalEl = document.getElementById('viewApplicationModal')
+    const modal = Modal.getInstance(modalEl)
+    if (modal) {
+      modal.hide()
+    }
+
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+    document.body.classList.remove('modal-open')
+    document.body.style.removeProperty('overflow')
+    document.body.style.removeProperty('padding-right')
+    
+    applicationId.value = null
+    applicationRescueName.value = null
+    applicationStatus.value =  null
+    applicationStatusLabel.value =  null
+    applicationDate.value =  null
+    inspectionStartDate.value =  null
+    inspectionEndDate.value =  null
+    reasonForAdoption.value =  null
+    fullAddress.value =  null
+    houseStructure.value =  null
+    houseMembers.value =  null
+    numberOfChildren.value =  null
+    currentPets.value =  null
+    numberOfCurrentPets.value =  null
+    isAdminStaff.value =  null
+    inspectionScheduleCount.value =  null
+    inspectionLocation.value =  null
+    inspectorName.value =  null
+    inspectionDate.value =  null
+  }
 </script>
