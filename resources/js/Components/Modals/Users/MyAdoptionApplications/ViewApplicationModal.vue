@@ -17,14 +17,32 @@
               <span class="mt-2 ms-2 me-4">Reason for Adoption: </span>
               <textarea readonly class="form-control mt-2 fw-bolder">{{ reasonForAdoption }}</textarea>
             </div>
-            <div v-show="applicationStatus !== ('pending' && 'cancelled')" >
+            <div v-show="user?.role !== 'regular_user'  && inspectionScheduleCount === 0 " >
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace">Applicant Address Details:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">Full Address: <strong class="ms-1">{{ fullAddress }}</strong> </span>
+              </div>
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace">Applicant Household Details:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">House Structure: <strong class="ms-1">{{ houseStructure }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Household members: <strong class="ms-1">{{ houseMembers }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Number of children in the house: <strong class="ms-1">{{ numberOfChildren }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Current Pets: <strong class="ms-1">{{ currentPets }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Number of Current Pets: <strong class="ms-1">{{ numberOfCurrentPets }}</strong> </span>
+              </div>
+            </div>
+            <div v-show="inspectionScheduleCount > 0" >
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace">Inspection Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
-                <span class="mt-2 ms-2 me-4">Inspection Date:  </span>
-                <span class="mt-2 ms-2 me-4">Inspection Location:  </span>
-                <span class="mt-2 ms-2 me-4">Inspection Officer:  </span>
+                <span class="mt-2 ms-2 me-4">Inspection Date: <strong class="ms-1">{{ inspectionDate }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Inspection Location: <strong class="ms-1">{{ inspectionLocation }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Inspection Officer: <strong class="ms-1">{{ inspectorName }}</strong> </span>
               </div>
+            </div>
+            <div class="d-none">
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace">Review Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
@@ -33,26 +51,46 @@
               </div>
             </div>
           </div>
+          <hr class="text-dark mt-3 mb-2">
         </div>
         <div class="modal-footer border-0 bg-info-subtle">
-          <div v-if="applicationStatus === 'pending'" class="align-self-start">
+          <div v-if="isAdminStaff === 'false' && applicationStatus === 'pending'" class="align-self-start">
             <button type="button" class="btn btn-warning" :data-application-id="applicationId" data-bs-toggle="modal" data-bs-target="#cancelApplicationModal">Cancel Application</button>
           </div>
+          <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="align-self-start">
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#setInspectionScheduleModal" 
+              :data-application-id="applicationId"
+              :data-application-start-date="inspectionStartDate"
+              :data-application-end-date="inspectionEndDate" 
+              :data-application-address="fullAddress"
+              >Set Inspection Schedule
+            </button>
+          </div>
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" @click="closeModal">Close</button>
           </div>
         </div>
       </div>
     </div>
   </div>
   <CancelApplicationModal />
+  <SetInspectionSchedule
+    :inspectors="inspectors"
+  />
 </template>
 
 <script setup>
   import { ref, onMounted} from 'vue'
   import CancelApplicationModal from './CancelApplicationModal.vue'
+  import SetInspectionSchedule from '../../SetInspectionSchedule.vue'
+  import { Modal } from 'bootstrap'
 
-
+  const props = defineProps({
+    user: {
+      type: Object,
+    },
+    inspectors: Object
+  })
 
   const applicationId = ref(null)
   const applicationRescueName = ref(null)
@@ -62,7 +100,17 @@
   const inspectionStartDate = ref(null)
   const inspectionEndDate = ref(null)
   const reasonForAdoption = ref(null)
-
+  const fullAddress = ref(null)
+  const houseStructure = ref(null)
+  const houseMembers = ref(null)
+  const numberOfChildren = ref(null)
+  const currentPets = ref(null)
+  const numberOfCurrentPets = ref(null)
+  const isAdminStaff = ref(null)
+  const inspectionScheduleCount = ref(null)
+  const inspectionLocation = ref(null)
+  const inspectorName = ref(null)
+  const inspectionDate = ref(null)
   onMounted(() => {
     const viewApplicationModal = document.getElementById('viewApplicationModal');
     viewApplicationModal.addEventListener('show.bs.modal', (event) => {
@@ -77,7 +125,13 @@
       reasonForAdoption.value = button.getAttribute('data-application-reason-for-adoption');
 
       const statusLabelBadge = document.getElementById('applicationStatusLabel');
-
+      statusLabelBadge.classList.remove(
+        'text-bg-info',
+        'text-bg-success',
+        'text-bg-danger',
+        'text-bg-primary',
+        'text-bg-warning'
+      )
       if(applicationStatus.value === 'pending'){
         statusLabelBadge.classList.add('text-bg-info')
         statusLabelBadge.innerHTML = `<i class="bi bi-hourglass-split me-1"></i> ${applicationStatusLabel.value}`
@@ -87,16 +141,60 @@
       }else if(applicationStatus.value === 'rejected'){
         statusLabelBadge.classList.add('text-bg-danger')
         statusLabelBadge.innerHTML = `<i class="bi bi-x-circle me-1"></i> ${applicationStatusLabel.value}`
-      }else if (applicationStatus.value === 'under review'){
+      }else if (applicationStatus.value === 'under_review'){
         statusLabelBadge.classList.add('text-bg-primary')
         statusLabelBadge.innerHTML = `<i class="bi bi-search me-1"></i> ${applicationStatusLabel.value}`
-      }else if(applicationStatus.value === 'archived'){
-        statusLabelBadge.classList.add('text-bg-light')
-        statusLabelBadge.innerHTML = `<i class="bi bi-archive-fill me-1"></i> ${applicationStatusLabel.value}`
       }else{
         statusLabelBadge.classList.add('text-bg-warning')
         statusLabelBadge.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> ${applicationStatusLabel.value}`
       }
+
+      fullAddress.value = button.getAttribute('data-applicant-full-address');
+      houseStructure.value = button.getAttribute('data-applicant-housestucture');
+      houseMembers.value = button.getAttribute('data-applicant-household-members');
+      numberOfChildren.value = button.getAttribute('data-applicant-number-of-children');
+      currentPets.value = button.getAttribute('data-applicant-current-pets');
+      numberOfCurrentPets.value = button.getAttribute('data-applicant-number-of-current-pets');
+
+      isAdminStaff.value = button.getAttribute('data-application-logged-user-is-admin-or-staff');
+
+      inspectionScheduleCount.value = button.getAttribute('data-applicaiton-inspection-schedule-count')
+      inspectionLocation.value = button.getAttribute('data-application-inspection-location')
+      inspectorName.value = button.getAttribute('data-application-inspector-name')
+      inspectionDate.value = button.getAttribute('data-application-inspection-date')
     });
   });
+
+  function closeModal(){
+    const modalEl = document.getElementById('viewApplicationModal')
+    const modal = Modal.getInstance(modalEl)
+    if (modal) {
+      modal.hide()
+    }
+
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
+    document.body.classList.remove('modal-open')
+    document.body.style.removeProperty('overflow')
+    document.body.style.removeProperty('padding-right')
+    
+    applicationId.value = null
+    applicationRescueName.value = null
+    applicationStatus.value =  null
+    applicationStatusLabel.value =  null
+    applicationDate.value =  null
+    inspectionStartDate.value =  null
+    inspectionEndDate.value =  null
+    reasonForAdoption.value =  null
+    fullAddress.value =  null
+    houseStructure.value =  null
+    houseMembers.value =  null
+    numberOfChildren.value =  null
+    currentPets.value =  null
+    numberOfCurrentPets.value =  null
+    isAdminStaff.value =  null
+    inspectionScheduleCount.value =  null
+    inspectionLocation.value =  null
+    inspectorName.value =  null
+    inspectionDate.value =  null
+  }
 </script>

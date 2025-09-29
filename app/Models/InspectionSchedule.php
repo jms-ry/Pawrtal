@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+class InspectionSchedule extends Model
+{
+  protected $fillable = [
+    'application_id',
+    'inspector_id',
+    'inspection_location',
+    'inspection_date'
+  ];
+
+  public function adoptionApplication()
+  {
+    return $this->belongsTo(AdoptionApplication::class,'application_id');
+  }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class,'inspector_id');
+  }
+
+  public function inspectionLocation()
+  {
+    return Str::headline($this->inspection_location);
+  }
+
+  public function inspectorName()
+  {
+    if($this->inspector_id){
+      return $this->user?->fullName();
+    }
+  }
+
+  public function inspectionDate(){
+    return \Carbon\Carbon::parse($this->inspection_date)->format('M d, Y');
+  }
+}

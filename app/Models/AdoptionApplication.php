@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use PhpParser\Node\Expr\Cast;
+use Illuminate\Support\Facades\Auth;
 use Str;
 
 class AdoptionApplication extends Model
@@ -35,12 +36,76 @@ class AdoptionApplication extends Model
     'reason_for_adoption_formatted',
     'valid_id_url',
     'applicant_full_name',
-    'archived'
+    'archived',
+    'applicant_full_address',
+    'applicant_house_structure',
+    'applicant_household_members',
+    'applicant_number_of_children',
+    'applicant_number_of_current_pets',
+    'applicant_current_pets',
+    'logged_user_is_admin_or_staff',
+    'inspection_location',
+    'inspector_name',
+    'inspection_date'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
+  
+  public function inspectionSchedule()
+  {
+    return $this->hasOne(InspectionSchedule::class,'application_id');
+  }
 
+  public function getInspectionLocationAttribute()
+  {
+    return $this->inspectionSchedule?->inspectionLocation();
+  }
+
+  public function getInspectorNameAttribute()
+  {
+    return $this->inspectionSchedule?->inspectorName();
+  }
+
+  public function getInspectionDateAttribute()
+  {
+    return $this->inspectionSchedule?->inspectionDate();
+  }
+  public function getLoggedUserIsAdminOrStaffAttribute()
+  {
+    $user = Auth::user();
+
+    return $user?->isAdminOrStaff() ? 'true' : 'false';
+  }
+  public function getApplicantFullAddressAttribute()
+  {
+    return $this->user?->fullAddress();
+  }
+
+  public function getApplicantHouseStructureAttribute()
+  {
+    return $this->user?->household?->houseStructure();
+  }
+
+  public function getApplicantHouseholdMembersAttribute()
+  {
+    return $this->user?->household?->householdMembers();
+  }
+
+  public function getApplicantNumberOfChildrenAttribute()
+  {
+    return $this->user?->household?->numberOfChildren();
+  }
+
+  public function getApplicantNumberOfCurrentPetsAttribute()
+  {
+    return $this->user?->household?->numberOfCurrentPets();
+  }
+
+  public function getApplicantCurrentPetsAttribute()
+  {
+    return $this->user?->household?->currentPets();
+  }
   public function getArchivedAttribute()
   {
     return $this->trashed() ? 'Yes' : 'No';
@@ -68,7 +133,7 @@ class AdoptionApplication extends Model
   }
   public function getStatusLabelAttribute()
   {
-    return Str::of($this->status)->replace('_',' ')->ucfirst();
+    return Str::of($this->status)->replace('_',' ')->title();
   }
 
   public function getApplicationDateFormattedAttribute()

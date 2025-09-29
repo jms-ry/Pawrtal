@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\Rescue;
+use App\Models\User;
 use Illuminate\Support\Str;
 class AdminStaffController extends Controller
 {
@@ -222,7 +223,8 @@ class AdminStaffController extends Controller
 
     $adoptionApplications = AdoptionApplication::query()
       ->withTrashed()
-      ->with(['user','rescue'])
+      ->with(['user','rescue','inspectionSchedule'])
+      ->withCount('inspectionSchedule')
       ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
         $query->where('status', '!=', 'archived');
       })
@@ -252,7 +254,8 @@ class AdminStaffController extends Controller
       ->orderBy('application_date', 'desc')
       ->paginate(9)
     ->withQueryString();
-
+    $user = Auth::user();
+    $inspectors = User::query()->whereIn('role', ['admin', 'staff'])->get();
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/adoption-applications']);
 
@@ -265,6 +268,10 @@ class AdminStaffController extends Controller
         'status' => $statusFilter,
         'sort' => $sortOrder,
       ],
+      'inspectors' => $inspectors,
+      'user' => $user?[
+        'role' => $user->role
+      ]:null
     ]); 
   }
 }

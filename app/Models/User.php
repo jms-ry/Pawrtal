@@ -53,6 +53,10 @@ class User extends Authenticatable
     ];
   }
 
+  public function inspectionSchedules()
+  {
+    return $this->hasMany(InspectionSchedule::class,'inspector_id');
+  }
   public function donations() : HasMany
   {
     return $this->hasMany(Donation::class);
@@ -103,5 +107,13 @@ class User extends Authenticatable
   public function isNonAdminOrStaff(): bool
   {
     return $this->role !== 'admin' && $this->role !== 'staff';
+  }
+
+  public function fullAddress()
+  {
+    if($this->address){
+      return $this->address->fullAddress();
+    }
+    return null;
   }
 }
