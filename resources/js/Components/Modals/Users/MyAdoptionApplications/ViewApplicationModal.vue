@@ -33,15 +33,6 @@
                 <span class="mt-2 ms-2 me-4">Number of Current Pets: <strong class="ms-1">{{ numberOfCurrentPets }}</strong> </span>
               </div>
             </div>
-            <div v-show="inspectionScheduleCount > 0" >
-              <hr class="text-dark mt-3 mb-2">
-              <h6 class="fw-bolder text-uppercase font-monospace mt-1">Inspection Details:</h6>
-              <div class="d-flex flex-column align-items-start ms-2">
-                <span class="mt-2 ms-2 me-4">Inspection Date: <strong class="ms-1">{{ inspectionDate }}</strong> </span>
-                <span class="mt-2 ms-2 me-4">Inspection Location: <strong class="ms-1">{{ inspectionLocation }}</strong> </span>
-                <span class="mt-2 ms-2 me-4">Inspection Officer: <strong class="ms-1">{{ inspectorName }}</strong> </span>
-              </div>
-            </div>
             <div>
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace mt-1">Application Progress:</h6>
@@ -75,6 +66,15 @@
                   <div class="text-muted small text-center" v-else-if="applicationStatus === 'rejected'">Rejected</div>
                   <div class="text-muted small text-center" v-else>Pending</div>
                 </div>
+              </div>
+            </div>
+            <div v-show="inspectionScheduleCount > 0" >
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace mt-1">Inspection Details:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">Inspection Date: <strong class="ms-1">{{ inspectionDate }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Inspection Location: <strong class="ms-1">{{ inspectionLocation }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Inspection Officer: <strong class="ms-1">{{ inspectorName }}</strong> </span>
               </div>
             </div>
             <div class="d-none">
