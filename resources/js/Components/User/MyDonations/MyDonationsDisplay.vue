@@ -104,6 +104,7 @@
                   :data-donation-status="donation.status"
                   :data-donation-type="donation.donation_type"
                   :data-donation-image="donation.donation_image_url"
+                  :data-donation-is-owned-by-logged-user="donation.is_owned_by_logged_user"
                 >View </a>
                 <a v-if="donation.status === 'pending' && donation.donation_type === 'in-kind'" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#updateInKindDonationModal"
                   :data-donation-id="donation.id"
