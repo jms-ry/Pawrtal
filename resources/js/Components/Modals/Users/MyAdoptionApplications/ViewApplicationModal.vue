@@ -17,7 +17,7 @@
               <span class="mt-2 ms-2 me-4">Reason for Adoption: </span>
               <textarea readonly class="form-control mt-2 fw-bolder">{{ reasonForAdoption }}</textarea>
             </div>
-            <div v-show="user?.role !== 'regular_user'  && inspectionScheduleCount === 0 " >
+            <div v-show="user?.role !== 'regular_user' && inspectionScheduleCount === 0 && applicationStatus !=='cancelled'" >
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace">Applicant Address Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
@@ -32,6 +32,30 @@
                 <span class="mt-2 ms-2 me-4">Current Pets: <strong class="ms-1">{{ currentPets }}</strong> </span>
                 <span class="mt-2 ms-2 me-4">Number of Current Pets: <strong class="ms-1">{{ numberOfCurrentPets }}</strong> </span>
               </div>
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace mt-1">Verification Documents:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">
+                  Valid ID: 
+                  <a :href="validIdUrl" target="_blank" class="text-dark fw-bold font-monospace text-decoration-underline ms-1">
+                    <i class="bi bi-file-image me-1"></i>View
+                  </a>
+                </span>
+              </div>
+              <div v-if="supportingDocuments && supportingDocuments.length > 0" class="mt-2 ms-2 me-4 w-100">
+                <span class="mt-2 ms-2 me-4 d-block mb-2">Supporting Documents:</span>
+                <div class="d-flex flex-column ms-4">
+                  <span v-for="(docUrl, index) in supportingDocuments" :key="index" class="mb-2">
+                    Document {{ index + 1 }}: 
+                    <a :href="docUrl" target="_blank" class="text-dark fw-bold font-monospace text-decoration-underline ms-1">
+                      <i class="bi bi-file-earmark-text me-1"></i>View
+                    </a>
+                  </span>
+                </div>
+              </div>
+              <span v-else class="mt-2 ms-2 me-4 text-muted fst-italic">
+                No supporting documents uploaded
+              </span>
             </div>
             <div>
               <hr class="text-dark mt-3 mb-2">
@@ -146,6 +170,8 @@
   const inspectionLocation = ref(null)
   const inspectorName = ref(null)
   const inspectionDate = ref(null)
+  const validIdUrl = ref(null)
+  const supportingDocuments = ref([])
   onMounted(() => {
     const viewApplicationModal = document.getElementById('viewApplicationModal');
     viewApplicationModal.addEventListener('show.bs.modal', (event) => {
@@ -193,10 +219,14 @@
 
       isAdminStaff.value = button.getAttribute('data-application-logged-user-is-admin-or-staff');
 
-      inspectionScheduleCount.value = button.getAttribute('data-applicaiton-inspection-schedule-count')
+      inspectionScheduleCount.value = Number(button.getAttribute('data-applicaiton-inspection-schedule-count'))
       inspectionLocation.value = button.getAttribute('data-application-inspection-location')
       inspectorName.value = button.getAttribute('data-application-inspector-name')
       inspectionDate.value = button.getAttribute('data-application-inspection-date')
+
+      validIdUrl.value = button.getAttribute('data-application-valid-id-url')
+      const supportingDocsJson = button.getAttribute('data-application-supporting-documents');
+      supportingDocuments.value = supportingDocsJson ? JSON.parse(supportingDocsJson) : [];
     });
   });
 
@@ -231,5 +261,7 @@
     inspectionLocation.value =  null
     inspectorName.value =  null
     inspectionDate.value =  null
+    validIdUrl.value = null 
+    supportingDocuments.value = [] 
   }
 </script>

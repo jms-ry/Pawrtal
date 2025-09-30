@@ -177,15 +177,16 @@ class AdoptionApplication extends Model
 
   public function getSupportingDocumentsUrlAttribute()
   {
-    if(is_array($this->supporting_documents) && count($this->supporting_documents) > 0){
-      return array_map(function ($document) {
-        if(str_contains($document, '/supporting_documents'))
-        {
-          return asset('storage/'. $document);
-        }
-        return asset($document);
-      }, $this->supporting_documents);
+      
+    if (empty($this->supporting_documents) || !is_array($this->supporting_documents)) {
+      return [];
     }
-    return [];
+
+    return array_map(function ($document) {
+      if (str_contains($document, 'supporting_documents/')) {
+        return asset('storage/' . $document);
+      }
+      return asset($document);
+    }, $this->supporting_documents);
   }
 }

@@ -15,6 +15,7 @@
           :adoptionApplications="adoptionApplications"
           :filters="filters"
           :inspectors="inspectors"
+          :user="user"
         />
       </div>
     </div>

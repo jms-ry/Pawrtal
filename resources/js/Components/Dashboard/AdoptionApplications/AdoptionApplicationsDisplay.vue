@@ -64,6 +64,8 @@
                     :data-application-inspection-location="adoptionApplication.inspection_location"
                     :data-application-inspector-name="adoptionApplication.inspector_name"
                     :data-application-inspection-date="adoptionApplication.inspection_date"
+                    :data-application-valid-id-url="adoptionApplication.valid_id_url"
+                    :data-application-supporting-documents="JSON.stringify(adoptionApplication.supporting_documents_url)"
                   >View
                   </a>
                   <a v-if="!adoptionApplication.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
@@ -168,6 +170,7 @@
         </div>
         <ViewApplicationModal
           :inspectors="inspectors"
+          :user="user"
         />
         <ArchiveApplicationModal
           :user="user"

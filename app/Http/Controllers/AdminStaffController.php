@@ -258,7 +258,7 @@ class AdminStaffController extends Controller
     $inspectors = User::query()->whereIn('role', ['admin', 'staff'])->get();
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/adoption-applications']);
-
+      
     return Inertia::render('AdminStaff/AdoptionApplications',[
       'adoptionApplications' => $adoptionApplications,
       'previousUrl' => $previousUrl,
@@ -273,5 +273,6 @@ class AdminStaffController extends Controller
         'role' => $user->role
       ]:null
     ]); 
+    
   }
 }
