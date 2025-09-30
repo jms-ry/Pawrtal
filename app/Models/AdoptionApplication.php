@@ -46,7 +46,8 @@ class AdoptionApplication extends Model
     'logged_user_is_admin_or_staff',
     'inspection_location',
     'inspector_name',
-    'inspection_date'
+    'inspection_date',
+    'supporting_documents_url'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
@@ -172,5 +173,20 @@ class AdoptionApplication extends Model
     }
 
     return asset($this->valid_id);
+  }
+
+  public function getSupportingDocumentsUrlAttribute()
+  {
+      
+    if (empty($this->supporting_documents) || !is_array($this->supporting_documents)) {
+      return [];
+    }
+
+    return array_map(function ($document) {
+      if (str_contains($document, 'supporting_documents/')) {
+        return asset('storage/' . $document);
+      }
+      return asset($document);
+    }, $this->supporting_documents);
   }
 }

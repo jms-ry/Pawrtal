@@ -17,7 +17,7 @@
               <span class="mt-2 ms-2 me-4">Reason for Adoption: </span>
               <textarea readonly class="form-control mt-2 fw-bolder">{{ reasonForAdoption }}</textarea>
             </div>
-            <div v-show="user?.role !== 'regular_user'  && inspectionScheduleCount === 0 " >
+            <div v-show="user?.role !== 'regular_user' && inspectionScheduleCount === 0 && applicationStatus !=='cancelled'" >
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace">Applicant Address Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
@@ -32,6 +32,30 @@
                 <span class="mt-2 ms-2 me-4">Current Pets: <strong class="ms-1">{{ currentPets }}</strong> </span>
                 <span class="mt-2 ms-2 me-4">Number of Current Pets: <strong class="ms-1">{{ numberOfCurrentPets }}</strong> </span>
               </div>
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace mt-1">Verification Documents:</h6>
+              <div class="d-flex flex-column align-items-start ms-2">
+                <span class="mt-2 ms-2 me-4">
+                  Valid ID: 
+                  <a :href="validIdUrl" target="_blank" class="fw-bold font-monospace text-decoration-underline ms-1" :class="{ 'text-dark': !visitedLinks.validId, 'text-danger': visitedLinks.validId }" @click="markVisited('validId')">
+                    <i class="bi bi-file-image me-1"></i>View
+                  </a>
+                </span>
+              </div>
+              <div v-if="supportingDocuments && supportingDocuments.length > 0" class="mt-2 ms-2 me-4 w-100">
+                <span class="mt-2 ms-2 me-4 d-block mb-2">Supporting Documents:</span>
+                <div class="d-flex flex-column ms-4">
+                  <span v-for="(docUrl, index) in supportingDocuments" :key="index" class="mb-2">
+                    Document {{ index + 1 }}: 
+                    <a :href="docUrl" target="_blank" class="fw-bold font-monospace text-decoration-underline ms-1" :class="{ 'text-dark': !visitedLinks.supporting[index], 'text-danger': visitedLinks.supporting[index] }" @click="markVisited('supporting', index)">
+                      <i class="bi bi-file-earmark-text me-1"></i>View
+                    </a>
+                  </span>
+                </div>
+              </div>
+              <span v-else class="mt-2 ms-2 me-4 text-muted fst-italic">
+                No supporting documents uploaded
+              </span>
             </div>
             <div>
               <hr class="text-dark mt-3 mb-2">
@@ -93,16 +117,23 @@
             <button type="button" class="btn btn-warning" :data-application-id="applicationId" data-bs-toggle="modal" data-bs-target="#cancelApplicationModal">Cancel Application</button>
           </div>
           <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="align-self-start">
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#setInspectionScheduleModal" 
-              :data-application-id="applicationId"
-              :data-application-start-date="inspectionStartDate"
-              :data-application-end-date="inspectionEndDate" 
-              :data-application-address="fullAddress"
-              >Set Inspection Schedule
-            </button>
+            <span data-bs-toggle="tooltip" data-bs-placement="top" title="Make sure to verify all the documents.">
+              <button type="button" class="btn btn-info" disabled data-bs-toggle="modal" data-bs-target="#setInspectionScheduleModal" 
+                :data-application-id="applicationId"
+                :data-application-start-date="inspectionStartDate"
+                :data-application-end-date="inspectionEndDate" 
+                :data-application-address="fullAddress"
+                >Set Inspection Schedule
+              </button>
+            </span>
           </div>
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-danger" @click="closeModal">Close</button>
+          </div>
+          <div class="d-block d-md-none" id="reminderSmall">
+            <small class="text-muted d-block mt-1 fst-italic">
+              Button disabled. Make sure to verify all the documents first.
+            </small>
           </div>
         </div>
       </div>
@@ -115,10 +146,10 @@
 </template>
 
 <script setup>
-  import { ref, onMounted} from 'vue'
+  import { ref, computed, onMounted, nextTick } from 'vue'
   import CancelApplicationModal from './CancelApplicationModal.vue'
   import SetInspectionSchedule from '../../SetInspectionSchedule.vue'
-  import { Modal } from 'bootstrap'
+  import { Modal, Tooltip } from 'bootstrap'
 
   const props = defineProps({
     user: {
@@ -126,7 +157,44 @@
     },
     inspectors: Object
   })
+  const visitedLinks = ref({
+    validId: false,
+    supporting: []
+  })
 
+  function markVisited(type, index = null) {
+    if (type === 'validId') {
+      visitedLinks.value.validId = true
+    } else if (type === 'supporting') {
+      visitedLinks.value.supporting[index] = true
+    }
+    checkIfAllVisited()
+  }
+
+  const allDocsVisited = computed(() => {
+    if (!validIdUrl.value) return false
+    const validIdVisited = visitedLinks.value.validId
+    const supportingVisited = supportingDocuments.value.length === 0 || 
+      visitedLinks.value.supporting.every(v => v)
+    return validIdVisited && supportingVisited
+  })
+
+  function checkIfAllVisited() {
+    if (allDocsVisited.value) {
+      nextTick(() => {
+        const btn = document.querySelector('[data-bs-target="#setInspectionScheduleModal"]')
+        if (btn) {
+          btn.removeAttribute('disabled')
+          const tooltip = Tooltip.getInstance(btn)
+          if (tooltip) {
+            tooltip.dispose()
+          }
+          const warning = document.querySelector('#reminderSmall')
+          warning.classList.add('d-none')
+        }
+      })
+    }
+  }
   const applicationId = ref(null)
   const applicationRescueName = ref(null)
   const applicationStatus = ref(null)
@@ -146,7 +214,13 @@
   const inspectionLocation = ref(null)
   const inspectorName = ref(null)
   const inspectionDate = ref(null)
+  const validIdUrl = ref(null)
+  const supportingDocuments = ref([])
   onMounted(() => {
+
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+      new Tooltip(el)
+    })
     const viewApplicationModal = document.getElementById('viewApplicationModal');
     viewApplicationModal.addEventListener('show.bs.modal', (event) => {
       const button = event.relatedTarget;
@@ -193,10 +267,17 @@
 
       isAdminStaff.value = button.getAttribute('data-application-logged-user-is-admin-or-staff');
 
-      inspectionScheduleCount.value = button.getAttribute('data-applicaiton-inspection-schedule-count')
+      inspectionScheduleCount.value = Number(button.getAttribute('data-applicaiton-inspection-schedule-count'))
       inspectionLocation.value = button.getAttribute('data-application-inspection-location')
       inspectorName.value = button.getAttribute('data-application-inspector-name')
       inspectionDate.value = button.getAttribute('data-application-inspection-date')
+
+      validIdUrl.value = button.getAttribute('data-application-valid-id-url')
+      const supportingDocsJson = button.getAttribute('data-application-supporting-documents');
+      supportingDocuments.value = supportingDocsJson ? JSON.parse(supportingDocsJson) : [];
+
+      visitedLinks.value.validId = false
+      visitedLinks.value.supporting = supportingDocuments.value.map(() => false)
     });
   });
 
@@ -231,5 +312,7 @@
     inspectionLocation.value =  null
     inspectorName.value =  null
     inspectionDate.value =  null
+    validIdUrl.value = null 
+    supportingDocuments.value = [] 
   }
 </script>
