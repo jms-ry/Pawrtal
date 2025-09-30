@@ -32,7 +32,7 @@ class UpdateAdoptionApplicationRequest extends FormRequest
       'supporting_documents' =>'nullable|array|',
       'supporting_documents.*'=> 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:5120',
       'reviewed_by' => 'nullable|string|max:255',
-      'reviewed_date' =>'nullable|date',
+      'review_date' =>'nullable|date',
       'review_notes' => 'nullable|string|max:5000'
     ];
   }

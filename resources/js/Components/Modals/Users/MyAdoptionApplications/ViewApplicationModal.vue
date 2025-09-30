@@ -92,7 +92,7 @@
                 </div>
               </div>
             </div>
-            <div v-show="inspectionScheduleCount > 0" >
+            <div v-show="inspectionScheduleCount > 0 && applicationStatus === 'under_review'" >
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace mt-1">Inspection Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
@@ -101,12 +101,14 @@
                 <span class="mt-2 ms-2 me-4">Inspection Officer: <strong class="ms-1">{{ inspectorName }}</strong> </span>
               </div>
             </div>
-            <div class="d-none">
+            <div v-show="reviewNotes">
               <hr class="text-dark mt-3 mb-2">
-              <h6 class="fw-bolder text-uppercase font-monospace">Review Details:</h6>
+              <h6 class="fw-bolder text-uppercase font-monospace mt-1">Review Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
-                <span class="mt-2 ms-2 me-4">Review Notes:  </span>
-                <span class="mt-2 ms-2 me-4">Reviewed By:  </span>
+                <span class="mt-2 ms-2 me-4">Reviewed By: <strong class="ms-1">{{ reviewedBy }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Review Date: <strong class="ms-1">{{ reviewedDate }}</strong> </span>
+                <span class="mt-2 ms-2 me-4">Review Notes: <strong class="ms-1"></strong> </span>
+                <textarea readonly class="form-control mt-2 fw-bolder">{{ reviewNotes }}</textarea>
               </div>
             </div>
           </div>
@@ -127,10 +129,16 @@
               </button>
             </span>
           </div>
+          <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'under_review'" class="align-self-start">
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#makeDecisionModal" 
+                :data-application-id="applicationId"
+                >Make Decision
+              </button>
+          </div>
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-danger" @click="closeModal">Close</button>
           </div>
-          <div class="d-block d-md-none" id="reminderSmall">
+          <div v-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="d-block d-md-none" id="reminderSmall">
             <small class="text-muted d-block mt-1 fst-italic">
               Button disabled. Make sure to verify all the documents first.
             </small>
@@ -143,6 +151,9 @@
   <SetInspectionSchedule
     :inspectors="inspectors"
   />
+  <MakeDecisionModal
+    :user="user"
+  />
 </template>
 
 <script setup>
@@ -150,6 +161,7 @@
   import CancelApplicationModal from './CancelApplicationModal.vue'
   import SetInspectionSchedule from '../../SetInspectionSchedule.vue'
   import { Modal, Tooltip } from 'bootstrap'
+  import MakeDecisionModal from '../../MakeDecisionModal.vue'
 
   const props = defineProps({
     user: {
@@ -216,6 +228,9 @@
   const inspectionDate = ref(null)
   const validIdUrl = ref(null)
   const supportingDocuments = ref([])
+  const reviewNotes = ref(null)
+  const reviewedDate = ref(null)
+  const reviewedBy = ref(null)
   onMounted(() => {
 
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
@@ -278,6 +293,10 @@
 
       visitedLinks.value.validId = false
       visitedLinks.value.supporting = supportingDocuments.value.map(() => false)
+
+      reviewNotes.value = button.getAttribute('data-application-review-notes')
+      reviewedDate.value = button.getAttribute('data-application-review-date')
+      reviewedBy.value = button.getAttribute('data-application-reviewer')
     });
   });
 

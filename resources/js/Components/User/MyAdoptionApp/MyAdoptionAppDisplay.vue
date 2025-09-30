@@ -57,6 +57,9 @@
                     :data-application-inspection-location="adoptionApplication.inspection_location"
                     :data-application-inspector-name="adoptionApplication.inspector_name"
                     :data-application-inspection-date="adoptionApplication.inspection_date"
+                    :data-application-review-notes="adoptionApplication.review_notes_formatted"
+                    :data-application-review-date="adoptionApplication.reviewed_date_formatted"
+                    :data-application-reviewer="adoptionApplication.reviewed_by_formatted"
                    >View 
                   </a>
                   <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#updateAdoptionApplicationFormModal"
@@ -107,6 +110,9 @@
                   :data-application-inspection-location="adoptionApplication.inspection_location"
                   :data-application-inspector-name="adoptionApplication.inspector_name"
                   :data-application-inspection-date="adoptionApplication.inspection_date"
+                  :data-application-review-notes="adoptionApplication.review_notes_formatted"
+                  :data-application-review-date="adoptionApplication.reviewed_date_formatted"
+                  :data-application-reviewer="adoptionApplication.reviewed_by_formatted"
                   >View 
                 </a>
                 <a v-if="adoptionApplication.status === 'pending'" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#updateAdoptionApplicationFormModal"
