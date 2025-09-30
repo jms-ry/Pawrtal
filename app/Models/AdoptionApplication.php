@@ -177,7 +177,7 @@ class AdoptionApplication extends Model
 
   public function getSupportingDocumentsUrlAttribute()
   {
-    if(is_array($this->supporting_documents) && count($this->supporting_documents > 0)){
+    if(is_array($this->supporting_documents) && count($this->supporting_documents) > 0){
       return array_map(function ($document) {
         if(str_contains($document, '/supporting_documents'))
         {
