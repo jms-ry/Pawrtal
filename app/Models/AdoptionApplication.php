@@ -47,12 +47,29 @@ class AdoptionApplication extends Model
     'inspection_location',
     'inspector_name',
     'inspection_date',
-    'supporting_documents_url'
+    'supporting_documents_url',
+    'review_notes_formatted',
+    'reviewed_date_formatted',
+    'reviewed_by_formatted'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
   
+  public function getReviewNotesFormattedAttribute()
+  {
+    return $this->review_notes;
+  }
+
+  public function getReviewedDateFormattedAttribute()
+  {
+    return \Carbon\Carbon::parse($this->reviewed_date)->format('M d, Y');
+  }
+
+  public function getReviewedByFormattedAttribute()
+  {
+    return Str::headline($this->reviewed_by);
+  }
   public function inspectionSchedule()
   {
     return $this->hasOne(InspectionSchedule::class,'application_id');

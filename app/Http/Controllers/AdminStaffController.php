@@ -270,7 +270,8 @@ class AdminStaffController extends Controller
       ],
       'inspectors' => $inspectors,
       'user' => $user?[
-        'role' => $user->role
+        'role' => $user->role,
+        'fullName' => $user->fullName()
       ]:null
     ]); 
     

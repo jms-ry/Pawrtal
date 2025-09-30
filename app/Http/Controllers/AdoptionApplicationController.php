@@ -82,6 +82,18 @@ class AdoptionApplicationController extends Controller
       $adoptionApplication->update($requestData);
       return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been cancelled.');
     }
+    //approve adoption applicaiton
+    if($request->status === 'approved'){
+      $adoptionApplication->update($requestData);
+      return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been approved.');
+    }
+
+    //reject adoption application 
+    if($request->status === 'rejected'){
+      $adoptionApplication->update($requestData);
+      return redirect()->back()->with('error','Adoption application for '. $adoptionApplication->rescue->name. ' has been rejected.');
+    }
+
 
     if($request->hasFile('valid_id')){
       if($adoptionApplication->valid_id){
