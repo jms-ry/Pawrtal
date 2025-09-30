@@ -24,7 +24,7 @@
                 <span class="mt-2 ms-2 me-4">Full Address: <strong class="ms-1">{{ fullAddress }}</strong> </span>
               </div>
               <hr class="text-dark mt-3 mb-2">
-              <h6 class="fw-bolder text-uppercase font-monospace">Applicant Household Details:</h6>
+              <h6 class="fw-bolder text-uppercase font-monospace mt-1">Applicant Household Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
                 <span class="mt-2 ms-2 me-4">House Structure: <strong class="ms-1">{{ houseStructure }}</strong> </span>
                 <span class="mt-2 ms-2 me-4">Household members: <strong class="ms-1">{{ houseMembers }}</strong> </span>
@@ -35,11 +35,46 @@
             </div>
             <div v-show="inspectionScheduleCount > 0" >
               <hr class="text-dark mt-3 mb-2">
-              <h6 class="fw-bolder text-uppercase font-monospace">Inspection Details:</h6>
+              <h6 class="fw-bolder text-uppercase font-monospace mt-1">Inspection Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
                 <span class="mt-2 ms-2 me-4">Inspection Date: <strong class="ms-1">{{ inspectionDate }}</strong> </span>
                 <span class="mt-2 ms-2 me-4">Inspection Location: <strong class="ms-1">{{ inspectionLocation }}</strong> </span>
                 <span class="mt-2 ms-2 me-4">Inspection Officer: <strong class="ms-1">{{ inspectorName }}</strong> </span>
+              </div>
+            </div>
+            <div>
+              <hr class="text-dark mt-3 mb-2">
+              <h6 class="fw-bolder text-uppercase font-monospace mt-1">Application Progress:</h6>
+              <div class="d-flex align-items-center justify-content-between mt-4 px-3">
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="applicationStatus === 'pending' || applicationStatus === 'under_review' || applicationStatus === 'approved' || applicationStatus === 'rejected' || applicationStatus === 'cancelled' ? 'bg-info text-white' : 'bg-secondary text-white'"style="width: 50px; height: 50px;">
+                    <i class="bi bi-hourglass-split fs-5"></i>
+                  </div>
+                  <strong class="text-center small">Pending</strong>
+                  <div class="text-muted small text-center">Submitted</div>
+                </div>
+                <div class="flex-grow-1 border-top border-2 mx-2" :class="applicationStatus === 'under_review' || applicationStatus === 'approved' || applicationStatus === 'rejected' || applicationStatus === 'cancelled' ? 'border-info' : 'border-secondary'" style="height: 2px; margin-bottom: 60px;"></div>
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="applicationStatus === 'under_review' || applicationStatus === 'approved' || applicationStatus === 'rejected' ? 'bg-primary text-white' : applicationStatus === 'cancelled' ? 'bg-warning text-dark' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
+                    <i :class="applicationStatus === 'cancelled' ? 'bi bi-exclamation-triangle-fill fs-5' : 'bi bi-search fs-5'"></i>
+                  </div>
+                  <strong class="text-center small" v-if="applicationStatus === 'cancelled'">Cancelled</strong>
+                  <strong class="text-center small" v-else>Under Review</strong>
+                  <div class="text-muted small text-center" v-if="applicationStatus === 'cancelled'">Cancelled</div>
+                  <div class="text-muted small text-center" v-else>Reviewing</div>
+                </div>
+                <div v-if="applicationStatus !== 'cancelled'" class="flex-grow-1 border-top border-2 mx-2" :class="applicationStatus === 'approved' || applicationStatus === 'rejected' ? 'border-primary' : 'border-secondary'" style="height: 2px; margin-bottom: 60px;"></div>
+                <div v-if="applicationStatus !== 'cancelled'" class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="applicationStatus === 'approved' ? 'bg-success text-white' : applicationStatus === 'rejected' ? 'bg-danger text-white' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
+                    <i :class="applicationStatus === 'approved' ? 'bi bi-check-circle fs-5' : applicationStatus === 'rejected' ? 'bi bi-x-circle fs-5' : 'bi bi-clock fs-5'"></i>
+                  </div>
+                  <strong class="text-center small" v-if="applicationStatus === 'approved'">Approved</strong>
+                  <strong class="text-center small" v-else-if="applicationStatus === 'rejected'">Rejected</strong>
+                  <strong class="text-center small" v-else>Decision</strong>
+                  <div class="text-muted small text-center" v-if="applicationStatus === 'approved'">Approved</div>
+                  <div class="text-muted small text-center" v-else-if="applicationStatus === 'rejected'">Rejected</div>
+                  <div class="text-muted small text-center" v-else>Pending</div>
+                </div>
               </div>
             </div>
             <div class="d-none">
