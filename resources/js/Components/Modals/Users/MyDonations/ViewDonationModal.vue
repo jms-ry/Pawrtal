@@ -21,60 +21,78 @@
                 <strong class="mt-2 ms-2 me-4">Amount:  <span class="fw-lighter" id="amountSpan"></span></strong>
               </div>
             </div>
-            <div v-if="type === 'in-kind'" class="card border-0 bg-info-subtle">
-              <hr class="text-dark mt-4 mb-2">
-              <h6 class="fw-bolder mt-2 text-uppercase font-monospace mt-1"><strong >Donation Progress: </strong></h6>
-              <div class="d-flex flex-column align-items-start ms-2 mb-2">
-                <div v-if="donationStatus === 'cancelled'" class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
-                  <div class="d-flex flex-column align-items-center">
-                    <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-info text-white" style="width: 50px; height: 50px;">
-                      <i class="bi bi-hourglass-split fs-5"></i>
-                    </div>
-                    <strong class="text-center small">Pending</strong>
-                    <div class="text-muted small text-center">Submitted</div>
+            <hr class="text-dark mt-4 mb-2">
+            <h6 class="fw-bolder mt-2 text-uppercase font-monospace mt-1"><strong >Donation Progress: </strong></h6>
+            <div class="d-flex flex-column align-items-start ms-2 mb-2">
+              <div v-if="type=== 'monetary'" class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-info text-white" style="width: 50px; height: 50px;">
+                    <i class="bi bi-hourglass-split fs-5"></i>
                   </div>
-                  <div class="flex-grow-1 border-top border-2 mx-2 border-warning" style="height: 2px; margin-bottom: 60px;">
-                  </div>
-                  <div class="d-flex flex-column align-items-center">
-                    <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-warning text-dark" style="width: 50px; height: 50px;">
-                      <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-                    </div>
-                    <strong class="text-center small">Cancelled</strong>
-                    <div class="text-muted small text-center">Cancelled</div>
-                  </div>
+                  <strong class="text-center small">Submitted</strong>
+                  <div class="text-muted small text-center">Submitted</div>
                 </div>
-                <div v-else class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
-                  <div class="d-flex flex-column align-items-center">
-                    <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="donationStatus === 'pending' || donationStatus === 'accepted' || donationStatus === 'rejected' ? 'bg-info text-white' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
-                      <i class="bi bi-hourglass-split fs-5"></i>
-                    </div>
-                    <strong class="text-center small">Pending</strong>
-                    <div class="text-muted small text-center">Submitted</div>
+                <div class="flex-grow-1 border-top border-2 mx-2 border-success" style="height: 2px; margin-bottom: 60px;">
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-warning text-dark" style="width: 50px; height: 50px;">
+                    <i class="bi bi-check-circle fs-5"></i>
                   </div>
-                  <div class="flex-grow-1 border-top border-2 mx-2" :class="donationStatus === 'pending' || donationStatus === 'accepted' || donationStatus === 'rejected' ? 'border-info' : 'border-secondary'" style="height: 2px; margin-bottom: 60px;">
-                  </div>
-                  <div class="d-flex flex-column align-items-center">
-                    <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="donationStatus === 'pending' || donationStatus === 'accepted' || donationStatus === 'rejected' ? 'bg-primary text-white' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
-                      <i class="bi bi-search fs-5"></i>
-                    </div>
-                    <strong class="text-center small">Under Review</strong>
-                    <div class="text-muted small text-center">Reviewing</div>
-                  </div>
-                  <div class="flex-grow-1 border-top border-2 mx-2" :class="donationStatus === 'accepted' || donationStatus === 'rejected' ? 'border-primary' : 'border-secondary'" style="height: 2px; margin-bottom: 60px;">
-                  </div>
-                  <div class="d-flex flex-column align-items-center">
-                    <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="donationStatus === 'accepted' ? 'bg-success text-white' : donationStatus === 'rejected' ? 'bg-danger text-white' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
-                      <i :class="donationStatus === 'accepted' ? 'bi bi-check-circle fs-5' : donationStatus === 'rejected' ? 'bi bi-x-circle fs-5' : 'bi bi-clock fs-5'"></i>
-                    </div>
-                    <strong class="text-center small" v-if="donationStatus === 'accepted'">Accepted</strong>
-                    <strong class="text-center small" v-else-if="donationStatus === 'rejected'">Rejected</strong>
-                    <strong class="text-center small" v-else>Decision</strong>
-                    <div class="text-muted small text-center" v-if="donationStatus === 'accepted'">Accepted</div>
-                    <div class="text-muted small text-center" v-else-if="donationStatus === 'rejected'">Rejected</div>
-                    <div class="text-muted small text-center" v-else>Pending</div>
-                  </div>
+                  <strong class="text-center small">Accepted</strong>
+                  <div class="text-muted small text-center">Accepted</div>
                 </div>
               </div>
+              <div v-if="donationStatus === 'cancelled'" class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-info text-white" style="width: 50px; height: 50px;">
+                    <i class="bi bi-hourglass-split fs-5"></i>
+                  </div>
+                  <strong class="text-center small">Pending</strong>
+                  <div class="text-muted small text-center">Submitted</div>
+                </div>
+                <div class="flex-grow-1 border-top border-2 mx-2 border-warning" style="height: 2px; margin-bottom: 60px;">
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-warning text-dark" style="width: 50px; height: 50px;">
+                    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                  </div>
+                  <strong class="text-center small">Cancelled</strong>
+                  <div class="text-muted small text-center">Cancelled</div>
+                </div>
+              </div>
+              <div v-else class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="donationStatus === 'pending' || donationStatus === 'accepted' || donationStatus === 'rejected' ? 'bg-info text-white' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
+                    <i class="bi bi-hourglass-split fs-5"></i>
+                  </div>
+                  <strong class="text-center small">Pending</strong>
+                  <div class="text-muted small text-center">Submitted</div>
+                </div>
+                <div class="flex-grow-1 border-top border-2 mx-2" :class="donationStatus === 'pending' || donationStatus === 'accepted' || donationStatus === 'rejected' ? 'border-info' : 'border-secondary'" style="height: 2px; margin-bottom: 60px;">
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="donationStatus === 'pending' || donationStatus === 'accepted' || donationStatus === 'rejected' ? 'bg-primary text-white' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
+                    <i class="bi bi-search fs-5"></i>
+                  </div>
+                  <strong class="text-center small">Under Review</strong>
+                  <div class="text-muted small text-center">Reviewing</div>
+                </div>
+                <div class="flex-grow-1 border-top border-2 mx-2" :class="donationStatus === 'accepted' || donationStatus === 'rejected' ? 'border-primary' : 'border-secondary'" style="height: 2px; margin-bottom: 60px;">
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="donationStatus === 'accepted' ? 'bg-success text-white' : donationStatus === 'rejected' ? 'bg-danger text-white' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
+                    <i :class="donationStatus === 'accepted' ? 'bi bi-check-circle fs-5' : donationStatus === 'rejected' ? 'bi bi-x-circle fs-5' : 'bi bi-clock fs-5'"></i>
+                  </div>
+                  <strong class="text-center small" v-if="donationStatus === 'accepted'">Accepted</strong>
+                  <strong class="text-center small" v-else-if="donationStatus === 'rejected'">Rejected</strong>
+                  <strong class="text-center small" v-else>Decision</strong>
+                  <div class="text-muted small text-center" v-if="donationStatus === 'accepted'">Accepted</div>
+                  <div class="text-muted small text-center" v-else-if="donationStatus === 'rejected'">Rejected</div>
+                  <div class="text-muted small text-center" v-else>Pending</div>
+                </div>
+              </div>
+            </div>
+            <div v-if="type === 'in-kind'" class="card border-0 bg-info-subtle">
               <hr class="text-dark mt-4 mb-2">
               <h6 class="fw-bolder mt-2 text-uppercase font-monospace mt-1"><strong >Donation Image: </strong></h6>
               <div class="d-flex flex-column align-items-start ms-2 mb-2">
