@@ -26,14 +26,14 @@ class AdminStaffController extends Controller
     $donatons = Donation::withTrashed()->get();
     $applications = AdoptionApplication::withTrashed()->get();
     $schedules = InspectionSchedule::with('user')->get()->map(function ($schedule) {
-    return [
+      return [
         'id' => $schedule->id,
         'inspector_name' => $schedule->inspectorName(),
         'inspection_location' => $schedule->inspectionLocation(),
         'inspection_date' => $schedule->inspection_date,
         'status' => $schedule->status
-    ];
-});
+      ];
+    });
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard']);
 
