@@ -55,4 +55,19 @@ class InspectionSchedule extends Model
       }
     });
   }
+
+  public function getStatusAttribute($value)
+  {
+    if (in_array($value, ['done', 'cancelled'])) {
+      return $value;
+    }
+    
+    $today = now()->toDateString();
+    
+    if ($this->inspection_date == $today) {
+       return 'now';
+    }
+    
+    return 'upcoming';
+  }
 }
