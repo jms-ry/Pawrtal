@@ -22,6 +22,10 @@
           <ApplicationsSection 
             :applications="applications"
           />
+
+          <InspectionScheduleSection
+            :schedules="schedules"
+          />
         </div>
       </div>
     </div>
@@ -35,6 +39,7 @@
   import ReportsSection from '../../Components/Dashboard/ReportsSection.vue';
   import DonationsSection from '../../Components/Dashboard/DonationsSection.vue';
   import ApplicationsSection from '../../Components/Dashboard/ApplicationsSection.vue';
+  import InspectionScheduleSection from '../../Components/Dashboard/InspectionScheduleSection.vue';
 
   const props = defineProps({
     rescues: {
@@ -54,7 +59,11 @@
       required: true
     },
     previousUrl: String,
-    showBackNav: Boolean
+    showBackNav: Boolean,
+    schedules: {
+      type: Array,
+      required: true
+    }
   })
 </script>
 

@@ -25,7 +25,8 @@ class StoreInspectionScheduleRequest extends FormRequest
       'application_id' => 'required', 'exists:adoption_applications,id',
       'inspector_id' => 'required', 'exists:users,id',
       'inspection_location' => 'required','string','max:255',
-      'inspection_date' => 'required','date'
+      'inspection_date' => 'required','date',
+      'status' => 'nullable|in:upcoming,now,done,cancelled',
     ];
   }
 }

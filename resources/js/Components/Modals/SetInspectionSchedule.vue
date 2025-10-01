@@ -173,14 +173,21 @@
     }
 
     const selectedDate = new Date(date)
+    selectedDate.setHours(0,0,0,0)
 
-    if (!startDate.value || !endDate.value) {
+    const start = new Date(startDate.value)
+    start.setHours(0,0,0,0)
+
+    const end = new Date(endDate.value)
+    end.setHours(0,0,0,0)
+
+    if (!start || !end) {
       dateIsValid.value = false
       dateErrorMessage.value = "Inspection period is not set."
       return false
     }
 
-    if (selectedDate < startDate.value || selectedDate > endDate.value) {
+    if (selectedDate < start|| selectedDate > end) {
       dateIsValid.value = false
       dateErrorMessage.value = `Date must be between ${startDate.value.toLocaleDateString('en-US',{ month: 'short', day: '2-digit',year: 'numeric'})} and ${endDate.value.toLocaleDateString('en-US',{ month: 'short', day: '2-digit',year: 'numeric'})}.`
       return false

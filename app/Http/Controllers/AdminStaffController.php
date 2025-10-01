@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AdoptionApplication;
 use App\Models\Donation;
+use App\Models\InspectionSchedule;
 use App\Models\Report;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
@@ -24,6 +25,15 @@ class AdminStaffController extends Controller
     $reports = Report::withTrashed()->get();
     $donatons = Donation::withTrashed()->get();
     $applications = AdoptionApplication::withTrashed()->get();
+    $schedules = InspectionSchedule::with('user')->get()->map(function ($schedule) {
+      return [
+        'id' => $schedule->id,
+        'inspector_name' => $schedule->inspectorName(),
+        'inspection_location' => $schedule->inspectionLocation(),
+        'inspection_date' => $schedule->inspection_date,
+        'status' => $schedule->status
+      ];
+    });
     $previousUrl = url()->previous();
     $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard']);
 
@@ -34,6 +44,7 @@ class AdminStaffController extends Controller
       'applications' => $applications,
       'previousUrl' => $previousUrl,
       'showBackNav' => $showBackNav,
+      'schedules' => $schedules
     ]);
   }
 
