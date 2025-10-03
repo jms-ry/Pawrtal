@@ -241,4 +241,27 @@ class UserController extends Controller
       'previousUrl' => $previousUrl,
     ]);
   }
+
+  public function mySchedules()
+  {
+    $previousUrl = url()->previous();
+    $user = Auth::user();
+    $schedules = $user->inspectionSchedules()
+      ->with(['user','adoptionApplication'])
+      ->get()->map(function ($schedule) {
+      return [
+        'id' => $schedule->id,
+        'inspector_name' => $schedule->inspectorName(),
+        'inspection_location' => $schedule->inspectionLocation(),
+        'inspection_date' => $schedule->inspection_date,
+        'status' => $schedule->status
+      ];
+    });
+    
+    return Inertia::render('User/MySchedules',[
+      'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,'role' =>$user->role] : null,
+      'previousUrl' => $previousUrl,
+      'schedules' => $schedules
+    ]);
+  }
 }

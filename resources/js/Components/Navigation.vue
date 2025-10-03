@@ -34,6 +34,7 @@
                 <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
                 <template v-if="user.isAdminOrStaff">
                   <li ><a class="dropdown-item" :href="`/dashboard`">Manage</a></li>
+                  <li><a class="dropdown-item" :href="`/users/my-schedules`">My Schedules</a></li>
                 </template>
                 <template v-else>
                   <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">My Adoption Applications</a></li>
@@ -81,6 +82,7 @@
                 <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
                 <template v-if="user.isAdminOrStaff">
                   <li ><a class="dropdown-item" :href="`/dashboard`">Manage</a></li>
+                  <li><a class="dropdown-item" :href="`/users/my-schedules`">My Schedules</a></li>
                 </template>
                 <template v-else>
                   <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">My Adoption Applications</a></li>
