@@ -32,6 +32,26 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="calendarActionsModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-sm-scrollable">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <h6 class="modal-title fw-bold fs-4">Update Inspection</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" v-if="selectedSchedule">
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" @click="triggerMarkDone">
+                <i class="bi bi-check-circle"></i> Mark as Done
+              </button>
+              <button class="btn btn-danger" @click="triggerCancel">
+                <i class="bi bi-x-circle"></i> Cancel Inspection
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <MarkDoneModal/>
     <CancelInspectionModal/>
   </div>
@@ -45,6 +65,7 @@
   import interactionPlugin from '@fullcalendar/interaction';
   import MarkDoneModal from '../../Modals/Users/MySchedules/MarkDoneModal.vue';
   import CancelInspectionModal from '../../Modals/Users/MySchedules/CancelInspectionModal.vue';
+  import * as bootstrap from 'bootstrap';
 
   const props = defineProps({
     schedules: {
@@ -77,11 +98,9 @@
     };
 
     return [...props.schedules].sort((a, b) => {
-      // First sort by status priority
       const statusDiff = (statusOrder[a.status] || 999) - (statusOrder[b.status] || 999);
       if (statusDiff !== 0) return statusDiff;
       
-      // Then sort by date within same status
       return new Date(a.inspection_date) - new Date(b.inspection_date);
     });
   });
@@ -109,6 +128,7 @@
     }));
   };
 
+  const selectedSchedule = ref(null);
   const initializeCalendar = () => {
     if (!calendarEl.value) return;
 
@@ -141,6 +161,19 @@
           `
         };
       },
+      eventClick: (info) => {
+        info.jsEvent.preventDefault();
+        const schedule = props.schedules.find(s => s.id === parseInt(info.event.id));
+        
+        if (schedule && (schedule.status !== 'done' && schedule.status !== 'cancelled')) {
+          selectedSchedule.value = schedule;
+          const modalEl = document.getElementById('calendarActionsModal');
+          if (modalEl) {
+            const actionsModal = new bootstrap.Modal(modalEl); 
+            actionsModal.show();
+          }
+        }
+      },
       height: 'auto',
       contentHeight: 'auto',
       aspectRatio: 1.8,
@@ -159,6 +192,45 @@
     });
 
     calendar.render();
+  };
+
+  const triggerMarkDone = () => {
+    if (selectedSchedule.value) {
+      const modalEl = document.getElementById('calendarActionsModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+      setTimeout(() => {
+        const tempBtn = document.createElement('button');
+        tempBtn.setAttribute('data-schedule-id', selectedSchedule.value.id);
+        tempBtn.setAttribute('data-bs-toggle', 'modal');
+        tempBtn.setAttribute('data-bs-target', '#markDoneModal');
+        document.body.appendChild(tempBtn);
+        tempBtn.click();
+        tempBtn.remove();
+      }, 300);
+    }
+  };
+
+  const triggerCancel = () => {
+    if (selectedSchedule.value) {
+      const modalEl = document.getElementById('calendarActionsModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+      
+      setTimeout(() => {
+        const tempBtn = document.createElement('button');
+        tempBtn.setAttribute('data-schedule-id', selectedSchedule.value.id);
+        tempBtn.setAttribute('data-bs-toggle', 'modal');
+        tempBtn.setAttribute('data-bs-target', '#cancelInspectionModal');
+        document.body.appendChild(tempBtn);
+        tempBtn.click();
+        tempBtn.remove();
+      }, 300);
+    }
   };
 
   onMounted(() => {
