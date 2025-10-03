@@ -4,7 +4,31 @@
       <h2 class="mb-3">Inspection Schedule</h2>
       <div class="card">
         <div class="card-body p-2 p-md-3">
-          <div ref="calendarEl"></div>
+          <!-- Calendar View (Desktop Only) -->
+          <div class="d-none d-md-block" ref="calendarEl"></div>
+
+          <!-- List View (Mobile Only) -->
+          <div class="d-md-none inspection-list">
+            <div 
+              v-for="schedule in sortedSchedules" 
+              :key="schedule.id"
+              class="inspection-list-item mb-3 p-3 border rounded"
+              :class="`border-start-${getStatusClass(schedule.status)} border-start-4`"
+            >
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0 fw-bold">{{ schedule.inspector_name || 'Unassigned' }}</h6>
+                <span :class="`badge bg-${getStatusClass(schedule.status)}`">
+                  {{ schedule.status.toUpperCase() }}
+                </span>
+              </div>
+              <div class="text-muted small mb-1">
+                <i class="bi bi-geo-alt"></i> {{ schedule.inspection_location }}
+              </div>
+              <div class="text-muted small">
+                <i class="bi bi-calendar-event"></i> {{ formatDate(schedule.inspection_date) }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -12,7 +36,7 @@
 </template>
 
 <script setup>
-  import { ref, onMounted, watch } from 'vue';
+  import { ref, onMounted, watch, computed } from 'vue';
   import { Calendar } from '@fullcalendar/core';
   import dayGridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
@@ -31,10 +55,39 @@
     const statusMap = {
       'upcoming': 'primary',
       'now': 'info',
-      'done': 'warning',
-      'cancelled': 'danger'
+      'done': 'success',
+      'cancelled': 'warning',
+      'missed': 'danger'
     };
     return statusMap[status] || 'secondary';
+  };
+
+  const sortedSchedules = computed(() => {
+    const statusOrder = {
+      'now': 1,
+      'upcoming': 2,
+      'done': 3,
+      'missed': 4,
+      'cancelled': 5
+    };
+
+    return [...props.schedules].sort((a, b) => {
+      // First sort by status priority
+      const statusDiff = (statusOrder[a.status] || 999) - (statusOrder[b.status] || 999);
+      if (statusDiff !== 0) return statusDiff;
+      
+      // Then sort by date within same status
+      return new Date(a.inspection_date) - new Date(b.inspection_date);
+    });
+  });
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   const formatEvents = () => {
@@ -127,6 +180,17 @@
     margin: 0;
   }
 
+  /* List View Styles (Mobile Only) */
+  .inspection-list-item {
+    background-color: #fff;
+    transition: all 0.2s;
+  }
+
+  .inspection-list-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  /* Calendar Styles (Desktop) */
   :deep(.fc) {
     font-size: 0.9rem;
   }
@@ -148,19 +212,11 @@
     cursor: default;
   }
 
-  :deep(.inspection-event-upcoming) {
-    background-color: transparent !important;
-  }
-
-  :deep(.inspection-event-now) {
-    background-color: transparent !important;
-  }
-
-  :deep(.inspection-event-done) {
-    background-color: transparent !important;
-  }
-
-  :deep(.inspection-event-cancelled) {
+  :deep(.inspection-event-upcoming),
+  :deep(.inspection-event-now),
+  :deep(.inspection-event-done),
+  :deep(.inspection-event-cancelled),
+  :deep(.inspection-event-missed) {
     background-color: transparent !important;
   }
 
@@ -181,71 +237,5 @@
 
   :deep(.fc-daygrid-day-frame) {
     min-height: 80px;
-  }
-
-  /* Mobile responsive */
-  @media (max-width: 768px) {
-    :deep(.fc-toolbar) {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    :deep(.fc-toolbar-chunk) {
-      display: flex;
-      justify-content: center;
-    }
-    
-    :deep(.fc-toolbar-title) {
-      font-size: 1rem !important;
-    }
-    
-    :deep(.fc-button) {
-      padding: 0.2rem 0.4rem;
-      font-size: 0.75rem;
-    }
-    
-    :deep(.fc-daygrid-day-number) {
-      font-size: 0.7rem;
-      padding: 2px;
-    }
-
-    :deep(.fc-daygrid-day-frame) {
-      min-height: 60px;
-    }
-    
-    :deep(.inspection-badge) {
-      font-size: 0.55rem !important;
-      padding: 1px 3px;
-    }
-
-    :deep(.fc-event) {
-      padding: 1px 2px;
-      margin-bottom: 1px;
-    }
-  }
-
-  @media (max-width: 576px) {
-    :deep(.fc) {
-      font-size: 0.75rem;
-    }
-    
-    :deep(.fc-col-header-cell-cushion) {
-      padding: 2px;
-      font-size: 0.65rem;
-    }
-
-    :deep(.fc-daygrid-day-number) {
-      font-size: 0.65rem;
-    }
-
-    :deep(.inspection-badge) {
-      font-size: 0.5rem !important;
-      padding: 1px 2px;
-    }
-
-    :deep(.fc-daygrid-day-frame) {
-      min-height: 50px;
-    }
   }
 </style>

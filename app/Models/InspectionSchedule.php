@@ -65,7 +65,9 @@ class InspectionSchedule extends Model
     $today = now()->toDateString();
     
     if ($this->inspection_date == $today) {
-       return 'now';
+      return 'now';
+    }else if($this->inspection_date < $today){
+      return 'missed';
     }
     
     return 'upcoming';
