@@ -69,6 +69,7 @@
                     :data-application-review-notes="adoptionApplication.review_notes_formatted"
                     :data-application-review-date="adoptionApplication.reviewed_date_formatted"
                     :data-application-reviewer="adoptionApplication.reviewed_by_formatted"
+                    :data-application-inspection-status="adoptionApplication.inspection_schedule_status"
                   >View
                   </a>
                   <a v-if="!adoptionApplication.deleted_at && adoptionApplication.status !== 'pending'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
@@ -121,6 +122,7 @@
                   :data-application-review-notes="adoptionApplication.review_notes_formatted"
                   :data-application-review-date="adoptionApplication.reviewed_date_formatted"
                   :data-application-reviewer="adoptionApplication.reviewed_by_formatted"
+                  :data-application-inspection-status="adoptionApplication.inspection_schedule_status"
                   >View 
                 </a>
                 <a v-if="!adoptionApplication.deleted_at && adoptionApplication.status !== 'pending'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>

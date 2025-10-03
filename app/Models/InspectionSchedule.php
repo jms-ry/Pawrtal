@@ -56,6 +56,11 @@ class InspectionSchedule extends Model
     });
   }
 
+  public function inspectionStatus()
+  {
+    return $this->getStatusAttribute($this->status);
+  }
+
   public function getStatusAttribute($value)
   {
     if (in_array($value, ['done', 'cancelled'])) {
@@ -65,7 +70,9 @@ class InspectionSchedule extends Model
     $today = now()->toDateString();
     
     if ($this->inspection_date == $today) {
-       return 'now';
+      return 'now';
+    }else if($this->inspection_date < $today){
+      return 'missed';
     }
     
     return 'upcoming';

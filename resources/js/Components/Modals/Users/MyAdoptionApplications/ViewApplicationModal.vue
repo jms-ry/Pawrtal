@@ -130,10 +130,28 @@
             </span>
           </div>
           <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'under_review'" class="align-self-start">
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#makeDecisionModal" 
+            <span v-if="inspectionStatus !== 'done'" data-bs-toggle="tooltip" data-bs-placement="top" title="Inspection must be completed first">
+              <button 
+                type="button" 
+                class="btn btn-info" 
+                data-bs-toggle="modal" 
+                data-bs-target="#makeDecisionModal" 
                 :data-application-id="applicationId"
-                >Make Decision
+                :disabled="true"
+              >
+                Make Decision
               </button>
+            </span>
+            <button 
+              v-else
+              type="button" 
+              class="btn btn-info" 
+              data-bs-toggle="modal" 
+              data-bs-target="#makeDecisionModal" 
+              :data-application-id="applicationId"
+            >
+              Make Decision
+            </button>
           </div>
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-danger" @click="closeModal">Close</button>
@@ -141,6 +159,11 @@
           <div v-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="d-block d-md-none" id="reminderSmall">
             <small class="text-muted d-block mt-1 fst-italic">
               Button disabled. Make sure to verify all the documents first.
+            </small>
+          </div>
+          <div v-if="isAdminStaff === 'true' && applicationStatus === 'under_review'" class="d-block d-md-none">
+            <small v-show="inspectionStatus !== 'done'" class="text-muted d-block mt-1 fst-italic">
+              Button disabled. Inspection must be completed first.
             </small>
           </div>
         </div>
@@ -231,6 +254,7 @@
   const reviewNotes = ref(null)
   const reviewedDate = ref(null)
   const reviewedBy = ref(null)
+  const inspectionStatus = ref(null)
   onMounted(() => {
 
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
@@ -297,6 +321,8 @@
       reviewNotes.value = button.getAttribute('data-application-review-notes')
       reviewedDate.value = button.getAttribute('data-application-review-date')
       reviewedBy.value = button.getAttribute('data-application-reviewer')
+      
+      inspectionStatus.value = button.getAttribute('data-application-inspection-status')
     });
   });
 
@@ -333,5 +359,6 @@
     inspectionDate.value =  null
     validIdUrl.value = null 
     supportingDocuments.value = [] 
+    inspectionStatus.value = null
   }
 </script>

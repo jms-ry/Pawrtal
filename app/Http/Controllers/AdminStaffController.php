@@ -25,7 +25,7 @@ class AdminStaffController extends Controller
     $reports = Report::withTrashed()->get();
     $donatons = Donation::withTrashed()->get();
     $applications = AdoptionApplication::withTrashed()->get();
-    $schedules = InspectionSchedule::with('user')->get()->map(function ($schedule) {
+    $schedules = InspectionSchedule::with(['user','adoptionApplication'])->get()->map(function ($schedule) {
       return [
         'id' => $schedule->id,
         'inspector_name' => $schedule->inspectorName(),

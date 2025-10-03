@@ -1,88 +1,61 @@
 <template>
-  <div class="row mb-5">
-    <div class="col-12">
-      <h2 class="mb-3">Inspection Schedules</h2>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-      <div class="card bg-info text-dark">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <h5 class="card-title">Total Inspection Schedules</h5>
-            <a :href="`/users/my-schedules`" class="fs-6 text-dark font-monospace fw-bold">My Schedules</a>
-          </div>
-          <h2 class="card-text">
-            <CountUp :value="scheduleStats.total" :duration="1200" />
-          </h2>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-      <div class="card bg-warning text-dark">
-        <div class="card-body">
-          <h5 class="card-title">Upcoming Inspection Schedules</h5>
-          <h2 class="card-text">
-            <CountUp :value="scheduleStats.upcoming" :duration="1200" />
-          </h2>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-      <div class="card bg-success text-dark">
-        <div class="card-body">
-          <h5 class="card-title">Done Inspection Schedules</h5>
-          <h2 class="card-text">
-            <CountUp :value="scheduleStats.done" :duration="1200" />
-          </h2>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-3 col-md-6 mb-3">
-      <div class="card bg-primary text-dark">
-        <div class="card-body">
-          <h5 class="card-title">Today Inspection Schedule</h5>
-          <h2 class="card-text">
-            <CountUp :value="scheduleStats.today" :duration="1200" />
-          </h2>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 mt-3">
-      <div class="card">
-        <div class="card-body p-2 p-md-3">
-          <!-- Calendar View (Desktop Only) -->
-          <div class="d-none d-md-block" ref="calendarEl"></div>
+  <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
+    <div class="card">
+      <div class="card-body p-2 p-md-3">
+        <!-- Calendar View (Desktop Only) -->
+        <div class="d-none d-md-block" ref="calendarEl"></div>
 
-          <!-- List View (Mobile Only) -->
-          <div class="d-md-none inspection-list">
-            <div v-if="sortedSchedules.length === 0" class="text-center py-5 text-muted">
-              <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-              <p>No inspection schedules found</p>
-            </div>
-            <div 
-              v-else
-              v-for="schedule in sortedSchedules" 
-              :key="schedule.id"
-              class="inspection-list-item mb-3 p-3 border rounded"
-              :class="`border-start-${getStatusClass(schedule.status)} border-start-4`"
-            >
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <h6 class="mb-0 fw-bold">{{ schedule.inspector_name || 'Unassigned' }}</h6>
-                <span :class="`badge bg-${getStatusClass(schedule.status)}`">
-                  {{ schedule.status.toUpperCase() }}
-                </span>
-              </div>
-              <div class="text-muted small mb-1">
-                <i class="bi bi-geo-alt"></i> {{ schedule.inspection_location }}
-              </div>
-              <div class="text-muted small">
-                <i class="bi bi-calendar-event"></i> {{ formatDate(schedule.inspection_date) }}
-              </div>
+       <!-- List View (Mobile Only) -->
+        <div class="d-md-none inspection-list">
+          <div 
+            v-for="schedule in sortedSchedules" 
+            :key="schedule.id"
+            class="inspection-list-item mb-3 p-3 border rounded"
+            :class="`border-start-${getStatusClass(schedule.status)} border-start-4`"
+          >
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="mb-0 fw-bold">{{ schedule.inspector_name || 'Unassigned' }}</h6>
+            <span :class="`badge bg-${getStatusClass(schedule.status)}`">
+              {{ schedule.status.toUpperCase() }}
+            </span>
+          </div>
+          <div class="text-muted small mb-1">
+            <i class="bi bi-geo-alt"></i> {{ schedule.inspection_location }}
+          </div>
+          <div class="text-muted small">
+            <i class="bi bi-calendar-event"></i> {{ formatDate(schedule.inspection_date) }}
+          </div>
+          <div v-show="schedule.status !== 'done' && schedule.status !== 'cancelled'" class="mt-3">
+            <button class="btn btn-primary btn-sm me-1" :data-schedule-id="schedule.id" data-bs-toggle="modal" data-bs-target="#markDoneModal">Mark Done</button>
+            <button class="btn btn-danger btn-sm ms-1" :data-schedule-id="schedule.id" data-bs-toggle="modal" data-bs-target="#cancelInspectionModal">Cancel Inspection</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="calendarActionsModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-sm-scrollable">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <h6 class="modal-title fw-bold fs-4">Update Inspection</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" v-if="selectedSchedule">
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" @click="triggerMarkDone">
+                <i class="bi bi-check-circle"></i> Mark as Done
+              </button>
+              <button class="btn btn-danger" @click="triggerCancel">
+                <i class="bi bi-x-circle"></i> Cancel Inspection
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <MarkDoneModal/>
+    <CancelInspectionModal/>
   </div>
+</div>
 </template>
 
 <script setup>
@@ -90,20 +63,16 @@
   import { Calendar } from '@fullcalendar/core';
   import dayGridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
-  import CountUp from './CountUp.vue'
+  import MarkDoneModal from '../../Modals/Users/MySchedules/MarkDoneModal.vue';
+  import CancelInspectionModal from '../../Modals/Users/MySchedules/CancelInspectionModal.vue';
+  import * as bootstrap from 'bootstrap';
 
   const props = defineProps({
     schedules: {
       type: Array,
       required: true
-    }
-  });
-  const scheduleStats = computed(() => ({
-    total: props.schedules.length,
-    upcoming: props.schedules.filter(r => r.status === 'upcoming').length,
-    done: props.schedules.filter(r => r.status === 'done').length,
-    today: props.schedules.filter(r => r.status === 'now').length,
-  }))
+    },
+  })
 
   const calendarEl = ref(null);
   let calendar = null;
@@ -129,7 +98,6 @@
     };
 
     return [...props.schedules].sort((a, b) => {
-
       const statusDiff = (statusOrder[a.status] || 999) - (statusOrder[b.status] || 999);
       if (statusDiff !== 0) return statusDiff;
       
@@ -160,6 +128,7 @@
     }));
   };
 
+  const selectedSchedule = ref(null);
   const initializeCalendar = () => {
     if (!calendarEl.value) return;
 
@@ -192,6 +161,19 @@
           `
         };
       },
+      eventClick: (info) => {
+        info.jsEvent.preventDefault();
+        const schedule = props.schedules.find(s => s.id === parseInt(info.event.id));
+        
+        if (schedule && (schedule.status !== 'done' && schedule.status !== 'cancelled')) {
+          selectedSchedule.value = schedule;
+          const modalEl = document.getElementById('calendarActionsModal');
+          if (modalEl) {
+            const actionsModal = new bootstrap.Modal(modalEl); 
+            actionsModal.show();
+          }
+        }
+      },
       height: 'auto',
       contentHeight: 'auto',
       aspectRatio: 1.8,
@@ -212,6 +194,45 @@
     calendar.render();
   };
 
+  const triggerMarkDone = () => {
+    if (selectedSchedule.value) {
+      const modalEl = document.getElementById('calendarActionsModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+      setTimeout(() => {
+        const tempBtn = document.createElement('button');
+        tempBtn.setAttribute('data-schedule-id', selectedSchedule.value.id);
+        tempBtn.setAttribute('data-bs-toggle', 'modal');
+        tempBtn.setAttribute('data-bs-target', '#markDoneModal');
+        document.body.appendChild(tempBtn);
+        tempBtn.click();
+        tempBtn.remove();
+      }, 300);
+    }
+  };
+
+  const triggerCancel = () => {
+    if (selectedSchedule.value) {
+      const modalEl = document.getElementById('calendarActionsModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+      
+      setTimeout(() => {
+        const tempBtn = document.createElement('button');
+        tempBtn.setAttribute('data-schedule-id', selectedSchedule.value.id);
+        tempBtn.setAttribute('data-bs-toggle', 'modal');
+        tempBtn.setAttribute('data-bs-target', '#cancelInspectionModal');
+        document.body.appendChild(tempBtn);
+        tempBtn.click();
+        tempBtn.remove();
+      }, 300);
+    }
+  };
+
   onMounted(() => {
     initializeCalendar();
   });
@@ -222,6 +243,7 @@
       calendar.addEventSource(formatEvents());
     }
   }, { deep: true });
+
 </script>
 
 <style scoped>
@@ -293,15 +315,5 @@
 
   :deep(.fc-daygrid-day-frame) {
     min-height: 80px;
-  }
-
-  @media (max-width: 768px) {
-    .card-body h5.card-title {
-      font-size: 0.9rem;
-    }
-    
-    .card-body h2.card-text {
-      font-size: 1.75rem;
-    }
   }
 </style>
