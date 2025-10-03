@@ -56,6 +56,11 @@ class InspectionSchedule extends Model
     });
   }
 
+  public function inspectionStatus()
+  {
+    return $this->getStatusAttribute($this->status);
+  }
+
   public function getStatusAttribute($value)
   {
     if (in_array($value, ['done', 'cancelled'])) {

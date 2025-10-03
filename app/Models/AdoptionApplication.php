@@ -50,12 +50,17 @@ class AdoptionApplication extends Model
     'supporting_documents_url',
     'review_notes_formatted',
     'reviewed_date_formatted',
-    'reviewed_by_formatted'
+    'reviewed_by_formatted',
+    'inspection_schedule_status'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
   
+  public function getInspectionScheduleStatusAttribute()
+  {
+    return $this->inspectionSchedule?->inspectionStatus();
+  }
   public function getReviewNotesFormattedAttribute()
   {
     return $this->review_notes;

@@ -1,7 +1,52 @@
 <template>
   <div class="row mb-5">
     <div class="col-12">
-      <h2 class="mb-3">Inspection Schedule</h2>
+      <h2 class="mb-3">Inspection Schedules</h2>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card bg-info text-dark">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <h5 class="card-title">Total Inspection Schedules</h5>
+            <a :href="`/users/my-schedules`" class="fs-6 text-dark font-monospace fw-bold">My Schedules</a>
+          </div>
+          <h2 class="card-text">
+            <CountUp :value="scheduleStats.total" :duration="1200" />
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card bg-warning text-dark">
+        <div class="card-body">
+          <h5 class="card-title">Upcoming Inspection Schedules</h5>
+          <h2 class="card-text">
+            <CountUp :value="scheduleStats.upcoming" :duration="1200" />
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card bg-success text-dark">
+        <div class="card-body">
+          <h5 class="card-title">Done Inspection Schedules</h5>
+          <h2 class="card-text">
+            <CountUp :value="scheduleStats.done" :duration="1200" />
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+      <div class="card bg-primary text-dark">
+        <div class="card-body">
+          <h5 class="card-title">Today Inspection Schedule</h5>
+          <h2 class="card-text">
+            <CountUp :value="scheduleStats.today" :duration="1200" />
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 mt-3">
       <div class="card">
         <div class="card-body p-2 p-md-3">
           <!-- Calendar View (Desktop Only) -->
@@ -9,7 +54,12 @@
 
           <!-- List View (Mobile Only) -->
           <div class="d-md-none inspection-list">
+            <div v-if="sortedSchedules.length === 0" class="text-center py-5 text-muted">
+              <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+              <p>No inspection schedules found</p>
+            </div>
             <div 
+              v-else
               v-for="schedule in sortedSchedules" 
               :key="schedule.id"
               class="inspection-list-item mb-3 p-3 border rounded"
@@ -40,6 +90,7 @@
   import { Calendar } from '@fullcalendar/core';
   import dayGridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
+  import CountUp from './CountUp.vue'
 
   const props = defineProps({
     schedules: {
@@ -47,6 +98,12 @@
       required: true
     }
   });
+  const scheduleStats = computed(() => ({
+    total: props.schedules.length,
+    upcoming: props.schedules.filter(r => r.status === 'upcoming').length,
+    done: props.schedules.filter(r => r.status === 'done').length,
+    today: props.schedules.filter(r => r.status === 'now').length,
+  }))
 
   const calendarEl = ref(null);
   let calendar = null;
@@ -72,11 +129,10 @@
     };
 
     return [...props.schedules].sort((a, b) => {
-      // First sort by status priority
+
       const statusDiff = (statusOrder[a.status] || 999) - (statusOrder[b.status] || 999);
       if (statusDiff !== 0) return statusDiff;
       
-      // Then sort by date within same status
       return new Date(a.inspection_date) - new Date(b.inspection_date);
     });
   });
@@ -237,5 +293,15 @@
 
   :deep(.fc-daygrid-day-frame) {
     min-height: 80px;
+  }
+
+  @media (max-width: 768px) {
+    .card-body h5.card-title {
+      font-size: 0.9rem;
+    }
+    
+    .card-body h2.card-text {
+      font-size: 1.75rem;
+    }
   }
 </style>
