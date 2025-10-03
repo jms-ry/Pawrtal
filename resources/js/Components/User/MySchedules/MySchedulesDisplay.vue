@@ -25,9 +25,15 @@
           <div class="text-muted small">
             <i class="bi bi-calendar-event"></i> {{ formatDate(schedule.inspection_date) }}
           </div>
+          <div v-show="schedule.status !== 'done' && schedule.status !== 'cancelled'" class="mt-3">
+            <button class="btn btn-primary btn-sm me-1" :data-schedule-id="schedule.id" data-bs-toggle="modal" data-bs-target="#markDoneModal">Mark Done</button>
+            <button class="btn btn-danger btn-sm ms-1" :data-schedule-id="schedule.id" data-bs-toggle="modal" data-bs-target="#cancelInspectionModal">Cancel Inspection</button>
+          </div>
         </div>
       </div>
     </div>
+    <MarkDoneModal/>
+    <CancelInspectionModal/>
   </div>
 </div>
 </template>
@@ -37,6 +43,8 @@
   import { Calendar } from '@fullcalendar/core';
   import dayGridPlugin from '@fullcalendar/daygrid';
   import interactionPlugin from '@fullcalendar/interaction';
+  import MarkDoneModal from '../../Modals/Users/MySchedules/MarkDoneModal.vue';
+  import CancelInspectionModal from '../../Modals/Users/MySchedules/CancelInspectionModal.vue';
 
   const props = defineProps({
     schedules: {
@@ -163,6 +171,7 @@
       calendar.addEventSource(formatEvents());
     }
   }, { deep: true });
+
 </script>
 
 <style scoped>

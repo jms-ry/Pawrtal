@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInspectionScheduleRequest;
+use App\Http\Requests\UpdateInspectionScheduleRequest;
 use App\Models\InspectionSchedule;
 use Illuminate\Http\Request;
 
@@ -59,9 +60,21 @@ class InspectionScheduleController extends Controller
   /**
     * Update the specified resource in storage.
   */
-  public function update(Request $request, InspectionSchedule $inspectionSchedule)
+  public function update(UpdateInspectionScheduleRequest $request, InspectionSchedule $inspectionSchedule)
   {
-    //
+    $requestData = $request->validated();
+
+    if($request->status === 'done'){
+      $inspectionSchedule->update($requestData);
+
+      return redirect()->back()->with('success','Inspection schedule has been marked done.');
+    }
+
+    if($request->status === 'cancelled'){
+      $inspectionSchedule->update($requestData);
+
+      return redirect()->back()->with('warning','Inspection schedule has been cancelled.');
+    }
   }
 
   /**

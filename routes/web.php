@@ -27,7 +27,7 @@ Route::patch('/rescues/{rescue}/restore', [RescueController::class, 'restore'])-
 Route::patch('/reports/{report}/restore', [ReportController::class, 'restore'])->name('reports.restore');
 Route::patch('/donations/{donation}/restore', [DonationController::class, 'restore'])->name('donations.restore');
 Route::patch('/adoption-applications/{adoption_application}/restore', [AdoptionApplicationController::class, 'restore'])->name('adoption_applications.restore');
-Route::resource('inspection-schedules',InspectionScheduleController::class)->except('index','show','create','edit','update','destroy');
+Route::resource('inspection-schedules',InspectionScheduleController::class)->except('index','show','create','edit','destroy');
 Route::middleware('guest')->group(function () {
   Route::get('register', function () {
     return view('register');
