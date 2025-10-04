@@ -8,7 +8,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between">
             <h5 class="card-title">Total Inspection Schedules</h5>
-            <a :href="`/users/my-schedules`" class="fs-6 text-dark font-monospace fw-bold">My Schedules</a>
+            <a :href="`/users/my-schedules`" class="fs-6 text-dark font-monospace fw-bold ms-1">My Schedules</a>
           </div>
           <h2 class="card-text">
             <CountUp :value="scheduleStats.total" :duration="1200" />
