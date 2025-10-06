@@ -41,6 +41,20 @@
                 </template>
                 <li><a class="dropdown-item" :href="`/users/my-donations`">My Donation History</a></li>
                 <li><a class="dropdown-item" :href="`/users/my-reports`">My Reports</a></li>
+                <li>
+                  <a class="dropdown-item" href="/users/my-notifications">
+                    <span class="position-relative">
+                      Notifications
+                      <span
+                        v-if="unreadCount > 0"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="font-size: 0.7rem; transform: translate(-30%, -40%);"
+                      >
+                        {{ unreadCount > 10 ? '10+' : unreadCount }}
+                      </span>
+                    </span>
+                  </a>
+                </li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
                   <form method="POST" action="/logout">
@@ -74,29 +88,76 @@
 
           <!-- Auth -->
           <template v-else>
-            <div class="dropdown-center me-5">
-              <button class="btn btn-outline-success border-0 dropdown-toggle fw-bolder" type="button" data-bs-toggle="dropdown">
-                {{ user.name }}
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
-                <template v-if="user.isAdminOrStaff">
-                  <li ><a class="dropdown-item" :href="`/dashboard`">Manage</a></li>
-                  <li><a class="dropdown-item" :href="`/users/my-schedules`">My Schedules</a></li>
-                </template>
-                <template v-else>
-                  <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">My Adoption Applications</a></li>
-                </template>
-                <li><a class="dropdown-item" :href="`/users/my-donations`">My Donation History</a></li>
-                <li><a class="dropdown-item" :href="`/users/my-reports`">My Reports</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li>
-                  <form method="POST" action="/logout">
-                    <input type="hidden" name="_token" :value="csrfToken" />
-                    <button class="dropdown-item border-0" type="submit">Logout</button>
-                  </form>
-                </li>
-              </ul>
+            <div class="btn-group">
+              <div class="dropdown-center me-4 position-relative">
+                <!-- Bell Button -->
+                <button
+                  class="btn btn-outline-success border-0 fw-bolder position-relative"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                >
+                  <span class="position-relative">
+                    <i class="bi bi-bell me-1 fs-4 fw-bold"></i>
+
+                    <!-- Badge -->
+                    <span
+                      v-if="unreadCount > 0"
+                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style="font-size: 0.65rem; transform: translate(-40%, -40%);"
+                    >
+                      {{ unreadCount > 10 ? '10+' : unreadCount }}
+                    </span>
+                  </span>
+                </button>
+
+                <!-- Notification Dropdown -->
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                  <li v-if="unreadNotifications.length === 0" class="text-center text-muted py-2">
+                    No new notifications
+                  </li>
+
+                  <li v-for="(notif, index) in unreadNotifications" :key="notif.id" class="border-bottom">
+                    <div class="dropdown-item text-wrap py-2">
+                      <p class="mb-1">{{ notif.data.message }}</p>
+                      <small class="text-muted">{{ timeAgo(notif.created_at) }}</small>
+                    </div>
+                  </li>
+
+                  <li v-if="unreadCount > 0" class="text-center mt-2">
+                    <a href="/users/my-notifications" class="btn btn-sm btn-outline-success w-100">View more notifications</a>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Gear Dropdown -->
+              <div class="dropdown-center">
+                <button
+                  class="btn btn-outline-success border-0 fw-bolder me-3"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                >
+                  <i class="bi bi-gear fs-4 fw-bold"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
+                  <template v-if="user.isAdminOrStaff">
+                    <li><a class="dropdown-item" href="/dashboard">Manage</a></li>
+                    <li><a class="dropdown-item" href="/users/my-schedules">My Schedules</a></li>
+                  </template>
+                  <template v-else>
+                    <li><a class="dropdown-item" href="/users/my-adoption-applications">My Adoption Applications</a></li>
+                  </template>
+                  <li><a class="dropdown-item" href="/users/my-donations">My Donation History</a></li>
+                  <li><a class="dropdown-item" href="/users/my-reports">My Reports</a></li>
+                  <li><hr class="dropdown-divider" /></li>
+                  <li>
+                    <form method="POST" action="/logout">
+                      <input type="hidden" name="_token" :value="csrfToken" />
+                      <button class="dropdown-item border-0" type="submit">Logout</button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
             </div>
           </template>
         </div>
@@ -111,5 +172,16 @@
 
   const page = usePage()
   const user = computed(() => page.props.auth.user)
+  const unreadNotifications = computed(() => page.props.unreadNotifications ?? [])
+  const unreadCount = computed(() => page.props.unreadCount ?? 0)
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+
+  // Utility: format time ago
+  const timeAgo = (timestamp) => {
+    const diff = Math.floor((new Date() - new Date(timestamp)) / 1000)
+    if (diff < 60) return 'just now'
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`
+    return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) > 1 ? 's' : ''} ago`
+  }
 </script>

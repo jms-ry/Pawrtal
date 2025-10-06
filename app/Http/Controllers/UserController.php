@@ -264,4 +264,16 @@ class UserController extends Controller
       'schedules' => $schedules
     ]);
   }
+
+  public function myNotifications()
+  {
+    $previousUrl = url()->previous();
+    $user = Auth::user();
+    
+    
+    return Inertia::render('User/MyNotifications',[
+      'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,'role' =>$user->role] : null,
+      'previousUrl' => $previousUrl,
+    ]);
+  }
 }

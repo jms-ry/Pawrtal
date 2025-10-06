@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('my-donations', [UserController::class, 'myDonations'])->name('users.myDonations');
     Route::get('my-adoption-applications', [UserController::class, 'myAdoptionApplications'])->name('users.myAdoptionApplications');
     Route::get('my-schedules', [UserController::class, 'mySchedules'])->name('users.mySchedules');
+    Route::get('my-notifications', [UserController::class, 'myNotifications'])->name('users.myNotifications');
   });
   Route::resource('users',UserController::class)->except('create','edit');
 });
