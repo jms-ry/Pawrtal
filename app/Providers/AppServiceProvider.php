@@ -11,6 +11,8 @@ use App\Models\Donation;
 use App\Observers\DonationObserver;
 use App\Models\AdoptionApplication;
 use App\Observers\AdoptionApplicationObserver;
+use App\Models\InspectionSchedule;
+use App\Observers\InspectionScheduleObserver;
 class AppServiceProvider extends ServiceProvider
 {
   /**
@@ -44,5 +46,6 @@ class AppServiceProvider extends ServiceProvider
     Report::observe(ReportObserver::class);
     Donation::observe(DonationObserver::class);
     AdoptionApplication::observe(AdoptionApplicationObserver::class);
+    InspectionSchedule::observe(InspectionScheduleObserver::class);
   }
 }
