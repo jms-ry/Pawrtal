@@ -3,8 +3,10 @@
 namespace App\Observers;
 
 use App\Models\AdoptionApplication;
+use App\Notifications\AdoptionApplicationApprovedNotification;
 use App\Notifications\AdoptionApplicationArchivedNotification;
 use App\Notifications\AdoptionApplicationCancelledNotification;
+use App\Notifications\AdoptionApplicationRejectedNotification;
 use App\Notifications\AdoptionApplicationRestoredNotification;
 
 class AdoptionApplicationObserver
@@ -25,6 +27,14 @@ class AdoptionApplicationObserver
     if($adoptionApplication->user){
       if($adoptionApplication->status === 'cancelled'){
         $adoptionApplication->user->notify(new AdoptionApplicationCancelledNotification($adoptionApplication));
+      }
+
+      if($adoptionApplication->status === 'approved'){
+        $adoptionApplication->user->notify(new AdoptionApplicationApprovedNotification($adoptionApplication));
+      }
+
+      if($adoptionApplication->status === 'rejected'){
+        $adoptionApplication->user->notify(new AdoptionApplicationRejectedNotification($adoptionApplication));
       }
     }
   }
