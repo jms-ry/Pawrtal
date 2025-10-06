@@ -123,13 +123,13 @@ export default class extends Controller {
       const loggedAdminIsOwner = isOwnedByLoggedUser && isLoggedUserAdminOrStaff;
 
       if(isAbleToDelete){
-        deleteButtonDiv.classList.remove('d-none');
         if(status === 'active'){
           deleteButtonDiv.classList.add('d-none');
-          
           if(loggedAdminIsOwner || isOwnedByLoggedUser){
             deleteButtonDiv.classList.remove('d-none');
           }
+        }else{
+          deleteButtonDiv.classList.remove('d-none');
         }
       }else{
         deleteButtonDiv.classList.add('d-none');
