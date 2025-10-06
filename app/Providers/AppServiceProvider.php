@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use App\Models\Report;
 use App\Observers\ReportObserver;
+use App\Models\Donation;
+use App\Observers\DonationObserver;
 class AppServiceProvider extends ServiceProvider
 {
   /**
@@ -38,5 +40,6 @@ class AppServiceProvider extends ServiceProvider
     ]);
 
     Report::observe(ReportObserver::class);
+    Donation::observe(DonationObserver::class);
   }
 }
