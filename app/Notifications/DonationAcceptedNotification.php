@@ -7,8 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Donation;
-
-class DonationArchivedNotification extends Notification
+class DonationAcceptedNotification extends Notification
 {
   use Queueable;
 
@@ -33,8 +32,8 @@ class DonationArchivedNotification extends Notification
     return [
       'donation_id' => $this->donation->id,
       'donation_type' => $this->donation->donation_type,
-      'message' => 'Your donation has been archived.',
-      'archived_at' => now()->toDateTimeString(),
+      'message' => 'Your donation has been accepted.',
+      'accepted_at' => now()->toDateTimeString(),
     ];
   }
 }

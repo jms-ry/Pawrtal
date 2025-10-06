@@ -3,7 +3,10 @@
 namespace App\Observers;
 
 use App\Models\Donation;
+use App\Notifications\DonationAcceptedNotification;
 use App\Notifications\DonationArchivedNotification;
+use App\Notifications\DonationCancelledNotification;
+use App\Notifications\DonationRejectedNotification;
 use App\Notifications\DonationRestoredNotification;
 
 class DonationObserver
@@ -21,7 +24,19 @@ class DonationObserver
   */
   public function updated(Donation $donation): void
   {
-    //
+    if($donation->user){
+      if($donation->status ==='cancelled'){
+        $donation->user->notify(new DonationCancelledNotification($donation));
+      }
+      
+      if($donation->status ==='accepted'){
+        $donation->user->notify(new DonationAcceptedNotification($donation));
+      }
+
+      if($donation->status === 'rejected'){
+        $donation->user->notify(new DonationRejectedNotification($donation));
+      }
+    }
   }
 
   /**
