@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
+use App\Models\Report;
+use App\Observers\ReportObserver;
 class AppServiceProvider extends ServiceProvider
 {
   /**
@@ -34,5 +36,7 @@ class AppServiceProvider extends ServiceProvider
         ];
       },
     ]);
+
+    Report::observe(ReportObserver::class);
   }
 }
