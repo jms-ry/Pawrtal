@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\Auth;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -43,6 +44,12 @@ class HandleInertiaRequests extends Middleware
         'warning' => fn () => $request->session()->get('warning'),
         'info' => fn () => $request->session()->get('info'),
       ],
+      'unreadNotifications' => fn () => Auth::check()
+        ? Auth::user()->unreadNotifications()->take(10)->get(['id', 'data', 'created_at'])
+      : [],
+      'unreadCount' => fn () => Auth::check()
+        ? Auth::user()->unreadNotifications()->count()
+      : 0,
     ]);
   }
 }
