@@ -90,7 +90,7 @@
               :class="{ 'table-light fw-semibold': !notification.read_at }"
             >
               <th scope="row">{{ index + 1 }}</th>
-              <td>{{ notification.data.message }}</td>
+              <td :class="notification.read_at ? 'text-muted' : 'fw-bolder text-dark'">{{ notification.data.message }}</td>
               <td>
                 <button 
                   v-if="!notification.read_at"
