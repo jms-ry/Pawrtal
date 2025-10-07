@@ -307,4 +307,27 @@ class UserController extends Controller
       ],
     ]);
   }
+
+  public function markNotificationAsRead(Request $request, $id)
+  {
+    $notification = $request->user()
+      ->notifications()
+      ->where('id', $id)
+    ->first();
+
+    if ($notification) {
+      $notification->markAsRead();
+    }
+
+    return response()->json(['success' => true]);
+  }
+
+  public function markAllNotificationsAsRead(Request $request)
+  {
+    $request->user()
+      ->unreadNotifications
+    ->markAsRead();
+
+    return response()->json(['success' => true]);
+  }
 }

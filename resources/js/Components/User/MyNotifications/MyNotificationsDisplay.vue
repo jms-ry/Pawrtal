@@ -22,14 +22,20 @@
     <div v-else>
       <!-- Mark All as Read Button -->
       <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-warning fw-semibold">
-          <i class="bi bi-envelope-open me-1"></i> Mark All as Read
+        <button 
+          v-if="hasUnreadNotifications"
+          @click="markAllAsRead" 
+          class="btn btn-warning fw-semibold"
+          :disabled="markingAllAsRead"
+        >
+          <i class="bi bi-envelope-open me-1"></i> 
+          {{ markingAllAsRead ? 'Marking...' : 'Mark All as Read' }}
         </button>
       </div>
 
-      <!--Large Screen Table-->
+      <!-- Large Screen Table -->
       <div class="d-none d-md-block">
-        <table class="table table-striped table-hover align-middle text-center">
+        <table class="table table-hover align-middle text-center">
           <thead class="table-primary">
             <tr>
               <th scope="col" style="width: 5%;">#</th>
@@ -39,22 +45,35 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(notification, index) in notifications.data" :key="notification.id">
+            <tr 
+              v-for="(notification, index) in notifications.data" 
+              :key="notification.id"
+              :class="{ 'table-light fw-semibold': !notification.read_at }"
+            >
               <th scope="row">{{ index + 1 }}</th>
-              <td>{{ notification.data.message }}</td>
-              <td>{{ timeAgo(notification.created_at) }}</td>
+              <td :class="notification.read_at ? 'text-muted' : 'fw-bolder text-dark'">{{ notification.data.message }}</td>
+              <td :class="notification.read_at ? 'text-muted' : 'fw-bolder text-dark'">{{ timeAgo(notification.created_at) }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a v-if="!notification.read_at" class="btn btn-warning fw-bolder me-1">
-                    <i class="bi bi-envelope-open me-1"></i> Mark as Read 
-                  </a>
+                  <button 
+                    v-if="!notification.read_at" 
+                    @click="markAsRead(notification.id)"
+                    class="btn btn-warning fw-bolder me-1"
+                    :disabled="markingAsRead.includes(notification.id)"
+                  >
+                    <i class="bi bi-envelope-open me-1"></i> 
+                    {{ markingAsRead.includes(notification.id) ? 'Marking...' : 'Mark as Read' }}
+                  </button>
+                  <span v-else class="text-muted">
+                    <i class="bi bi-check-circle me-1"></i> Read
+                  </span>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!--Small Screen Table-->
+      <!-- Small Screen Table -->
       <div class="d-md-none d-block">
         <table class="table table-striped table-hover align-middle text-center">
           <thead class="table-primary">
@@ -65,13 +84,26 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(notification, index) in notifications.data" :key="notification.id">
+            <tr 
+              v-for="(notification, index) in notifications.data" 
+              :key="notification.id"
+              :class="{ 'table-light fw-semibold': !notification.read_at }"
+            >
               <th scope="row">{{ index + 1 }}</th>
               <td>{{ notification.data.message }}</td>
               <td>
-                <a v-if="!notification.read_at" class="btn btn-warning btn-sm fw-bolder mb-1 w-100"
-                  ><i class="bi bi-envelope-open me-1"></i> Mark
-                </a>
+                <button 
+                  v-if="!notification.read_at"
+                  @click="markAsRead(notification.id)" 
+                  class="btn btn-warning btn-sm fw-bolder mb-1 w-100"
+                  :disabled="markingAsRead.includes(notification.id)"
+                >
+                  <i class="bi bi-envelope-open me-1"></i> 
+                  {{ markingAsRead.includes(notification.id) ? '...' : 'Mark' }}
+                </button>
+                <span v-else class="text-muted small">
+                  <i class="bi bi-check-circle"></i>
+                </span>
               </td>
             </tr>
           </tbody>
@@ -135,7 +167,8 @@
 
 <script setup>
   import { router } from '@inertiajs/vue3';
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue'
+  import axios from 'axios'
 
   const props = defineProps({
     notifications: {
@@ -199,4 +232,45 @@
       preserveScroll:true,
     })
   };
+
+  const markingAsRead = ref([])
+  const markingAllAsRead = ref(false)
+
+  const hasUnreadNotifications = computed(() => {
+    return props.notifications?.data?.some(n => !n.read_at) ?? false
+  })
+
+  const markAsRead = async (notificationId) => {
+    markingAsRead.value.push(notificationId)
+    
+    try {
+      await axios.post(`/users/notifications/${notificationId}/mark-as-read`)
+      
+      router.reload({ 
+        preserveScroll: true,
+      })
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error)
+      alert('Failed to mark notification as read. Please try again.')
+    } finally {
+      markingAsRead.value = markingAsRead.value.filter(id => id !== notificationId)
+    }
+  }
+
+  const markAllAsRead = async () => {
+    markingAllAsRead.value = true
+    
+    try {
+      await axios.post('/users/notifications/mark-all-as-read')
+      
+      router.reload({ 
+        preserveScroll: true,
+      })
+    } catch (error) {
+      console.error('Failed to mark all as read:', error)
+      alert('Failed to mark all as read. Please try again.')
+    } finally {
+      markingAllAsRead.value = false
+    }
+  }
 </script>

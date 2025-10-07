@@ -52,7 +52,7 @@
                         class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                         style="font-size: 0.7rem; transform: translate(-30%, -40%);"
                       >
-                        {{ unreadCount > 10 ? '10+' : unreadCount }}
+                        {{ unreadCount > 99 ? '99+' : unreadCount }}
                       </span>
                     </span>
                   </a>
@@ -106,7 +106,7 @@
                       class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                       style="font-size: 0.65rem; transform: translate(-40%, -40%);"
                     >
-                      {{ unreadCount > 10 ? '10+' : unreadCount }}
+                      {{ unreadCount > 99 ? '99+' : unreadCount }}
                     </span>
                   </span>
                 </button>
@@ -142,7 +142,7 @@
                             </div>
                             <!-- Unread Dot -->
                             <div class="flex-shrink-0">
-                              <span class="d-inline-block bg-danger rounded-circle" style="width: 10px; height: 10px;"></span>
+                              <span class="d-inline-block bg-primary rounded-circle" style="width: 10px; height: 10px;"></span>
                             </div>
                           </div>
                         </a>

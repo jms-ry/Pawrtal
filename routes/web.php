@@ -52,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('my-adoption-applications', [UserController::class, 'myAdoptionApplications'])->name('users.myAdoptionApplications');
     Route::get('my-schedules', [UserController::class, 'mySchedules'])->name('users.mySchedules');
     Route::get('my-notifications', [UserController::class, 'myNotifications'])->name('users.myNotifications');
+
+    Route::post('notifications/{id}/mark-as-read', [UserController::class, 'markNotificationAsRead'])->name('users.markNotificationAsRead');
+    Route::post('notifications/mark-all-as-read', [UserController::class, 'markAllNotificationsAsRead'])->name('users.markAllNotificationsAsRead');
   });
   Route::resource('users',UserController::class)->except('create','edit');
 });
