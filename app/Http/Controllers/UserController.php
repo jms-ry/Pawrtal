@@ -147,9 +147,6 @@ class UserController extends Controller
     $donations = $user->donations()
       ->withTrashed()
       ->with('user')
-      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
-        $query->where('status', '!=', 'archived');
-      })
       ->when($search, function ($query, $search) {
         $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
@@ -201,9 +198,6 @@ class UserController extends Controller
       ->withTrashed()
       ->withCount('inspectionSchedule')
       ->with(['user','rescue'])
-      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
-        $query->where('status', '!=', 'archived');
-      })
       ->when($search, function ($query, $search) {
         $columns = ['reason_for_adoption','status',];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
@@ -265,15 +259,52 @@ class UserController extends Controller
     ]);
   }
 
-  public function myNotifications()
+  public function myNotifications(Request $request)
   {
     $previousUrl = url()->previous();
     $user = Auth::user();
-    
-    
+    $search = $request->get('search');
+    $readAtFilter = $request->get('read_at');
+
+    $sortOrder = $request->get('sort');
+    $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+
+    $notifications = $user->notifications()
+      ->when($search, function ($query, $search) {
+        $columns = ['data'];
+        $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+        return $query->where(function ($q) use ($keywords, $columns) {
+          foreach ($keywords as $word) {
+            $q->where(function ($subQ) use ($word, $columns) {
+              foreach ($columns as $col) {
+                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
+              }
+            });
+          }
+        });
+      })
+      ->when($readAtFilter === 'unread', function ($query) {
+        return $query->whereNull('read_at'); 
+      })
+      ->when($readAtFilter === 'read', function ($query) {
+          return $query->whereNotNull('read_at'); 
+      })
+      ->when($sortOrder, function ($query, $sortOrder) {
+        return $query->reorder()->orderBy('created_at', $sortOrder);
+      })
+      ->orderBy('read_at','desc')
+      ->paginate(10)
+    ->withQueryString();
+
     return Inertia::render('User/MyNotifications',[
       'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,'role' =>$user->role] : null,
       'previousUrl' => $previousUrl,
+      'notifications' => $notifications,
+      'filters' => [
+        'search' => $search,
+        'sort' => $sortOrder,
+        'read_at' => $readAtFilter,
+      ],
     ]);
   }
 }

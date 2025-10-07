@@ -8,15 +8,17 @@
       </div>
 
       <!-- Toggler -->
-      <button class="navbar-toggler border border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <button class="navbar-toggler border border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
       <div class="collapse navbar-collapse" id="navbarColor01">
         <!-- Small Screen -->
         <ul class="navbar-nav me-auto d-lg-none border-top border-1 border-white pt-2 mt-3">
           <li><a class="nav-link fw-bold fs-5" :href="`/rescues`">Rescues</a></li>
-          <li><a  class="nav-link fw-bold fs-5" :href="`/reports`">Lost-and-Found Reports</a></li>
-          <li><a  class="nav-link fw-bold fs-5" :href="`/adoption`">Adopt a Rescue</a></li>
-          <li><a  class="nav-link fw-bold fs-5" :href="`/donate`">Donate</a></li>
+          <li><a class="nav-link fw-bold fs-5" :href="`/reports`">Lost-and-Found Reports</a></li>
+          <li><a class="nav-link fw-bold fs-5" :href="`/adoption`">Adopt a Rescue</a></li>
+          <li><a class="nav-link fw-bold fs-5" :href="`/donate`">Donate</a></li>
 
           <!-- Guest -->
           <template v-if="!user">
@@ -33,14 +35,14 @@
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
                 <template v-if="user.isAdminOrStaff">
-                  <li ><a class="dropdown-item" :href="`/dashboard`">Manage</a></li>
-                  <li><a class="dropdown-item" :href="`/users/my-schedules`">My Schedules</a></li>
+                  <li><a class="dropdown-item" href="/dashboard">Manage</a></li>
+                  <li><a class="dropdown-item" href="/users/my-schedules">My Schedules</a></li>
                 </template>
                 <template v-else>
-                  <li><a class="dropdown-item" :href="`/users/my-adoption-applications`">My Adoption Applications</a></li>
+                  <li><a class="dropdown-item" href="/users/my-adoption-applications">My Adoption Applications</a></li>
                 </template>
-                <li><a class="dropdown-item" :href="`/users/my-donations`">My Donation History</a></li>
-                <li><a class="dropdown-item" :href="`/users/my-reports`">My Reports</a></li>
+                <li><a class="dropdown-item" href="/users/my-donations">My Donation History</a></li>
+                <li><a class="dropdown-item" href="/users/my-reports">My Reports</a></li>
                 <li>
                   <a class="dropdown-item" href="/users/my-notifications">
                     <span class="position-relative">
@@ -98,7 +100,6 @@
                 >
                   <span class="position-relative">
                     <i class="bi bi-bell me-1 fs-4 fw-bold"></i>
-
                     <!-- Badge -->
                     <span
                       v-if="unreadCount > 0"
@@ -110,32 +111,58 @@
                   </span>
                 </button>
 
-                <!-- Notification Dropdown -->
-                <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2" style="width: 320px; max-height: 400px; overflow-y: auto;">
-                  <li v-if="unreadNotifications.length === 0" class="text-center text-muted py-2">
-                    No new notifications
+                <!-- Notification Dropdown (Preview Only) -->
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 380px; max-height: 450px;">
+                  <!-- Header -->
+                  <li class="px-3 py-2 border-bottom">
+                    <span class="fw-bold">Recent Notifications</span>
                   </li>
 
-                  <li v-for="(notif, index) in unreadNotifications" :key="notif.id" class="border-bottom">
-                    <div class="dropdown-item text-wrap py-2">
-                      <p class="mb-1">{{ notif.data.message }}</p>
-                      <small class="text-muted">{{ timeAgo(notif.created_at) }}</small>
+                  <!-- Empty State -->
+                  <li v-if="unreadNotifications.length === 0" class="text-center text-muted py-4">
+                    <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+                    <p class="mb-0">No new notifications</p>
+                  </li>
+
+                  <!-- Notification List (Preview - First 10 Unread) -->
+                  <template v-else>
+                    <div style="max-height: 350px; overflow-y: auto;">
+                      <li
+                        v-for="notif in unreadNotifications.slice(0, 10)"
+                        :key="notif.id"
+                        class="border-bottom bg-light"
+                        style="cursor: pointer;"
+                      >
+                        <a :href="`/users/my-notifications`" class="text-decoration-none text-dark d-block px-3 py-2">
+                          <div class="d-flex align-items-start">
+                            <!-- Content -->
+                            <div class="flex-grow-1 me-2">
+                              <p class="mb-1 small fw-semibold">{{ notif.data.message }}</p>
+                              <small class="text-muted">{{ timeAgo(notif.created_at) }}</small>
+                            </div>
+                            <!-- Unread Dot -->
+                            <div class="flex-shrink-0">
+                              <span class="d-inline-block bg-danger rounded-circle" style="width: 10px; height: 10px;"></span>
+                            </div>
+                          </div>
+                        </a>
+                      </li>
                     </div>
-                  </li>
 
-                  <li v-if="unreadCount > 0" class="text-center mt-2">
-                    <a href="/users/my-notifications" class="btn btn-sm btn-outline-success w-100">View more notifications</a>
-                  </li>
+                    <!-- Footer - View All Button -->
+                    <li class="text-center py-2 border-top">
+                      <a href="/users/my-notifications" class="btn btn-sm btn-primary fw-semibold w-75">
+                        View All Notifications
+                        <span v-if="unreadCount > 10" class="badge bg-light text-dark ms-1">{{ unreadCount }}</span>
+                      </a>
+                    </li>
+                  </template>
                 </ul>
               </div>
 
               <!-- Gear Dropdown -->
               <div class="dropdown-center">
-                <button
-                  class="btn btn-outline-success border-0 fw-bolder me-3"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                >
+                <button class="btn btn-outline-success border-0 fw-bolder me-3" type="button" data-bs-toggle="dropdown">
                   <i class="bi bi-gear fs-4 fw-bold"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -167,21 +194,21 @@
 </template>
 
 <script setup>
-  import { usePage} from '@inertiajs/vue3'
-  import { computed } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+import { computed } from 'vue'
 
-  const page = usePage()
-  const user = computed(() => page.props.auth.user)
-  const unreadNotifications = computed(() => page.props.unreadNotifications ?? [])
-  const unreadCount = computed(() => page.props.unreadCount ?? 0)
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+const page = usePage()
+const user = computed(() => page.props.auth.user)
+const unreadNotifications = computed(() => page.props.unreadNotifications ?? [])
+const unreadCount = computed(() => page.props.unreadCount ?? 0)
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 
-  // Utility: format time ago
-  const timeAgo = (timestamp) => {
-    const diff = Math.floor((new Date() - new Date(timestamp)) / 1000)
-    if (diff < 60) return 'just now'
-    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`
-    return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) > 1 ? 's' : ''} ago`
-  }
+// Time ago helper
+const timeAgo = (timestamp) => {
+  const diff = Math.floor((new Date() - new Date(timestamp)) / 1000)
+  if (diff < 60) return 'just now'
+  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`
+  if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`
+  return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) > 1 ? 's' : ''} ago`
+}
 </script>
