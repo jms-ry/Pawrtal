@@ -33,7 +33,7 @@ class AdoptionApplicationArchivedNotification extends Notification
     return [
       'application_id' => $this->adoptionApplication->id,
       'rescue_name' => $this->adoptionApplication->rescue->name,
-      'message' => 'Your adoption application has been archived.',
+      'message' => 'Your adoption application has been archived. Check "My Adoption Applications" for more details.',
       'archived_at' => now()->toDateTimeString(),
     ];
   }

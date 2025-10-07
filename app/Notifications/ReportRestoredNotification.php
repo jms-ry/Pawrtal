@@ -26,7 +26,7 @@ class ReportRestoredNotification extends Notification
     return [
       'report_id' => $this->report->id,
       'report_type' => $this->report->type,
-      'message' => 'Your report has been restored',
+      'message' => 'Your report has been restored. Check "My Reports" for more details.',
       'restored_at' => now()->toDateTimeString(),
     ];
   }

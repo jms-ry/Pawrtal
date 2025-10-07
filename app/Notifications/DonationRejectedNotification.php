@@ -32,7 +32,7 @@ class DonationRejectedNotification extends Notification
     return [
       'donation_id' => $this->donation->id,
       'donation_type' => $this->donation->donation_type,
-      'message' => 'Your donation has been rejected.',
+      'message' => 'Your donation has been rejected. Check "My Donation History" for more details.',
       'rejected_at' => now()->toDateTimeString(),
     ];
   }

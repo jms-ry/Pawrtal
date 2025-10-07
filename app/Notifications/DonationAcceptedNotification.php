@@ -32,7 +32,7 @@ class DonationAcceptedNotification extends Notification
     return [
       'donation_id' => $this->donation->id,
       'donation_type' => $this->donation->donation_type,
-      'message' => 'Your donation has been accepted.',
+      'message' => 'Your donation has been accepted. Check "My Donation History" for more details.',
       'accepted_at' => now()->toDateTimeString(),
     ];
   }

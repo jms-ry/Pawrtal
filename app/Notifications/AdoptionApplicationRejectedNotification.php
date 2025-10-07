@@ -33,7 +33,7 @@ class AdoptionApplicationRejectedNotification extends Notification
     return [
       'application_id' => $this->adoptionApplication->id,
       'rescue_name' => $this->adoptionApplication->rescue->name,
-      'message' => 'Your adoption application has been rejected.',
+      'message' => 'Your adoption application has been rejected. Check "My Adoption Applications" for more details.',
       'rejected_at' => now()->toDateTimeString(),
     ];
   }

@@ -41,7 +41,7 @@ class InspectorInspectionScheduleNotification extends Notification
       'applicant_name' => $this->inspectionSchedule->adoptionApplication->user->fullName(),
       'inspection_date' => $this->inspectionSchedule->inspectionDate(),
       'inspection_location' => $this->inspectionSchedule->inspectionLocation(),
-      'message' => 'You have been scheduled to conduct a home inspection for an adoption applicant.',
+      'message' => 'You have been scheduled to conduct a home inspection for an adoption applicant. Check "My Schedules" for more details.',
     ];
   }
 }

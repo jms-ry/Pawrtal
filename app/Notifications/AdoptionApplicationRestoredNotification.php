@@ -33,7 +33,7 @@ class AdoptionApplicationRestoredNotification extends Notification
     return [
       'application_id' => $this->adoptionApplication->id,
       'rescue_name' => $this->adoptionApplication->rescue->name,
-      'message' => 'Your adoption application has been restored.',
+      'message' => 'Your adoption application has been restored. Check "My Adoption Applications" for more details.',
       'restored_at' => now()->toDateTimeString(),
     ];
   }

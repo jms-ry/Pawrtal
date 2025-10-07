@@ -45,9 +45,6 @@
               <td>{{ timeAgo(notification.created_at) }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <a class="btn btn-success fw-bolder me-1">
-                    <i class="bi bi-eye me-1"></i> View Notification
-                  </a>
                   <a v-if="!notification.read_at" class="btn btn-warning fw-bolder me-1">
                     <i class="bi bi-envelope-open me-1"></i> Mark as Read 
                   </a>
@@ -72,9 +69,6 @@
               <th scope="row">{{ index + 1 }}</th>
               <td>{{ notification.data.message }}</td>
               <td>
-                <a class="btn btn-success btn-sm fw-bolder mb-1 w-100"
-                  ><i class="bi bi-eye me-1"></i> View
-                </a>
                 <a v-if="!notification.read_at" class="btn btn-warning btn-sm fw-bolder mb-1 w-100"
                   ><i class="bi bi-envelope-open me-1"></i> Mark
                 </a>

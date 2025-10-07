@@ -24,7 +24,7 @@ class ReportArchivedNotification extends Notification
     return [
       'report_id' => $this->report->id,
       'report_type' => $this->report->type,
-      'message' => 'Your report has been archived',
+      'message' => 'Your report has been archived. Check "My Reports" for more details.',
       'archived_at' => now()->toDateTimeString(),
     ];
   }

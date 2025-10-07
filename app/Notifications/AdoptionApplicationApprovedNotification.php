@@ -33,7 +33,7 @@ class AdoptionApplicationApprovedNotification extends Notification
     return [
       'application_id' => $this->adoptionApplication->id,
       'rescue_name' => $this->adoptionApplication->rescue->name,
-      'message' => 'Your adoption application has been approved.',
+      'message' => 'Your adoption application has been approved. Check "My Adoption Applications" for more details.',
       'approved_at' => now()->toDateTimeString(),
     ];
   }

@@ -32,7 +32,7 @@ class DonationRestoredNotification extends Notification
     return [
       'donation_id' => $this->donation->id,
       'donation_type' => $this->donation->donation_type,
-      'message' => 'Your donation has been restored',
+      'message' => 'Your donation has been restored. Check "My Donation History" for more details.',
       'restored_at' => now()->toDateTimeString(),
     ];
   }
