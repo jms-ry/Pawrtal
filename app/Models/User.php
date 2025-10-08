@@ -136,4 +136,14 @@ class User extends Authenticatable
     }
     return null;
   }
+
+  public function getFirstNameAttribute($value)
+  {
+    return Str::headline($value);
+  }
+
+  public function getRoleAttribute($value)
+  {
+    return Str::headline($value);
+  }
 }
