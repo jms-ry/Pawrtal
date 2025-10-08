@@ -91,7 +91,7 @@
           <!-- Auth -->
           <template v-else>
             <div class="btn-group">
-              <div class="dropdown-center me-4 position-relative">
+              <div class="dropdown-center position-relative">
                 <!-- Bell Button -->
                 <button
                   class="btn btn-outline-success border-0 fw-bolder position-relative"
