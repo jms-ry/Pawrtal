@@ -26,12 +26,17 @@ class RegisteredUserController extends Controller
       'first_name' => ['required', 'string', 'max:255'],
       'last_name' => ['required', 'string', 'max:255'],
       'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+      'contact_number' => [
+        'required',
+        'regex:/^09\d{9}$/', // must start with 09 and followed by 9 digits (total of 11)
+      ],
       'password' => ['required', 'confirmed', Rules\Password::defaults()],
     ]);
 
     $user = User::create([
       'first_name' => $request->first_name,
       'last_name' => $request->last_name,
+      'contact_number' => $request->contact_number,
       'email' => $request->email,
       'password' => Hash::make($request->string('password')),
     ]);
