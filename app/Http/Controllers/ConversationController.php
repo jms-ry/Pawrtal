@@ -13,16 +13,30 @@ class ConversationController extends Controller
   {
     $user = Auth::user();
     $previousUrl = url()->previous();
-    $users = User::whereKeyNot($user->id)->get();
-    $conversations = $user->conversations()->with(['messages', 'participant1', 'participant2'])->get();
 
-    return Inertia::render('Conversation/Index',[
-      'previousUrl' => $previousUrl,
-      'users' => $users,
+    // Retrieve all conversations with their participants
+    $conversations = $user->conversations()
+      ->with(['messages', 'participant1', 'participant2'])
+    ->get();
+
+    // Collect all user IDs that the logged-in user has conversations with
+    $conversationUserIds = $conversations->flatMap(function ($conversation) use ($user) {
+      return [$conversation->participant1_id, $conversation->participant2_id];
+    })->unique();
+
+    // Exclude the logged-in user and those already in a conversation
+    $users = User::whereKeyNot($user->id)
+      ->whereNotIn('id', $conversationUserIds)
+    ->get();
+
+    return Inertia::render('Conversation/Index', [
+      'previousUrl'   => $previousUrl,
+      'users'         => $users,
       'conversations' => $conversations,
-      'user' => $user
+      'user'          => $user,
     ]);
   }
+
 
   public function store(Request $request)
   {

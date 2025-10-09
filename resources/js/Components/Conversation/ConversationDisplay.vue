@@ -158,16 +158,19 @@
       </div>
 
       <!-- Mobile: New Message Button -->
-      <button v-if="isMobile && !showNewMessage" class="btn btn-success rounded-pill position-fixed shadow" style="bottom: 20px; right: 20px; width: 60px; height: 60px;" @click="showNewMessage = true">
+      <button v-if="isMobile" class="btn btn-success rounded-pill position-fixed shadow" data-bs-toggle="modal" data-bs-target="#showSuggestedUser" style="bottom: 20px; right: 20px; width: 60px; height: 60px;" >
         <i class="bi bi-plus-lg fs-4"></i> 
       </button>
-
+      <ShowSuggestedUser
+        :users="users"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
   import { ref, computed, onMounted, onUnmounted } from 'vue';
+  import ShowSuggestedUser from '../Modals/Conversations/ShowSuggestedUser.vue';
 
   const props = defineProps({
     users: Array,
@@ -177,7 +180,6 @@
 
   const windowWidth = ref(window.innerWidth);
   const selectedConversation = ref(null);
-  const showNewMessage = ref(false);
 
   const isMobile = computed(() => windowWidth.value < 768);
 
