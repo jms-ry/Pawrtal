@@ -395,6 +395,9 @@
       conversation.messages.forEach(msg => {
         if (msg.sender_id !== props.user.id) msg.status = 'read';
       });
+      router.reload({ 
+        preserveScroll: true,
+      })
     } catch (error) {
       console.error(error);
     }
