@@ -95,13 +95,13 @@
               <div v-if="message.sender_id !== user.id" class="me-2">
                 <i class="bi bi-person-circle text-dark" style="font-size: 32px;"></i>
               </div>
-              <div class="message-bubble" :class="message.sender_id === user.id ? 'sent' : 'received'">
+              <div class="message-bubble" :class="message.sender_id === user.id ? 'sent' : 'delivered'">
                 <p class="mb-1">{{ message.content }}</p>
                 <div class="d-flex align-items-center justify-content-end gap-1">
                   <small class="text-muted" style="font-size: 0.7rem;">{{ formatTime(message.created_at) }}</small>
                   <span v-if="message.sender_id === user.id">
                     <i v-if="message.status === 'sent'" class="bi bi-check text-muted" style="font-size: 0.9rem;"></i>
-                    <i v-else-if="message.status === 'delivered'" class="bi bi-check-all text-muted" style="font-size: 0.9rem;"></i>
+                    <i v-else-if="message.status === 'delivered'" class="bi bi-check-circle-fill text-muted" style="font-size: 0.9rem;"></i>
                     <i v-else-if="message.status === 'read'" class="bi bi-check-all text-primary" style="font-size: 0.9rem;"></i>
                   </span>
                 </div>
