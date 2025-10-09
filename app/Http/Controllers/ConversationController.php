@@ -121,21 +121,21 @@ class ConversationController extends Controller
   //   ]);
   // }
 
-  // public function markAsRead(Conversation $conversation)
-  // {
-  //   $user = Auth::user();
+  public function markAsRead(Conversation $conversation)
+  {
+    $user = Auth::user();
 
-  //   // Ensure user is part of the conversation
-  //   if ($conversation->participant1_id !== $user->id && $conversation->participant2_id !== $user->id) {
-  //     abort(403);
-  //   }
+    // Ensure user is part of the conversation
+    if ($conversation->participant1_id !== $user->id && $conversation->participant2_id !== $user->id) {
+      abort(403);
+    }
 
-  //   // Mark all messages from other participant as read
-  //   $conversation->messages()
-  //     ->where('sender_id', '!=', $user->id)
-  //     ->where('status', '!=', 'read')
-  //   ->update(['status' => 'read']);
+    // Mark all messages from other participant as read
+    $conversation->messages()
+      ->where('sender_id', '!=', $user->id)
+      ->where('status', '!=', 'read')
+    ->update(['status' => 'read']);
 
-  //   return response()->json(['success' => true]);
-  // }
+    return response()->json(['success' => true]);
+  }
 }

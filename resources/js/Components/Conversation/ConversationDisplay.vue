@@ -102,7 +102,7 @@
                   <span v-if="message.sender_id === user.id">
                     <i v-if="message.status === 'sent'" class="bi bi-check text-muted" style="font-size: 0.9rem;"></i>
                     <i v-else-if="message.status === 'delivered'" class="bi bi-check-circle-fill text-muted" style="font-size: 0.9rem;"></i>
-                    <i v-else-if="message.status === 'read'" class="bi bi-check-all text-primary" style="font-size: 0.9rem;"></i>
+                    <i v-else-if="message.status === 'read'" class="bi bi-check-all text-dark" style="font-size: 0.9rem;"></i>
                   </span>
                 </div>
               </div>
@@ -216,6 +216,7 @@
   import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
   import { router } from '@inertiajs/vue3';
   import ShowSuggestedUser from '../Modals/Conversations/ShowSuggestedUser.vue';
+  import axios from 'axios';
 
   const props = defineProps({
     users: Array,
@@ -385,12 +386,20 @@
   };
 
   const markMessagesAsRead = async (conversationId) => {
-    // This would call an endpoint to mark messages as read
-    router.put(`/conversations/${conversationId}/read`, {}, {
-      preserveState: true,
-      preserveScroll: true,
-    });
+    const conversation = localConversations.value.find(c => c.id === conversationId);
+    if (!conversation) return;
+
+    try {
+      await axios.put(`/conversations/${conversationId}/read`);
+      conversation.unread = 0;
+      conversation.messages.forEach(msg => {
+        if (msg.sender_id !== props.user.id) msg.status = 'read';
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
+
 
   const formatTime = (timestamp) => {
     if (!timestamp) return '';
@@ -465,7 +474,7 @@
     border-bottom-right-radius: 0.25rem;
   }
 
-  .message-bubble.received {
+  .message-bubble.delivered {
     background-color: #e3f2fd;
     color: #212529;
     border-bottom-left-radius: 0.25rem;

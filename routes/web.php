@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
   Route::prefix('conversations')->group(function () {
     Route::get('/', [ConversationController::class, 'index'])->name('conversations.index');
     Route::post('/', [ConversationController::class, 'store'])->name('conversations.store');
+    Route::put('/{conversation}/read', [ConversationController::class, 'markAsRead'])->name('conversations.markAsRead');
     //Route::get('/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
   });
 
