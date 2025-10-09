@@ -9,7 +9,7 @@
               <span class="input-group-text bg-white border-end-0">
                 <i class="bi bi-search"></i>
               </span>
-              <input type="text" class="form-control border-start-0 ps-0" placeholder="Search users...">
+              <input type="text" v-model="userSearchQuery" class="form-control border-start-0 ps-0" placeholder="Search users...">
             </div>
           </div>
           <div class="flex-grow-1 overflow-auto">
@@ -17,19 +17,26 @@
               <small class="text-muted font-monospace fs-5 fw-semibold">SUGGESTED</small>
             </div>
             <div 
-              v-for="user in props.users" 
-              :key="user.id"
+              v-for="suggestedUser in filteredUsers" 
+              :key="suggestedUser.id"
               class="p-3 border border-top-0 d-flex align-items-center justify-content-between hover-bg"
               role="button"
             >
               <div class="d-flex align-items-center">
                 <i class="bi bi-person-circle text-dark me-3" style="font-size: 40px;"></i>
                 <div>
-                  <h6 class="mb-0">{{ user.first_name }}</h6>
-                  <small class="text-muted">{{ user.role }}</small>
+                  <h6 class="mb-0">{{ suggestedUser.first_name }}</h6>
+                  <small class="text-muted">{{ suggestedUser.role || 'User' }}</small>
                 </div>
               </div>
-              <button class="btn btn-sm btn-primary">Message</button>
+              <button 
+                class="btn btn-sm btn-primary"
+                :disabled="isLoading"
+                @click="handleMessageClick(suggestedUser)"
+              >
+                <span v-if="!isLoading">Message</span>
+                <span v-else><i class="bi bi-hourglass-split"></i></span>
+              </button>
             </div>
           </div>
           <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
@@ -42,7 +49,37 @@
 </template>
 
 <script setup>
+  import { Modal } from 'bootstrap'
+  import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
   const props = defineProps({
     users: Array,
+    startConversation: Function,
   });
+
+  const userSearchQuery = ref('');
+
+  const filteredUsers = computed(() => {
+    if (!userSearchQuery.value) return props.users;
+    
+    return props.users.filter(user => 
+      user.first_name?.toLowerCase().includes(userSearchQuery.value.toLowerCase())
+    );
+  });
+
+  const isLoading = ref(false);
+
+const handleMessageClick = async (user) => {
+  isLoading.value = true;
+
+  try {
+    const modalElement = document.getElementById('showSuggestedUser');
+    const modal = Modal.getInstance(modalElement);
+    modal.hide();
+
+    await props.startConversation(user);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 </script>
