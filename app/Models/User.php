@@ -53,6 +53,26 @@ class User extends Authenticatable
     ];
   }
 
+  public function conversationsAsParticipant1()
+  {
+    return $this->hasMany(Conversation::class, 'participant1_id');
+  }
+
+  public function conversationsAsParticipant2()
+  {
+    return $this->hasMany(Conversation::class, 'participant2_id');
+  }
+
+  public function conversations()
+  {
+    return Conversation::where('participant1_id', $this->id)->orWhere('participant2_id', $this->id);
+  }
+
+  public function messages()
+  {
+    return $this->hasMany(Message::class, 'sender_id');
+  }
+
   public function inspectionSchedules()
   {
     return $this->hasMany(InspectionSchedule::class,'inspector_id');
@@ -115,5 +135,15 @@ class User extends Authenticatable
       return $this->address->fullAddress();
     }
     return null;
+  }
+
+  public function getFirstNameAttribute($value)
+  {
+    return Str::headline($value);
+  }
+
+  public function getRoleAttribute($value)
+  {
+    return Str::headline($value);
   }
 }

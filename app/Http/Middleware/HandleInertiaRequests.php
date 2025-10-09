@@ -36,7 +36,6 @@ class HandleInertiaRequests extends Middleware
   */
   public function share(Request $request)
   {
-    
     return array_merge(parent::share($request), [
       'flash' => [
         'success' => fn () => $request->session()->get('success'),
@@ -44,12 +43,44 @@ class HandleInertiaRequests extends Middleware
         'warning' => fn () => $request->session()->get('warning'),
         'info' => fn () => $request->session()->get('info'),
       ],
+
+      // 🔔 Notifications
       'unreadNotifications' => fn () => Auth::check()
         ? Auth::user()->unreadNotifications()->take(10)->get(['id', 'data', 'created_at'])
       : [],
       'unreadCount' => fn () => Auth::check()
-        ? Auth::user()->unreadNotifications()->count()
+      ? Auth::user()->unreadNotifications()->count()
+      : 0,
+
+      // 💬 Messages
+      'unreadMessages' => fn () => Auth::check()
+        ? \App\Models\Message::whereHas('conversation', function ($query) {
+        $query->where(function ($q) {
+          $userId = Auth::id();
+          $q->where('participant1_id', $userId)
+            ->orWhere('participant2_id', $userId);
+          });
+        })
+        ->where('sender_id', '!=', Auth::id())
+        ->where('status', '!=', 'read')
+        ->latest()
+        ->take(10)
+        ->get(['id', 'content', 'sender_id', 'conversation_id', 'created_at'])
+      : [],
+
+      'unreadMessagesCount' => fn () => Auth::check()
+        ? \App\Models\Message::whereHas('conversation', function ($query) {
+        $query->where(function ($q) {
+          $userId = Auth::id();
+          $q->where('participant1_id', $userId)
+            ->orWhere('participant2_id', $userId);
+            });
+        })
+        ->where('sender_id', '!=', Auth::id())
+        ->where('status', '!=', 'read')
+        ->count()
       : 0,
     ]);
   }
+
 }
