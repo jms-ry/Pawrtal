@@ -16,14 +16,4 @@ class MessageController extends Controller
   {
 
   }
-
-  public function markAsRead(Message $message)
-  {
-
-  }
-
-  public function markAllAsRead(Conversation $conversation)
-  {
-    
-  }
 }

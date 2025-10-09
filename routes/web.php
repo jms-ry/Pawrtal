@@ -87,11 +87,7 @@ Route::middleware(['auth'])->group(function () {
   Route::prefix('conversations/{conversation}/messages')->group(function () {
     Route::get('/', [MessageController::class, 'index'])->name('messages.index');
     Route::post('/', [MessageController::class, 'store'])->name('messages.store');
-    Route::post('/mark-all-read', [MessageController::class, 'markAllAsRead'])->name('messages.markAllAsRead');
   });
-
-  // Individual message actions
-  Route::patch('messages/{message}/read', [MessageController::class, 'markAsRead'])->name('messages.markAsRead');
 
 });
 
