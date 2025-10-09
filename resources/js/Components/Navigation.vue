@@ -132,7 +132,7 @@
                   </li>
 
                   <li v-if="unreadMessages.length === 0" class="text-center text-muted py-4">
-                    <i class="bi bi-chat-slash fs-1 d-block mb-2"></i>
+                    <i class="bi bi-envelope-slash fs-1 d-block mb-2"></i>
                     <p class="mb-0">No unread messages</p>
                   </li>
 
