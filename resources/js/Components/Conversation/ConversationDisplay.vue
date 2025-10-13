@@ -76,7 +76,7 @@
             </div>
             <div>
               <h6 class="mb-0">{{ getOtherParticipant(selectedConversation)?.first_name }}</h6>
-              <small class="text-muted">{{ getOtherParticipant(selectedConversation)?.role || 'User' }}</small>
+              <small class="text-muted">{{ formatRole(getOtherParticipant(selectedConversation)?.role) }}</small>
             </div>
           </div>
 
@@ -176,7 +176,7 @@
               <i class="bi bi-person-circle text-dark me-3" style="font-size: 40px;"></i>
               <div>
                 <h6 class="mb-0">{{ suggestedUser.first_name }}</h6>
-                <small class="text-muted">{{ suggestedUser.role || 'User' }}</small>
+                <small class="text-muted">{{ formatRole(suggestedUser.role) }}</small>
               </div>
             </div>
             <button 
@@ -403,6 +403,13 @@
     }
   };
 
+  const formatRole = (role) => {
+    if (!role) return 'User'; // default fallback
+    return role
+      .split('_') // split words by underscore
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize each
+      .join(' '); // join them back with spaces
+  };
 
   const formatTime = (timestamp) => {
     if (!timestamp) return '';

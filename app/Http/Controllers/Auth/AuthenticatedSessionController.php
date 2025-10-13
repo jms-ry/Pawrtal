@@ -27,7 +27,7 @@ class AuthenticatedSessionController extends Controller
 
     if($user->isAdminOrStaff())
     {
-      Session::flash('success', 'You are logged in as '.$user->getRole());
+      Session::flash('success', 'You are logged in as '.$user->getRole(). '!');
       return redirect()->intended($this->redirectTo);
     }
     else
