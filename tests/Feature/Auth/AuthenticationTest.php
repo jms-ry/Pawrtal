@@ -8,40 +8,74 @@ use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
+  use RefreshDatabase;
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
-    {
-        $user = User::factory()->create();
+  public function test_admin_can_login_and_redirected_to_dashboard(): void
+  {
+    $admin = User::factory()->admin()->create();
 
-        $response = $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
+    $this->assertEquals('admin', $admin->role);
+    $this->assertTrue($admin->isAdminOrStaff());
+    
+    $response = $this->post('/login', [
+      'email' => $admin->email,
+      'password' => 'password',
+    ]);
+    $this->assertAuthenticated();
+    $response->assertRedirect('/dashboard');
+    $response->assertSessionHas('success', 'You are logged in as ' .$admin->getRole() .'!');
+    // if($admin->isAdminOrStaff()){
+    //   $response->assertRedirect('/dashboard');
+    //   $response->assertSessionHas('success', 'You are logged in as ' .$admin->getRole());
+    // }
+  }
 
-        $this->assertAuthenticated();
-        $response->assertNoContent();
-    }
+  public function test_regular_user_can_login_and_redirected_to_root_page()
+  {
+    $user = User::factory()->create();
 
-    public function test_users_can_not_authenticate_with_invalid_password(): void
-    {
-        $user = User::factory()->create();
+    $response = $this->post('/login', [
+      'email' => $user->email,
+      'password' => 'password',
+    ]);
+    $this->assertAuthenticated();
+    $response->assertRedirect('/');
+    $response->assertSessionHas('success', 'You logged in successfully!');
+  }
+  
+  public function test_staff_can_login_and_redirected_to_dashboard(): void
+  {
+    $staff = User::factory()->staff()->create();
 
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
+    $response = $this->post('/login', [
+      'email' => $staff->email,
+      'password' => 'password',
+    ]);
+    $this->assertAuthenticated();
+    $response->assertRedirect('/dashboard');
+    $response->assertSessionHas('success', 'You are logged in as ' .$staff->getRole().'!');
+    
+  }
 
-        $this->assertGuest();
-    }
+  public function test_user_cannot_login_with_invalid_password(): void
+  {
+    $user = User::factory()->create();
+    
+    $response = $this->post('/login', [
+      'email' => $user->email,
+      'password' => 'wrong-password',
+    ]);
 
-    public function test_users_can_logout(): void
-    {
-        $user = User::factory()->create();
+    $this->assertGuest();
+    $response->assertSessionHasErrors('email');
+  }
+  public function test_users_can_logout(): void
+  {
+    $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post('/logout');
+    $response = $this->actingAs($user)->post('/logout');
 
-        $this->assertGuest();
-        $response->assertNoContent();
-    }
+    $this->assertGuest();
+    $response->assertRedirect('/');
+  }
 }

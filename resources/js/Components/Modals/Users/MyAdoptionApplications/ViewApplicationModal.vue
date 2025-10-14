@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade me-2" id="viewApplicationModal" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="viewApplicationModalLabel">
+  <div class="modal fade me-2" id="viewApplicationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="viewApplicationModalLabel">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-body border-0 bg-info-subtle">
