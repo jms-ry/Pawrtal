@@ -8,7 +8,6 @@ use App\Models\User;
 
 class AddressFactory extends Factory
 {
-  protected $model = Address::class;
   public function definition(): array
   {
     return [

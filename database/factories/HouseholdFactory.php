@@ -8,8 +8,7 @@ use App\Models\User;
 
 class HouseholdFactory extends Factory
 { 
-  protected $model = Household::class;
-  public function definition(): array
+    public function definition(): array
   {
     return [
       'house_structure' => $this->faker->randomElement(['Concrete', 'Wood', 'Mixed']),
