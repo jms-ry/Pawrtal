@@ -38,15 +38,15 @@ class UserController extends Controller
     * Display the specified resource.
   */
   public function show(User $user)
-    {
-      $previousUrl = url()->previous();
+  {
+    $previousUrl = url()->previous();
       
-      $user->load(['address', 'household']);
+    $user->load(['address', 'household']);
       
-      return Inertia::render('User/Show',[
-        'user'=>$user,
-        'previousUrl'=>$previousUrl,
-      ]);
+    return Inertia::render('User/Show',[
+      'user'=>$user,
+      'previousUrl'=>$previousUrl,
+    ]);
   }
 
   /**

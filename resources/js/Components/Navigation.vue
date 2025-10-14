@@ -157,14 +157,13 @@
                         </a>
                       </li>
                     </div>
-
-                    <li class="text-center py-2 border-top">
-                      <a href="/conversations" class="btn btn-sm btn-primary fw-semibold w-75">
-                        View All Messages
-                        <span v-if="unreadMessagesCount > 10" class="badge bg-light text-dark ms-1">{{ unreadMessagesCount }}</span>
-                      </a>
-                    </li>
                   </template>
+                  <li class="text-center py-2 border-top">
+                    <a href="/conversations" class="btn btn-sm btn-primary fw-semibold w-75">
+                      View All Messages
+                      <span v-if="unreadMessagesCount > 10" class="badge bg-light text-dark ms-1">{{ unreadMessagesCount }}</span>
+                    </a>
+                  </li>
                 </ul>
               </div>
 
@@ -226,15 +225,14 @@
                         </a>
                       </li>
                     </div>
-
-                    <!-- Footer - View All Button -->
-                    <li class="text-center py-2 border-top">
-                      <a href="/users/my-notifications" class="btn btn-sm btn-primary fw-semibold w-75">
-                        View All Notifications
-                        <span v-if="unreadCount > 10" class="badge bg-light text-dark ms-1">{{ unreadCount }}</span>
-                      </a>
-                    </li>
                   </template>
+                  <!-- Footer - View All Button -->
+                  <li class="text-center py-2 border-top">
+                    <a href="/users/my-notifications" class="btn btn-sm btn-primary fw-semibold w-75">
+                      View All Notifications
+                      <span v-if="unreadCount > 10" class="badge bg-light text-dark ms-1">{{ unreadCount }}</span>
+                    </a>
+                  </li>
                 </ul>
               </div>
 

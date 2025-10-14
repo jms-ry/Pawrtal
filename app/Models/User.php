@@ -141,9 +141,4 @@ class User extends Authenticatable
   {
     return Str::headline($value);
   }
-
-  public function getRoleAttribute($value)
-  {
-    return Str::headline($value);
-  }
 }
