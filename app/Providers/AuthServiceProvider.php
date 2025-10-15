@@ -8,8 +8,11 @@ use App\Models\Address;
 use App\Models\Household;
 use App\Policies\AddressPolicy;
 use App\Models\Rescue;
+use App\Models\User;
 use App\Policies\HouseholdPolicy;
 use App\Policies\RescuePolicy;
+use App\Policies\UserPolicy;
+
 class AuthServiceProvider extends ServiceProvider
 {
   /**
@@ -34,6 +37,7 @@ class AuthServiceProvider extends ServiceProvider
     Rescue::class => RescuePolicy::class,
     Address::class => AddressPolicy::class,
     Household::class => HouseholdPolicy::class,
+    User::class => UserPolicy::class,
   ];
 
 }

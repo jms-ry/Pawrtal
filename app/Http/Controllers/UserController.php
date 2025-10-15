@@ -39,6 +39,8 @@ class UserController extends Controller
   */
   public function show(User $user)
   {
+    $this->authorize('view', $user);
+    
     $previousUrl = url()->previous();
       
     $user->load(['address', 'household']);
