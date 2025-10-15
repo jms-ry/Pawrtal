@@ -58,6 +58,8 @@ class AddressController extends Controller
   */
   public function update(UpdateAddressRequest $request, Address $address)
   {
+    $this->authorize('update', $address);
+
     $requestData = $request->all();
     $address->update($requestData);
 
@@ -69,6 +71,8 @@ class AddressController extends Controller
   */
   public function destroy(Address $address)
   {
+    $this->authorize('delete', $address);
+    
     $address->delete();
 
     return redirect()->back()->with('warning', 'Address information has been deleted!');

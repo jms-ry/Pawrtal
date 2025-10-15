@@ -20,27 +20,13 @@ Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
 Route::get('/adoption', [AdoptionController::class, 'index'])->name('adoption.index');
 
-Route::resource('rescues', RescueController::class)->except('create','edit');
+// index - show all rescues
+  Route::get('/rescues', [RescueController::class, 'index'])->name('rescues.index');
 
-Route::resource('reports', ReportController::class)->except('show','create','edit');
+// show - display a specific rescue
+Route::get('/rescues/{rescue}', [RescueController::class, 'show'])->name('rescues.show');
 
-Route::resource('donations', DonationController::class)->except('show','edit');;
-
-Route::resource('addresses',AddressController::class)->except('index','show','create','edit');
-
-Route::resource('households',HouseholdController::class)->except('index','show','create','edit');
-
-Route::resource('adoption-applications',AdoptionApplicationController::class)->except('create','show','edit');
-
-Route::patch('/rescues/{rescue}/restore', [RescueController::class, 'restore'])->name('rescues.restore');
-
-Route::patch('/reports/{report}/restore', [ReportController::class, 'restore'])->name('reports.restore');
-
-Route::patch('/donations/{donation}/restore', [DonationController::class, 'restore'])->name('donations.restore');
-
-Route::patch('/adoption-applications/{adoption_application}/restore', [AdoptionApplicationController::class, 'restore'])->name('adoption_applications.restore');
-
-Route::resource('inspection-schedules',InspectionScheduleController::class)->except('index','show','create','edit','destroy');
+Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
 Route::middleware('guest')->group(function () {
   Route::get('register', function () {
@@ -73,6 +59,44 @@ Route::middleware(['auth'])->group(function () {
     Route::post('notifications/{id}/mark-as-read', [UserController::class, 'markNotificationAsRead'])->name('users.markNotificationAsRead');
     Route::post('notifications/mark-all-as-read', [UserController::class, 'markAllNotificationsAsRead'])->name('users.markAllNotificationsAsRead');
   });
+
+  Route::resource('donations', DonationController::class)->except('show','edit');;
+
+  Route::resource('addresses',AddressController::class)->except('index','show','create','edit');
+
+  Route::resource('households',HouseholdController::class)->except('index','show','create','edit');
+
+  Route::resource('adoption-applications',AdoptionApplicationController::class)->except('create','show','edit');
+
+  // store - save a new rescue
+  Route::post('/rescues', [RescueController::class, 'store'])->name('rescues.store');
+
+  // update - update a specific rescue
+  Route::put('/rescues/{rescue}', [RescueController::class, 'update'])->name('rescues.update');
+  Route::patch('/rescues/{rescue}', [RescueController::class, 'update'])->name('rescues.update');
+
+  // destroy - delete a specific rescue
+  Route::delete('/rescues/{rescue}', [RescueController::class, 'destroy'])->name('rescues.destroy');
+
+  Route::patch('/rescues/{rescue}/restore', [RescueController::class, 'restore'])->name('rescues.restore');
+
+  // store - save a new report
+  Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+
+  // update - update a specific report
+  Route::put('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
+  Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
+
+  // destroy - delete a specific report
+  Route::delete('/reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
+
+  Route::patch('/reports/{report}/restore', [ReportController::class, 'restore'])->name('reports.restore');
+
+  Route::patch('/donations/{donation}/restore', [DonationController::class, 'restore'])->name('donations.restore');
+
+  Route::patch('/adoption-applications/{adoption_application}/restore', [AdoptionApplicationController::class, 'restore'])->name('adoption_applications.restore');
+
+  Route::resource('inspection-schedules',InspectionScheduleController::class)->except('index','show','create','edit','destroy');
 
   Route::resource('users',UserController::class)->except('create','edit');
 

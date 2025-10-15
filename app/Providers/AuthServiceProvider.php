@@ -4,7 +4,10 @@ namespace App\Providers;
 
 use Gate;
 use Illuminate\Support\ServiceProvider;
-
+use App\Models\Address;
+use App\Policies\AddressPolicy;
+use App\Models\Rescue;
+use App\Policies\RescuePolicy;
 class AuthServiceProvider extends ServiceProvider
 {
   /**
@@ -26,7 +29,8 @@ class AuthServiceProvider extends ServiceProvider
   }
 
   protected $policies = [
-    \App\Models\Rescue::class => \App\Policies\RescuePolicy::class,
+    Rescue::class => RescuePolicy::class,
+    Address::class => AddressPolicy::class,
   ];
 
 }
