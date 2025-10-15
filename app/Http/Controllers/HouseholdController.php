@@ -58,6 +58,8 @@ class HouseholdController extends Controller
   */
   public function update(UpdateHouseholdRequest $request, Household $household)
   {
+    $this->authorize('update',$household);
+
     $requestData = $request->all();
     $household->update($requestData);
 
@@ -69,6 +71,8 @@ class HouseholdController extends Controller
   */
   public function destroy(Household $household)
   {
+    $this->authorize('delete',$household);
+    
     $household->delete();
 
     return redirect()->back()->with('warning', 'Household information has been deleted!');

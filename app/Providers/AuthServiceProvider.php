@@ -5,8 +5,10 @@ namespace App\Providers;
 use Gate;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Address;
+use App\Models\Household;
 use App\Policies\AddressPolicy;
 use App\Models\Rescue;
+use App\Policies\HouseholdPolicy;
 use App\Policies\RescuePolicy;
 class AuthServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
   protected $policies = [
     Rescue::class => RescuePolicy::class,
     Address::class => AddressPolicy::class,
+    Household::class => HouseholdPolicy::class,
   ];
 
 }

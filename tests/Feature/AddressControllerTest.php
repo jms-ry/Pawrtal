@@ -225,7 +225,7 @@ class AddressControllerTest extends TestCase
     $this->assertDatabaseMissing('addresses', ['id' => $address->id]);
   }
 
- public function test_guest_cannot_delete_address()
+  public function test_guest_cannot_delete_address()
   {
     $address = Address::factory()->create();
         
