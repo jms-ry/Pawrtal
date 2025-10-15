@@ -109,9 +109,6 @@ class RescueController extends Controller
   { 
     $user = Auth::user();
     
-    if (!$user?->can('view', $rescue)) {
-      return redirect()->back()->with('error', 'You are not authorized to view this rescue profile.');
-    }
     $randomImages = collect($rescue->images_url)->shuffle()->take(3);
     $notEmpty = $randomImages->isNotEmpty();
     

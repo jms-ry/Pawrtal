@@ -104,6 +104,10 @@ class Rescue extends Model
   }
   public function getNameFormattedAttribute()
   {
+    if($this->trashed())
+    {
+      return Str::headline($this->name). ' (Archived)';
+    }
     return Str::headline($this->name);
   }
   public function getProfileImageUrlAttribute()

@@ -28,7 +28,7 @@ class AddressController extends Controller
   /**
     * Store a newly created resource in storage.
   */
-   public function store(StoreAddressRequest $request)
+  public function store(StoreAddressRequest $request)
   {
     $requestData = $request->all();
 

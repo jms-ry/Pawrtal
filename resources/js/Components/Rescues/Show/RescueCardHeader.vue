@@ -3,7 +3,7 @@
     <h4 class="fs-6 ms-md-5 mb-md-4 mb-2 mt-3 mt-md-0 me-5">
       <a :href="previousUrl" class="text-decoration-none font-monospace fw-bolder text-danger fs-4"><i class="bi bi-chevron-left"></i><span class="ms-0">Back {{ urlText }}</span></a>
     </h4>
-    <h3 class="fw-bolder display-6 font-monospace mb-2 mt-3 ms-md-5 ms-3">{{ rescue.name }}</h3>
+    <h3 class="fw-bolder display-6 font-monospace mb-2 mt-3 ms-md-5 ms-3">{{ rescue.name_formatted }}</h3>
   </div>
 </template>
 
