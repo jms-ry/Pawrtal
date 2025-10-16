@@ -29,7 +29,7 @@
           <span v-else-if="rescue.adoption_applications_count > 0" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-info fs-6 bg-opacity-75 text-dark fw-bold rounded">{{rescue.adoption_applications_count}}</span>
         </div>
 
-        <div class="p-2 mt-1 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
+        <div class="p-2 mt-1 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative">
           <img :src="rescue.profile_image_url" :alt="rescue.name" class="w-100 h-100 object-fit-cover rounded-4">
           <div class="position-absolute bottom-0 start-0 end-0 bg-warning-subtle bg-opacity-0 text-dark p-2 text-center">
             <strong>{{ rescue.tag_label }}</strong>
@@ -166,3 +166,9 @@
     });
   };
 </script>
+
+<style scoped>
+  .rescue-card{
+    height: 300px;
+  }
+</style>
