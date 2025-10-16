@@ -137,9 +137,15 @@ class DonationController extends Controller
   */
   public function destroy(Donation $donation)
   {
+    $this->authorize('delete', $donation);
+    
+    if ($donation->status === 'pending') {
+      return redirect()->back()->with('error', 'Pending donations cannot be deleted.');
+    }
+
     $donation->delete();
 
-    return redirect()->back()->with('warning',  'Donation has been archived!');
+    return redirect()->back()->with('warning', 'Donation has been archived!');
   }
 
   //Restore or unarchive a donation

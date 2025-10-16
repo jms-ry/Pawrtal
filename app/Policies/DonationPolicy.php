@@ -45,7 +45,7 @@ class DonationPolicy
   */
   public function delete(User $user, Donation $donation): bool
   {
-    return false;
+    return $donation->user_id === $user->id || $user->isAdminOrStaff();
   }
 
   /**

@@ -973,4 +973,245 @@ class DonationControllerTest extends TestCase
   }
   /** End of update function test cases */
 
+
+  /** Start of destroy/archive function test cases */
+
+  public function test_guest_cannot_destroyArchive_donation()
+  {
+    $donation = Donation::factory()->inKind()->create();
+
+    $response = $this->delete(route('donations.destroy', $donation));
+    $response->assertRedirect(route('login'));
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_regular_user_cannot_destroyArchive_others_donation()
+  {
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($user1);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertForbidden();
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_destroyingArchiving_nonexistent_donation_returns_404()
+  {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+        
+    $response = $this->delete(route('donations.destroy', 99999));
+        
+    $response->assertNotFound();
+  }
+
+  public function test_donation_owner_cannot_destroyArchive_pending_donations()
+  {
+    $user = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('error', 'Pending donations cannot be deleted.');
+  }
+
+  public function test_donation_owner_can_destroyArchive_accepted_donations()
+  {
+    $user = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->accepted()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+
+  public function test_donation_owner_can_destroyArchive_cancelled_donations()
+  {
+    $user = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->cancelled()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+
+  public function test_donation_owner_can_destroyArchive_rejected_donations()
+  {
+    $user = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->rejected()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+
+  public function test_admin_user_cannot_destroyArchive_pending_donations()
+  {
+    $admin = User::factory()->admin()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($admin);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('error', 'Pending donations cannot be deleted.');
+  }
+
+  public function test_admin_user_can_destroyArchive_accepted_donations()
+  {
+    $admin = User::factory()->admin()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->accepted()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($admin);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+
+  public function test_admin_user_can_destroyArchive_cancelled_donations()
+  {
+    $admin = User::factory()->admin()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->cancelled()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($admin);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+
+  public function test_admin_user_can_destroyArchive_rejected_donations()
+  {
+    $admin = User::factory()->admin()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->rejected()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($admin);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+
+  public function test_staff_user_cannot_destroyArchive_pending_donations()
+  {
+    $staff = User::factory()->staff()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($staff);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('error', 'Pending donations cannot be deleted.');
+  }
+
+  public function test_staff_user_can_destroyArchive_accepted_donations()
+  {
+    $staff = User::factory()->staff()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->accepted()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($staff);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+
+  public function test_staff_user_can_destroyArchive_cancelled_donations()
+  {
+    $staff = User::factory()->staff()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->cancelled()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($staff);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+
+  public function test_staff_user_can_destroyArchive_rejected_donations()
+  {
+    $staff = User::factory()->staff()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->rejected()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($staff);
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+  }
+  public function test_donation_is_soft_deleted_when_destoryedArchived()
+  {
+    $user = User::factory()->create();
+    $donation = Donation::factory()->inKind()->accepted()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $donationId = $donation->id;
+
+    $this->actingAs($user);
+    $this->delete(route('donations.destroy', $donation));
+
+    // This checks that the record exists with a non-null deleted_at
+    $this->assertSoftDeleted('donations', ['id' => $donationId]);
+  }
+  /** End of destroy/archive function test cases */
+
+  /** End of restore/unarchive function test cases */
+
+  /** End of restore/unarchive function test cases */
+
 }
