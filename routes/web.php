@@ -16,6 +16,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 
+Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
+Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
+Route::get('/adoption', [AdoptionController::class, 'index'])->name('adoption.index');
+
+// index - show all rescues
+Route::get('/rescues', [RescueController::class, 'index'])->name('rescues.index');
+
+// show - display a specific rescue
+Route::get('/rescues/{rescue}', [RescueController::class, 'show'])->name('rescues.show');
+
+Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
 Route::middleware('guest')->group(function () {
   Route::get('register', function () {
     return view('register');
@@ -24,18 +36,6 @@ Route::middleware('guest')->group(function () {
   Route::get('login', function () {
     return view('sign_in');
   })->name('login');
-
-  Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
-  Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
-  Route::get('/adoption', [AdoptionController::class, 'index'])->name('adoption.index');
-
-  // index - show all rescues
-  Route::get('/rescues', [RescueController::class, 'index'])->name('rescues.index');
-
-  // show - display a specific rescue
-  Route::get('/rescues/{rescue}', [RescueController::class, 'show'])->name('rescues.show');
-
-  Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 });
 
 Route::middleware(['auth'])->group(function () {
