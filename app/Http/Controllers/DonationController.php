@@ -6,6 +6,7 @@ use App\Http\Requests\StoreDonationRequest;
 use App\Http\Requests\UpdateDonationRequest;
 use App\Models\Donation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class DonationController extends Controller
@@ -64,8 +65,7 @@ class DonationController extends Controller
         $createdCount++;
       }
     } else {
-      Donation::create($request->all());
-       $createdCount = 1;
+      /** Do monetary donation creation here! */
     }
     $message = $createdCount > 1 ? ucfirst($donationType)." Donations ($createdCount items) have been submitted!" : ucfirst($donationType)." Donation has been submitted!";
 
@@ -98,23 +98,28 @@ class DonationController extends Controller
 
     //if the request status is "cancelled", update the status to "cancelled"
     if($request->status === 'cancelled'){
+      $this->authorize('cancel', $donation);
       $donation->update($requestData);
       return redirect()->back()->with('warning','Donation has been cancelled.');
     }
 
     if($request->status === 'accepted'){
+      $this->authorize('accept', $donation);
       $donation->update($requestData);
       return redirect()->back()->with('success','Donation has been accepted.');
     }
 
     if($request->status === 'rejected'){
+      $this->authorize('reject', $donation);
       $donation->update($requestData);
       return redirect()->back()->with('error','Donation has been rejected.');
     }
 
+    $this->authorize('update', $donation);
+
     if ($request->hasFile('donation_image')) {
-      if($donation->donation_image){
-        Storage::delete($donation->donation_image);
+      if($donation->donation_image && Storage::disk('public')->exists($donation->donation_image)){
+        Storage::disk('public')->delete($donation->donation_image);
       }
       $imagePath = $request->file('donation_image')->store('images/donation/donation_images', 'public');
       $requestData['donation_image'] = $imagePath;

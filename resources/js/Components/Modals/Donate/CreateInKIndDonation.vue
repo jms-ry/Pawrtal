@@ -44,7 +44,7 @@
                 <div class="row g-2 mt-3">
                   <div class="col-12">
                     <label class="form-label fw-bold">Upload Donation Image (Proof)</label>
-                    <input  type="file" :class="getValidationClass(item.validation.donationImage)" class="form-control donation-image" accept="image/*"  @change="validateDonationImage($event, index)">
+                    <input  type="file" :class="getValidationClass(item.validation.donationImage)" class="form-control donation-image" @change="validateDonationImage($event, index)">
                     <div class="form-text">Please upload a clear photo of the donation item(s) as proof.</div>
                     <small class="invalid-feedback fw-bold">{{ item.errors.donationImage }}</small>
                   </div>
@@ -234,12 +234,12 @@
       return false
     }
 
-    const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']
+    const allowedExtensions = ['jpg', 'jpeg', 'png']
     const fileExtension = file.name.split('.').pop().toLowerCase()
     
     if (!allowedExtensions.includes(fileExtension)) {
       item.validation.donationImage = false
-      item.errors.donationImage = "Only JPG, JPEG, PNG, PDF, DOC, and DOCX are allowed."
+      item.errors.donationImage = "Only JPG, JPEG, and PNG are allowed."
       return false
     }
 
