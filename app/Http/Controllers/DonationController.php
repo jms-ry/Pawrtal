@@ -152,6 +152,13 @@ class DonationController extends Controller
 
   public function restore(Donation $donation)
   {
+    $this->authorize('restore', $donation);
+
+    if($donation->deleted_at === null)
+    {
+      return redirect()->back()->with('error', 'Non-archived donations cannot be restored.');
+    }
+
     $donation->restore();
     
     return redirect()->back()->with('success',  'Donation has been restored!');

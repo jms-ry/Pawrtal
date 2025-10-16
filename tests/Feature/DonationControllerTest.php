@@ -1210,8 +1210,165 @@ class DonationControllerTest extends TestCase
   }
   /** End of destroy/archive function test cases */
 
-  /** End of restore/unarchive function test cases */
 
+  /** Start of restore/unarchive function test cases */
+  public function test_guest_cannot_restore_donation()
+  {
+    $donation = Donation::factory()->inKind()->trashed()->create();
+
+    $response = $this->patch(route('donations.restore', $donation));
+    $response->assertRedirect(route('login'));
+  }
+
+  public function test_restoring_nonexistent_donation_returns_404()
+  {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+        
+    $response = $this->patch(route('donations.restore', 99999));
+        
+    $response->assertNotFound();
+  }
+
+  public function test_regular_user_cannot_restore_donation()
+  {
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $donation = Donation::factory()->inKind()->trashed()->create([
+      'user_id' => $user2->id
+    ]);
+
+    $this->actingAs($user1);
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertForbidden();
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_donation_owner_cannot_restore_non_trashed_donation()
+  {
+    $user1 = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->create([
+      'user_id' => $user1->id
+    ]);
+
+    $this->actingAs($user1);
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('error', 'Non-archived donations cannot be restored.');
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_donation_owner_can_restore_trashed_donation()
+  {
+    $user1 = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->trashed()->create([
+      'user_id' => $user1->id
+    ]);
+
+    $this->actingAs($user1);
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success',  'Donation has been restored!');
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_admin_user_cannot_restore_non_trashed_donation()
+  {
+    $user1 = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+    $donation = Donation::factory()->inKind()->create([
+      'user_id' => $user1->id
+    ]);
+
+    $this->actingAs($admin);
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('error', 'Non-archived donations cannot be restored.');
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_admin_user_can_restore_trashed_donation()
+  {
+    $user1 = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+    $donation = Donation::factory()->inKind()->trashed()->create([
+      'user_id' => $user1->id
+    ]);
+
+    $this->actingAs($admin);
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success',  'Donation has been restored!');
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_staff_user_cannot_restore_non_trashed_donation()
+  {
+    $user1 = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $donation = Donation::factory()->inKind()->create([
+      'user_id' => $user1->id
+    ]);
+
+    $this->actingAs($staff);
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('error', 'Non-archived donations cannot be restored.');
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_staff_user_can_restore_trashed_donation()
+  {
+    $user1 = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $donation = Donation::factory()->inKind()->trashed()->create([
+      'user_id' => $user1->id
+    ]);
+
+    $this->actingAs($staff);
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success',  'Donation has been restored!');
+    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+  }
+
+  public function test_deleted_at_set_to_null_when_donation_is_restored()
+  {
+    $user = User::factory()->create();
+    
+    $donation = Donation::factory()->inKind()->trashed()->create([
+      'user_id' => $user->id
+    ]);
+    
+    // Verify donation is trashed
+    $this->assertNotNull($donation->deleted_at);
+    $this->assertTrue($donation->trashed());
+    
+    $this->actingAs($user);
+    $response = $this->patch(route('donations.restore', $donation));
+    
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Donation has been restored!');
+    
+    // Refresh the donation from database
+    $donation->refresh();
+    
+    // Verify deleted_at is now null
+    $this->assertNull($donation->deleted_at);
+    $this->assertFalse($donation->trashed());
+    
+    // Verify donation can be found without withTrashed()
+    $this->assertNotNull(Donation::find($donation->id));
+  }
   /** End of restore/unarchive function test cases */
 
 }
