@@ -66,10 +66,11 @@
                 :data-report-owner-name="report.owner_full_name"
                 :data-report-owner-contact-number="report.owner_contact_number"
                 :data-report-owner-email="report.owner_email"
-                :data-report-status="report.report_status"
+                :data-report-status="report.status"
                 :data-report-status-label="report.status_label"
                 :data-report-owned-by-logged-user="report.owned_by_logged_user ? 'true': 'false'"
                 :data-report-trashed="report.deleted_at ? 'true' : 'false'"
+                :data-report-has-logged-user="props.user ? 'true' : 'false'"
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
@@ -116,11 +117,12 @@
                 :data-report-condition="report.condition_formatted"
                 :data-report-temporary-shelter="report.temporary_shelter_formatted"
                 :data-report-owner-name="report.owner_full_name"
-                :data-report-status="report.report_status"
+                :data-report-status="report.status"
                 :data-report-status-label="report.status_label"
                 :data-report-owned-by-logged-user="report.owned_by_logged_user ? 'true': 'false'"
                 :data-report-logged-user-is-adminstaff="report.logged_user_is_admin_or_staff ? 'true' : 'false'"
                 :data-report-trashed="report.deleted_at ? 'true' : 'false'"
+                :data-report-has-logged-user="props.user ? 'true' : 'false'"
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >

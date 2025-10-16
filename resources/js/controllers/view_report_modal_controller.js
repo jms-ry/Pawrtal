@@ -88,8 +88,9 @@ export default class extends Controller {
       const activeFields = viewReportModal.querySelector('#active-fields');
       const isOwnedByLoggedUser = button.getAttribute('data-report-owned-by-logged-user') === "true";
       const isLoggedUserAdminOrStaff = button.getAttribute('data-report-logged-user-is-adminstaff') === "true";
-
-      if( status === 'active')
+      const hasUser = button.getAttribute('data-report-has-logged-user') ===  "true";
+      
+      if( status === 'active' && hasUser)
       {
         activeFields.classList.remove('d-none');
         statusLabel.classList.remove('text-bg-success');
