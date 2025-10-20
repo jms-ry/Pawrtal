@@ -617,6 +617,12 @@
       }
     }
 
+    if(files.length > 5){
+      imagesError.value = "You can only upload a maximum of 5 images."
+      input.classList.add("is-invalid")
+      input.classList.remove("is-valid")
+      return false
+    }
     imagesError.value = ""
     input.classList.remove("is-invalid")
     input.classList.add("is-valid")

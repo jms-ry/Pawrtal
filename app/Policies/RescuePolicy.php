@@ -33,7 +33,7 @@ class RescuePolicy
   */
   public function create(User $user): bool
   {
-    return false;
+    return $user->isAdminOrStaff();
   }
 
   /**

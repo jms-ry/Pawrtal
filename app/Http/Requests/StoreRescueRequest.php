@@ -36,7 +36,7 @@ class StoreRescueRequest extends FormRequest
       'spayed_neutered' => 'required|in:true,false',
       'adoption_status' => 'required|in:available,adopted,unavailable',
       'profile_image' => 'required|image|mimes:jpeg,png,jpg,|max:2048',
-      'images' => 'nullable|array',
+      'images' => 'nullable|array|max:5',
       'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
 
     ];

@@ -76,6 +76,8 @@ class RescueController extends Controller
   */
   public function store(StoreRescueRequest $request)
   {
+    $this->authorize('create', Rescue::class);
+    
     $requestData = $request->validated();
 
     if ($request->hasFile('profile_image')) {
