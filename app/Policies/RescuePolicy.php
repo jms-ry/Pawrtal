@@ -60,7 +60,10 @@ class RescuePolicy
   */
   public function restore(User $user, Rescue $rescue): bool
   {
-    return false;
+    if(!$rescue->trashed()) {
+      return false; // Can't restore what's not deleted
+    }
+    return $user->isAdminOrStaff();
   }
 
   /**
