@@ -106,6 +106,10 @@ class RescueController extends Controller
   public function show(Rescue $rescue)
   { 
     $user = Auth::user();
+
+    if (!$user?->can('view', $rescue)) {
+      return redirect()->back()->with('error', 'You are not authorized to view this rescue profile.');
+    }
     
     $randomImages = collect($rescue->images_url)->shuffle()->take(3);
     $notEmpty = $randomImages->isNotEmpty();
@@ -189,7 +193,8 @@ class RescueController extends Controller
   */
   public function destroy(Rescue $rescue)
   {
-    $rescue = Rescue::find($rescue->id);
+    $this->authorize('delete', $rescue);
+
     $rescue->delete();
 
     return redirect()->back()->with('warning', 'Rescue profile for '. $rescue->name. ' has been archived!');
