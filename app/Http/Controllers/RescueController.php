@@ -107,7 +107,7 @@ class RescueController extends Controller
   { 
     $user = Auth::user();
 
-    if (!$user?->can('view', $rescue)) {
+    if ($rescue->trashed() && (!$user || !$user->isAdminOrStaff())) {
       return redirect()->back()->with('error', 'You are not authorized to view this rescue profile.');
     }
     
@@ -115,7 +115,6 @@ class RescueController extends Controller
     $notEmpty = $randomImages->isNotEmpty();
     
     $previousUrl = url()->previous();
-    $backContext = null;
     $path = parse_url($previousUrl, PHP_URL_PATH);
     $segments = collect(explode('/', trim($path, '/')));
     $urlText = '';
@@ -135,7 +134,6 @@ class RescueController extends Controller
         'address' => $user->address,
         'household' => $user->household,
       ] : null,
-      'backContext' => $backContext,
       'notEmpty' => $notEmpty,
       'rescue' => $rescue,
       'randomImages' => $randomImages,
