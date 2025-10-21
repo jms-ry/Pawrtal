@@ -736,4 +736,67 @@ class RescueIndexPageTest extends TestCase
     sort($sorted);
     $this->assertEquals($sorted, $ids, 'Rescues should be ordered by ID in ascending order by default.');
   }
+
+  public function test_empty_string_search_returns_all_available_rescues()
+  {
+    $rescues = Rescue::factory()->count(5)->create();
+    
+    $response = $this->get(route('rescues.index', ['search' => '']));
+    
+    $response->assertInertia(fn ($page) =>
+      $page->component('Rescues/Index')
+        ->where('filters.search', null)
+       ->has('rescues.data', 5)
+    );
+  }
+
+  public function test_search_handles_special_characters_safely()
+  {
+    $rescue = Rescue::factory()->available()->create(['name' => "O'Malley"]);
+    
+    $response = $this->get(route('rescues.index', ['search' => "O'Mal"]));
+    
+    $response->assertInertia(fn ($page) =>
+      $page->component('Rescues/Index')
+        ->has('rescues.data')
+      ->where('rescues.data.0.name', "O'Malley")
+    );
+  }
+
+  public function test_requesting_page_beyond_available_pages_returns_empty_results()
+  {
+    Rescue::factory()->available()->count(5)->create();
+    
+    $response = $this->get(route('rescues.index', ['page' => 999]));
+    
+    $response->assertInertia(fn ($page) =>
+      $page->component('Rescues/Index')->has('rescues.data', 0)
+    );
+  }
+
+  public function test_search_with_url_encoded_characters()
+  {
+    $rescue = Rescue::factory()->available()->create(['name' => 'Max & Ruby']);
+    
+    $response = $this->get(route('rescues.index', ['search' => 'Max & Ruby']));
+    
+    $response->assertInertia(fn ($page) =>
+      $page->component('Rescues/Index')->has('rescues.data', 1)
+    );
+  }
+
+  public function test_rescue_without_applications_shows_zero_count()
+  {
+    $rescue = Rescue::factory()->available()->create();
+    
+    $response = $this->get(route('rescues.index'));
+    
+    $response->assertInertia(fn ($page) =>
+      $page->component('Rescues/Index')
+        ->where('rescues.data', function ($rescues) use ($rescue) {
+          return collect($rescues)->contains(fn ($r) => $r['id'] === $rescue->id && $r['adoption_applications_count'] === 0
+        );
+      })
+    );
+  }
 }
