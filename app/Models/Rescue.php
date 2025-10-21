@@ -30,6 +30,7 @@ class Rescue extends Model
 
   protected $casts = [
     'images' => 'array',
+    'spayed_neutered' => 'boolean',
   ];
 
   protected $appends = [

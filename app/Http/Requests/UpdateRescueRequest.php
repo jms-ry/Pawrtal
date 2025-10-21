@@ -28,16 +28,16 @@ class UpdateRescueRequest extends FormRequest
       'description' => 'required|string|max:5000',
       'sex' => 'required|in:male,female',
       'age' => 'nullable|string|max:255',
-      'size' => 'nullable|string|max:255',
+      'size' => 'nullable|in:small,medium,large',
       'color' => 'nullable|string|max:255',
       'distinctive_features' => 'nullable|string|max:255',
       'health_status' => 'required|in:healthy,sick,injured',
       'vaccination_status' => 'required|in:vaccinated,not_vaccinated,partially_vaccinated',
       'spayed_neutered' => 'required|in:true,false',
       'adoption_status' => 'required|in:available,adopted,unavailable',
-      'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-      'images' => 'nullable|array',
-      'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+      'profile_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+      'images' => 'nullable|array|max:5',
+      'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
     ];
   }
 }

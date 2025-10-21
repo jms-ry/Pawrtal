@@ -158,11 +158,12 @@ class RescueController extends Controller
   */
   public function update(UpdateRescueRequest $request, Rescue $rescue)
   { 
+    $this->authorize('update', $rescue);
     $requestData = $request->all();
 
     if($request->hasFile('profile_image')){
-      if($rescue->profile_image){
-        Storage::delete($rescue->profile_image);
+      if($rescue->profile_image && Storage::disk('public')->exists($rescue->profile_image)){
+        Storage::disk('public')->delete($rescue->profile_image);
       }
 
       $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');

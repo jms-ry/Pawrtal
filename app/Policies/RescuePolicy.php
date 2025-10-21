@@ -41,7 +41,7 @@ class RescuePolicy
   */
   public function update(User $user, Rescue $rescue): bool
   {
-    return false;
+    return $user->isAdminOrStaff();
   }
 
   /**

@@ -19,12 +19,12 @@ class RescueFactory extends Factory
     return [
       //this is default rescue factory, it's an adopted rescue
       'name' => fake()->firstName(),
-      'species' => fake()->word(),
+      'species' => 'fake()->word()',
       'breed' => fake()->word(),
       'description' => fake()->sentence(),
-      'sex' => $this->faker->randomElement(['male', 'female']),
+      'sex' => fake()->randomElement(['male', 'female']),
       'age' => fake()->word(),
-      'size' => $this->faker->randomElement(['small', 'medium', 'large']),
+      'size' => fake()->randomElement(['small', 'medium', 'large']),
       'color' => fake()->colorName(),
       'distinctive_features' => fake()->sentence(),
       'profile_image' => fake()->imageUrl(640,480,'animals',true),
@@ -33,7 +33,7 @@ class RescueFactory extends Factory
       ->toArray(),
       'health_status' => 'healthy',
       'vaccination_status' => 'vaccinated',
-      'spayed_neutered' => true,
+      'spayed_neutered' => 'true',
       'adoption_status' => 'adopted'
 
     ];
