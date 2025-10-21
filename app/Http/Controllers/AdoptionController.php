@@ -15,8 +15,13 @@ class AdoptionController extends Controller
     $sexFilter = $request->get('sex');
     $sizeFilter = $request->get('size');
 
+    $user = Auth::user();
+
+    $user = $user?->load('address', 'household');
+    
     $adoptables = Rescue::query()
       ->where('adoption_status','available')
+      ->visibleTo($user)
       ->withCount('adoptionApplications')
       ->when($search, function($query,$search){
         return $query->whereRaw('LOWER(name) LIKE LOWER(?)', ['%' . $search . '%']);
@@ -28,11 +33,8 @@ class AdoptionController extends Controller
         return $query->where('size', $sizeFilter);
       })
       ->paginate(9)
-      ->withQueryString();
+    ->withQueryString();
 
-    $user = Auth::user();
-
-    $user = $user?->load('address', 'household');
 
     return Inertia::render('Adoption/Index',[
       'adoptables' => $adoptables,
