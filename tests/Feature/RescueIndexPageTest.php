@@ -477,8 +477,8 @@ class RescueIndexPageTest extends TestCase
   {
     // Arrange: Create 15 rescues that match search + filter
     Rescue::factory()->count(15)->create([
-        'sex' => 'male',
-        'name' => 'Buddy',
+      'sex' => 'male',
+      'name' => 'Buddy',
     ]);
 
     // Create some that should NOT match (different sex or name)
@@ -486,19 +486,19 @@ class RescueIndexPageTest extends TestCase
 
     // Act: Perform GET with both search and filter
     $response = $this->get(route('rescues.index', [
-        'search' => 'buddy',
-        'sex' => 'male',
+      'search' => 'buddy',
+      'sex' => 'male',
     ]));
 
     // Assert: Response OK & paginated with 9 items only
     $response->assertStatus(200);
 
     $response->assertInertia(fn ($page) =>
-        $page->component('Rescues/Index')
-            ->where('filters.search', 'buddy')
-            ->where('filters.sex', 'male')
-            ->has('rescues.data', 9) // 9 items per page
-            ->has('rescues.links') // pagination links should exist
+      $page->component('Rescues/Index')
+        ->where('filters.search', 'buddy')
+        ->where('filters.sex', 'male')
+        ->has('rescues.data', 9) // 9 items per page
+      ->has('rescues.links') // pagination links should exist
     );
   }
 
@@ -522,7 +522,7 @@ class RescueIndexPageTest extends TestCase
       $page->component('Rescues/Index')
         ->where('filters.search', 'luna')
         ->where('filters.sex', 'female')
-        ->has('rescues.links') // ✅ just ensure 'links' exists
+        ->has('rescues.links') // just ensure 'links' exists
       ->where('rescues.links', function ($links) {
         // Convert to collection for easier iteration
         return collect($links)->every(function ($link) {
@@ -558,6 +558,50 @@ class RescueIndexPageTest extends TestCase
     );
   }
 
+  public function test_user_data_includes_isAdminOrStaff_for_authenticated_user()
+  {
+    //Simulate regular user logged in
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = $this->get(route('rescues.index'));
+
+    $response->assertInertia(fn ($page) =>
+      $page->component('Rescues/Index')
+        ->has('user')
+        ->where('user.id', $user->id)
+      ->where('user.isAdminOrStaff', false)
+    );
+
+    // Simulate admin user logged in
+    $user = User::factory()->admin()->create();
+
+    $this->actingAs($user);
+
+    $response = $this->get(route('rescues.index'));
+
+    $response->assertInertia(fn ($page) =>
+      $page->component('Rescues/Index')
+        ->has('user')
+        ->where('user.id', $user->id)
+      ->where('user.isAdminOrStaff', true)
+    );
+
+    //Simulate staff
+    $user = User::factory()->staff()->create();
+
+    $this->actingAs($user);
+
+    $response = $this->get(route('rescues.index'));
+
+    $response->assertInertia(fn ($page) =>
+      $page->component('Rescues/Index')
+        ->has('user')
+        ->where('user.id', $user->id)
+      ->where('user.isAdminOrStaff', true)
+    );
+  }
   public function test_user_data_includes_canAdopt_result_for_authenticated_user()
   {
     $user = User::factory()->create();
@@ -599,7 +643,6 @@ class RescueIndexPageTest extends TestCase
       ->where('user.canAdopt', false)
     );
   }
-
 
   public function test_user_data_includes_address_relationships()
   {
