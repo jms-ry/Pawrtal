@@ -50,6 +50,7 @@ class RescueController extends Controller
       'rescues' => $rescues,
       'user' => $user ? [
         'id' => $user->id,
+        'isAdminOrStaff' => $user->isAdminOrStaff(),
         'canAdopt' => $user->canAdopt(),
         'address' => $user->address,
         'household' => $user->household,
