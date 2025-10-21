@@ -416,6 +416,37 @@ class AdminStaffRescuesTest extends TestCase
     );
   }
 
+  public function test_multiple_filters_and_search_with_no_matches_returns_empty_results()
+  {
+    $staff = User::factory()->staff()->create();
+
+    $this->actingAs($staff);
+
+    // Arrange: create rescues that do not match the combined filters
+    Rescue::factory()->count(5)->create([
+      'sex' => 'female',
+      'size' => 'medium',
+      'adoption_status' => 'unavailable',
+    ]);
+
+    // Act: apply filters and search query that yield no matches
+    $response = $this->get(route('dashboard.rescues', [
+      'sex' => 'male',
+      'size' => 'small',
+      'status' => 'available',
+      'search' => 'NonexistentAnimal',
+    ]));
+
+    // Assert: Inertia props indicate no matches
+    $response->assertInertia(fn ($page) =>
+      $page->component('AdminStaff/Rescues')
+        ->where('filters.sex', 'male')
+        ->where('filters.size','small')
+        ->where('filters.status','available')
+        ->where('filters.search','NonexistentAnimal')
+      ->has('rescues.data', 0) // no matches
+    );
+  }
   public function test_combining_filters_respect_visibility_rules()
   {
     // Test taht trashed records still hidden for non-admin/staff users
