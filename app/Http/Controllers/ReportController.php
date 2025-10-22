@@ -152,6 +152,8 @@ class ReportController extends Controller
 
   public function restore(Report $report)
   {
+    $this->authorize('restore', $report);
+
     $report->restore();
 
     return redirect()->back()->with('success',  'Report has been restored!');

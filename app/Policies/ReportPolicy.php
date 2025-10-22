@@ -57,7 +57,11 @@ class ReportPolicy
   */
   public function restore(User $user, Report $report): bool
   {
-    return false;
+    if(!$report->trashed()){
+      return false;
+    }
+
+    return $report->user_id === $user->id || $user->isAdminOrStaff();
   }
 
   /**
