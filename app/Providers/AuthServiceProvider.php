@@ -10,8 +10,10 @@ use App\Policies\AddressPolicy;
 use App\Models\Rescue;
 use App\Models\User;
 use App\Models\Donation;
+use App\Models\Report;
 use App\Policies\DonationPolicy;
 use App\Policies\HouseholdPolicy;
+use App\Policies\ReportPolicy;
 use App\Policies\RescuePolicy;
 use App\Policies\UserPolicy;
 
@@ -41,6 +43,7 @@ class AuthServiceProvider extends ServiceProvider
     Household::class => HouseholdPolicy::class,
     User::class => UserPolicy::class,
     Donation::class =>DonationPolicy::class,
+    Report::class => ReportPolicy::class,
   ];
 
 }

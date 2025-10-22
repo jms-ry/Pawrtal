@@ -139,6 +139,12 @@ class ReportController extends Controller
   */
   public function destroy(Report $report)
   {
+    $this->authorize('delete',$report);
+
+    if($report->status === 'active'){
+      return redirect()->back()->with('error', 'Active reports cannot be archived.');
+    }
+
     $report->delete();
 
     return redirect()->back()->with('warning',  'Report has been archived!');
