@@ -45,6 +45,10 @@ class DonationPolicy
   */
   public function delete(User $user, Donation $donation): bool
   {
+    if($donation->trashed())
+    {
+      return false;
+    }
     return $donation->user_id === $user->id || $user->isAdminOrStaff();
   }
 
@@ -53,6 +57,10 @@ class DonationPolicy
   */
   public function restore(User $user, Donation $donation): bool
   {
+    if(!$donation->trashed())
+    {
+      return false;
+    }
     return $donation->user_id === $user->id || $user->isAdminOrStaff();
   }
 
