@@ -1208,6 +1208,19 @@ class DonationControllerTest extends TestCase
     // This checks that the record exists with a non-null deleted_at
     $this->assertSoftDeleted('donations', ['id' => $donationId]);
   }
+
+  public function test_trashed_donation_cannot_be_destroyed_again()
+  {
+    $user = User::factory()->create();
+    $donation = Donation::factory()->inKind()->accepted()->trashed()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->delete(route('donations.destroy', $donation));
+    $response->assertForbidden();
+  }
   /** End of destroy/archive function test cases */
 
 
@@ -1256,9 +1269,7 @@ class DonationControllerTest extends TestCase
     $this->actingAs($user1);
     $response = $this->patch(route('donations.restore', $donation));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('error', 'Non-archived donations cannot be restored.');
-    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+    $response->assertForbidden();
   }
 
   public function test_donation_owner_can_restore_trashed_donation()
@@ -1288,9 +1299,7 @@ class DonationControllerTest extends TestCase
     $this->actingAs($admin);
     $response = $this->patch(route('donations.restore', $donation));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('error', 'Non-archived donations cannot be restored.');
-    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+    $response->assertForbidden();
   }
 
   public function test_admin_user_can_restore_trashed_donation()
@@ -1320,9 +1329,7 @@ class DonationControllerTest extends TestCase
     $this->actingAs($staff);
     $response = $this->patch(route('donations.restore', $donation));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('error', 'Non-archived donations cannot be restored.');
-    $this->assertDatabaseHas('donations', ['id' => $donation->id]);
+    $response->assertForbidden();
   }
 
   public function test_staff_user_can_restore_trashed_donation()
@@ -1368,6 +1375,20 @@ class DonationControllerTest extends TestCase
     
     // Verify donation can be found without withTrashed()
     $this->assertNotNull(Donation::find($donation->id));
+  }
+
+  public function test_non_trashed_donation_cannot_be_restored()
+  {
+    $user1 = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $donation = Donation::factory()->inKind()->create([
+      'user_id' => $user1->id
+    ]);
+
+    $this->actingAs($staff);
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertForbidden();
   }
   /** End of restore/unarchive function test cases */
 
