@@ -24,7 +24,7 @@ class StoreAdoptionApplicationRequest extends FormRequest
     return [
       'user_id' => 'required|exists:users,id',
       'rescue_id' => 'required|exists:rescues,id',
-      'status' => 'required|in:pending,approved,rejected,under_review,cancelled',
+      'status' => 'in:pending,approved,rejected,under_review,cancelled',
       'reason_for_adoption' => 'required|string|max:5000',
       'preferred_inspection_start_date' => 'required|date',
       'preferred_inspection_end_date' => 'required|date',
