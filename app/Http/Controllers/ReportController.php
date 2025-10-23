@@ -83,7 +83,7 @@ class ReportController extends Controller
   */
   public function store(StoreReportRequest $request)
   {
-    $requestData = $request->all();
+    $requestData = $request->validated();
 
     if ($request->hasFile('image')) {
       $imagePath = $request->file('image')->store('images/reports/reports_images', 'public');
@@ -117,11 +117,13 @@ class ReportController extends Controller
   */
   public function update(UpdateReportRequest $request, Report $report)
   {
-    $requestData = $request->all();
+    $this->authorize('update',$report);
+
+    $requestData = $request->validated();
 
     if ($request->hasFile('image')) {
-      if($report->image){
-        Storage::delete($report->image);
+      if($report->image && Storage::disk('public')->exists($report->image)){
+        Storage::disk('public')->delete($report->image);
       }
       $imagePath = $request->file('image')->store('images/reports/reports_images', 'public');
       $requestData['image'] = $imagePath;

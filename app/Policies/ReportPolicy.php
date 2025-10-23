@@ -37,7 +37,7 @@ class ReportPolicy
   */
   public function update(User $user, Report $report): bool
   {
-    return false;
+    return $report->user_id === $user->id;
   }
 
   /**

@@ -23,14 +23,12 @@ class UpdateReportRequest extends FormRequest
   {
     return [
       'animal_name' => 'nullable|string|max:255',
-      'user_id' => 'required|exists:users,id',
-      'type' => 'required|in:lost,found',
-      'species' => 'required|string|max:255',
+      'species' => 'nullable|string|max:255',
       'breed' => 'nullable|string|max:255',
-      'color' => 'required|string|max:255',
-      'sex' => 'required|in:male,female,unknown',
+      'color' => 'nullable|string|max:255',
+      'sex' => 'nullable|in:male,female,unknown',
       'age_estimate' => 'nullable|string|max:255',
-      'size' => 'required|in:small,medium,large',
+      'size' => 'nullable|in:small,medium,large',
       'found_location' => 'nullable|string|max:255',
       'found_date' => 'nullable|date|before_or_equal:today',
       'distinctive_features' => 'nullable|string|max:255',
