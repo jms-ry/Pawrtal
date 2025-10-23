@@ -24,11 +24,11 @@ class UpdateDonationRequest extends FormRequest
     return [
       'donation_type' => 'nullable|in:monetary,in-kind',
       'amount' => 'nullable|numeric|min:0',
-      'item_description.*' => 'nullable|string|max:5000',
-      'item_quantity.*' => 'nullable|integer|min:1',
+      'item_description' => 'nullable|string|max:5000',
+      'item_quantity' => 'nullable|integer|min:1',
       'donation_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-      'pick_up_location.*' => 'nullable|string|max:5000',
-      'contact_person.*' => 'nullable|string|max:255',
+      'pick_up_location' => 'nullable|string|max:5000',
+      'contact_person' => 'nullable|string|max:255',
       'status' => 'nullable|in:pending,accepted,rejected,cancelled',
     ];
   }
