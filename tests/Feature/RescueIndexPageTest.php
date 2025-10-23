@@ -625,6 +625,28 @@ class RescueIndexPageTest extends TestCase
         ->where('user.id', $user->id)
       ->where('user.canAdopt', true)
     );
+
+    //Simulate admni logged in
+    $admin = User::factory()->admin()->create();
+
+    $address = Address::factory()->create([
+      'user_id' => $admin->id,
+    ]);
+
+    $household = Household::factory()->create([
+      'user_id' => $admin->id,
+    ]);
+
+    $this->actingAs($admin);
+
+    $response = $this->get(route('adoption.index'));
+
+    $response->assertInertia(fn ($page) =>
+      $page->component('Adoption/Index')
+        ->has('user')
+        ->where('user.id', $admin->id)
+      ->where('user.canAdopt', false)
+    );
   }
 
   public function test_user_cannot_adopt_if_missing_address_or_household()
