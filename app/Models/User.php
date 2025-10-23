@@ -126,7 +126,7 @@ class User extends Authenticatable
 
   public function isNonAdminOrStaff(): bool
   {
-    return $this->role !== 'admin' && $this->role !== 'staff';
+    return $this->role === 'regular_user' ;
   }
 
   public function fullAddress()
