@@ -74,27 +74,7 @@
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
-                <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" 
-                  :data-bs-target="report.type == 'lost' ? '#updateLostReportModal' :'#updateFoundReportModal'"
-                  :data-report-id="report.id"
-                  :data-report-status="report.status"
-                  :data-report-animal-name="report.animal_name_formatted"
-                  :data-report-species="report.species"
-                  :data-report-location="report.found_last_seen_location_formatted"
-                  :data-report-last-seen-date="report.last_seen_date"
-                  :data-report-found-date="report.found_date"
-                  :data-report-breed="report.breed"
-                  :data-report-color="report.color_formatted"
-                  :data-report-sex="report.sex"
-                  :data-report-age-estimate="report.age_estimate_formatted"
-                  :data-report-size="report.size"
-                  :data-report-distinctive-features="report.distinctive_features_formatted"
-                  :data-report-condition="report.condition_formatted"
-                  :data-report-temporary-shelter="report.temporary_shelter_formatted"
-                  :data-report-image="report.image_url"
-                  :data-report-type-formatted="report.type_formatted"
-                  >Update Report
-                </a>
+                <a class="btn btn-info fw-bolder ms-1" :href="`/users/my-reports`">Manage Report</a>
               </div>
               <div v-else>
                 <a class="btn btn-warning fw-bolder ms-1">Alert Owner</a> 
@@ -126,27 +106,7 @@
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
-                <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" 
-                  :data-bs-target="report.type == 'lost' ? '#updateLostReportModal' :'#updateFoundReportModal'"
-                  :data-report-id="report.id"
-                  :data-report-status="report.status"
-                  :data-report-animal-name="report.animal_name_formatted"
-                  :data-report-species="report.species"
-                  :data-report-location="report.found_last_seen_location_formatted"
-                  :data-report-last-seen-date="report.last_seen_date"
-                  :data-report-found-date="report.found_date"
-                  :data-report-breed="report.breed"
-                  :data-report-color="report.color_formatted"
-                  :data-report-sex="report.sex"
-                  :data-report-age-estimate="report.age_estimate_formatted"
-                  :data-report-size="report.size"
-                  :data-report-distinctive-features="report.distinctive_features_formatted"
-                  :data-report-condition="report.condition_formatted"
-                  :data-report-temporary-shelter="report.temporary_shelter_formatted"
-                  :data-report-image="report.image_url"
-                  :data-report-type-formatted="report.type_formatted"
-                  >Update Report
-                </a>
+                <a class="btn btn-info fw-bolder ms-1" :href="`/users/my-reports`">Manage Report</a>
               </div>
             </div>
           </div>
