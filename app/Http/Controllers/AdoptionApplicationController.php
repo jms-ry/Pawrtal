@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAdoptionApplicationRequest;
 use App\Http\Requests\UpdateAdoptionApplicationRequest;
 use Illuminate\Http\Request;
 use App\Models\AdoptionApplication;
@@ -27,9 +28,9 @@ class AdoptionApplicationController extends Controller
   /**
     * Store a newly created resource in storage.
   */
-  public function store(Request $request)
+  public function store(StoreAdoptionApplicationRequest $request)
   {
-    $requestData = $request->all();
+    $requestData = $request->validated();
 
     if($request->hasFile('valid_id')){
       $validIdPath = $request->file('valid_id')->store('images/adoption_applications/valid_ids','public');
