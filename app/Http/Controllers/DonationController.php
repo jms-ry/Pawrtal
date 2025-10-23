@@ -94,7 +94,7 @@ class DonationController extends Controller
   */
   public function update(UpdateDonationRequest $request, Donation $donation)
   {
-    $requestData = $request->all();
+    $requestData = $request->validated();
 
     //if the request status is "cancelled", update the status to "cancelled"
     if($request->status === 'cancelled'){
