@@ -160,7 +160,7 @@ class RescueController extends Controller
   public function update(UpdateRescueRequest $request, Rescue $rescue)
   { 
     $this->authorize('update', $rescue);
-    $requestData = $request->all();
+    $requestData = $request->validated();
 
     if($request->hasFile('profile_image')){
       if($rescue->profile_image && Storage::disk('public')->exists($rescue->profile_image)){
