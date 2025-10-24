@@ -30,6 +30,8 @@ class AdoptionApplicationController extends Controller
   */
   public function store(StoreAdoptionApplicationRequest $request)
   {
+    $this->authorize('create',AdoptionApplication::class);
+    
     $requestData = $request->validated();
 
     if($request->hasFile('valid_id')){

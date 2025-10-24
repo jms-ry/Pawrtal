@@ -11,6 +11,7 @@ use App\Models\Rescue;
 use App\Models\User;
 use App\Models\Donation;
 use App\Models\Report;
+use App\Policies\AdoptionApplicationPolicy;
 use App\Policies\DonationPolicy;
 use App\Policies\HouseholdPolicy;
 use App\Policies\ReportPolicy;
@@ -44,6 +45,7 @@ class AuthServiceProvider extends ServiceProvider
     User::class => UserPolicy::class,
     Donation::class =>DonationPolicy::class,
     Report::class => ReportPolicy::class,
+    AdoptionApplication::class => AdoptionApplicationPolicy::class,
   ];
 
 }
