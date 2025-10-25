@@ -53,12 +53,36 @@ class AdoptionApplication extends Model
     'review_notes_formatted',
     'reviewed_date_formatted',
     'reviewed_by_formatted',
-    'inspection_schedule_status'
+    'inspection_schedule_status',
+    'can_archive'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
+
+  public function getCanArchiveAttribute()
+  {
+    return $this->canArchive();
+  }
   
+  public function canArchive()
+  {
+    if(!$this->trashed()){
+      if($this->status === 'cancelled'){
+        return true;
+      }
+
+      if($this->status === 'approved'){
+        return true;
+      }
+
+      if($this->status === 'rejected'){
+        return true;
+      }
+    }else{
+      return false;
+    }
+  }
   public function getInspectionScheduleStatusAttribute()
   {
     return $this->inspectionSchedule?->inspectionStatus();
