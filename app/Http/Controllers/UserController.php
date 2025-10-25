@@ -192,6 +192,11 @@ class UserController extends Controller
   {
     $previousUrl = url()->previous();
     $user = Auth::user();
+
+    if($user->isAdminOrStaff()){
+      return redirect()->back()->with('error', 'You are not authorized to access this page.');
+    }
+    
     $search = $request->get('search');
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
