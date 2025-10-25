@@ -37,6 +37,10 @@ class AdoptionApplicationPolicy
   */
   public function update(User $user, AdoptionApplication $adoptionApplication): bool
   {
+    if($adoptionApplication->status === 'pending'){
+      return $adoptionApplication->user_id === $user->id;
+    }
+
     return false;
   }
 
@@ -61,6 +65,37 @@ class AdoptionApplicationPolicy
   */
   public function forceDelete(User $user, AdoptionApplication $adoptionApplication): bool
   {
+    return false;
+  }
+
+  public function cancel(User $user, AdoptionApplication $adoptionApplication): bool
+  {
+    if($adoptionApplication->status === 'pending'){
+      return $adoptionApplication->user_id === $user->id;
+    }
+
+    return false;
+  }
+
+  public function approve(User $user, AdoptionApplication $adoptionApplication): bool
+  {
+    if($adoptionApplication->status === 'under_review'){
+      return $user->isAdminOrStaff();
+    }
+
+    return false;
+  }
+
+  public function reject(User $user, AdoptionApplication $adoptionApplication): bool
+  {
+    if($adoptionApplication->status === 'pending'){
+      return $user->isAdminOrStaff();
+    }
+
+    if($adoptionApplication->status === 'under_review'){
+      return $user->isAdminOrStaff();
+    }
+
     return false;
   }
 }
