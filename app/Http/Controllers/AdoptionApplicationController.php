@@ -144,6 +144,8 @@ class AdoptionApplicationController extends Controller
 
   public function restore(AdoptionApplication $adoptionApplication)
   {
+    $this->authorize('restore', $adoptionApplication);
+
     $adoptionApplication->restore();
 
     return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been restored.');

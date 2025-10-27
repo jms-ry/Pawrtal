@@ -65,7 +65,11 @@ class AdoptionApplicationPolicy
   */
   public function restore(User $user, AdoptionApplication $adoptionApplication): bool
   {
-    return false;
+    if(!$adoptionApplication->trashed()){
+      return false;
+    }
+
+    return $adoptionApplication->user_id === $user->id || $user->isAdminOrStaff();
   }
 
   /**
