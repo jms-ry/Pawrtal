@@ -135,6 +135,8 @@ class AdoptionApplicationController extends Controller
   */
   public function destroy(AdoptionApplication $adoptionApplication)
   {
+    $this->authorize('delete', $adoptionApplication);
+    
     $adoptionApplication->delete();
 
     return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been archived.');

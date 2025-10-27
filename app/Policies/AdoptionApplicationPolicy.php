@@ -49,7 +49,15 @@ class AdoptionApplicationPolicy
   */
   public function delete(User $user, AdoptionApplication $adoptionApplication): bool
   {
-    return false;
+    if($adoptionApplication->trashed()){
+      return false;
+    }
+    
+    if (in_array($adoptionApplication->status, ['pending', 'under_review'])) {
+      return false;
+    }
+
+    return $adoptionApplication->user_id === $user->id || $user->isAdminOrStaff();
   }
 
   /**
