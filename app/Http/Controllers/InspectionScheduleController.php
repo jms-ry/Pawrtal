@@ -6,6 +6,7 @@ use App\Http\Requests\StoreInspectionScheduleRequest;
 use App\Http\Requests\UpdateInspectionScheduleRequest;
 use App\Models\InspectionSchedule;
 use Illuminate\Http\Request;
+use App\Models\AdoptionApplication;
 
 class InspectionScheduleController extends Controller
 {
@@ -30,6 +31,9 @@ class InspectionScheduleController extends Controller
   */
   public function store(StoreInspectionScheduleRequest $request)
   {
+    $application = AdoptionApplication::findOrFail($request->application_id);
+    $this->authorize('create', [InspectionSchedule::class, $application]);
+
     $requestData = $request->validated();
 
     $inspectionSchedule = InspectionSchedule::create($requestData);

@@ -10,10 +10,12 @@ use App\Policies\AddressPolicy;
 use App\Models\Rescue;
 use App\Models\User;
 use App\Models\Donation;
+use App\Models\InspectionSchedule;
 use App\Models\Report;
 use App\Policies\AdoptionApplicationPolicy;
 use App\Policies\DonationPolicy;
 use App\Policies\HouseholdPolicy;
+use App\Policies\InspectionSchedulePolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\RescuePolicy;
 use App\Policies\UserPolicy;
@@ -46,6 +48,7 @@ class AuthServiceProvider extends ServiceProvider
     Donation::class =>DonationPolicy::class,
     Report::class => ReportPolicy::class,
     AdoptionApplication::class => AdoptionApplicationPolicy::class,
+    InspectionSchedule::class => InspectionSchedulePolicy::class,
   ];
 
 }
