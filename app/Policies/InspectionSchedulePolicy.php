@@ -69,4 +69,14 @@ class InspectionSchedulePolicy
   {
     return false;
   }
+
+  public function done(User $user, InspectionSchedule $inspectionSchedule)
+  {
+    return $user->isAdminOrStaff() && in_array($inspectionSchedule->status,['now','upcoming']);
+  }
+
+  public function cancel(User $user, InspectionSchedule $inspectionSchedule)
+  {
+    return $user->isAdminOrStaff() && in_array($inspectionSchedule->status,['now','upcoming']);
+  }
 }

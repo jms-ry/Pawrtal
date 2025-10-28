@@ -69,12 +69,16 @@ class InspectionScheduleController extends Controller
     $requestData = $request->validated();
 
     if($request->status === 'done'){
+      $this->authorize('done',$inspectionSchedule);
+
       $inspectionSchedule->update($requestData);
 
       return redirect()->back()->with('success','Inspection schedule has been marked done.');
     }
 
     if($request->status === 'cancelled'){
+      $this->authorize('cancel',$inspectionSchedule);
+
       $inspectionSchedule->update($requestData);
 
       return redirect()->back()->with('warning','Inspection schedule has been cancelled.');
