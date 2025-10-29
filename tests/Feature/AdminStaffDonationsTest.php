@@ -855,7 +855,7 @@ class AdminStaffDonationsTest extends TestCase
 
     Donation::factory()->inKind()->create(['contact_person' => 'Max & Ruby']);
     
-     $response = $this->get(route('dashboard.donations', [
+    $response = $this->get(route('dashboard.donations', [
       'search' => "'; DROP TABLE donations; --"
     ]));
     
