@@ -233,23 +233,25 @@ class AdminStaffController extends Controller
       ->withTrashed()
       ->with(['user','rescue','inspectionSchedule'])
       ->withCount('inspectionSchedule')
-      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
-        $query->where('status', '!=', 'archived');
-      })
       ->when($search, function ($query, $search) {
-        $columns = ['reason_for_adoption','status',];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
-
-        return $query->where(function ($q) use ($keywords, $columns) {
+          
+        return $query->where(function ($q) use ($keywords) {
           foreach ($keywords as $word) {
-            $q->where(function ($subQ) use ($word, $columns) {
-              foreach ($columns as $col) {
-                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
-              }
-            })
-            ->orWhereHas('rescue', function ($rescueQ) use ($word) {
-              $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
-            });;
+            $q->where(function ($subQ) use ($word) {
+              // Search in direct columns
+              $subQ->whereRaw("LOWER(reason_for_adoption) LIKE LOWER(?)", ['%' . $word . '%'])
+                ->orWhereRaw("LOWER(status) LIKE LOWER(?)", ['%' . $word . '%'])
+                // Search in rescue name
+              ->orWhereHas('rescue', function ($rescueQ) use ($word) {
+                $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
+              })
+              // Search in user first name
+              ->orWhereHas('user', function ($userQ) use ($word) {
+              $userQ->whereRaw("LOWER(first_name) LIKE LOWER(?)", ['%' . $word . '%'])
+                ->orWhereRaw("LOWER(last_name) LIKE LOWER(?)", ['%' . $word . '%']);
+              });
+            });
           }
         });
       })

@@ -892,7 +892,7 @@ class AdminStaffDonationsTest extends TestCase
     $this->actingAs($staff);
 
     Donation::factory()->inKind()->count(3)->create();
-     Donation::factory()->monetary()->count(2)->create();
+    Donation::factory()->monetary()->count(2)->create();
     
     $response = $this->get(route('dashboard.donations', [
       'search' => '',
