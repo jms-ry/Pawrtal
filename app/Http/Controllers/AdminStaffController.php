@@ -175,9 +175,6 @@ class AdminStaffController extends Controller
     $donations = Donation::query()
       ->withTrashed()
       ->with('user')
-      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
-        $query->where('status', '!=', 'archived');
-      })
       ->when($search, function ($query, $search) {
         $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
@@ -200,7 +197,7 @@ class AdminStaffController extends Controller
       ->when($sortOrder, function($query,$sortOrder){
         return $query->orderBy('donation_date',$sortOrder);
       })
-
+      ->orderBy('donation_date', 'desc')
       ->paginate(9)
     ->withQueryString();
 
