@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
-use App\Policies\DonationPolicy;
 use Inertia\Testing\AssertableInertia as Assert;
 class AdminStaffDonationsTest extends TestCase
 {
@@ -494,7 +493,7 @@ class AdminStaffDonationsTest extends TestCase
     );
   }
 
-  public function test_oldest_sort_filter_sorts_reports_in_ascending_order()
+  public function test_oldest_sort_filter_sorts_donations_in_ascending_order()
   {
     $staff = User::factory()->staff()->create();
 
@@ -527,7 +526,7 @@ class AdminStaffDonationsTest extends TestCase
     );
   }
 
-  public function test_newest_sort_filter_sorts_reports_in_descending_order()
+  public function test_newest_sort_filter_sorts_donations_in_descending_order()
   {
     $staff = User::factory()->staff()->create();
 
@@ -717,7 +716,7 @@ class AdminStaffDonationsTest extends TestCase
     );
   }
 
-  public function test_reports_are_ordered_by_created_at_in_descending_order_by_default()
+  public function test_donations_are_ordered_by_created_at_in_descending_order_by_default()
   {
     $staff = User::factory()->staff()->create();
 
@@ -732,7 +731,7 @@ class AdminStaffDonationsTest extends TestCase
     // Assert response OK
     $response->assertStatus(200);
 
-    // Extract reports from Inertia props
+    // Extract donations from Inertia props
     $props = $response->original->getData()['page']['props'];
     $donations = $props['donations']['data'] ?? [];
 
@@ -857,7 +856,7 @@ class AdminStaffDonationsTest extends TestCase
     Donation::factory()->inKind()->create(['contact_person' => 'Max & Ruby']);
     
      $response = $this->get(route('dashboard.donations', [
-      'search' => "'; DROP TABLE reports; --"
+      'search' => "'; DROP TABLE donations; --"
     ]));
     
     $response->assertStatus(200);
