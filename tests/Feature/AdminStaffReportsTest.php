@@ -12,14 +12,14 @@ class AdminStaffReportsTest extends TestCase
 {
   use RefreshDatabase;
 
-  public function test_guest_user_cannot_access_dashboard_rescues()
+  public function test_guest_user_cannot_access_dashboard_reports()
   {
     $response = $this->get(route('dashboard.reports'));
 
     $response->assertRedirect(route('login'));
   }
 
-  public function test_regular_user_cannot_access_dashboard_rescues()
+  public function test_regular_user_cannot_access_dashboard_reports()
   {
     $user = User::factory()->create();
     $this->actingAs($user);
@@ -30,7 +30,7 @@ class AdminStaffReportsTest extends TestCase
     $response->assertSessionHas('error', 'You do not have authorization. Access denied!');
   }
 
-  public function test_admin_user_can_access_dashboard_rescues()
+  public function test_admin_user_can_access_dashboard_reports()
   {
     $admin = User::factory()->admin()->create();
     $this->actingAs($admin);
@@ -40,7 +40,7 @@ class AdminStaffReportsTest extends TestCase
     $response->assertStatus(200);
   }
 
-  public function test_staff_user_can_access_dashboard_rescues()
+  public function test_staff_user_can_access_dashboard_reports()
   {
     $staff = User::factory()->staff()->create();
     $this->actingAs($staff);
@@ -62,12 +62,12 @@ class AdminStaffReportsTest extends TestCase
     $response = $this->get(route('dashboard.reports'));
     $response->assertStatus(200);
 
-    foreach ($nonTrashed as $rescue) {
-      $response->assertSee($rescue->name_formatted);
+    foreach ($nonTrashed as $report) {
+      $response->assertSee($report->name_formatted);
     }
 
-    foreach ($trashed as $rescue) {
-      $response->assertSee($rescue->name_formatted);
+    foreach ($trashed as $report) {
+      $response->assertSee($report->name_formatted);
     }
   }
 
@@ -116,16 +116,16 @@ class AdminStaffReportsTest extends TestCase
     // Assert: Response OK
     $response->assertStatus(200);
 
-    // Assert that the matching rescues are present and non-matching are not
+    // Assert that the matching reports are present and non-matching are not
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('AdminStaff/Reports')
-        // Check that the rescues prop exists and is paginated
+        // Check that the reports prop exists and is paginated
         ->has('reports.data')
-        // Check that the correct rescues are shown
+        // Check that the correct reports are shown
         ->where('reports.data.0.animal_name', $matchingReport1->animal_name)
         ->where('reports.data.1.animal_name', $matchingReport2->animal_name)
-        // Ensure non-matching rescue is not present
+        // Ensure non-matching report is not present
       ->missing('reports.data.2.animal_name',)
     );
   }
@@ -154,16 +154,16 @@ class AdminStaffReportsTest extends TestCase
     // Assert: Response OK
     $response->assertStatus(200);
 
-    // Assert that the matching rescues are present and non-matching are not
+    // Assert that the matching reports are present and non-matching are not
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('AdminStaff/Reports')
-        // Check that the rescues prop exists and is paginated
+        // Check that the reports prop exists and is paginated
         ->has('reports.data')
-        // Check that the correct rescues are shown
+        // Check that the correct reports are shown
         ->where('reports.data.0.species', $matchingReport1->species)
         ->where('reports.data.1.species', $matchingReport2->species)
-        // Ensure non-matching rescue is not present
+        // Ensure non-matching report is not present
       ->missing('reports.data.2.species',)
     );
   }
@@ -192,16 +192,16 @@ class AdminStaffReportsTest extends TestCase
     // Assert: Response OK
     $response->assertStatus(200);
 
-    // Assert that the matching rescues are present and non-matching are not
+    // Assert that the matching reports are present and non-matching are not
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('AdminStaff/Reports')
-        // Check that the rescues prop exists and is paginated
+        // Check that the reports prop exists and is paginated
         ->has('reports.data')
-        // Check that the correct rescues are shown
+        // Check that the correct reports are shown
         ->where('reports.data.0.sex', $matchingReport1->sex)
         ->where('reports.data.1.sex', $matchingReport2->sex)
-        // Ensure non-matching rescue is not present
+        // Ensure non-matching report is not present
       ->missing('reports.data.2.sex',)
     );
   }
@@ -230,16 +230,16 @@ class AdminStaffReportsTest extends TestCase
     // Assert: Response OK
     $response->assertStatus(200);
 
-    // Assert that the matching rescues are present and non-matching are not
+    // Assert that the matching reports are present and non-matching are not
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('AdminStaff/Reports')
-        // Check that the rescues prop exists and is paginated
+        // Check that the reports prop exists and is paginated
         ->has('reports.data')
-        // Check that the correct rescues are shown
+        // Check that the correct reports are shown
         ->where('reports.data.0.breed', $matchingReport1->breed)
         ->where('reports.data.1.breed', $matchingReport2->breed)
-        // Ensure non-matching rescue is not present
+        // Ensure non-matching report is not present
       ->missing('reports.data.2.breed',)
     );
   }
@@ -268,16 +268,16 @@ class AdminStaffReportsTest extends TestCase
     // Assert: Response OK
     $response->assertStatus(200);
 
-    // Assert that the matching rescues are present and non-matching are not
+    // Assert that the matching reports are present and non-matching are not
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('AdminStaff/Reports')
-        // Check that the rescues prop exists and is paginated
+        // Check that the reports prop exists and is paginated
         ->has('reports.data')
-        // Check that the correct rescues are shown
+        // Check that the correct reports are shown
         ->where('reports.data.0.color', $matchingReport1->color)
         ->where('reports.data.1.color', $matchingReport2->color)
-        // Ensure non-matching rescue is not present
+        // Ensure non-matching report is not present
       ->missing('reports.data.2.color',)
     );
   }
@@ -306,23 +306,23 @@ class AdminStaffReportsTest extends TestCase
     // Assert: Response OK
     $response->assertStatus(200);
 
-    // Assert that the matching rescues are present and non-matching are not
+    // Assert that the matching reports are present and non-matching are not
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('AdminStaff/Reports')
-        // Check that the rescues prop exists and is paginated
+        // Check that the reports prop exists and is paginated
         ->has('reports.data')
-        // Check that the correct rescues are shown
+        // Check that the correct reports are shown
         ->where('reports.data.0.type', $matchingReport1->type)
         ->where('reports.data.1.type', $matchingReport2->type)
-        // Ensure non-matching rescue is not present
+        // Ensure non-matching report is not present
       ->missing('reports.data.2.type',)
     );
   }
 
   public function test_search_with_no_matches_returns_empty_results()
   {
-    // Arrange: create some rescues that won't match the search term
+    // Arrange: create some reports that won't match the search term
     Report::factory()->count(5)->create(['animal_name' => 'Buddy']);
 
     $staff = User::factory()->staff()->create();
@@ -332,7 +332,7 @@ class AdminStaffReportsTest extends TestCase
     // Act: visit the index route with a filter that yields no matches
     $response = $this->get(route('dashboard.reports', ['search' => 'NonexistentAnimal']));
 
-    // Assert: the Inertia response includes an empty rescues list
+    // Assert: the Inertia response includes an empty reports list
     $response->assertInertia(fn ($page) => 
       $page->component('AdminStaff/Reports')
         ->has('reports.data', 0) // no matching reports
@@ -583,7 +583,7 @@ class AdminStaffReportsTest extends TestCase
       'status' => 'active'
     ]);
 
-    // Non-matching rescues
+    // Non-matching reports
     Report::factory()->count(2)->create(['species' => 'Dog', 'breed' => 'Pitbull']);
     Report::factory()->count(2)->create(['species' => 'Dog', 'breed' => 'Labrador']);
     Report::factory()->count(2)->create(['species' => 'Cat', 'breed' => 'Puspin']);
@@ -646,7 +646,7 @@ class AdminStaffReportsTest extends TestCase
 
     $this->actingAs($staff);
 
-    // Arrange: Create 15 rescues that match search + filter
+    // Arrange: Create 15 reports that match search + filter
     Report::factory()->lost()->count(15)->create([
       'animal_name' => 'Buddy',
       'status' => 'active'
@@ -681,7 +681,7 @@ class AdminStaffReportsTest extends TestCase
 
     $this->actingAs($staff);
 
-    // Arrange: Create more rescues than one page
+    // Arrange: Create more reports than one page
     Report::factory()->count(20)->create([
       'animal_name' => 'Luna',
       'status' => 'active'
@@ -743,18 +743,18 @@ class AdminStaffReportsTest extends TestCase
 
     $this->actingAs($staff);
 
-    // Create rescues out of order
+    // Create reports out of order
     $report1 = Report::factory()->create(['created_at' => now()->subDays(3)]);
     $report2 = Report::factory()->create(['created_at' => now()->subDays(2)]);
     $report3 = Report::factory()->create(['created_at' => now()->subDay()]);
 
-    // Act — hit the rescues index route
+    // Act — hit the reports index route
     $response = $this->get(route('dashboard.reports'));
 
     // Assert response OK
     $response->assertStatus(200);
 
-    // Extract rescues from Inertia props
+    // Extract reports from Inertia props
     $props = $response->original->getData()['page']['props'];
     $reports = $props['reports']['data'] ?? [];
 
