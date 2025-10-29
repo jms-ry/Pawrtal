@@ -491,7 +491,7 @@ class ReportIndexTest extends TestCase
     );
   }
 
-  public function test_resolved_status_filter_returns_active_reports()
+  public function test_resolved_status_filter_returns_resolved_reports()
   {
     Report::factory()->count(5)->lost()->create(['status' => 'active']);
     Report::factory()->count(6)->found()->create(['status' => 'active']);
