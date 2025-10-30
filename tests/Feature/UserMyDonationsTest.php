@@ -35,10 +35,8 @@ class UserMyDonationsTest extends TestCase
     $user = User::factory()->create();
     $otherUser = User::factory()->create();
 
-    // Reports belonging to the logged-in user
     $visible = Donation::factory()->count(2)->for($user)->create();
 
-    // Reports belonging to someone else
     $notVisible = Donation::factory()->count(2)->for($otherUser)->create();
 
     $this->actingAs($user);
