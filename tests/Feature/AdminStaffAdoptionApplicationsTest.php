@@ -944,4 +944,42 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
     );
   }
 
+  public function test_showBackNav_is_false_when_coming_from_login()
+  {
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $response = $this->from('/login')->get(route('dashboard.adoptionApplications'));
+    $response->assertStatus(200);
+
+    $response->assertInertia(fn ($page) =>
+       $page->component('AdminStaff/AdoptionApplications')->where('showBackNav', false)
+    );
+  }
+
+  public function test_showBackNav_is_false_when_coming_from_register()
+  {
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $response = $this->from('/register')->get(route('dashboard.adoptionApplications'));
+    $response->assertStatus(200);
+
+    $response->assertInertia(fn ($page) =>
+       $page->component('AdminStaff/AdoptionApplications')->where('showBackNav', false)
+    );
+  }
+
+  public function test_showBackNav_is_false_when_coming_from_dashboard_adoption_applications()
+  {
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $response = $this->from('/dashboard/adoption-applications')->get(route('dashboard.adoptionApplications'));
+    $response->assertStatus(200);
+
+    $response->assertInertia(fn ($page) =>
+      $page->component('AdminStaff/AdoptionApplications')->where('showBackNav', false)
+    );
+  }
 }
