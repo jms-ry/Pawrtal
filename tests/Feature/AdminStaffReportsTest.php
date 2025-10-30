@@ -981,4 +981,43 @@ class AdminStaffReportsTest extends TestCase
     );
   }
 
+  public function test_showBackNav_is_false_when_coming_from_login()
+  {
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $response = $this->from('/login')->get(route('dashboard.reports'));
+    $response->assertStatus(200);
+
+    $response->assertInertia(fn ($page) =>
+      $page->component('AdminStaff/Reports')->where('showBackNav', false)
+    );
+  }
+
+  public function test_showBackNav_is_false_when_coming_from_register()
+  {
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $response = $this->from('/register')->get(route('dashboard.reports'));
+    $response->assertStatus(200);
+
+    $response->assertInertia(fn ($page) =>
+      $page->component('AdminStaff/Reports')->where('showBackNav', false)
+    );
+  }
+
+  public function test_showBackNav_is_false_when_coming_from_dashboard_reports()
+  {
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $response = $this->from('/dashboard/reports')->get(route('dashboard.reports'));
+    $response->assertStatus(200);
+
+    $response->assertInertia(fn ($page) =>
+      $page->component('AdminStaff/Reports')->where('showBackNav', false)
+    );
+  }
+
 }
