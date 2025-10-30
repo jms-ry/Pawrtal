@@ -120,7 +120,7 @@ class UserController extends Controller
         return $query->orderBy('created_at',$sortOrder);
       })
       ->orderBy('created_at', 'desc')
-      ->paginate(5)
+      ->paginate(9)
     ->withQueryString();
     
     return Inertia::render('User/MyReports',[
@@ -247,6 +247,11 @@ class UserController extends Controller
   {
     $previousUrl = url()->previous();
     $user = Auth::user();
+
+    if(!$user->isAdminOrStaff()){
+      return redirect()->back()->with('error', 'You are not authorized to access this page.');
+    }
+
     $schedules = $user->inspectionSchedules()
       ->with(['user','adoptionApplication'])
       ->get()->map(function ($schedule) {
