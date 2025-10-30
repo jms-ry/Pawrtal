@@ -538,7 +538,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
 
     $response->assertStatus(200);
 
-    // Extract donations from Inertia props
+    // Extract applications from Inertia props
     $props = $response->original->getData()['page']['props'];
     $applications = $props['adoptionApplications']['data'] ?? [];
 
@@ -710,7 +710,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
     );
   }
 
-  public function test_empty_string_search_returns_all_available_donations()
+  public function test_empty_string_search_returns_all_available_applications()
   {
     $staff = User::factory()->staff()->create();
 
