@@ -12,7 +12,7 @@ use Inertia\Testing\AssertableInertia;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Report;
-class UserControllerTest extends TestCase
+class UserShowTest extends TestCase
 {
   use RefreshDatabase;
   /** Start of show function test cases */
