@@ -288,15 +288,11 @@ class UserController extends Controller
 
     $notifications = $user->notifications()
       ->when($search, function ($query, $search) {
-        $columns = ['data'];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
-        return $query->where(function ($q) use ($keywords, $columns) {
+
+        return $query->where(function ($q) use ($keywords) {
           foreach ($keywords as $word) {
-            $q->where(function ($subQ) use ($word, $columns) {
-              foreach ($columns as $col) {
-                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
-              }
-            });
+            $q->orWhereRaw("LOWER((data::jsonb->>'message')) LIKE LOWER(?)", ['%' . $word . '%']);
           }
         });
       })
@@ -304,7 +300,7 @@ class UserController extends Controller
         return $query->whereNull('read_at'); 
       })
       ->when($readAtFilter === 'read', function ($query) {
-          return $query->whereNotNull('read_at'); 
+        return $query->whereNotNull('read_at'); 
       })
       ->when($sortOrder, function ($query, $sortOrder) {
         return $query->reorder()->orderBy('created_at', $sortOrder);
