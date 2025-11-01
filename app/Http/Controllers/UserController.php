@@ -172,7 +172,7 @@ class UserController extends Controller
         return $query->orderBy('donation_date',$sortOrder);
       })
       ->orderBy('donation_date', 'desc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
 
     return Inertia::render('User/MyDonations',[

@@ -600,7 +600,7 @@ class UserMyDonationsTest extends TestCase
     );
   }
 
-  public function test_search_and_filter_results_are_paginated_with_9_items_page()
+  public function test_search_and_filter_results_are_paginated_with_10_items_page()
   {
     $staff = User::factory()->staff()->create();
 
@@ -625,7 +625,7 @@ class UserMyDonationsTest extends TestCase
         ->where('filters.search', 'buddy')
         ->where('filters.donation_type', 'in-kind')
         ->where('filters.status','accepted')
-        ->has('donations.data', 9) // 9 items per page
+        ->has('donations.data', 10)
       ->has('donations.links') // pagination links should exist
     );
   }
@@ -794,7 +794,7 @@ class UserMyDonationsTest extends TestCase
 
     $this->actingAs($staff);
 
-    Donation::factory()->for($staff)->inKind()->accepted()->count(11)->create();
+    Donation::factory()->for($staff)->inKind()->accepted()->count(12)->create();
     
     $response = $this->get(route('users.myDonations', [
       'donation_type' => 'in-kind',
@@ -803,7 +803,7 @@ class UserMyDonationsTest extends TestCase
     ]));
     
     $response->assertInertia(fn ($page) =>
-      $page->component('User/MyDonations')->has('donations.data', 2) // 11 items, 9 per page = 2 on page 2
+      $page->component('User/MyDonations')->has('donations.data', 2) 
     );
   }
 
