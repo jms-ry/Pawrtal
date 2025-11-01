@@ -120,7 +120,7 @@ class UserController extends Controller
         return $query->orderBy('created_at',$sortOrder);
       })
       ->orderBy('created_at', 'desc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
     
     return Inertia::render('User/MyReports',[

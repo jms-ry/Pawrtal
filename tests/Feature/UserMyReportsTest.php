@@ -620,7 +620,7 @@ class UserMyReportsTest extends TestCase
     );
   }
 
-  public function test_search_and_filter_results_are_paginated_with_9_items_page()
+  public function test_search_and_filter_results_are_paginated_with_10_items_page()
   {
     $staff = User::factory()->staff()->create();
 
@@ -650,7 +650,7 @@ class UserMyReportsTest extends TestCase
         ->where('filters.search', 'buddy')
         ->where('filters.type', 'lost')
         ->where('filters.status','active')
-        ->has('reports.data', 9) // 9 items per page
+        ->has('reports.data', 10) 
       ->has('reports.links') // pagination links should exist
     );
   }
@@ -825,7 +825,7 @@ class UserMyReportsTest extends TestCase
 
     $this->actingAs($staff);
 
-    Report::factory()->for($staff)->lost()->count(11)->create(['status' => 'active']);
+    Report::factory()->for($staff)->lost()->count(12)->create(['status' => 'active']);
     
     $response = $this->get(route('users.myReports', [
       'type' => 'lost',
@@ -834,7 +834,7 @@ class UserMyReportsTest extends TestCase
     ]));
     
     $response->assertInertia(fn ($page) =>
-      $page->component('User/MyReports')->has('reports.data', 2) // 11 items, 9 per page = 2 on page 2
+      $page->component('User/MyReports')->has('reports.data', 2)
     );
   }
 
