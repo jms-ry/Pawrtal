@@ -234,7 +234,7 @@ class UserController extends Controller
         return $query->orderBy('application_date',$sortOrder);
       })
       ->orderBy('application_date', 'desc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
     return Inertia::render('User/MyAdoptionApp',[
       'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,'role' =>$user->role] : null,
