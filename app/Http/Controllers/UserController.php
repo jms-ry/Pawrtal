@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -323,15 +324,21 @@ class UserController extends Controller
 
   public function markNotificationAsRead(Request $request, $id)
   {
-    $notification = $request->user()
-      ->notifications()
-      ->where('id', $id)
-    ->first();
+    $notification = DatabaseNotification::find($id);
 
-    if ($notification) {
-      $notification->markAsRead();
+    if (!$notification) {
+      return response()->json(['success' => false, 'message' => 'Notification not found'], 404);
     }
 
+    if ($notification->notifiable_id !== $request->user()->id) {
+      return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
+    }
+    if ($notification->read_at !== null) {
+      return response()->json(['success' => false, 'message' => 'Notification already read'], 400);
+    }
+
+    $notification->markAsRead();
+    
     return response()->json(['success' => true]);
   }
 
