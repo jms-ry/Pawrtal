@@ -650,7 +650,7 @@ class AdminStaffDonationsTest extends TestCase
         ->where('filters.search', 'buddy')
         ->where('filters.donation_type', 'in-kind')
         ->where('filters.status','accepted')
-        ->has('donations.data', 9) // 9 items per page
+        ->has('donations.data', 10)
       ->has('donations.links') // pagination links should exist
     );
   }
@@ -819,7 +819,7 @@ class AdminStaffDonationsTest extends TestCase
 
     $this->actingAs($staff);
 
-    Donation::factory()->inKind()->accepted()->count(11)->create();
+    Donation::factory()->inKind()->accepted()->count(12)->create();
     
     $response = $this->get(route('dashboard.donations', [
       'donation_type' => 'in-kind',
@@ -828,7 +828,7 @@ class AdminStaffDonationsTest extends TestCase
     ]));
     
     $response->assertInertia(fn ($page) =>
-      $page->component('AdminStaff/Donations')->has('donations.data', 2) // 11 items, 9 per page = 2 on page 2
+      $page->component('AdminStaff/Donations')->has('donations.data', 2) 
     );
   }
 

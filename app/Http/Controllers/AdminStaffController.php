@@ -75,7 +75,7 @@ class AdminStaffController extends Controller
         return $query->where('adoption_status', $statusFilter);
       })
       ->orderBy('id', 'asc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
 
     $previousUrl = url()->previous();
@@ -140,7 +140,7 @@ class AdminStaffController extends Controller
         return $query->orderBy('created_at',$sortOrder);
       })
       ->orderBy('created_at', 'desc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
 
     $previousUrl = url()->previous();
@@ -198,7 +198,7 @@ class AdminStaffController extends Controller
         return $query->orderBy('donation_date',$sortOrder);
       })
       ->orderBy('donation_date', 'desc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
 
     $previousUrl = url()->previous();
@@ -262,7 +262,7 @@ class AdminStaffController extends Controller
         return $query->orderBy('application_date',$sortOrder);
       })
       ->orderBy('application_date', 'desc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
     $user = Auth::user();
     $inspectors = User::query()->whereIn('role', ['admin', 'staff'])->get();

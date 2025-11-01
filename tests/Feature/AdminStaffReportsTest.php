@@ -670,7 +670,7 @@ class AdminStaffReportsTest extends TestCase
         ->where('filters.search', 'buddy')
         ->where('filters.type', 'lost')
         ->where('filters.status','active')
-        ->has('reports.data', 9) // 9 items per page
+        ->has('reports.data', 10)
       ->has('reports.links') // pagination links should exist
     );
   }
@@ -845,7 +845,7 @@ class AdminStaffReportsTest extends TestCase
 
     $this->actingAs($staff);
 
-    Report::factory()->lost()->count(11)->create(['status' => 'active']);
+    Report::factory()->lost()->count(12)->create(['status' => 'active']);
     
     $response = $this->get(route('dashboard.reports', [
       'type' => 'lost',
@@ -854,7 +854,7 @@ class AdminStaffReportsTest extends TestCase
     ]));
     
     $response->assertInertia(fn ($page) =>
-      $page->component('AdminStaff/Reports')->has('reports.data', 2) // 11 items, 9 per page = 2 on page 2
+      $page->component('AdminStaff/Reports')->has('reports.data', 2)
     );
   }
 

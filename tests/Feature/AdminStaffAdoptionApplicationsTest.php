@@ -622,7 +622,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
     );
   }
 
-  public function test_search_and_filter_results_are_paginated_with_9_items_page()
+  public function test_search_and_filter_results_are_paginated_with_10_items_page()
   {
     $staff = User::factory()->staff()->create();
 
@@ -647,7 +647,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
       $page->component('AdminStaff/AdoptionApplications')
         ->where('filters.search', 'maxwell')
         ->where('filters.status', 'approved')
-        ->has('adoptionApplications.data', 9) // 9 items per page
+        ->has('adoptionApplications.data', 10)
       ->has('adoptionApplications.links') // pagination links should exist
     );
   }
@@ -784,7 +784,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
 
     $this->actingAs($staff);
 
-    AdoptionApplication::factory()->approved()->count(11)->create();
+    AdoptionApplication::factory()->approved()->count(12)->create();
     
     $response = $this->get(route('dashboard.adoptionApplications', [
       'status' => 'approved',
@@ -792,7 +792,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
     ]));
     
     $response->assertInertia(fn ($page) =>
-      $page->component('AdminStaff/AdoptionApplications')->has('adoptionApplications.data', 2) // 11 items, 9 per page = 2 on page 2
+      $page->component('AdminStaff/AdoptionApplications')->has('adoptionApplications.data', 2)
     );
   }
 

@@ -512,11 +512,32 @@ class AdminStaffRescuesTest extends TestCase
       $page->component('AdminStaff/Rescues')
         ->where('filters.search', 'buddy')
         ->where('filters.sex', 'male')
-        ->has('rescues.data', 9) // 9 items per page
+        ->has('rescues.data', 10) 
       ->has('rescues.links') // pagination links should exist
     );
   }
 
+  public function test_last_page_with_filters_shows_remaining_items()
+  {
+    $staff = User::factory()->staff()->create();
+
+    $this->actingAs($staff);
+
+    Rescue::factory()->count(12)->create([
+      'sex' => 'male',
+      'name' => 'Buddy',
+    ]);
+    
+    $response = $this->get(route('dashboard.rescues', [
+      'search' => 'buddy',
+      'sex' => 'male',
+      'page' => 2
+    ]));
+    
+    $response->assertInertia(fn ($page) =>
+      $page->component('AdminStaff/Rescues')->has('rescues.data', 2) 
+    );
+  }
   public function test_query_string_parameters_are_preserved_in_pagination_links()
   {
     $staff = User::factory()->staff()->create();
