@@ -344,10 +344,18 @@ class UserController extends Controller
 
   public function markAllNotificationsAsRead(Request $request)
   {
-    $request->user()
-      ->unreadNotifications
-    ->markAsRead();
+    $user = $request->user();
+
+    if ($user->unreadNotifications->isEmpty()) {
+      return response()->json([
+        'success' => false,
+        'message' => 'No unread notifications found.',
+      ], 404);
+    }
+
+    $user->unreadNotifications->markAsRead();
 
     return response()->json(['success' => true]);
   }
+
 }
