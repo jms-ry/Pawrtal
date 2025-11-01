@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Illuminate\Support\Facades\Auth;
@@ -54,7 +55,7 @@ class HandleInertiaRequests extends Middleware
 
       // 💬 Messages
       'unreadMessages' => fn () => Auth::check()
-        ? \App\Models\Message::whereHas('conversation', function ($query) {
+        ? Message::whereHas('conversation', function ($query) {
         $query->where(function ($q) {
           $userId = Auth::id();
           $q->where('participant1_id', $userId)
@@ -69,7 +70,7 @@ class HandleInertiaRequests extends Middleware
       : [],
 
       'unreadMessagesCount' => fn () => Auth::check()
-        ? \App\Models\Message::whereHas('conversation', function ($query) {
+        ? Message::whereHas('conversation', function ($query) {
         $query->where(function ($q) {
           $userId = Auth::id();
           $q->where('participant1_id', $userId)
