@@ -25,13 +25,19 @@ class RegisteredUserController extends Controller
     $request->validate([
       'first_name' => ['required', 'string', 'max:255'],
       'last_name' => ['required', 'string', 'max:255'],
-      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+      'email' => ['required', 'string', 'lowercase', 'email', 'max:255',],
       'contact_number' => [
         'required',
         'regex:/^09\d{9}$/', // must start with 09 and followed by 9 digits (total of 11)
       ],
       'password' => ['required', 'confirmed', Rules\Password::defaults()],
     ]);
+
+    // If email already exists, check before creating user
+    if (User::where('email', $request->email)->exists()) {
+      Session::flash('error', 'An account with this email already exists. Please use a different email or try logging in.');
+      return redirect()->back()->withInput($request->except('password', 'password_confirmation'));
+    }
 
     $user = User::create([
       'first_name' => $request->first_name,
@@ -40,7 +46,7 @@ class RegisteredUserController extends Controller
       'email' => $request->email,
       'password' => Hash::make($request->string('password')),
     ]);
-
+    
     event(new Registered($user));
 
     Auth::login($user);
