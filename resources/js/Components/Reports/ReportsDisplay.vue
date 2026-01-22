@@ -66,34 +66,15 @@
                 :data-report-owner-name="report.owner_full_name"
                 :data-report-owner-contact-number="report.owner_contact_number"
                 :data-report-owner-email="report.owner_email"
-                :data-report-status="report.report_status"
+                :data-report-status="report.status"
                 :data-report-status-label="report.status_label"
                 :data-report-owned-by-logged-user="report.owned_by_logged_user ? 'true': 'false'"
                 :data-report-trashed="report.deleted_at ? 'true' : 'false'"
+                :data-report-has-logged-user="props.user ? 'true' : 'false'"
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
-                <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" 
-                  :data-bs-target="report.type == 'lost' ? '#updateLostReportModal' :'#updateFoundReportModal'"
-                  :data-report-id="report.id"
-                  :data-report-status="report.status"
-                  :data-report-animal-name="report.animal_name_formatted"
-                  :data-report-species="report.species"
-                  :data-report-location="report.found_last_seen_location_formatted"
-                  :data-report-last-seen-date="report.last_seen_date"
-                  :data-report-found-date="report.found_date"
-                  :data-report-breed="report.breed"
-                  :data-report-color="report.color_formatted"
-                  :data-report-sex="report.sex"
-                  :data-report-age-estimate="report.age_estimate_formatted"
-                  :data-report-size="report.size"
-                  :data-report-distinctive-features="report.distinctive_features_formatted"
-                  :data-report-condition="report.condition_formatted"
-                  :data-report-temporary-shelter="report.temporary_shelter_formatted"
-                  :data-report-image="report.image_url"
-                  :data-report-type-formatted="report.type_formatted"
-                  >Update Report
-                </a>
+                <a class="btn btn-info fw-bolder ms-1" :href="`/users/my-reports`">Manage Report</a>
               </div>
               <div v-else>
                 <a class="btn btn-warning fw-bolder ms-1">Alert Owner</a> 
@@ -116,35 +97,16 @@
                 :data-report-condition="report.condition_formatted"
                 :data-report-temporary-shelter="report.temporary_shelter_formatted"
                 :data-report-owner-name="report.owner_full_name"
-                :data-report-status="report.report_status"
+                :data-report-status="report.status"
                 :data-report-status-label="report.status_label"
                 :data-report-owned-by-logged-user="report.owned_by_logged_user ? 'true': 'false'"
                 :data-report-logged-user-is-adminstaff="report.logged_user_is_admin_or_staff ? 'true' : 'false'"
                 :data-report-trashed="report.deleted_at ? 'true' : 'false'"
+                :data-report-has-logged-user="props.user ? 'true' : 'false'"
                 >View Report 
               </a>
               <div v-if="report.owned_by_logged_user" >
-                <a class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" 
-                  :data-bs-target="report.type == 'lost' ? '#updateLostReportModal' :'#updateFoundReportModal'"
-                  :data-report-id="report.id"
-                  :data-report-status="report.status"
-                  :data-report-animal-name="report.animal_name_formatted"
-                  :data-report-species="report.species"
-                  :data-report-location="report.found_last_seen_location_formatted"
-                  :data-report-last-seen-date="report.last_seen_date"
-                  :data-report-found-date="report.found_date"
-                  :data-report-breed="report.breed"
-                  :data-report-color="report.color_formatted"
-                  :data-report-sex="report.sex"
-                  :data-report-age-estimate="report.age_estimate_formatted"
-                  :data-report-size="report.size"
-                  :data-report-distinctive-features="report.distinctive_features_formatted"
-                  :data-report-condition="report.condition_formatted"
-                  :data-report-temporary-shelter="report.temporary_shelter_formatted"
-                  :data-report-image="report.image_url"
-                  :data-report-type-formatted="report.type_formatted"
-                  >Update Report
-                </a>
+                <a class="btn btn-info fw-bolder ms-1" :href="`/users/my-reports`">Manage Report</a>
               </div>
             </div>
           </div>

@@ -541,7 +541,7 @@
 
   function validateShelter(){
     const shelter = form.temporary_shelter.trim()
-    const regex = /^[A-Za-z\s]+$/
+    const regex = /^[\p{L}0-9\s.,#'"\-()/]{5,100}$/u
 
     if(!shelter){
       shelterIsValid.value = true

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use PhpParser\Node\Expr\Cast;
@@ -11,6 +12,7 @@ use Str;
 class AdoptionApplication extends Model
 {
   use SoftDeletes;
+  use HasFactory;
   public const CREATED_AT = 'application_date';
   public const UPDATED_AT = 'updated_at';
   protected $fillable = [
@@ -51,12 +53,36 @@ class AdoptionApplication extends Model
     'review_notes_formatted',
     'reviewed_date_formatted',
     'reviewed_by_formatted',
-    'inspection_schedule_status'
+    'inspection_schedule_status',
+    'can_archive'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
+
+  public function getCanArchiveAttribute()
+  {
+    return $this->canArchive();
+  }
   
+  public function canArchive()
+  {
+    if(!$this->trashed()){
+      if($this->status === 'cancelled'){
+        return true;
+      }
+
+      if($this->status === 'approved'){
+        return true;
+      }
+
+      if($this->status === 'rejected'){
+        return true;
+      }
+    }else{
+      return false;
+    }
+  }
   public function getInspectionScheduleStatusAttribute()
   {
     return $this->inspectionSchedule?->inspectionStatus();

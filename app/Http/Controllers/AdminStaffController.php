@@ -75,7 +75,7 @@ class AdminStaffController extends Controller
         return $query->where('adoption_status', $statusFilter);
       })
       ->orderBy('id', 'asc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
 
     $previousUrl = url()->previous();
@@ -140,7 +140,7 @@ class AdminStaffController extends Controller
         return $query->orderBy('created_at',$sortOrder);
       })
       ->orderBy('created_at', 'desc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
 
     $previousUrl = url()->previous();
@@ -175,9 +175,6 @@ class AdminStaffController extends Controller
     $donations = Donation::query()
       ->withTrashed()
       ->with('user')
-      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
-        $query->where('status', '!=', 'archived');
-      })
       ->when($search, function ($query, $search) {
         $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
@@ -200,8 +197,8 @@ class AdminStaffController extends Controller
       ->when($sortOrder, function($query,$sortOrder){
         return $query->orderBy('donation_date',$sortOrder);
       })
-
-      ->paginate(9)
+      ->orderBy('donation_date', 'desc')
+      ->paginate(10)
     ->withQueryString();
 
     $previousUrl = url()->previous();
@@ -236,23 +233,25 @@ class AdminStaffController extends Controller
       ->withTrashed()
       ->with(['user','rescue','inspectionSchedule'])
       ->withCount('inspectionSchedule')
-      ->when(!$statusFilter || $statusFilter !== 'archived', function ($query) {
-        $query->where('status', '!=', 'archived');
-      })
       ->when($search, function ($query, $search) {
-        $columns = ['reason_for_adoption','status',];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
-
-        return $query->where(function ($q) use ($keywords, $columns) {
+          
+        return $query->where(function ($q) use ($keywords) {
           foreach ($keywords as $word) {
-            $q->where(function ($subQ) use ($word, $columns) {
-              foreach ($columns as $col) {
-                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
-              }
-            })
-            ->orWhereHas('rescue', function ($rescueQ) use ($word) {
-              $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
-            });;
+            $q->where(function ($subQ) use ($word) {
+              // Search in direct columns
+              $subQ->whereRaw("LOWER(reason_for_adoption) LIKE LOWER(?)", ['%' . $word . '%'])
+                ->orWhereRaw("LOWER(status) LIKE LOWER(?)", ['%' . $word . '%'])
+                // Search in rescue name
+              ->orWhereHas('rescue', function ($rescueQ) use ($word) {
+                $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
+              })
+              // Search in user first name
+              ->orWhereHas('user', function ($userQ) use ($word) {
+              $userQ->whereRaw("LOWER(first_name) LIKE LOWER(?)", ['%' . $word . '%'])
+                ->orWhereRaw("LOWER(last_name) LIKE LOWER(?)", ['%' . $word . '%']);
+              });
+            });
           }
         });
       })
@@ -263,7 +262,7 @@ class AdminStaffController extends Controller
         return $query->orderBy('application_date',$sortOrder);
       })
       ->orderBy('application_date', 'desc')
-      ->paginate(9)
+      ->paginate(10)
     ->withQueryString();
     $user = Auth::user();
     $inspectors = User::query()->whereIn('role', ['admin', 'staff'])->get();

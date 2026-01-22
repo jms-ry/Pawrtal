@@ -50,7 +50,6 @@ class RescueController extends Controller
       'rescues' => $rescues,
       'user' => $user ? [
         'id' => $user->id,
-        'full_name' => $user->fullName(),
         'isAdminOrStaff' => $user->isAdminOrStaff(),
         'canAdopt' => $user->canAdopt(),
         'address' => $user->address,
@@ -78,6 +77,8 @@ class RescueController extends Controller
   */
   public function store(StoreRescueRequest $request)
   {
+    $this->authorize('create', Rescue::class);
+    
     $requestData = $request->validated();
 
     if ($request->hasFile('profile_image')) {
@@ -108,15 +109,15 @@ class RescueController extends Controller
   public function show(Rescue $rescue)
   { 
     $user = Auth::user();
-    
-    if (!$user?->can('view', $rescue)) {
+
+    if ($rescue->trashed() && (!$user || !$user->isAdminOrStaff())) {
       return redirect()->back()->with('error', 'You are not authorized to view this rescue profile.');
     }
+    
     $randomImages = collect($rescue->images_url)->shuffle()->take(3);
     $notEmpty = $randomImages->isNotEmpty();
     
     $previousUrl = url()->previous();
-    $backContext = null;
     $path = parse_url($previousUrl, PHP_URL_PATH);
     $segments = collect(explode('/', trim($path, '/')));
     $urlText = '';
@@ -136,7 +137,6 @@ class RescueController extends Controller
         'address' => $user->address,
         'household' => $user->household,
       ] : null,
-      'backContext' => $backContext,
       'notEmpty' => $notEmpty,
       'rescue' => $rescue,
       'randomImages' => $randomImages,
@@ -159,11 +159,12 @@ class RescueController extends Controller
   */
   public function update(UpdateRescueRequest $request, Rescue $rescue)
   { 
-    $requestData = $request->all();
+    $this->authorize('update', $rescue);
+    $requestData = $request->validated();
 
     if($request->hasFile('profile_image')){
-      if($rescue->profile_image){
-        Storage::delete($rescue->profile_image);
+      if($rescue->profile_image && Storage::disk('public')->exists($rescue->profile_image)){
+        Storage::disk('public')->delete($rescue->profile_image);
       }
 
       $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');
@@ -194,14 +195,20 @@ class RescueController extends Controller
   */
   public function destroy(Rescue $rescue)
   {
-    $rescue = Rescue::find($rescue->id);
+    $this->authorize('delete', $rescue);
+
     $rescue->delete();
 
     return redirect()->back()->with('warning', 'Rescue profile for '. $rescue->name. ' has been archived!');
   }
 
+  /**
+   * Restore the specified resource from storage.
+   */
   public function restore(Rescue $rescue)
   {
+    $this->authorize('restore', $rescue);
+    
     $rescue->restore();
 
     return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' has been restored!');

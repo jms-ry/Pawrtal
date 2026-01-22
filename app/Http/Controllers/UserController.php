@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -39,6 +40,8 @@ class UserController extends Controller
   */
   public function show(User $user)
   {
+    $this->authorize('view', $user);
+    
     $previousUrl = url()->previous();
       
     $user->load(['address', 'household']);
@@ -118,7 +121,7 @@ class UserController extends Controller
         return $query->orderBy('created_at',$sortOrder);
       })
       ->orderBy('created_at', 'desc')
-      ->paginate(5)
+      ->paginate(10)
     ->withQueryString();
     
     return Inertia::render('User/MyReports',[
@@ -170,7 +173,7 @@ class UserController extends Controller
         return $query->orderBy('donation_date',$sortOrder);
       })
       ->orderBy('donation_date', 'desc')
-      ->paginate(5)
+      ->paginate(10)
     ->withQueryString();
 
     return Inertia::render('User/MyDonations',[
@@ -190,6 +193,11 @@ class UserController extends Controller
   {
     $previousUrl = url()->previous();
     $user = Auth::user();
+
+    if($user->isAdminOrStaff()){
+      return redirect()->back()->with('error', 'You are not authorized to access this page.');
+    }
+    
     $search = $request->get('search');
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
@@ -199,19 +207,24 @@ class UserController extends Controller
       ->withCount('inspectionSchedule')
       ->with(['user','rescue'])
       ->when($search, function ($query, $search) {
-        $columns = ['reason_for_adoption','status',];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
-
-        return $query->where(function ($q) use ($keywords, $columns) {
+          
+        return $query->where(function ($q) use ($keywords) {
           foreach ($keywords as $word) {
-            $q->where(function ($subQ) use ($word, $columns) {
-              foreach ($columns as $col) {
-                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
-              }
-            })
-            ->orWhereHas('rescue', function ($rescueQ) use ($word) {
-              $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
-            });;
+            $q->where(function ($subQ) use ($word) {
+              // Search in direct columns
+              $subQ->whereRaw("LOWER(reason_for_adoption) LIKE LOWER(?)", ['%' . $word . '%'])
+                ->orWhereRaw("LOWER(status) LIKE LOWER(?)", ['%' . $word . '%'])
+                // Search in rescue name
+              ->orWhereHas('rescue', function ($rescueQ) use ($word) {
+                $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
+              })
+              // Search in user first name
+              ->orWhereHas('user', function ($userQ) use ($word) {
+              $userQ->whereRaw("LOWER(first_name) LIKE LOWER(?)", ['%' . $word . '%'])
+                ->orWhereRaw("LOWER(last_name) LIKE LOWER(?)", ['%' . $word . '%']);
+              });
+            });
           }
         });
       })
@@ -222,7 +235,7 @@ class UserController extends Controller
         return $query->orderBy('application_date',$sortOrder);
       })
       ->orderBy('application_date', 'desc')
-      ->paginate(5)
+      ->paginate(10)
     ->withQueryString();
     return Inertia::render('User/MyAdoptionApp',[
       'user' => $user ? ['fullName' => $user->fullName(),'id' => $user->id,'role' =>$user->role] : null,
@@ -240,6 +253,11 @@ class UserController extends Controller
   {
     $previousUrl = url()->previous();
     $user = Auth::user();
+
+    if(!$user->isAdminOrStaff()){
+      return redirect()->back()->with('error', 'You are not authorized to access this page.');
+    }
+
     $schedules = $user->inspectionSchedules()
       ->with(['user','adoptionApplication'])
       ->get()->map(function ($schedule) {
@@ -271,15 +289,11 @@ class UserController extends Controller
 
     $notifications = $user->notifications()
       ->when($search, function ($query, $search) {
-        $columns = ['data'];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);
-        return $query->where(function ($q) use ($keywords, $columns) {
+
+        return $query->where(function ($q) use ($keywords) {
           foreach ($keywords as $word) {
-            $q->where(function ($subQ) use ($word, $columns) {
-              foreach ($columns as $col) {
-                $subQ->orWhereRaw("LOWER($col) LIKE LOWER(?)", ['%' . $word . '%']);
-              }
-            });
+            $q->orWhereRaw("LOWER((data::jsonb->>'message')) LIKE LOWER(?)", ['%' . $word . '%']);
           }
         });
       })
@@ -287,7 +301,7 @@ class UserController extends Controller
         return $query->whereNull('read_at'); 
       })
       ->when($readAtFilter === 'read', function ($query) {
-          return $query->whereNotNull('read_at'); 
+        return $query->whereNotNull('read_at'); 
       })
       ->when($sortOrder, function ($query, $sortOrder) {
         return $query->reorder()->orderBy('created_at', $sortOrder);
@@ -310,24 +324,38 @@ class UserController extends Controller
 
   public function markNotificationAsRead(Request $request, $id)
   {
-    $notification = $request->user()
-      ->notifications()
-      ->where('id', $id)
-    ->first();
+    $notification = DatabaseNotification::find($id);
 
-    if ($notification) {
-      $notification->markAsRead();
+    if (!$notification) {
+      return response()->json(['success' => false, 'message' => 'Notification not found'], 404);
     }
 
+    if ($notification->notifiable_id !== $request->user()->id) {
+      return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
+    }
+    if ($notification->read_at !== null) {
+      return response()->json(['success' => false, 'message' => 'Notification already read'], 400);
+    }
+
+    $notification->markAsRead();
+    
     return response()->json(['success' => true]);
   }
 
   public function markAllNotificationsAsRead(Request $request)
   {
-    $request->user()
-      ->unreadNotifications
-    ->markAsRead();
+    $user = $request->user();
+
+    if ($user->unreadNotifications->isEmpty()) {
+      return response()->json([
+        'success' => false,
+        'message' => 'No unread notifications found.',
+      ], 404);
+    }
+
+    $user->unreadNotifications->markAsRead();
 
     return response()->json(['success' => true]);
   }
+
 }

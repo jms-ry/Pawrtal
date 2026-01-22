@@ -20,15 +20,15 @@ class ReportFactory extends Factory
     return [
       'user_id' => User::factory(),
       'type' => 'lost', // default type
-      'species' => $this->faker->randomElement(['Dog', 'Cat']),
-      'breed' => $this->faker->word(),
-      'color' => $this->faker->safeColorName(),
-      'sex' => $this->faker->randomElement(['male', 'female']),
-      'age_estimate' => $this->faker->numberBetween(1, 10),
-      'size' => $this->faker->randomElement(['small', 'medium', 'large']),
-      'distinctive_features' => $this->faker->sentence(),
-      'image' => $this->faker->imageUrl(640, 480, 'animals', true),
-      'status' => $this->faker->randomElement(['active', 'resolved']),
+      'species' => fake()->randomElement(['Dog', 'Cat']),
+      'breed' => fake()->word(),
+      'color' => fake()->safeColorName(),
+      'sex' => fake()->randomElement(['male', 'female']),
+      'age_estimate' => fake()->numberBetween(1, 10),
+      'size' => fake()->randomElement(['small', 'medium', 'large']),
+      'distinctive_features' => fake()->sentence(),
+      'image' => fake()->imageUrl(640, 480, 'animals', true),
+      'status' => 'active',
       'deleted_at' => null,
     ];
   }
@@ -37,9 +37,9 @@ class ReportFactory extends Factory
   {
     return $this->state(fn (array $attributes) => [
       'type' => 'lost',
-      'animal_name' => $this->faker->firstName(),
-      'last_seen_location' => $this->faker->streetAddress(),
-      'last_seen_date' => $this->faker->date(),
+      'animal_name' => fake()->firstName(),
+      'last_seen_location' => fake()->streetAddress(),
+      'last_seen_date' => fake()->date(),
       // remove found-only fields just to keep data consistent
       'found_location' => null,
       'found_date' => null,
@@ -52,10 +52,10 @@ class ReportFactory extends Factory
   {
     return $this->state(fn (array $attributes) => [
       'type' => 'found',
-      'found_location' => $this->faker->streetAddress(),
-      'found_date' => $this->faker->date(),
-      'condition' => $this->faker->sentence(),
-      'temporary_shelter' => $this->faker->company(),
+      'found_location' => fake()->streetAddress(),
+      'found_date' => fake()->date(),
+      'condition' => fake()->sentence(),
+      'temporary_shelter' => fake()->company(),
       // remove lost-only fields
       'animal_name' => null,
       'last_seen_location' => null,

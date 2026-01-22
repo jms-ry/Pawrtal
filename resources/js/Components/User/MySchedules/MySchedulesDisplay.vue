@@ -5,29 +5,30 @@
         <!-- Calendar View (Desktop Only) -->
         <div class="d-none d-md-block" ref="calendarEl"></div>
 
-       <!-- List View (Mobile Only) -->
+        <!-- List View (Mobile Only) -->
         <div class="d-md-none inspection-list">
-          <div 
-            v-for="schedule in sortedSchedules" 
-            :key="schedule.id"
-            class="inspection-list-item mb-3 p-3 border rounded"
-            :class="`border-start-${getStatusClass(schedule.status)} border-start-4`"
-          >
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h6 class="mb-0 fw-bold">{{ schedule.inspector_name || 'Unassigned' }}</h6>
-            <span :class="`badge bg-${getStatusClass(schedule.status)}`">
-              {{ schedule.status.toUpperCase() }}
-            </span>
+          <div v-if="sortedSchedules.length > 0" v-for="schedule in sortedSchedules" :key="schedule.id" class="inspection-list-item mb-3 p-3 border rounded" :class="`border-start-${getStatusClass(schedule.status)} border-start-4`">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h6 class="mb-0 fw-bold">{{ schedule.inspector_name || 'Unassigned' }}</h6>
+              <span :class="`badge bg-${getStatusClass(schedule.status)}`">
+                {{ schedule.status.toUpperCase() }}
+              </span>
+            </div>
+            <div class="text-muted small mb-1">
+              <i class="bi bi-geo-alt"></i> {{ schedule.inspection_location }}
+            </div>
+            <div class="text-muted small">
+              <i class="bi bi-calendar-event"></i> {{ formatDate(schedule.inspection_date) }}
+            </div>
+            <div v-show="schedule.status !== 'done' && schedule.status !== 'cancelled'" class="mt-3">
+              <button class="btn btn-primary btn-sm me-1" :data-schedule-id="schedule.id" data-bs-toggle="modal" data-bs-target="#markDoneModal">Mark Done</button>
+              <button class="btn btn-danger btn-sm ms-1" :data-schedule-id="schedule.id" data-bs-toggle="modal" data-bs-target="#cancelInspectionModal">Cancel Inspection</button>
+            </div>
           </div>
-          <div class="text-muted small mb-1">
-            <i class="bi bi-geo-alt"></i> {{ schedule.inspection_location }}
-          </div>
-          <div class="text-muted small">
-            <i class="bi bi-calendar-event"></i> {{ formatDate(schedule.inspection_date) }}
-          </div>
-          <div v-show="schedule.status !== 'done' && schedule.status !== 'cancelled'" class="mt-3">
-            <button class="btn btn-primary btn-sm me-1" :data-schedule-id="schedule.id" data-bs-toggle="modal" data-bs-target="#markDoneModal">Mark Done</button>
-            <button class="btn btn-danger btn-sm ms-1" :data-schedule-id="schedule.id" data-bs-toggle="modal" data-bs-target="#cancelInspectionModal">Cancel Inspection</button>
+          <!-- If there are NO schedules -->
+          <div v-else class="text-center py-5 text-muted">
+            <i class="bi bi-calendar-x display-5 d-block mb-2"></i>
+            <p class="mb-0 fw-semibold">No assigned inspection schedules yet.</p>
           </div>
         </div>
       </div>
@@ -55,7 +56,6 @@
     <MarkDoneModal/>
     <CancelInspectionModal/>
   </div>
-</div>
 </template>
 
 <script setup>

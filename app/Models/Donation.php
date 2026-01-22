@@ -84,7 +84,7 @@ class Donation extends Model
   public function getAmountFormattedAttribute()
   {
     if($this->amount){
-      return '₱ ' + $this->amount;
+      return sprintf('₱ %.2f', $this->amount);
     }else{
       return 'N/A';
     }

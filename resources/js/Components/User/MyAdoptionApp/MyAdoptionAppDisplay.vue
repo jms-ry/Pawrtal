@@ -71,8 +71,8 @@
                     :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                     >Update 
                   </a>
-                  <a v-else-if="!adoptionApplication.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                  <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
+                  <a v-if="adoptionApplication.can_archive" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                  <a v-if="adoptionApplication.deleted_at" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
                 </div>
               </td>
             </tr>
@@ -124,8 +124,8 @@
                   :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                   >Update
                 </a>
-                <a v-else-if="!adoptionApplication.deleted_at" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                <a v-else class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
+                <a v-if="adoptionApplication.can_archive" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                <a v-if="adoptionApplication.deleted_at" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
               </td>
             </tr>
           </tbody>

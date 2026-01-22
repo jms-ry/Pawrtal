@@ -24,7 +24,7 @@ class StoreDonationRequest extends FormRequest
     return [
       'user_id' => 'required|exists:users,id',
       'donation_type' => 'required|in:monetary,in-kind',
-      'amount' => 'nullable|numeric|min:0',
+      'amount' => 'required_if:donation_type,monetary|numeric|min:1',
 
       // multiple items
       'item_description'   => 'required_if:donation_type,in-kind|array',
@@ -33,8 +33,8 @@ class StoreDonationRequest extends FormRequest
       'item_quantity'   => 'required_if:donation_type,in-kind|array',
       'item_quantity.*' => 'integer|min:1',
 
-      'donation_image'   => 'required_if:donation_type,in-kind|array',
-      'donation_image.*' => 'image|mimes:jpg,jpeg,png,gif|max:2048',
+      'donation_image' => 'nullable|array',
+      'donation_image.*' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
 
       'pick_up_location'   => 'nullable|array',
       'pick_up_location.*' => 'nullable|string|max:5000',

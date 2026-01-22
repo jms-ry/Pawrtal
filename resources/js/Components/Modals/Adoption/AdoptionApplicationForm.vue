@@ -147,11 +147,11 @@
       return false
     }
 
-    const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx']
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf']
     const fileExtension = file.name.split('.').pop().toLowerCase()
     if (!allowedExtensions.includes(fileExtension)) {
       input.classList.add('is-invalid')
-      validIdErrorMessage.value = "Only JPG, JPEG, PNG, PDF, DOC, and DOCX are allowed."
+      validIdErrorMessage.value = "Only JPG, JPEG, PNG, and PDF are allowed."
       return false
     }
 
@@ -179,12 +179,12 @@
       return false
     }
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"]
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
 
       if (!allowedTypes.includes(file.type)) {
-        supportingDocumentsErrorMessage.value = `File "${file.name}" is not a valid format. Only JPEG, JPG, PNG, PDF, DOC, DOCX allowed.`
+        supportingDocumentsErrorMessage.value = `File "${file.name}" is not a valid format. Only JPEG, JPG, PNG, and PDF allowed.`
         input.classList.add("is-invalid")
         input.classList.remove("is-valid")
         return false

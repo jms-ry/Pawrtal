@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
 class Rescue extends Model
 {
   use SoftDeletes;
+  use HasFactory;
   protected $fillable = [
     'name',
     'species',
@@ -28,6 +30,7 @@ class Rescue extends Model
 
   protected $casts = [
     'images' => 'array',
+    'spayed_neutered' => 'boolean',
   ];
 
   protected $appends = [
@@ -104,6 +107,10 @@ class Rescue extends Model
   }
   public function getNameFormattedAttribute()
   {
+    if($this->trashed())
+    {
+      return Str::headline($this->name). ' (Archived)';
+    }
     return Str::headline($this->name);
   }
   public function getProfileImageUrlAttribute()

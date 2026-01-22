@@ -17,7 +17,7 @@
               <span class="mt-2 ms-2 me-4">Reason for Adoption: </span>
               <textarea readonly class="form-control mt-2 fw-bolder">{{ reasonForAdoption }}</textarea>
             </div>
-            <div v-show="user?.role !== 'regular_user' && inspectionScheduleCount === 0 && applicationStatus !=='cancelled'" >
+            <div v-show="user?.role !== 'regular_user' && applicationStatus ==='pending'" >
               <hr class="text-dark mt-3 mb-2">
               <h6 class="fw-bolder text-uppercase font-monospace">Applicant Address Details:</h6>
               <div class="d-flex flex-column align-items-start ms-2">
@@ -120,13 +120,19 @@
           </div>
           <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="align-self-start">
             <span data-bs-toggle="tooltip" data-bs-placement="top" title="Make sure to verify all the documents.">
-              <button type="button" class="btn btn-info" disabled data-bs-toggle="modal" data-bs-target="#setInspectionScheduleModal" 
-                :data-application-id="applicationId"
-                :data-application-start-date="inspectionStartDate"
-                :data-application-end-date="inspectionEndDate" 
-                :data-application-address="fullAddress"
-                >Set Inspection Schedule
-              </button>
+              <div class="">
+                <button type="button" class="btn btn-info dropdown-toggle" disabled data-bs-toggle="dropdown" id="takeActionButton">Take Action</button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#setInspectionScheduleModal"
+                    :data-application-id="applicationId"
+                    :data-application-start-date="inspectionStartDate"
+                    :data-application-end-date="inspectionEndDate" 
+                    :data-application-address="fullAddress"
+                    >Set Inspection Schedule</a>
+                  </li>
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#rejectApplicationModal" :data-application-id="applicationId">Reject Application</a></li>
+                </ul>
+              </div>
             </span>
           </div>
           <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'under_review'" class="align-self-start">
@@ -177,6 +183,10 @@
   <MakeDecisionModal
     :user="user"
   />
+
+  <RejectApplicationModal
+    :user="user"
+  />
 </template>
 
 <script setup>
@@ -184,7 +194,8 @@
   import CancelApplicationModal from './CancelApplicationModal.vue'
   import SetInspectionSchedule from '../../SetInspectionSchedule.vue'
   import { Modal, Tooltip } from 'bootstrap'
-  import MakeDecisionModal from '../../MakeDecisionModal.vue'
+  import MakeDecisionModal from '../../AdoptionApplication/MakeDecisionModal.vue'
+  import RejectApplicationModal from '../../AdoptionApplication/RejectApplicationModal.vue'
 
   const props = defineProps({
     user: {
@@ -217,7 +228,7 @@
   function checkIfAllVisited() {
     if (allDocsVisited.value) {
       nextTick(() => {
-        const btn = document.querySelector('[data-bs-target="#setInspectionScheduleModal"]')
+        const btn = document.querySelector('#takeActionButton')
         if (btn) {
           btn.removeAttribute('disabled')
           const tooltip = Tooltip.getInstance(btn)

@@ -22,14 +22,13 @@ class UpdateHouseholdRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'house_structure' => 'nullable|string|max:255',
-      'household_members' => 'nullable|integer|min:1',
-      'have_children' => 'nullable|in:true,false',
+      'house_structure' => 'required|string|max:255',
+      'household_members' => 'required|integer|min:1',
+      'have_children' => 'required|in:true,false',
       'number_of_children' => 'nullable|integer|min:1',
-      'has_other_pets' => 'nullable|in:true,false',
+      'has_other_pets' => 'required|in:true,false',
       'current_pets' => 'nullable|string|max:255',
       'number_of_current_pets' => 'nullable|integer|min:1',
-      'user_id' => 'required|exists:users,id',
     ];
   }
 }

@@ -83,7 +83,7 @@ class ReportController extends Controller
   */
   public function store(StoreReportRequest $request)
   {
-    $requestData = $request->all();
+    $requestData = $request->validated();
 
     if ($request->hasFile('image')) {
       $imagePath = $request->file('image')->store('images/reports/reports_images', 'public');
@@ -117,11 +117,13 @@ class ReportController extends Controller
   */
   public function update(UpdateReportRequest $request, Report $report)
   {
-    $requestData = $request->all();
+    $this->authorize('update',$report);
+
+    $requestData = $request->validated();
 
     if ($request->hasFile('image')) {
-      if($report->image){
-        Storage::delete($report->image);
+      if($report->image && Storage::disk('public')->exists($report->image)){
+        Storage::disk('public')->delete($report->image);
       }
       $imagePath = $request->file('image')->store('images/reports/reports_images', 'public');
       $requestData['image'] = $imagePath;
@@ -139,6 +141,12 @@ class ReportController extends Controller
   */
   public function destroy(Report $report)
   {
+    $this->authorize('delete',$report);
+
+    if($report->status === 'active'){
+      return redirect()->back()->with('error', 'Active reports cannot be archived.');
+    }
+
     $report->delete();
 
     return redirect()->back()->with('warning',  'Report has been archived!');
@@ -146,6 +154,8 @@ class ReportController extends Controller
 
   public function restore(Report $report)
   {
+    $this->authorize('restore', $report);
+
     $report->restore();
 
     return redirect()->back()->with('success',  'Report has been restored!');

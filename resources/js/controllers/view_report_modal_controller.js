@@ -88,8 +88,9 @@ export default class extends Controller {
       const activeFields = viewReportModal.querySelector('#active-fields');
       const isOwnedByLoggedUser = button.getAttribute('data-report-owned-by-logged-user') === "true";
       const isLoggedUserAdminOrStaff = button.getAttribute('data-report-logged-user-is-adminstaff') === "true";
-
-      if( status === 'active')
+      const hasUser = button.getAttribute('data-report-has-logged-user') ===  "true";
+      
+      if( status === 'active' && hasUser)
       {
         activeFields.classList.remove('d-none');
         statusLabel.classList.remove('text-bg-success');
@@ -120,14 +121,10 @@ export default class extends Controller {
 
       const isAbleToDelete = isOwnedByLoggedUser || isLoggedUserAdminOrStaff;
       const deleteButtonDiv = this.element.querySelector('#deleteReportButtonDiv');
-      const loggedAdminIsOwner = isOwnedByLoggedUser && isLoggedUserAdminOrStaff;
 
       if(isAbleToDelete){
         if(status === 'active'){
           deleteButtonDiv.classList.add('d-none');
-          if(loggedAdminIsOwner || isOwnedByLoggedUser){
-            deleteButtonDiv.classList.remove('d-none');
-          }
         }else{
           deleteButtonDiv.classList.remove('d-none');
         }

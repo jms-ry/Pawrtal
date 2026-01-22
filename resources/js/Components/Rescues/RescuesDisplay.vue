@@ -24,7 +24,7 @@
     <div v-else class="g-4 row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
       <div v-for="rescue in rescues.data" :key="rescue.id" class="col-12 col-md-3 rounded-4 border-primary-subtle bg-warning-subtle mx-2 px-1 mt-4 mt-md-5" data-aos="zoom-in-up" data-aos-delay="200">
         <div class="my-2">
-          <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ rescue.name }}</span>
+          <span class="text-dark fw-bolder text-uppercase fs-4 mb-3 ms-2 mt-5 p-2 font-monospace">{{ rescue.name_formatted }}</span>
           <span v-if="rescue.is_adopted" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-warning bg-opacity-75 text-dark fw-bold rounded"><i class="bi bi-heart-fill"></i></span>
           <span v-else-if="rescue.adoption_applications_count > 0" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-info fs-6 bg-opacity-75 text-dark fw-bold rounded">{{rescue.adoption_applications_count}}</span>
         </div>

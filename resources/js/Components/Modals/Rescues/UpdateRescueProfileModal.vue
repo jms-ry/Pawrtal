@@ -149,7 +149,7 @@
 </template>
 
 <script setup>
-  import { useForm } from '@inertiajs/vue3'
+  import { useForm, router } from '@inertiajs/vue3'
   import { Modal } from 'bootstrap'
   import { onMounted, watch, ref, computed } from 'vue'
 
@@ -248,10 +248,20 @@
    const imagesError = ref(null)
   function handleImagesChange(event) {
     const files = event.target.files
-
+    const input = document.getElementById('images')
+    
     if (!files || files.length === 0) {
       form.images = null
       imagesError.value = null 
+      input.classList.remove('is-valid', 'is-invalid')
+      return
+    }
+
+    if (files.length > 5) {
+      imagesError.value = 'You can only upload a maximum of 5 images at once.'
+      form.images = null
+      input.classList.remove('is-valid')
+      input.classList.add('is-invalid')
       return
     }
 
@@ -274,9 +284,13 @@
     if (errors.length > 0) {
       imagesError.value = errors.join(' ')
       form.images = null
+      input.classList.remove('is-valid')
+      input.classList.add('is-invalid')
     } else {
       imagesError.value = null
       form.images = files
+      input.classList.remove('is-invalid')
+      input.classList.add('is-valid')
     }
   }
 
@@ -739,14 +753,15 @@
       return 
     }
 
-    form.post(`/rescues/${props.rescue.id}`, {
-      data: formData,
-      forceFormData: true,
+    router.post(`/rescues/${props.rescue.id}`, formData, {
       preserveScroll: false,
       preserveState: false,
       onSuccess: () => {
         closeModal()
-     }
+      },
+      onError: (errors) => {
+        console.log('Validation errors:', errors)
+      }
     })
   }
 
