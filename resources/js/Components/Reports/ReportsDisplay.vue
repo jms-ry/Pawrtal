@@ -77,7 +77,18 @@
                 <a class="btn btn-info fw-bolder ms-1" :href="`/users/my-reports`">Manage Report</a>
               </div>
               <div v-else>
-                <a class="btn btn-warning fw-bolder ms-1">Alert Owner</a> 
+                <button 
+                  v-if="user" 
+                  @click="alertOwner(report.id)"
+                  class="btn btn-warning fw-bolder ms-1"
+                  :disabled="alerting === report.id"
+                >
+                  <span v-if="alerting === report.id">
+                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    Sending...
+                  </span>
+                  <span v-else>Alert Owner</span>
+                </button> 
               </div>
             </div>
             <div v-else class="d-flex">
@@ -178,7 +189,7 @@
 
 <script setup>
   import { router } from '@inertiajs/vue3';
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
   import UpdateFoundReportModal from '../Modals/Reports/UpdateFoundReportModal.vue';
   import UpdateLostReportModal from '../Modals/Reports/UpdateLostReportModal.vue';
   import ViewReportModal from '../Modals/Reports/ViewReportModal.vue';
@@ -201,6 +212,21 @@
   const hasActiveFilters = computed(() => {
     return !!(props.filters.search || props.filters.type || props.filters.status || props.filters.sort);
   });
+
+  const alerting = ref(null);
+  const alertOwner = (reportId) => {
+    if (alerting.value) return; // Prevent multiple clicks
+    
+    alerting.value = reportId;
+    
+    router.post(`/reports/${reportId}/alert`, {}, {
+      preserveState: false,
+      preserveScroll: false,
+      onFinish: () => {
+        alerting.value = null;
+      }
+    });
+  };
   const goToPage = (page) => {
     if(page < 1 || page > props.reports.last_page){
       return;

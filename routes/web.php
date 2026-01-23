@@ -15,6 +15,7 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ReportAlertController;
 
 Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
@@ -113,6 +114,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/', [MessageController::class, 'store'])->name('messages.store');
   });
 
+  Route::post('/reports/{report}/alert', [ReportAlertController::class, 'store'])
+    ->name('reports.alert');
 });
 
 
