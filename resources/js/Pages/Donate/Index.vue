@@ -18,7 +18,7 @@
                 <div class="card-body d-flex flex-column text-center">
                   <p class="fs-2 fw-bold font-monospace mt-3 mb-3 p-0">Monetary Donation</p>
                   <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">Every donation, big or small, makes a world of difference. Your support helps us feed hungry rescues, fund lifesaving medical treatments, and give them the love and care they truly deserve. Join us in turning sorrowful pasts into hopeful futures. With your kindness, we can save more lives and bring them closer to loving forever homes.</p>
-                  <a :href="`/donations/create`" class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto">Donate</a>
+                  <a class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto">Donate</a>
                 </div>
               </div>
             </div>
