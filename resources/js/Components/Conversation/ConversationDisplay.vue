@@ -8,15 +8,15 @@
         <div class="p-3 border-bottom bg-white">
           <h5 class="mb-3">Chats</h5>
           <div class="input-group">
-            <span class="input-group-text bg-white border-end-0">
-              <i class="bi bi-search"></i>
-            </span>
             <input 
               type="text" 
               v-model="searchQuery"
-              class="form-control border-start-0 ps-0" 
-              placeholder="Search conversations..."
+              class="form-control ms-1 ps-0" 
+              placeholder="  Search conversations..."
             >
+            <span class="input-group-text bg-white">
+              <i class="bi bi-search"></i>
+            </span>
           </div>
         </div>
 
@@ -64,7 +64,7 @@
       </div>
 
       <!-- Middle Panel: Chat Area -->
-      <div class="col-12 col-md-8 col-lg-6 h-100 d-flex flex-column" :class="{ 'd-none': !selectedConversation && isMobile }">
+      <div class="col-12 col-md-8 col-lg-6 h-100 d-flex flex-column " :class="{ 'd-none': !selectedConversation && isMobile }">
         <template v-if="selectedConversation">
           <!-- Chat Header -->
           <div class="p-3 border-bottom bg-white d-flex align-items-center">
@@ -149,15 +149,15 @@
         <div class="p-3 border-bottom">
           <h5 class="mb-3">New Message</h5>
           <div class="input-group">
-            <span class="input-group-text bg-white border-end-0">
-              <i class="bi bi-search"></i>
-            </span>
             <input 
               v-model="userSearchQuery"
               type="text" 
-              class="form-control border-start-0 ps-0" 
-              placeholder="Search users..."
+              class="form-control ps-0" 
+              placeholder="  Search users..."
             >
+            <span class="input-group-text bg-white">
+              <i class="bi bi-search"></i>
+            </span>
           </div>
         </div>
 

@@ -188,4 +188,30 @@ class StoreReportAlertControllerTest extends TestCase
 
     Notification::assertSentTo($owner, ReportAlertNotification::class, 2);
   }
+
+  public function test_user_can_only_alert_report_owner_once(): void
+  {
+    Notification::fake();
+
+    $owner = User::factory()->create();
+    $alerter = User::factory()->create();
+    $report = Report::factory()->create(['user_id' => $owner->id]);
+
+    // First alert should succeed
+    $response = $this->actingAs($alerter)->post(route('reports.alert', $report));
+
+    $response->assertSessionHas('success', 'The report owner has been notified!');
+    $this->assertDatabaseHas('report_alerts', [
+      'user_id' => $alerter->id,
+      'report_id' => $report->id,
+    ]);
+
+    // Second alert should fail
+    $response = $this->actingAs($alerter)->post(route('reports.alert', $report));
+
+    $response->assertSessionHas('error', 'You have already alerted the owner of this report.');
+    
+    // Only one notification should be sent
+    Notification::assertSentTo($owner, ReportAlertNotification::class, 1);
+  }
 }
