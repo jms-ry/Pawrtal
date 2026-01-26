@@ -32,7 +32,7 @@ class DonationCancelledNotification extends Notification
     return [
       'donation_id' => $this->donation->id,
       'donation_type' => $this->donation->donation_type,
-      'message' => 'Your donation has been cancelled. Check "My Donation History" for more details.',
+      'message' => 'Your '. $this->donation->donation_type . ' donation has been cancelled. Check "My Donation History" for more details.',
       'cancelled_at' => now()->toDateTimeString(),
     ];
   }
