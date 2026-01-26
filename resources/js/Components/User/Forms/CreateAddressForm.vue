@@ -61,7 +61,7 @@
 
   function validateBarangay(){
     const barangay = barangayValue.value.trim()
-    const regex = /^(?!\d)[A-Za-z0-9\s'-]+$/
+    const regex = /^(?!\d)[A-Za-z0-9\s.'-]+$/
 
     if(!barangay){
       barangayIsValid.value = false
