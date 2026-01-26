@@ -21,10 +21,12 @@ class ReportArchivedNotification extends Notification
 
   public function toArray($notifiable): array
   {
+    $reportDetails = $this->report->type . ' ' . strtolower($this->report->species);
+
     return [
       'report_id' => $this->report->id,
       'report_type' => $this->report->type,
-      'message' => 'Your report has been archived. Check "My Reports" for more details.',
+      'message' => 'Your '. $reportDetails . ' report has been archived. Check "My Reports" for more details.',
       'archived_at' => now()->toDateTimeString(),
     ];
   }
