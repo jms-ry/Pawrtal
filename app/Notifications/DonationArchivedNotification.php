@@ -33,7 +33,7 @@ class DonationArchivedNotification extends Notification
     return [
       'donation_id' => $this->donation->id,
       'donation_type' => $this->donation->donation_type,
-      'message' => 'Your donation has been archived. Check "My Donation History" for more details.',
+      'message' => 'Your '. $this->donation->donation_type . ' donation has been archived. Check "My Donation History" for more details.',
       'archived_at' => now()->toDateTimeString(),
     ];
   }
