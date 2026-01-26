@@ -27,6 +27,15 @@ class ReportController extends Controller
     $reports = Report::query()
       ->visibleTo($user)
       ->with('user')
+      ->when($user, function ($query) use ($user) {
+        $query->addSelect([
+          'has_been_alerted_by_user' => \DB::table('report_alerts')
+            ->selectRaw('COUNT(*) > 0')
+            ->whereColumn('report_alerts.report_id', 'reports.id')
+            ->where('report_alerts.user_id', $user->id)
+            ->limit(1)
+        ]);
+      })
       ->when($search, function ($query, $search) {
         $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
         $keywords = preg_split('/[\s,]+/', $search, -1, PREG_SPLIT_NO_EMPTY);

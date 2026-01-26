@@ -307,4 +307,14 @@ class Report extends Model
       return true;
     }
   }
+
+  public function alerts()
+  {
+    return $this->hasMany(ReportAlert::class);
+  }
+
+  public function hasBeenAlertedBy(User $user): bool
+  {
+      return $this->alerts()->where('user_id', $user->id)->exists();
+  }
 }

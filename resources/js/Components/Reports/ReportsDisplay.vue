@@ -78,17 +78,19 @@
               </div>
               <div v-else>
                 <button 
-                  v-if="user" 
-                  @click="alertOwner(report.id)"
+                  v-if="user && !report.has_been_alerted_by_user" 
+                  @click="showConfirmAlert(report.id)"
                   class="btn btn-warning fw-bolder ms-1"
-                  :disabled="alerting === report.id"
                 >
-                  <span v-if="alerting === report.id">
-                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                    Sending...
-                  </span>
-                  <span v-else>Alert Owner</span>
-                </button> 
+                  Alert Owner
+                </button>
+                <button 
+                  v-else-if="user && report.has_been_alerted_by_user"
+                  class="btn btn-secondary fw-bolder ms-1"
+                  disabled
+                >
+                  Already Alerted
+                </button>
               </div>
             </div>
             <div v-else class="d-flex">
@@ -123,6 +125,42 @@
           </div>
         </div>
       </div>
+      
+      <!-- Confirmation Modal -->
+      <div class="modal fade" id="confirmAlertModal" tabindex="-1" aria-labelledby="confirmAlertModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title fw-bolder" id="confirmAlertModalLabel">Confirm Alert</h5>
+            </div>
+            <div class="modal-body">
+              <p class="mb-3">
+                <strong>Important:</strong> You can only send <strong class="text-danger fw-bolder">one alert</strong> per report.
+              </p>
+              <p class="mb-0">
+                Are you sure you want to alert the owner that you have information about their report? 
+                Make sure you have relevant information to share before proceeding.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button 
+                type="button" 
+                class="btn btn-warning fw-bold" 
+                @click="confirmAlertOwner"
+                :disabled="alerting"
+              >
+                <span v-if="alerting">
+                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  Sending...
+                </span>
+                <span v-else>Yes, Send Alert</span>
+              </button>
+              <button type="button" class="btn btn-danger fw-bold ms-2" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <ViewReportModal />
       
       <UpdateLostReportModal 
@@ -190,6 +228,7 @@
 <script setup>
   import { router } from '@inertiajs/vue3';
   import { computed, ref } from 'vue';
+  import { Modal } from 'bootstrap';
   import UpdateFoundReportModal from '../Modals/Reports/UpdateFoundReportModal.vue';
   import UpdateLostReportModal from '../Modals/Reports/UpdateLostReportModal.vue';
   import ViewReportModal from '../Modals/Reports/ViewReportModal.vue';
@@ -213,17 +252,31 @@
     return !!(props.filters.search || props.filters.type || props.filters.status || props.filters.sort);
   });
 
-  const alerting = ref(null);
-  const alertOwner = (reportId) => {
-    if (alerting.value) return; // Prevent multiple clicks
+  const alerting = ref(false);
+  const selectedReportId = ref(null);
+  let confirmModal = null;
+  const showConfirmAlert = (reportId) => {
+    selectedReportId.value = reportId;
     
-    alerting.value = reportId;
+    if (!confirmModal) {
+      confirmModal = new Modal(document.getElementById('confirmAlertModal'));
+    }
     
-    router.post(`/reports/${reportId}/alert`, {}, {
+    confirmModal.show();
+  };
+
+  const confirmAlertOwner = () => {
+    if (alerting.value || !selectedReportId.value) return;
+    
+    alerting.value = true;
+    
+    router.post(`/reports/${selectedReportId.value}/alert`, {}, {
       preserveState: false,
       preserveScroll: false,
       onFinish: () => {
-        alerting.value = null;
+        alerting.value = false;
+        confirmModal.hide();
+        selectedReportId.value = null;
       }
     });
   };
