@@ -390,7 +390,7 @@
 
   function validateShelter(){
     const shelter = shelterValue.value.trim()
-    const regex = /^[A-Za-z\s]+$/
+    const regex = /^[\p{L}0-9\s.,#'"\-()/]{5,100}$/u
 
     if(!shelter){
       shelterIsValid.value = true
@@ -406,7 +406,7 @@
 
     if(!regex.test(shelter)){
       shelterIsValid.value = false
-      shelterErrorMessage.value = "Temporary Shelter must not start with a number and no special characters."
+      shelterErrorMessage.value = "Enter a valid temporary shelter (letters, numbers, spaces, and basic punctuation, min 5 characters)."
       return false
     }
 
