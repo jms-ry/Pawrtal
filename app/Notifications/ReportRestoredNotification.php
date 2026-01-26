@@ -23,10 +23,12 @@ class ReportRestoredNotification extends Notification
 
   public function toArray($notifiable): array
   {
+    $reportDetails = $this->report->type . ' ' . strtolower($this->report->species);
+
     return [
       'report_id' => $this->report->id,
       'report_type' => $this->report->type,
-      'message' => 'Your report has been restored. Check "My Reports" for more details.',
+      'message' => 'Your '. $reportDetails . ' report has been restored. Check "My Reports" for more details.',
       'restored_at' => now()->toDateTimeString(),
     ];
   }
