@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/rescues', [RescueController::class, 'store'])->name('rescues.store');
 
   // update - update a specific rescue
+  Route::put('/rescues/{rescue}', [RescueController::class, 'update'])->name('rescues.update');
   Route::patch('/rescues/{rescue}', [RescueController::class, 'update'])->name('rescues.update');
 
   // destroy - delete a specific rescue
@@ -84,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 
   // update - update a specific report
+  Route::put('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
   Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
 
   // destroy - delete a specific report
