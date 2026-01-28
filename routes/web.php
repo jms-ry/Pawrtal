@@ -32,11 +32,11 @@ Route::get('/reports', [ReportController::class, 'index'])->name('reports.index'
 Route::middleware('guest')->group(function () {
   Route::get('register', function () {
     return view('register');
-  })->name('register');
+  });
 
   Route::get('login', function () {
     return view('sign_in');
-  })->name('login');
+  });
 });
 
 Route::middleware(['auth'])->group(function () {
