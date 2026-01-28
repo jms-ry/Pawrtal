@@ -13,6 +13,7 @@ use App\Models\AdoptionApplication;
 use App\Observers\AdoptionApplicationObserver;
 use App\Models\InspectionSchedule;
 use App\Observers\InspectionScheduleObserver;
+use Illuminate\Support\Facades\URL;
 class AppServiceProvider extends ServiceProvider
 {
   /**
@@ -47,5 +48,9 @@ class AppServiceProvider extends ServiceProvider
     Donation::observe(DonationObserver::class);
     AdoptionApplication::observe(AdoptionApplicationObserver::class);
     InspectionSchedule::observe(InspectionScheduleObserver::class);
+
+    if ($this->app->environment('production')) {
+      URL::forceScheme('https');
+    }
   }
 }
