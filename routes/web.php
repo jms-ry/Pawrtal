@@ -74,7 +74,6 @@ Route::middleware(['auth'])->group(function () {
 
   // update - update a specific rescue
   Route::put('/rescues/{rescue}', [RescueController::class, 'update'])->name('rescues.update');
-  Route::patch('/rescues/{rescue}', [RescueController::class, 'update'])->name('rescues.update');
 
   // destroy - delete a specific rescue
   Route::delete('/rescues/{rescue}', [RescueController::class, 'destroy'])->name('rescues.destroy');
@@ -86,7 +85,6 @@ Route::middleware(['auth'])->group(function () {
 
   // update - update a specific report
   Route::put('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
-  Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
 
   // destroy - delete a specific report
   Route::delete('/reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
