@@ -2,31 +2,28 @@
 set -e
 
 echo "================================"
-echo "🚀 Starting Deployment Process"
+echo "CUSTOM DEPLOY SCRIPT RUNNING"
 echo "================================"
 
 echo ""
-echo "📦 Running migrations..."
+echo "Running migrations..."
 php artisan migrate --force
-echo "✅ Migrations completed!"
 
 echo ""
-echo "🌱 Seeding database..."
+echo "SEEDING DATABASE NOW..."
 php artisan db:seed --force
-echo "✅ Database seeded!"
+echo "SEEDING COMPLETED!"
 
 echo ""
-echo "🔗 Linking storage..."
+echo "Linking storage..."
 php artisan storage:link
-echo "✅ Storage linked!"
 
 echo ""
-echo "⚡ Caching configuration..."
+echo "Caching..."
 php artisan config:cache
-php artisan route:cache
+php artisan route:cache  
 php artisan view:cache
-echo "✅ Caching completed!"
 
 echo ""
-echo "🎯 Starting Laravel server..."
-php artisan serve --host=0.0.0.0 --port=$PORT
+echo "Starting server..."
+exec php artisan serve --host=0.0.0.0 --port=$PORT
