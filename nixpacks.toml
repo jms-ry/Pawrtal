@@ -21,3 +21,6 @@ cmds = [
     "npm run build",
     "chmod +x deploy.sh"
 ]
+
+[phases.cache]
+directories = ["public/build"]
