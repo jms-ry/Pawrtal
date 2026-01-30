@@ -17,11 +17,18 @@ php artisan migrate --force
 # echo "SEEDING COMPLETED!"
 
 echo ""
-echo "Linking storage..."
-php artisan storage:link
+echo "Clearing old caches..."
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
 
 echo ""
-echo "Caching..."
+echo "Rebuilding assets..."
+npm run build
+
+echo ""
+echo "Caching fresh config..."
 php artisan config:cache
 php artisan route:cache  
 php artisan view:cache
