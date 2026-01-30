@@ -8,8 +8,7 @@ nixPkgs = [
     "php82Extensions.xml",
     "php82Extensions.curl",
     "php82Extensions.zip",
-    "php82Extensions.gd",
-    "nodejs-22_x"
+    "php82Extensions.gd"
 ]
 
 [phases.build]
@@ -19,5 +18,6 @@ cmds = [
     "php artisan route:clear",
     "php artisan view:clear",
     "npm ci",
+    "npm run build",
     "chmod +x deploy.sh"
 ]
