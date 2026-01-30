@@ -94,8 +94,8 @@
         <div class="d-none d-sm-flex flex-column flex-sm-row justify-content-end ms-auto">
           <!-- Guest -->
           <template v-if="!user">
-            <a :href="`/register`" class="btn btn-info fw-bolder me-1" style="background-color: #FFF44F;">
-              <i class="bi bi-person me-1 fs-5"></i> Register
+            <a :href="`/register`" class="btn btn-warning fw-bolder me-1" style="background-color: #FFF44F;">
+              <i class="bi bi-person me-1 fs-5"></i> Sign-up
             </a>
             <a :href="`/login`" class="btn btn-info fw-bolder" style="background-color: #82EEFD;">
               <i class="bi bi-box-arrow-in-right me-1 fs-5"></i> Log in
