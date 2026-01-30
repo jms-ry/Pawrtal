@@ -9,12 +9,13 @@ echo ""
 echo "Running migrations..."
 php artisan migrate --force
 
-#TODO: Remove the seeding after the first deployment -- comment out "php artisan db:seed --force" line below
+#TODO: Remove the seeding after the first deployment -- comment out "php artisan db:seed --force" line below. 
 
-echo ""
-echo "SEEDING DATABASE NOW..."
-php artisan db:seed --force
-echo "SEEDING COMPLETED!"
+#Removed seeeding to avoid duplicate entries on each deployment
+# echo ""
+# echo "SEEDING DATABASE NOW..."
+# php artisan db:seed --force
+# echo "SEEDING COMPLETED!"
 
 echo ""
 echo "Linking storage..."
