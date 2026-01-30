@@ -46,7 +46,7 @@
             </div>
             <div v-else class="col-12 text-center mx-auto d-flex gap-2 flex-row">
               <a :href="`/rescues/${rescue.id}`" class="btn btn-success w-100">View Profile</a>
-              <a class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal"
+              <a class="btn btn-warning w-100 fw-bolder" data-bs-toggle="modal"
                 :data-user-id="user?.id"
                 :data-adoptable-name="rescue.name"
                 :data-adoptable-id="rescue.id"
