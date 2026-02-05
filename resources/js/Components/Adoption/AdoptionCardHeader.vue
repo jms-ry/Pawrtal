@@ -70,7 +70,7 @@
             aria-label="Search" 
             placeholder="Search Rescues" 
             class="form-control" 
-            data-rescue-switch-target="searchField"
+            data-switch-search-button-target="searchField"
           >
           <button 
             v-if="searchInput" 
@@ -93,7 +93,7 @@
             aria-label="Search" 
             placeholder="Search Rescues" 
             class="form-control" 
-            data-rescue-switch-target="searchField"
+            data-rescue-switch-button-target="searchField"
           >
           <button 
             v-if="searchInput" 
