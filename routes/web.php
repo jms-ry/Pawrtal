@@ -61,7 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('notifications/mark-all-as-read', [UserController::class, 'markAllNotificationsAsRead'])->name('users.markAllNotificationsAsRead');
   });
 
-  Route::resource('donations', DonationController::class)->except('show','edit');;
+  Route::resource('donations', DonationController::class)->except('show','edit','create');;
 
   Route::resource('addresses',AddressController::class)->except('index','show','create','edit');
 
@@ -112,8 +112,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/', [MessageController::class, 'store'])->name('messages.store');
   });
 
-  Route::post('/reports/{report}/alert', [ReportAlertController::class, 'store'])
-    ->name('reports.alert');
+  Route::post('/reports/{report}/alert', [ReportAlertController::class, 'store'])->name('reports.alert');
 });
 
 

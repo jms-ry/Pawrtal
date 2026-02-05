@@ -6,6 +6,7 @@
       <CreateInKIndDonation
         :user="user"
       />
+      <MonetaryDonationModal />
       <div class="card-body border-0 p-2 p-md-5 mx-auto">
         <div class="card-header border-0 bg-secondary">
           <h3 class="text-center fw-bolder display-6 font-monospace mb-4">Donate</h3>
@@ -18,7 +19,7 @@
                 <div class="card-body d-flex flex-column text-center">
                   <p class="fs-2 fw-bold font-monospace mt-3 mb-3 p-0">Monetary Donation</p>
                   <p class="lead mt-2 mt-md-3 fs-6 px-2 px-md-5 lh-lg"style="text-align: justify;">Every donation, big or small, makes a world of difference. Your support helps us feed hungry rescues, fund lifesaving medical treatments, and give them the love and care they truly deserve. Join us in turning sorrowful pasts into hopeful futures. With your kindness, we can save more lives and bring them closer to loving forever homes.</p>
-                  <a class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto">Donate</a>
+                  <a class="btn btn-warning btn-lg fw-bolder w-50 rounded-pill px-3 mt-auto mx-auto" data-bs-toggle="modal" :data-bs-target="!user ? '#loginReminderModal' : '#monetaryDonationModal'">Donate</a>
                 </div>
               </div>
             </div>
@@ -44,6 +45,7 @@
   import LoginReminder from '@/Components/Modals/LoginReminder.vue';
   import CreateInKIndDonation from '../../Components/Modals/Donate/CreateInKIndDonation.vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
+  import MonetaryDonationModal from '../../Components/Modals/Donate/MonetaryDonationModal.vue';
 
   const props = defineProps({
     user: {
