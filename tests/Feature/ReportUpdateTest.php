@@ -17,7 +17,7 @@ class ReportUpdateTest extends TestCase
   {
     $report = Report::factory()->lost()->create();
 
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'animal_name' => 'Update animal name'
     ]);
 
@@ -39,7 +39,7 @@ class ReportUpdateTest extends TestCase
       'animal_name' => 'Update animal name',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertForbidden();
   }
 
@@ -58,7 +58,7 @@ class ReportUpdateTest extends TestCase
       'animal_name' => 'Update animal name',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertForbidden();
   }
 
@@ -77,7 +77,7 @@ class ReportUpdateTest extends TestCase
       'animal_name' => 'Update animal name',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertForbidden();
   }
 
@@ -98,7 +98,7 @@ class ReportUpdateTest extends TestCase
       'status' => 'active',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Lost Dog Report updated successfully!');
 
@@ -115,7 +115,7 @@ class ReportUpdateTest extends TestCase
       'status' => 'resolved',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Lost Dog Report updated successfully!');
     
@@ -139,7 +139,7 @@ class ReportUpdateTest extends TestCase
       'status' => 'active',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Found Dog Report updated successfully!');
 
@@ -156,7 +156,7 @@ class ReportUpdateTest extends TestCase
       'status' => 'resolved',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Found Dog Report updated successfully!');
     
@@ -173,7 +173,7 @@ class ReportUpdateTest extends TestCase
       'animal_name' => 'Update animal name',
     ];
 
-    $response = $this->patch(route('reports.update', 999999), $updatedData);
+    $response = $this->put(route('reports.update', 999999), $updatedData);
     $response->assertNotFound();
   }
 
@@ -192,7 +192,7 @@ class ReportUpdateTest extends TestCase
       'sex' => 'not male, female or unknown',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertSessionHasErrors('sex');
   }
 
@@ -211,7 +211,7 @@ class ReportUpdateTest extends TestCase
       'size' => 'not small, medium or large',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertSessionHasErrors('size');
   }
 
@@ -230,7 +230,7 @@ class ReportUpdateTest extends TestCase
       'status' => 'not active or resolved',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertSessionHasErrors('status');
   }
 
@@ -250,7 +250,7 @@ class ReportUpdateTest extends TestCase
       'image' => UploadedFile::fake()->create('document.pdf', 100, 'application/pdf'),
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertSessionHasErrors('image');
   }
 
@@ -270,7 +270,7 @@ class ReportUpdateTest extends TestCase
       'image' => UploadedFile::fake()->create('report.jpg', 10000, ),
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertSessionHasErrors('image');
   }
 
@@ -291,7 +291,7 @@ class ReportUpdateTest extends TestCase
       'found_location' => 'Test Address'
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Found Dog Report updated successfully!');
   }
@@ -317,7 +317,7 @@ class ReportUpdateTest extends TestCase
       'last_seen_date' => null
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Found Dog Report updated successfully!');
   }
@@ -342,7 +342,7 @@ class ReportUpdateTest extends TestCase
       'image' => $newImage
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Found Dog Report updated successfully!');
 
@@ -374,7 +374,7 @@ class ReportUpdateTest extends TestCase
       'image' => $newImage
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Found Dog Report updated successfully!');
 
@@ -412,7 +412,7 @@ class ReportUpdateTest extends TestCase
       'condition' => 'Updated condition',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Found Dog Report updated successfully!');
 
@@ -445,7 +445,7 @@ class ReportUpdateTest extends TestCase
       'animal_name' => 'Update animal name',
     ];
 
-    $response = $this->patch(route('reports.update', $report), $updatedData);
+    $response = $this->put(route('reports.update', $report), $updatedData);
     $response->assertRedirect();
     $response->assertSessionHas('info','Lost Dog (Archived) Report updated successfully!');
 
@@ -474,7 +474,7 @@ class ReportUpdateTest extends TestCase
     $this->actingAs($user);
     $newImage = UploadedFile::fake()->image('new.jpg');
     
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'image' => $newImage
     ]);
     
@@ -490,7 +490,7 @@ class ReportUpdateTest extends TestCase
     
     $this->actingAs($user);
     
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'last_seen_date' => now()->addDays(5)->format('Y-m-d')
     ]);
     
@@ -504,7 +504,7 @@ class ReportUpdateTest extends TestCase
     
     $this->actingAs($user);
     
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'found_date' => now()->addDays(5)->format('Y-m-d')
     ]);
     
@@ -518,7 +518,7 @@ class ReportUpdateTest extends TestCase
     
     $this->actingAs($user);
     
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'animal_name' => str_repeat('a', 256) // exceeds 255
     ]);
     
@@ -532,7 +532,7 @@ class ReportUpdateTest extends TestCase
     
     $this->actingAs($user);
     
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'last_seen_date' => 'not-a-date'
     ]);
     
@@ -549,7 +549,7 @@ class ReportUpdateTest extends TestCase
     
     $this->actingAs($user);
     
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'animal_name' => 'Updated'
     ]);
     
@@ -565,7 +565,7 @@ class ReportUpdateTest extends TestCase
     
     $this->actingAs($user1);
     
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'user_id' => $user2->id, // try to steal ownership
       'animal_name' => 'Updated'
     ]);
@@ -585,7 +585,7 @@ class ReportUpdateTest extends TestCase
     
     $this->actingAs($user);
     
-    $response = $this->patch(route('reports.update', $report), [
+    $response = $this->put(route('reports.update', $report), [
       'type' => 'found', // Try to change type
       'animal_name' => 'Updated'
     ]);
