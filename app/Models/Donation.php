@@ -24,7 +24,17 @@ class Donation extends Model
     'donation_date',
     'pick_up_location',
     'contact_person',
-    'donation_image'
+    'donation_image',
+    // New payment-related fields
+    'payment_method',
+    'payment_intent_id',
+    'payment_status',
+    'transaction_reference',
+    'paid_at',
+  ];
+
+  protected $casts = [
+    'paid_at' => 'datetime',
   ];
 
   protected $appends = [
@@ -41,6 +51,21 @@ class Donation extends Model
     'is_owned_by_logged_user',
     'logged_user_is_admin_or_staff'
   ];
+
+  public function isMonetary()
+  {
+    return $this->donation_type === 'monetary';
+  }
+
+  public function isInKind()
+  {
+    return $this->donation_type === 'in-kind';
+  }
+
+  public function isPaid()
+  {
+    return $this->payment_status === 'paid';
+  }
 
   public function resolveRouteBinding($value, $field = null)
   {
