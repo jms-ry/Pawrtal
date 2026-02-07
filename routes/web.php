@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReportAlertController;
+use App\Http\Controllers\TestPayMongoController;
 
 Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
@@ -117,35 +118,7 @@ Route::middleware(['auth'])->group(function () {
 
 // TEST ROUTE - Remove after testing
 if(config('app.env') !== 'production'){
-  Route::get('/test-paymongo', function () {
-    $paymongo = new \App\Services\PayMongoService();
-      
-    // Test: Create a ₱10 test source
-    $source = $paymongo->createGCashSource(
-      1000, // ₱10.00 in centavos
-      'Test Donation',
-      [
-        'name' => 'Juan Dela Cruz',
-        'email' => 'test@example.com',
-        'phone' => '09123456789'
-      ]
-    );
-      
-    if ($source) {
-      return response()->json([
-        'success' => true,
-        'source_id' => $source['id'],
-        'checkout_url' => $source['attributes']['redirect']['checkout_url'],
-        'status' => $source['attributes']['status']
-      ]);
-    }
-      
-    return response()->json([
-      'success' => false,
-      'message' => 'Failed to create source'
-    ], 500);
-      
-  });
+  Route::get('/test-paymongo', [TestPayMongoController::class, 'test']);
 }
 
 // Temporary placeholder routes for testing
