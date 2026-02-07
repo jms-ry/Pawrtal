@@ -114,6 +114,8 @@ Route::middleware(['auth'])->group(function () {
   });
 
   Route::post('/reports/{report}/alert', [ReportAlertController::class, 'store'])->name('reports.alert');
+
+  Route::post('/api/donations/create-payment', [DonationController::class, 'createPayment']);
 });
 
 // TEST ROUTE - Remove after testing
