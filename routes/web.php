@@ -116,35 +116,37 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // TEST ROUTE - Remove after testing
-Route::get('/test-paymongo', function () {
-  $paymongo = new \App\Services\PayMongoService();
-    
-  // Test: Create a ₱10 test source
-  $source = $paymongo->createGCashSource(
-    1000, // ₱10.00 in centavos
-    'Test Donation',
-    [
-      'name' => 'Juan Dela Cruz',
-      'email' => 'test@example.com',
-      'phone' => '09123456789'
-    ]
-  );
-    
-  if ($source) {
+if(config('app.env') !== 'production'){
+  Route::get('/test-paymongo', function () {
+    $paymongo = new \App\Services\PayMongoService();
+      
+    // Test: Create a ₱10 test source
+    $source = $paymongo->createGCashSource(
+      1000, // ₱10.00 in centavos
+      'Test Donation',
+      [
+        'name' => 'Juan Dela Cruz',
+        'email' => 'test@example.com',
+        'phone' => '09123456789'
+      ]
+    );
+      
+    if ($source) {
+      return response()->json([
+        'success' => true,
+        'source_id' => $source['id'],
+        'checkout_url' => $source['attributes']['redirect']['checkout_url'],
+        'status' => $source['attributes']['status']
+      ]);
+    }
+      
     return response()->json([
-      'success' => true,
-      'source_id' => $source['id'],
-      'checkout_url' => $source['attributes']['redirect']['checkout_url'],
-      'status' => $source['attributes']['status']
-    ]);
-  }
-    
-  return response()->json([
-    'success' => false,
-    'message' => 'Failed to create source'
-  ], 500);
-    
-});
+      'success' => false,
+      'message' => 'Failed to create source'
+    ], 500);
+      
+  });
+}
 
 // Temporary placeholder routes for testing
 Route::get('/donations/success', function() {
