@@ -117,7 +117,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // TEST ROUTE - Remove after testing
-Route::get('/test-paymongo', [TestPayMongoController::class, 'test']);
+Route::get('/test-paymongo', [TestPayMongoController::class, 'test'])->middleware('throttle:10,1');
 
 // Temporary placeholder routes for testing
 Route::get('/donations/success', function() {
