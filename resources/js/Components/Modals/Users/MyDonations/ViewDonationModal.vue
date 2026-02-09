@@ -18,13 +18,15 @@
                 <strong class="mt-2 ms-2 me-4">Contact Person:  <span class="fw-lighter">{{ contactPerson }}</span></strong>
               </div>
               <div v-else class="d-flex flex-column">
-                <strong class="mt-2 ms-2 me-4">Amount:  <span class="fw-lighter" id="amountSpan"></span></strong>
+                <strong class="mt-2 ms-2 me-4">Amount:  <span class="fw-lighter" id="amountSpan">{{ donationAmount }}</span></strong>
+                <strong class="mt-2 ms-2 me-4">Payment Method:  <span class="fw-lighter" id="amountSpan">{{ donationPaymentMethod }}</span></strong>
+                <strong class="mt-2 ms-2 me-4">Payment Status:  <span class="fw-lighter" id="amountSpan">{{ donationPaymentStatus }}</span></strong>
               </div>
             </div>
             <hr class="text-dark mt-4 mb-2">
             <h6 class="fw-bolder mt-2 text-uppercase font-monospace mt-1"><strong >Donation Progress: </strong></h6>
             <div class="d-flex flex-column align-items-start ms-2 mb-2">
-              <div v-if="type=== 'monetary'" class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
+              <div v-if="type=== 'monetary' && donationStatus === 'accepted'" class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
                 <div class="d-flex flex-column align-items-center">
                   <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-info text-white" style="width: 50px; height: 50px;">
                     <i class="bi bi-hourglass-split fs-5"></i>
@@ -42,7 +44,25 @@
                   <div class="text-muted small text-center">Accepted</div>
                 </div>
               </div>
-              <div v-else class="d-flex align-items-center justify-content-between mt-3 w-100">
+              <div v-else-if="type=== 'monetary' && donationStatus === 'cancelled'" class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-info text-white" style="width: 50px; height: 50px;">
+                    <i class="bi bi-hourglass-split fs-5"></i>
+                  </div>
+                  <strong class="text-center small">Submitted</strong>
+                  <div class="text-muted small text-center">Submitted</div>
+                </div>
+                <div class="flex-grow-1 border-top border-2 mx-2 border-success" style="height: 2px; margin-bottom: 60px;">
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-warning text-dark" style="width: 50px; height: 50px;">
+                      <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                    </div>
+                    <strong class="text-center small">Cancelled</strong>
+                    <div class="text-muted small text-center">Cancelled</div>
+                </div>
+              </div>
+              <div v-else-if="type === 'in-kind'" class="d-flex align-items-center justify-content-between mt-3 w-100">
                 <div v-if="donationStatus === 'cancelled'" class="d-flex align-items-center justify-content-between mt-3 w-100">
                   <div class="d-flex flex-column align-items-center">
                     <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-info text-white" style="width: 50px; height: 50px;">
@@ -161,6 +181,9 @@
   const donationImage = ref(null)
   const isOwnedByLoggedUser = ref(null)
   const loggedUserIsAdminOrStaff = ref(null)
+  const donationAmount = ref(null)
+  const donationPaymentMethod = ref(null)
+  const donationPaymentStatus = ref(null)
   onMounted(() => {
     const modalEl = document.getElementById('viewDonationModal')
 
@@ -176,7 +199,10 @@
       donationStatus.value = button.getAttribute('data-donation-status')
       type.value = button.getAttribute('data-donation-type')
       donationImage.value = button.getAttribute('data-donation-image')
-      
+      donationAmount.value = button.getAttribute('data-donation-amount-formatted')
+      donationPaymentMethod.value = button.getAttribute('data-donation-payment-method')
+      donationPaymentStatus.value = button.getAttribute('data-donation-payment-status')
+
       const donationTypeField = document.getElementById('donationType')
       donationTypeField.textContent = donationType.value + ' Donation'
       

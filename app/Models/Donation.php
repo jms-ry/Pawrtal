@@ -49,7 +49,9 @@ class Donation extends Model
     'donation_image_url',
     'donor_name_formatted',
     'is_owned_by_logged_user',
-    'logged_user_is_admin_or_staff'
+    'logged_user_is_admin_or_staff',
+    'payment_method_formatted',
+    'payment_status_formatted',
   ];
 
   public function isMonetary()
@@ -108,11 +110,11 @@ class Donation extends Model
 
   public function getAmountFormattedAttribute()
   {
-    if($this->amount){
-      return sprintf('₱ %.2f', $this->amount);
-    }else{
-      return 'N/A';
+    if ($this->amount !== null) {
+        return '₱ ' . number_format($this->amount, 2);
     }
+
+    return 'N/A';
   }
 
   public function getItemDescriptionFormattedAttribute()
@@ -157,5 +159,23 @@ class Donation extends Model
     }
 
     return asset($this->donation_image);
+  }
+
+  public function getPaymentMethodFormattedAttribute()
+  {
+    if ($this->payment_method) {
+      return Str::headline($this->payment_method);
+    }
+
+    return 'N/A';
+  }
+
+  public function getPaymentStatusFormattedAttribute()
+  {
+    if ($this->payment_status) {
+      return Str::headline($this->payment_status);
+    }
+
+    return 'N/A';
   }
 }

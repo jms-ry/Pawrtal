@@ -59,6 +59,9 @@
                     :data-donation-type="donation.donation_type"
                     :data-donation-image="donation.donation_image_url"
                     :data-donation-logged-user-is-admin-or-staff="donation.logged_user_is_admin_or_staff"
+                    :data-donation-amount-formatted="donation.amount_formatted"
+                    :data-donation-payment-method="donation.payment_method_formatted"
+                    :data-donation-payment-status="donation.payment_status_formatted"
                   >View </a>
                   <div v-if="donation.status !== 'pending'">
                     <a v-if="!donation.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
@@ -98,6 +101,9 @@
                   :data-donation-type="donation.donation_type"
                   :data-donation-image="donation.donation_image_url"
                   :data-donation-logged-user-is-admin-or-staff="donation.logged_user_is_admin_or_staff"
+                  :data-donation-amount-formatted="donation.amount_formatted"
+                  :data-donation-payment-method="donation.payment_method_formatted"
+                  :data-donation-payment-status="donation.payment_status_formatted"
                   >View 
                 </a>
                 <div v-if="donation.status !== 'pending'">
