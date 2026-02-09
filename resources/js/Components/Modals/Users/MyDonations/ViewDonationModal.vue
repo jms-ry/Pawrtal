@@ -37,11 +37,33 @@
                 <div class="flex-grow-1 border-top border-2 mx-2 border-success" style="height: 2px; margin-bottom: 60px;">
                 </div>
                 <div class="d-flex flex-column align-items-center">
-                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-warning text-dark" style="width: 50px; height: 50px;">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-success text-dark" style="width: 50px; height: 50px;">
                     <i class="bi bi-check-circle fs-5"></i>
                   </div>
                   <strong class="text-center small">Accepted</strong>
                   <div class="text-muted small text-center">Accepted</div>
+                </div>
+              </div>
+              <div v-else-if="type=== 'monetary' && donationStatus === 'pending'" class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2 bg-info text-white" style="width: 50px; height: 50px;">
+                    <i class="bi bi-hourglass-split fs-5"></i>
+                  </div>
+                  <strong class="text-center small">Submitted</strong>
+                  <div class="text-muted small text-center">Submitted</div>
+                </div>
+                <div class="flex-grow-1 border-top border-2 mx-2 border-success" style="height: 2px; margin-bottom: 60px;">
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center mb-2" :class="donationStatus === 'accepted' ? 'bg-success text-white' : donationStatus === 'rejected' ? 'bg-danger text-white' : 'bg-secondary text-white'" style="width: 50px; height: 50px;">
+                    <i :class="donationStatus === 'accepted' ? 'bi bi-check-circle fs-5' : donationStatus === 'rejected' ? 'bi bi-x-circle fs-5' : 'bi bi-clock fs-5'"></i>
+                  </div>
+                  <strong class="text-center small" v-if="donationStatus === 'accepted'">Accepted</strong>
+                  <strong class="text-center small" v-else-if="donationStatus === 'rejected'">Rejected</strong>
+                  <strong class="text-center small" v-else>Decision</strong>
+                  <div class="text-muted small text-center" v-if="donationStatus === 'accepted'">Accepted</div>
+                  <div class="text-muted small text-center" v-else-if="donationStatus === 'rejected'">Rejected</div>
+                  <div class="text-muted small text-center" v-else>Pending</div>
                 </div>
               </div>
               <div v-else-if="type=== 'monetary' && donationStatus === 'cancelled'" class="d-flex align-items-center justify-content-between mt-3 px-3 w-100">
