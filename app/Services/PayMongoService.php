@@ -95,83 +95,83 @@ class PayMongoService
    * @return bool
    */
   public function verifyWebhookPayload($payload)
-{
+  {
     Log::info('Verifying webhook payload', ['payload_keys' => array_keys($payload)]);
     
     // Check if payload has required structure
     if (!isset($payload['data']['attributes']['type'])) {
-        Log::warning('Invalid webhook: missing event type', [
-            'has_data' => isset($payload['data']),
-            'has_attributes' => isset($payload['data']['attributes']),
-        ]);
-        return false;
+      Log::warning('Invalid webhook: missing event type', [
+        'has_data' => isset($payload['data']),
+        'has_attributes' => isset($payload['data']['attributes']),
+      ]);
+      return false;
     }
 
     if (!isset($payload['data']['attributes']['data'])) {
-        Log::warning('Invalid webhook: missing event data');
-        return false;
+      Log::warning('Invalid webhook: missing event data');
+      return false;
     }
 
     // Verify the event data structure
     $eventData = $payload['data']['attributes']['data'];
     
     if (!isset($eventData['id'])) {
-        Log::warning('Invalid webhook: missing resource ID');
-        return false;
+      Log::warning('Invalid webhook: missing resource ID');
+      return false;
     }
 
     Log::info('Webhook payload verification passed');
     
     // Skip PayMongo API verification for now to speed up debugging
     return true;
-}
+  }
 
-/**
- * Create a payment to charge a source
- * 
- * @param string $sourceId
- * @param float $amount Amount in pesos
- * @return array|null
- */
-public function createPayment($sourceId, $amount)
-{
+  /**
+   * Create a payment to charge a source
+   * 
+   * @param string $sourceId
+   * @param float $amount Amount in pesos
+   * @return array|null
+   */
+  public function createPayment($sourceId, $amount)
+  {
     try {
-        $amountInCentavos = (int) ($amount * 100);
-        
-        $response = Http::withBasicAuth($this->secretKey, '')
-            ->post("{$this->baseUrl}/payments", [
-                'data' => [
-                    'attributes' => [
-                        'amount' => $amountInCentavos,
-                        'source' => [
-                            'id' => $sourceId,
-                            'type' => 'source'
-                        ],
-                        'currency' => 'PHP',
-                        'description' => 'Donation Payment'
-                    ]
-                ]
-            ]);
+      $amountInCentavos = (int) ($amount * 100);
+          
+      $response = Http::withBasicAuth($this->secretKey, '')
+      ->post("{$this->baseUrl}/payments", [
+        'data' => [
+          'attributes' => [
+            'amount' => $amountInCentavos,
+            'source' => [
+              'id' => $sourceId,
+              'type' => 'source'
+            ],
+            'currency' => 'PHP',
+            'description' => 'Donation Payment'
+          ]
+        ]
+      ]);
 
-        if ($response->successful()) {
-            Log::info('Payment created successfully', [
-                'payment_id' => $response->json()['data']['id']
-            ]);
-            return $response->json()['data'];
-        }
-
-        Log::error('PayMongo Payment Creation Failed', [
-            'response' => $response->json(),
-            'status' => $response->status()
+      if ($response->successful()) {
+        Log::info('Payment created successfully', [
+          'payment_id' => $response->json()['data']['id']
         ]);
+        return $response->json()['data'];
+      }
 
-        return null;
-        
+      Log::error('PayMongo Payment Creation Failed', [
+        'response' => $response->json(),
+        'status' => $response->status()
+      ]);
+
+      return null;
+          
     } catch (\Exception $e) {
-        Log::error('PayMongo Payment API Error', [
-            'message' => $e->getMessage()
-        ]);
-        return null;
+      Log::error('PayMongo Payment API Error', [
+        'message' => $e->getMessage()
+      ]);
+      return null;
     }
-}
+  }
 }
