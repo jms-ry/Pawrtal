@@ -89,17 +89,47 @@ class PayMongoService
   }
 
   /**
-    * Verify webhook signature
-    * 
-    * @param array $payload
-    * @param string $signature
-    * @return bool
-  */
-  public function verifyWebhookSignature($payload, $signature)
+   * Verify webhook payload structure and basic security
+   * 
+   * @param array $payload
+   * @return bool
+   */
+  public function verifyWebhookPayload($payload)
   {
-    // PayMongo webhook signature verification
-    // For now, we'll implement basic verification
-    // You can enhance this based on PayMongo's documentation
-    return true; // TODO: Implement proper signature verification
+      // Check if payload has required structure
+      if (!isset($payload['data']['attributes']['type'])) {
+          Log::warning('Invalid webhook: missing event type');
+          return false;
+      }
+
+      if (!isset($payload['data']['attributes']['data'])) {
+          Log::warning('Invalid webhook: missing event data');
+          return false;
+      }
+
+      // Verify the event data structure
+      $eventData = $payload['data']['attributes']['data'];
+      
+      if (!isset($eventData['id'])) {
+          Log::warning('Invalid webhook: missing resource ID');
+          return false;
+      }
+
+      // Additional security: Verify source exists in PayMongo
+      // This ensures the webhook is about a real PayMongo resource
+      $resourceId = $eventData['id'];
+      
+      // For source events, verify it starts with 'src_'
+      if (strpos($resourceId, 'src_') === 0) {
+          $source = $this->getSource($resourceId);
+          if (!$source) {
+              Log::warning('Invalid webhook: source not found in PayMongo', [
+                  'resource_id' => $resourceId
+              ]);
+              return false;
+          }
+      }
+
+      return true;
   }
 }

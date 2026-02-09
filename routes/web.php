@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReportAlertController;
-use App\Http\Controllers\TestPayMongoController;
+use App\Http\Controllers\WebhookController;
 
 Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
@@ -118,9 +118,6 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/api/donations/create-payment', [DonationController::class, 'createPayment']);
 });
 
-// TEST ROUTE - Remove after testing
-#Route::get('/test-paymongo', [TestPayMongoController::class, 'test'])->middleware('throttle:10,1');
-
 // Temporary placeholder routes for testing
 Route::get('/donations/success', function() {
   return 'Payment Successful!';
@@ -130,4 +127,6 @@ Route::get('/donations/failed', function() {
   return 'Payment Failed!';
 })->name('donations.failed');
 
+// PayMongo Webhook - Must be public (no auth)
+Route::post('/webhook/paymongo', [WebhookController::class, 'handlePayMongo'])->name('webhook.paymongo');
 require __DIR__.'/auth.php';
