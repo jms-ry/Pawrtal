@@ -16,60 +16,66 @@ class WebhookController extends Controller
     * @return \Illuminate\Http\JsonResponse
   */
   public function handlePayMongo(Request $request)
-  {
-    // Log the incoming webhook for debugging
-    Log::info('PayMongo Webhook Received', [
-      'payload' => $request->all()
-    ]);
+{
+    // Log the COMPLETE incoming webhook for debugging
+    Log::info('===== PayMongo Webhook Received =====');
+    Log::info('Full Payload', ['payload' => $request->all()]);
+    Log::info('Headers', ['headers' => $request->headers->all()]);
 
     try {
-      $payload = $request->all();
-            
-      // Verify webhook payload
-      $paymongoService = new PayMongoService();
-      if (!$paymongoService->verifyWebhookPayload($payload)) {
-        Log::warning('Webhook verification failed', ['payload' => $payload]);
-        return response()->json(['message' => 'Invalid webhook'], 400);
-      }
-            
-      // Extract event data
-      $eventType = $payload['data']['attributes']['type'] ?? null;
-      $eventData = $payload['data']['attributes']['data'] ?? null;
+        $payload = $request->all();
+        
+        // Verify webhook payload
+        $paymongoService = new PayMongoService();
+        if (!$paymongoService->verifyWebhookPayload($payload)) {
+            Log::warning('Webhook verification failed', ['payload' => $payload]);
+            return response()->json(['message' => 'Invalid webhook'], 400);
+        }
 
-      if (!$eventType || !$eventData) {
-        Log::warning('Invalid webhook payload', ['payload' => $payload]);
-        return response()->json(['message' => 'Invalid payload'], 400);
-      }
+        // Extract event data
+        $eventType = $payload['data']['attributes']['type'];
+        $eventData = $payload['data']['attributes']['data'];
 
-      // Handle different event types
-      switch ($eventType) {
-        case 'source.chargeable':
-          $this->handleSourceChargeable($eventData);
-        break;
-                    
-        case 'payment.paid':
-          $this->handlePaymentPaid($eventData);
-        break;
-                    
-        case 'payment.failed':
-          $this->handlePaymentFailed($eventData);
-        break;
-                    
-        default:
-          Log::info('Unhandled webhook event type', ['type' => $eventType]);
-      }
+        Log::info('Event Type Extracted', [
+            'type' => $eventType,
+            'event_data' => $eventData
+        ]);
 
-      return response()->json(['message' => 'Webhook handled successfully'], 200);
+        // Handle different event types
+        switch ($eventType) {
+            case 'source.chargeable':
+                Log::info('Handling source.chargeable');
+                $this->handleSourceChargeable($eventData);
+                break;
+                
+            case 'payment.paid':
+                Log::info('Handling payment.paid');
+                $this->handlePaymentPaid($eventData);
+                break;
+                
+            case 'payment.failed':
+                Log::info('Handling payment.failed');
+                $this->handlePaymentFailed($eventData);
+                break;
+                
+            default:
+                Log::info('Unhandled webhook event type', ['type' => $eventType]);
+        }
+
+        Log::info('===== Webhook Handled Successfully =====');
+        return response()->json(['message' => 'Webhook handled successfully'], 200);
 
     } catch (\Exception $e) {
-      Log::error('Webhook handling failed', [
-        'error' => $e->getMessage(),
-        'trace' => $e->getTraceAsString()
-      ]);
+        Log::error('===== Webhook Handling Failed =====', [
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+            'trace' => $e->getTraceAsString()
+        ]);
 
-      return response()->json(['message' => 'Webhook processing failed'], 500);
+        return response()->json(['message' => 'Webhook processing failed'], 500);
     }
-  }
+}
 
   /**
     * Handle source.chargeable event
@@ -95,41 +101,59 @@ class WebhookController extends Controller
     * This fires when payment is successfully completed
   */
   private function handlePaymentPaid($eventData)
-  {
+{
+    Log::info('=== handlePaymentPaid START ===', ['eventData' => $eventData]);
+    
     $sourceId = $eventData['attributes']['source']['id'] ?? null;
     $paymentId = $eventData['id'] ?? null;
-        
+    
+    Log::info('Extracted IDs', [
+        'source_id' => $sourceId,
+        'payment_id' => $paymentId
+    ]);
+    
     if (!$sourceId) {
-      Log::warning('Source ID missing in payment.paid event');
-      return;
+        Log::warning('Source ID missing in payment.paid event');
+        return;
     }
 
-    Log::info('Payment paid', [
-      'source_id' => $sourceId,
-      'payment_id' => $paymentId
-    ]);
+    Log::info('Searching for donation', ['payment_intent_id' => $sourceId]);
 
     // Find donation by payment_intent_id
     $donation = Donation::where('payment_intent_id', $sourceId)->first();
-        
+    
     if (!$donation) {
-      Log::warning('Donation not found for payment', ['source_id' => $sourceId]);
-      return;
+        Log::error('DONATION NOT FOUND!', [
+            'source_id' => $sourceId,
+            'all_donations' => Donation::where('donation_type', 'monetary')->get(['id', 'payment_intent_id'])
+        ]);
+        return;
     }
+
+    Log::info('Donation found, updating...', [
+        'donation_id' => $donation->id,
+        'current_payment_status' => $donation->payment_status,
+        'current_status' => $donation->status
+    ]);
 
     // Update donation: payment succeeded
     $donation->update([
-      'payment_status' => 'paid',
-      'status' => 'accepted', // Auto-accept monetary donations
-      'transaction_reference' => $paymentId,
-      'paid_at' => now(),
+        'payment_status' => 'paid',
+        'status' => 'accepted',
+        'transaction_reference' => $paymentId,
+        'paid_at' => now(),
     ]);
 
-    Log::info('Donation marked as paid and accepted', [
-      'donation_id' => $donation->id,
-      'payment_id' => $paymentId
+    $donation->refresh();
+
+    Log::info('Donation updated successfully!', [
+        'donation_id' => $donation->id,
+        'new_payment_status' => $donation->payment_status,
+        'new_status' => $donation->status,
+        'transaction_reference' => $donation->transaction_reference,
+        'paid_at' => $donation->paid_at
     ]);
-  }
+}
 
   /**
     * Handle payment.failed event
