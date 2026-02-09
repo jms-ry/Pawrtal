@@ -17,60 +17,74 @@ class WebhookController extends Controller
   */
   public function handlePayMongo(Request $request)
 {
-    // Log the COMPLETE incoming webhook for debugging
-    Log::info('===== PayMongo Webhook Received =====');
-    Log::info('Full Payload', ['payload' => $request->all()]);
-    Log::info('Headers', ['headers' => $request->headers->all()]);
+    // ALWAYS log - even before try/catch
+    Log::info('===== WEBHOOK ENDPOINT HIT =====');
+    Log::info('Raw Request Body', ['body' => $request->getContent()]);
+    Log::info('Parsed Payload', ['payload' => $request->all()]);
 
     try {
         $payload = $request->all();
         
+        Log::info('Step 1: Starting webhook verification');
+        
         // Verify webhook payload
         $paymongoService = new PayMongoService();
-        if (!$paymongoService->verifyWebhookPayload($payload)) {
+        $isValid = $paymongoService->verifyWebhookPayload($payload);
+        
+        Log::info('Step 2: Verification result', ['is_valid' => $isValid]);
+        
+        if (!$isValid) {
             Log::warning('Webhook verification failed', ['payload' => $payload]);
             return response()->json(['message' => 'Invalid webhook'], 400);
         }
 
+        Log::info('Step 3: Extracting event type');
+        
         // Extract event data
-        $eventType = $payload['data']['attributes']['type'];
-        $eventData = $payload['data']['attributes']['data'];
+        $eventType = $payload['data']['attributes']['type'] ?? 'TYPE_NOT_FOUND';
+        $eventData = $payload['data']['attributes']['data'] ?? null;
 
-        Log::info('Event Type Extracted', [
+        Log::info('Step 4: Event extracted', [
             'type' => $eventType,
-            'event_data' => $eventData
+            'has_event_data' => $eventData !== null
         ]);
+
+        if (!$eventData) {
+            Log::error('Step 4 FAILED: Event data is null!');
+            return response()->json(['message' => 'Invalid payload'], 400);
+        }
+
+        Log::info('Step 5: Switching on event type', ['type' => $eventType]);
 
         // Handle different event types
         switch ($eventType) {
             case 'source.chargeable':
-                Log::info('Handling source.chargeable');
+                Log::info('Step 6: CALLING handleSourceChargeable');
                 $this->handleSourceChargeable($eventData);
                 break;
                 
             case 'payment.paid':
-                Log::info('Handling payment.paid');
+                Log::info('Step 6: CALLING handlePaymentPaid');
                 $this->handlePaymentPaid($eventData);
                 break;
                 
             case 'payment.failed':
-                Log::info('Handling payment.failed');
+                Log::info('Step 6: CALLING handlePaymentFailed');
                 $this->handlePaymentFailed($eventData);
                 break;
                 
             default:
-                Log::info('Unhandled webhook event type', ['type' => $eventType]);
+                Log::warning('Step 6: UNHANDLED event type', ['type' => $eventType]);
         }
 
-        Log::info('===== Webhook Handled Successfully =====');
+        Log::info('===== Webhook Completed Successfully =====');
         return response()->json(['message' => 'Webhook handled successfully'], 200);
 
     } catch (\Exception $e) {
-        Log::error('===== Webhook Handling Failed =====', [
+        Log::error('===== EXCEPTION CAUGHT =====', [
             'error' => $e->getMessage(),
             'line' => $e->getLine(),
             'file' => $e->getFile(),
-            'trace' => $e->getTraceAsString()
         ]);
 
         return response()->json(['message' => 'Webhook processing failed'], 500);
