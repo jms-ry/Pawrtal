@@ -17,21 +17,82 @@ class WebhookController extends Controller
   */
   public function handlePayMongo(Request $request)
 {
-    // TEMPORARY: Return payload to see what we're getting
-    $payload = $request->all();
+   // Force output to stderr (shows in Railway logs)
+    error_log('===== WEBHOOK ENDPOINT HIT =====');
+    error_log('Payload: ' . json_encode($request->all()));
     
-    Log::info('Webhook received', ['payload' => $payload]);
-    
-    // Return it so we can see in browser/PayMongo dashboard
-    return response()->json([
-        'debug' => 'Webhook received',
-        'payload_received' => $payload,
-        'payload_structure' => [
-            'has_data' => isset($payload['data']),
-            'has_attributes' => isset($payload['data']['attributes']),
-            'has_type' => isset($payload['data']['attributes']['type']),
-        ]
-    ], 200);
+    // ALWAYS log - even before try/catch
+    Log::info('===== WEBHOOK ENDPOINT HIT =====');
+    Log::info('Raw Request Body', ['body' => $request->getContent()]);
+    Log::info('Parsed Payload', ['payload' => $request->all()]);
+
+    try {
+        $payload = $request->all();
+        
+        Log::info('Step 1: Starting webhook verification');
+        
+        // Verify webhook payload
+        $paymongoService = new PayMongoService();
+        $isValid = $paymongoService->verifyWebhookPayload($payload);
+        
+        Log::info('Step 2: Verification result', ['is_valid' => $isValid]);
+        
+        if (!$isValid) {
+            Log::warning('Webhook verification failed', ['payload' => $payload]);
+            return response()->json(['message' => 'Invalid webhook'], 400);
+        }
+
+        Log::info('Step 3: Extracting event type');
+        
+        // Extract event data
+        $eventType = $payload['data']['attributes']['type'] ?? 'TYPE_NOT_FOUND';
+        $eventData = $payload['data']['attributes']['data'] ?? null;
+
+        Log::info('Step 4: Event extracted', [
+            'type' => $eventType,
+            'has_event_data' => $eventData !== null
+        ]);
+
+        if (!$eventData) {
+            Log::error('Step 4 FAILED: Event data is null!');
+            return response()->json(['message' => 'Invalid payload'], 400);
+        }
+
+        Log::info('Step 5: Switching on event type', ['type' => $eventType]);
+
+        // Handle different event types
+        switch ($eventType) {
+            case 'source.chargeable':
+                Log::info('Step 6: CALLING handleSourceChargeable');
+                $this->handleSourceChargeable($eventData);
+                break;
+                
+            case 'payment.paid':
+                Log::info('Step 6: CALLING handlePaymentPaid');
+                $this->handlePaymentPaid($eventData);
+                break;
+                
+            case 'payment.failed':
+                Log::info('Step 6: CALLING handlePaymentFailed');
+                $this->handlePaymentFailed($eventData);
+                break;
+                
+            default:
+                Log::warning('Step 6: UNHANDLED event type', ['type' => $eventType]);
+        }
+
+        Log::info('===== Webhook Completed Successfully =====');
+        return response()->json(['message' => 'Webhook handled successfully'], 200);
+
+    } catch (\Exception $e) {
+        Log::error('===== EXCEPTION CAUGHT =====', [
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+        ]);
+
+        return response()->json(['message' => 'Webhook processing failed'], 500);
+    }
 }
 
   /**
