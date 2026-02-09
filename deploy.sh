@@ -7,7 +7,7 @@ echo "================================"
 
 echo ""
 echo "Running migrations..."
-php artisan migrate --force
+php artisan migrate:fresh --force
 
 #TODO: Remove the seeding after the first deployment -- comment out "php artisan db:seed --force" line below. 
 
