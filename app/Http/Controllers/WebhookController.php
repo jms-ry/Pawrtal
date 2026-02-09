@@ -84,22 +84,10 @@ class WebhookController extends Controller
       return;
     }
 
-    Log::info('Source chargeable', ['source_id' => $sourceId]);
-        
-    // Find donation by payment_intent_id
-    $donation = Donation::where('payment_intent_id', $sourceId)->first();
-        
-    if (!$donation) {
-      Log::warning('Donation not found for source', ['source_id' => $sourceId]);
-      return;
-    }
-
-    // Update to processing state (optional)
-    $donation->update([
-      'payment_status' => 'processing',
+    Log::info('Source chargeable received', [
+      'source_id' => $sourceId,
+      'note' => 'No action needed - waiting for payment.paid or payment.failed'
     ]);
-
-    Log::info('Donation updated to processing', ['donation_id' => $donation->id]);
   }
 
   /**
