@@ -75,29 +75,59 @@ class WebhookController extends Controller
      * We just log it without updating the donation status
      */
     private function handleSourceChargeable($eventData)
-    {
-        // $eventData structure:
-        // {
-        //   "id": "src_xxx",
-        //   "type": "source",
-        //   "attributes": { ... actual source data ... }
-        // }
+{
+    $sourceId = $eventData['id'] ?? null;
+    
+    error_log('handleSourceChargeable - Source ID: ' . $sourceId);
+    
+    if (!$sourceId) {
+        Log::warning('Source ID missing in source.chargeable event');
+        return;
+    }
+
+    Log::info('Source chargeable received', [
+        'source_id' => $sourceId,
+        'status' => $eventData['attributes']['status'] ?? null
+    ]);
+
+    // Find donation
+    $donation = Donation::where('payment_intent_id', $sourceId)->first();
+    
+    if (!$donation) {
+        error_log('Donation not found for source: ' . $sourceId);
+        Log::warning('Donation not found for source', ['source_id' => $sourceId]);
+        return;
+    }
+
+    error_log('Creating payment for source: ' . $sourceId);
+
+    // Create payment to charge the source
+    try {
+        $paymongoService = new PayMongoService();
+        $payment = $paymongoService->createPayment($sourceId, $donation->amount);
         
-        $sourceId = $eventData['id'] ?? null;
-        
-        error_log('handleSourceChargeable - Source ID: ' . $sourceId);
-        
-        if (!$sourceId) {
-            Log::warning('Source ID missing in source.chargeable event');
+        if (!$payment) {
+            error_log('Failed to create payment');
+            Log::error('Failed to create payment for source', ['source_id' => $sourceId]);
             return;
         }
 
-        Log::info('Source chargeable received', [
+        error_log('Payment created successfully: ' . $payment['id']);
+        Log::info('Payment created', [
             'source_id' => $sourceId,
-            'status' => $eventData['attributes']['status'] ?? null,
-            'note' => 'No action needed - waiting for payment.paid or payment.failed'
+            'payment_id' => $payment['id']
+        ]);
+
+        // The payment.paid webhook will handle updating the donation
+        
+    } catch (\Exception $e) {
+        error_log('Error creating payment: ' . $e->getMessage());
+        Log::error('Error creating payment', [
+            'source_id' => $sourceId,
+            'error' => $e->getMessage()
         ]);
     }
+}
 
     /**
      * Handle payment.paid event

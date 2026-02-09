@@ -125,4 +125,53 @@ class PayMongoService
     // Skip PayMongo API verification for now to speed up debugging
     return true;
 }
+
+/**
+ * Create a payment to charge a source
+ * 
+ * @param string $sourceId
+ * @param float $amount Amount in pesos
+ * @return array|null
+ */
+public function createPayment($sourceId, $amount)
+{
+    try {
+        $amountInCentavos = (int) ($amount * 100);
+        
+        $response = Http::withBasicAuth($this->secretKey, '')
+            ->post("{$this->baseUrl}/payments", [
+                'data' => [
+                    'attributes' => [
+                        'amount' => $amountInCentavos,
+                        'source' => [
+                            'id' => $sourceId,
+                            'type' => 'source'
+                        ],
+                        'currency' => 'PHP',
+                        'description' => 'Donation Payment'
+                    ]
+                ]
+            ]);
+
+        if ($response->successful()) {
+            Log::info('Payment created successfully', [
+                'payment_id' => $response->json()['data']['id']
+            ]);
+            return $response->json()['data'];
+        }
+
+        Log::error('PayMongo Payment Creation Failed', [
+            'response' => $response->json(),
+            'status' => $response->status()
+        ]);
+
+        return null;
+        
+    } catch (\Exception $e) {
+        Log::error('PayMongo Payment API Error', [
+            'message' => $e->getMessage()
+        ]);
+        return null;
+    }
+}
 }
