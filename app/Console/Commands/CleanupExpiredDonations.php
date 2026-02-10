@@ -16,7 +16,7 @@ class CleanupExpiredDonations extends Command
   {
     $expiredDonations = Donation::where('donation_type', 'monetary')
       ->where('payment_status', 'pending')
-      ->where('donation_date', '<', Carbon::now()->subMinutes(5))
+      ->where('donation_date', '<', Carbon::now()->subMinutes(30))
     ->get();
 
     $count = $expiredDonations->count();
