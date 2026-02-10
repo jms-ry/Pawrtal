@@ -77,7 +77,8 @@ class WebhookController extends Controller
   private function handleSourceChargeable($eventData)
   {
     $sourceId = $eventData['id'] ?? null;
-    
+    $sourceStatus = $eventData['attributes']['status'] ?? null;
+
     error_log('handleSourceChargeable - Source ID: ' . $sourceId);
     
     if (!$sourceId) {
@@ -87,7 +88,7 @@ class WebhookController extends Controller
 
     Log::info('Source chargeable received', [
       'source_id' => $sourceId,
-      'status' => $eventData['attributes']['status'] ?? null
+      'status' => $sourceStatus
     ]);
 
     // Find donation
@@ -96,6 +97,26 @@ class WebhookController extends Controller
     if (!$donation) {
       error_log('Donation not found for source: ' . $sourceId);
       Log::warning('Donation not found for source', ['source_id' => $sourceId]);
+      return;
+    }
+    // Check if source is actually chargeable or if it failed/expired
+    if ($sourceStatus !== 'chargeable') {
+      error_log('Source status is not chargeable: ' . $sourceStatus);
+        
+      if (in_array($sourceStatus, ['failed', 'expired', 'cancelled'])) {
+        error_log('Marking donation as failed due to source status: ' . $sourceStatus);
+            
+        $donation->update([
+          'payment_status' => 'failed',
+          'status' => 'cancelled',
+        ]);
+            
+        Log::info('Donation marked as failed', [
+          'donation_id' => $donation->id,
+          'reason' => 'Source status: ' . $sourceStatus
+        ]);
+      }
+        
       return;
     }
 
