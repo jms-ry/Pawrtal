@@ -153,4 +153,21 @@ Route::get('/donations/failed', function() {
 
 // PayMongo Webhook - Must be public (no auth)
 Route::post('/webhook/paymongo', [WebhookController::class, 'handlePayMongo'])->name('webhook.paymongo');
+
+Route::get('/cron/cleanup-donations', function() {
+  // Security: Check secret key
+  if (request()->query('secret') !== env('CRON_SECRET')) {
+    abort(403, 'Unauthorized');
+  }
+    
+  // Run the cleanup command
+  Artisan::call('donations:cleanup-expired');
+    
+    return response()->json([
+      'success' => true,
+      'message' => 'Cleanup executed',
+      'output' => Artisan::output(),
+      'timestamp' => now()->toDateTimeString()
+    ]);
+});
 require __DIR__.'/auth.php';
