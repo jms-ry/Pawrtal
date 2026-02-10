@@ -17,6 +17,8 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReportAlertController;
 use App\Http\Controllers\WebhookController;
+use Illuminate\Support\Facades\Log;
+use App\Models\Donation;
 
 Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
@@ -124,7 +126,29 @@ Route::get('/donations/success', function() {
 })->name('donations.success');
 
 Route::get('/donations/failed', function() {
-  return 'Payment Failed!';
+  // Try to get source ID from query parameter
+  $sourceId = request()->query('id');
+    
+  if ($sourceId) {
+    // Find and cancel the donation
+    $donation = Donation::where('payment_intent_id', $sourceId)
+      ->where('payment_status', 'pending')
+    ->first();
+            
+    if ($donation) {
+      $donation->update([
+        'payment_status' => 'failed',
+        'status' => 'cancelled',
+      ]);
+            
+      Log::info('Donation cancelled via failed route', [
+        'donation_id' => $donation->id,
+        'source_id' => $sourceId
+      ]);
+    }
+  }
+    
+  return 'Payment Failed! Your donation has been cancelled.';
 })->name('donations.failed');
 
 // PayMongo Webhook - Must be public (no auth)
