@@ -22,7 +22,7 @@
               <!-- Success Message -->
               <h2 class="text-success fw-bold mb-3">Payment Successful!</h2>
               <p class="text-muted mb-4">
-                Thank you for your generous donation. Your contribution helps us make a difference.
+                Thank you for your generous donation. Your support helps provide food, shelter, and medical care to rescued animals.
               </p>
 
               <!-- Donation Details -->
@@ -41,7 +41,9 @@
                   <div class="col-6 fw-semibold text-uppercase">{{ donation.payment_method }}</div>
                 </div>
                 <div class="row">
-                  <strong class="fs-5">See more details of this donation by viewing this donation on your donation history</strong>
+                  <p class="fw-semibold text-center mt-3">
+                    You can view the full details in your donation history.
+                  </p>
                 </div>
               </div>
 
