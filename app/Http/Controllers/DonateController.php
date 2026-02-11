@@ -18,39 +18,38 @@ class DonateController extends Controller
 
   public function donationSuccess(Request $request)
 {
-    // Debug: Log all query parameters
     error_log('===== SUCCESS PAGE ACCESSED =====');
     error_log('All params: ' . json_encode($request->all()));
     error_log('Query string: ' . $request->getQueryString());
     error_log('Full URL: ' . $request->fullUrl());
     
-    // Get source ID from query parameter
     $sourceId = $request->query('id');
-    
     error_log('Source ID from query: ' . ($sourceId ?? 'NULL'));
     
     $donation = null;
     
     if ($sourceId) {
+        // Try to find by source ID
         $donation = Donation::where('payment_intent_id', $sourceId)
             ->where('donation_type', 'monetary')
             ->first();
             
-        error_log('Donation found: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
-    } else {
-        error_log('No source ID provided, trying fallback to latest paid donation');
+        error_log('Donation found by source: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
+    }
+    
+    // Fallback: Get user's most recent monetary donation (any status)
+    if (!$donation && Auth::check()) {
+        error_log('Trying fallback to latest monetary donation');
         
-        if (Auth::check()) {
-            // Fallback: Get user's most recent paid donation
-            $donation = Donation::where('user_id', Auth::id())
-                ->where('donation_type', 'monetary')
-                ->where('payment_status', 'paid')
-                ->latest('paid_at')
-                ->first();
-                
-            error_log('Fallback donation found: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
-        } else {
-            error_log('User not authenticated for fallback');
+        $donation = Donation::where('user_id', Auth::id())
+            ->where('donation_type', 'monetary')
+            ->latest('donation_date') // Use latest created, not latest paid
+            ->first();
+            
+        error_log('Fallback donation found: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
+        
+        if ($donation) {
+            error_log('Donation status: ' . $donation->payment_status);
         }
     }
     
