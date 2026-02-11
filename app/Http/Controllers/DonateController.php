@@ -41,6 +41,15 @@ class DonateController extends Controller
             
       error_log('Donation found by source: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
     }
+
+    if (!$donation && Auth::check()) {
+      $donation = Donation::where('user_id', Auth::id())
+        ->where('donation_type', 'monetary')
+        ->latest('donation_date')
+      ->first();
+            
+      error_log('Latest donation for user: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
+    }
     
     return Inertia::render('Donate/Success', [
       'donation' => $donation
