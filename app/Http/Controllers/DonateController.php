@@ -18,16 +18,40 @@ class DonateController extends Controller
 
   public function donationSuccess(Request $request)
 {
-    // Get source ID from query parameter (PayMongo redirects with ?id=src_xxx)
+    // Debug: Log all query parameters
+    error_log('===== SUCCESS PAGE ACCESSED =====');
+    error_log('All params: ' . json_encode($request->all()));
+    error_log('Query string: ' . $request->getQueryString());
+    error_log('Full URL: ' . $request->fullUrl());
+    
+    // Get source ID from query parameter
     $sourceId = $request->query('id');
+    
+    error_log('Source ID from query: ' . ($sourceId ?? 'NULL'));
     
     $donation = null;
     
     if ($sourceId) {
-        // Find the donation by payment_intent_id
         $donation = Donation::where('payment_intent_id', $sourceId)
             ->where('donation_type', 'monetary')
             ->first();
+            
+        error_log('Donation found: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
+    } else {
+        error_log('No source ID provided, trying fallback to latest paid donation');
+        
+        if (Auth::check()) {
+            // Fallback: Get user's most recent paid donation
+            $donation = Donation::where('user_id', Auth::id())
+                ->where('donation_type', 'monetary')
+                ->where('payment_status', 'paid')
+                ->latest('paid_at')
+                ->first();
+                
+            error_log('Fallback donation found: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
+        } else {
+            error_log('User not authenticated for fallback');
+        }
     }
     
     return Inertia::render('Donate/Success', [
