@@ -120,11 +120,7 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/api/donations/create-payment', [DonationController::class, 'createPayment']);
 });
 
-// Temporary placeholder routes for testing
-Route::get('/donations/success', function() {
-  return 'Payment Successful!';
-})->name('donations.success');
-
+Route::get('/donations/success', [DonateController::class, 'donationSuccess'])->name('donations.success');
 Route::get('/donations/failed', function() {
   // Try to get source ID from query parameter
   $sourceId = request()->query('id');
