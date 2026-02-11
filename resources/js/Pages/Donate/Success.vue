@@ -40,14 +40,10 @@
                   <div class="col-6 text-muted">Payment Method:</div>
                   <div class="col-6 fw-semibold text-uppercase">{{ donation.payment_method }}</div>
                 </div>
-                <div v-if="donation.transaction_reference" class="row">
-                  <div class="col-6 text-muted">Reference:</div>
-                  <div class="col-6 fw-semibold small">{{ donation.transaction_reference }}</div>
-                </div>
                 <div class="row">
-                  <p class="fw-semibold text-center mt-3">
-                    You can view the full details in your donation history.
-                  </p>
+                  <small class="fw-semibold text-center mt-3">
+                    You can view the full details of the donation in your donation history.
+                  </small>
                 </div>
               </div>
 

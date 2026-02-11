@@ -18,6 +18,17 @@ class DonateController extends Controller
 
   public function donationSuccess(Request $request)
   {
+    // Check if coming from PayMongo
+    $referer = $request->header('referer');
+    $isFromPayMongo = $referer && str_contains($referer, 'paymongo.com');
+
+    error_log('Is from PayMongo: ' . ($isFromPayMongo ? 'YES' : 'NO'));
+    // Block direct access (no PayMongo referer)
+    if (!$isFromPayMongo) {
+      error_log('Direct access blocked - redirecting to home');
+      return redirect('/')->with('info', 'Please make a donation to view this page.');
+    }
+
     $sourceId = $request->query('id');
     
     $donation = null;
@@ -29,22 +40,6 @@ class DonateController extends Controller
       ->first();
             
       error_log('Donation found by source: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
-    }
-    
-    // Fallback: Get user's most recent monetary donation (any status)
-    if (!$donation && Auth::check()) {
-      error_log('Trying fallback to latest monetary donation');
-        
-      $donation = Donation::where('user_id', Auth::id())
-        ->where('donation_type', 'monetary')
-        ->latest('donation_date') // Use latest created, not latest paid
-      ->first();
-            
-      error_log('Fallback donation found: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
-        
-      if ($donation) {
-        error_log('Donation status: ' . $donation->payment_status);
-      }
     }
     
     return Inertia::render('Donate/Success', [
