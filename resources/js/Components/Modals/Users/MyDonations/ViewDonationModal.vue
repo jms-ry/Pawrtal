@@ -21,6 +21,7 @@
                 <strong class="mt-2 ms-2 me-4">Amount:  <span class="fw-lighter" id="amountSpan">{{ donationAmount }}</span></strong>
                 <strong class="mt-2 ms-2 me-4">Payment Method:  <span class="fw-lighter" id="amountSpan">{{ donationPaymentMethod }}</span></strong>
                 <strong class="mt-2 ms-2 me-4">Payment Status:  <span class="fw-lighter" id="amountSpan">{{ donationPaymentStatus }}</span></strong>
+                <strong class="mt-2 ms-2 me-4">Transaction Reference:  <span class="fw-lighter" id="amountSpan">{{ donationTransactionRef }}</span></strong>
               </div>
             </div>
             <hr class="text-dark mt-4 mb-2">
@@ -206,6 +207,7 @@
   const donationAmount = ref(null)
   const donationPaymentMethod = ref(null)
   const donationPaymentStatus = ref(null)
+  const donationTransactionRef = ref(null)
   onMounted(() => {
     const modalEl = document.getElementById('viewDonationModal')
 
@@ -224,6 +226,7 @@
       donationAmount.value = button.getAttribute('data-donation-amount-formatted')
       donationPaymentMethod.value = button.getAttribute('data-donation-payment-method')
       donationPaymentStatus.value = button.getAttribute('data-donation-payment-status')
+      donationTransactionRef.value = button.getAttribute('data-donation-transaction-ref')
 
       const donationTypeField = document.getElementById('donationType')
       donationTypeField.textContent = donationType.value + ' Donation'

@@ -61,6 +61,7 @@
                     :data-donation-amount-formatted="donation.amount_formatted"
                     :data-donation-payment-method="donation.payment_method_formatted"
                     :data-donation-payment-status="donation.payment_status_formatted"
+                    :data-donation-transaction-ref="donation.transaction_reference_formatted"
                   >View </a>
                   <a v-if="donation.status === 'pending' && donation.donation_type === 'in-kind'" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#updateInKindDonationModal" 
                     :data-donation-id="donation.id"
@@ -111,6 +112,7 @@
                   :data-donation-amount-formatted="donation.amount_formatted"
                   :data-donation-payment-method="donation.payment_method_formatted"
                   :data-donation-payment-status="donation.payment_status_formatted"
+                  :data-donation-transaction-ref="donation.transaction_reference_formatted"
                 >View </a>
                 <a v-if="donation.status === 'pending' && donation.donation_type === 'in-kind'" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#updateInKindDonationModal"
                   :data-donation-id="donation.id"

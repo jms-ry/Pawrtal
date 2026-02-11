@@ -62,6 +62,7 @@
                     :data-donation-amount-formatted="donation.amount_formatted"
                     :data-donation-payment-method="donation.payment_method_formatted"
                     :data-donation-payment-status="donation.payment_status_formatted"
+                    :data-donation-transaction-ref="donation.transaction_reference_formatted"
                   >View </a>
                   <div v-if="donation.status !== 'pending'">
                     <a v-if="!donation.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
@@ -104,6 +105,7 @@
                   :data-donation-amount-formatted="donation.amount_formatted"
                   :data-donation-payment-method="donation.payment_method_formatted"
                   :data-donation-payment-status="donation.payment_status_formatted"
+                  :data-donation-transaction-ref="donation.transaction_reference_formatted"
                   >View 
                 </a>
                 <div v-if="donation.status !== 'pending'">

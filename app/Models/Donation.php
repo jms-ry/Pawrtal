@@ -52,6 +52,7 @@ class Donation extends Model
     'logged_user_is_admin_or_staff',
     'payment_method_formatted',
     'payment_status_formatted',
+    'transaction_reference_formatted'
   ];
 
   public function isMonetary()
@@ -174,6 +175,15 @@ class Donation extends Model
   {
     if ($this->payment_status) {
       return Str::headline($this->payment_status);
+    }
+
+    return 'N/A';
+  }
+
+  public function getTransactionReferenceFormattedAttribute()
+  {
+    if ($this->transaction_reference) {
+      return $this->transaction_reference;
     }
 
     return 'N/A';
