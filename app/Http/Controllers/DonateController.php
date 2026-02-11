@@ -55,4 +55,30 @@ class DonateController extends Controller
       'donation' => $donation
     ]);
   }
+
+  public function donationFailed(Request $request)
+  {
+    // Try to get source ID from query parameter
+    $sourceId = request()->query('id');
+    $donation = null;
+
+    if ($sourceId) {
+      // Find and cancel the donation
+      $donation = Donation::where('payment_intent_id', $sourceId)
+        ->where('payment_status', 'pending')
+      ->first();
+              
+      if ($donation) {
+        $donation->update([
+          'payment_status' => 'failed',
+          'status' => 'cancelled',
+        ]);
+        
+        error_log('Donation cancelled! ID: ' . $donation->id);
+      }
+    }
+    return Inertia::render('Donate/Failed', [
+      'donation' => $donation
+    ]);
+  }
 }

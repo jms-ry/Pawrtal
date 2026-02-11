@@ -121,31 +121,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/donations/success', [DonateController::class, 'donationSuccess'])->name('donations.success');
-Route::get('/donations/failed', function() {
-  // Try to get source ID from query parameter
-  $sourceId = request()->query('id');
-    
-  if ($sourceId) {
-    // Find and cancel the donation
-    $donation = Donation::where('payment_intent_id', $sourceId)
-      ->where('payment_status', 'pending')
-    ->first();
-            
-    if ($donation) {
-      $donation->update([
-        'payment_status' => 'failed',
-        'status' => 'cancelled',
-      ]);
-            
-      Log::info('Donation cancelled via failed route', [
-        'donation_id' => $donation->id,
-        'source_id' => $sourceId
-      ]);
-    }
-  }
-    
-  return 'Payment Failed! Your donation has been cancelled.';
-})->name('donations.failed');
+Route::get('/donations/failed', [DonateController::class, 'donationFailed'])->name('donations.failed');
 
 // PayMongo Webhook - Must be public (no auth)
 Route::post('/webhook/paymongo', [WebhookController::class, 'handlePayMongo'])->name('webhook.paymongo');
