@@ -144,10 +144,10 @@ class PayMongoService
   }
 
   /**
- * Create a payment source (GCash or Maya)
+ * Create a payment source (GCash or PayMaya)
  * 
  * @param int $amount Amount in centavos (₱100 = 10000)
- * @param string $type Payment type: 'gcash' or 'maya'
+ * @param string $type Payment type: 'gcash' or 'paymaya'
  * @param string $description Payment description
  * @param array $billing Billing details
  * @return array|null
@@ -156,7 +156,7 @@ class PayMongoService
   {
     try {
       // Validate type
-      $allowedTypes = ['gcash', 'maya'];
+      $allowedTypes = ['gcash', 'paymaya'];
       if (!in_array($type, $allowedTypes)) {
         Log::error('Invalid payment source type', ['type' => $type]);
         return null;
@@ -171,7 +171,7 @@ class PayMongoService
                 'success' => route('donations.success'),
                 'failed' => route('donate.index'),
               ],
-              'type' => $type, // 'gcash' or 'maya'
+              'type' => $type, // 'gcash' or 'paymaya'
               'currency' => 'PHP',
               'billing' => $billing,
           ]

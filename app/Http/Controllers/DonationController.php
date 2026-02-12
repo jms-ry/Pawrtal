@@ -173,7 +173,7 @@ class DonationController extends Controller
     // Validate request
     $validated = $request->validate([
       'amount' => 'required|numeric|min:1',
-      'payment_method' => 'required|in:gcash,maya,card',
+      'payment_method' => 'required|in:gcash,paymaya,card',
     ]);
 
     $user = Auth::user();
@@ -195,7 +195,7 @@ class DonationController extends Controller
       $paymongoService = new PayMongoService();
       $source = $paymongoService->createSource(
         $amountInCentavos,
-        $validated['payment_method'], // 'gcash' or 'maya'
+        $validated['payment_method'], // 'gcash' or 'paymaya'
         'Donation to Pawrtal',
         $billing
       );
