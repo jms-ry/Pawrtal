@@ -185,13 +185,14 @@
     }
 
     // Only handle GCash for now
-    if (method.value === 'gcash' || method.value === 'paymaya') {
-      await handleEWalletPayment()
-    } else if (method.value === 'card') {
-      error.value = 'Card payment is not yet available. Please use GCash or Maya.'
+    if (method.value === 'gcash') {
+      await handleGCashPayment()
+    } else {
+      error.value = `${method.value.toUpperCase()} payment is not yet available. Please use GCash.`
     }
   }
-  const handleEWalletPayment = async () => {
+
+  const handleGCashPayment = async () => {
     loading.value = true
     error.value = null
 
@@ -204,7 +205,7 @@
         },
         body: JSON.stringify({
           amount: amount.value,
-          payment_method: method.value // 'gcash' or 'paymaya'
+          payment_method: 'gcash'
         }),
         credentials: 'include'
       })

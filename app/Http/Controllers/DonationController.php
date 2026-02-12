@@ -193,10 +193,9 @@ class DonationController extends Controller
 
       // Create PayMongo source
       $paymongoService = new PayMongoService();
-      $source = $paymongoService->createSource(
+      $source = $paymongoService->createGCashSource(
         $amountInCentavos,
-        $validated['payment_method'], // 'gcash' or 'paymaya'
-        'Donation to Pawrtal',
+        'Donation to Ormoc Stray Oasis', 
         $billing
       );
 
@@ -231,7 +230,6 @@ class DonationController extends Controller
       Log::error('Payment creation failed', [
         'user_id' => $user->id,
         'amount' => $validated['amount'],
-        'payment_method' => $validated['payment_method'],
         'error' => $e->getMessage(),
       ]);
 
