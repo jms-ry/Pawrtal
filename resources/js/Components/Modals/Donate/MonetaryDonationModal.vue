@@ -143,6 +143,7 @@
 
 <script setup>
   import { ref, computed } from 'vue'
+  import { Modal } from 'bootstrap'
 
   const amount = ref(null)
   const method = ref(null)
@@ -217,7 +218,8 @@
 
       if (data.success && data.checkout_url) {
         // Close the modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('monetaryDonationModal'))
+        const modalEl = document.getElementById('monetaryDonationModal')
+        const modal = Modal.getInstance(modalEl)
         if (modal) {
           modal.hide()
         }
