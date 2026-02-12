@@ -27,39 +27,7 @@ class PayMongoService
   */
   public function createGCashSource($amount, $description = 'Donation', $billing = [])
   {
-    try {
-      $response = Http::withBasicAuth($this->secretKey, '')
-      ->post("{$this->baseUrl}/sources", [
-        'data' => [
-          'attributes' => [
-            'amount' => $amount,
-            'redirect' => [
-              'success' => route('donations.success'),
-              'failed' => route('donate.index'),
-            ],
-            'type' => 'gcash',
-            'currency' => 'PHP',
-            'billing' => $billing,
-          ]
-        ]
-      ]);
-
-      if ($response->successful()) {
-        return $response->json()['data'];
-      }
-
-      Log::error('PayMongo Source Creation Failed', [
-        'response' => $response->json(),
-        'status' => $response->status()
-      ]);
-
-      return null;
-    } catch (\Exception $e) {
-      Log::error('PayMongo API Error', [
-        'message' => $e->getMessage()
-      ]);
-      return null;
-    }
+    return $this->createSource($amount, 'gcash', $description, $billing);
   }
 
   /**
@@ -174,4 +142,64 @@ class PayMongoService
       return null;
     }
   }
+
+  /**
+ * Create a payment source (GCash or PayMaya)
+ * 
+ * @param int $amount Amount in centavos (₱100 = 10000)
+ * @param string $type Payment type: 'gcash' or 'paymaya'
+ * @param string $description Payment description
+ * @param array $billing Billing details
+ * @return array|null
+ */
+  public function createSource($amount, $type = 'gcash', $description = 'Donation', $billing = [])
+  {
+    try {
+      // Validate type
+      $allowedTypes = ['gcash', 'paymaya'];
+      if (!in_array($type, $allowedTypes)) {
+        Log::error('Invalid payment source type', ['type' => $type]);
+        return null;
+      }
+
+      $response = Http::withBasicAuth($this->secretKey, '')
+      ->post("{$this->baseUrl}/sources", [
+        'data' => [
+          'attributes' => [
+            'amount' => $amount,
+              'redirect' => [
+                'success' => route('donations.success'),
+                'failed' => route('donate.index'),
+              ],
+              'type' => $type, // 'gcash' or 'paymaya'
+              'currency' => 'PHP',
+              'billing' => $billing,
+          ]
+        ]
+      ]);
+
+      if ($response->successful()) {
+        Log::info('Payment source created successfully', [
+          'type' => $type,
+          'source_id' => $response->json()['data']['id']
+        ]);
+        return $response->json()['data'];
+      }
+
+      Log::error('PayMongo Source Creation Failed', [
+        'response' => $response->json(),
+        'status' => $response->status(),
+        'type' => $type
+      ]);
+
+      return null;
+    } catch (\Exception $e) {
+      Log::error('PayMongo API Error', [
+        'message' => $e->getMessage(),
+        'type' => $type
+      ]);
+      return null;
+    }
+  }
+
 }
