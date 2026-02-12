@@ -35,7 +35,7 @@ class PayMongoService
             'amount' => $amount,
             'redirect' => [
               'success' => route('donations.success'),
-              'failed' => route('home'),
+              'failed' => route('donate.index'),
             ],
             'type' => 'gcash',
             'currency' => 'PHP',
