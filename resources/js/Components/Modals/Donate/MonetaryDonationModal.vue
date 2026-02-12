@@ -48,8 +48,8 @@
             </div>
           </div>
           <hr>
-          <h6 class="fw-bold mb-3 text-dark">
-            Step 2: Select donation method
+          <h6 class="fw-bold mb-3 text-dark fs-6">
+            Step 2: Select GCash as donation method to proceed
           </h6>
           <div class="d-grid gap-2">
             <!-- GCash -->
@@ -65,44 +65,6 @@
               </span>
               <i class="bi bi-check-circle-fill" v-if="method === 'gcash'"></i>
             </button>
-            <!-- Credit Card -->
-            <button 
-              type="button" 
-              class="btn d-flex align-items-center justify-content-between" 
-              :class="method === 'card' ? 'btn-secondary' : 'btn-outline-secondary'" 
-              @click="method = 'card'"
-              :disabled="loading"
-            >
-              <span>
-                <i class="bi bi-credit-card-fill me-2"></i>
-                Credit / Debit Card
-              </span>
-              <i class="bi bi-check-circle-fill" v-if="method === 'card'"></i>
-            </button>
-          </div>
-          <!-- Card details -->
-          <div v-if="method === 'card'" class="mt-4">
-            <h6 class="fw-bold mb-3 text-primary">
-              Enter Card Details
-            </h6>
-            <div class="mb-3">
-              <label class="form-label">Card Number</label>
-              <input type="text" class="form-control" placeholder="1234 5678 9012 3456" v-model="card.number" :disabled="loading"/>
-            </div>
-            <div class="row">
-              <div class="col-6 mb-3">
-                <label class="form-label">Expiry Date</label>
-                <input type="text" class="form-control" placeholder="MM / YY" v-model="card.expiry" :disabled="loading"/>
-              </div>
-              <div class="col-6 mb-3">
-                <label class="form-label">CVC</label>
-                <input type="text" class="form-control" placeholder="123" v-model="card.cvc" :disabled="loading"/>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Cardholder Name</label>
-              <input type="text" class="form-control" placeholder="Juan Dela Cruz" v-model="card.name" :disabled="loading"/>
-            </div>
           </div>
         </div>
 
@@ -137,26 +99,10 @@
   const loading = ref(false)
   const error = ref(null)
 
-  const card = ref({
-    number: '',
-    expiry: '',
-    cvc: '',
-    name: ''
-  })
-
   const presetAmounts = [10, 50, 100, 250, 500, 1000]
 
   const canProceed = computed(() => {
     if (!amount.value || !method.value) return false
-
-    if (method.value === 'card') {
-      return (
-        card.value.number &&
-        card.value.expiry &&
-        card.value.cvc &&
-        card.value.name
-      )
-    }
 
     return true
   })
@@ -171,12 +117,7 @@
       return
     }
 
-    // Only handle GCash for now
-    if (method.value === 'gcash') {
-      await handleGCashPayment()
-    } else {
-      error.value = `${method.value.toUpperCase()} payment is not yet available. Please use GCash.`
-    }
+    await handleGCashPayment()
   }
 
   const handleGCashPayment = async () => {
