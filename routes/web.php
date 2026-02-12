@@ -121,7 +121,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/donations/success', [DonateController::class, 'donationSuccess'])->name('donations.success');
-Route::get('/donations/failed', [DonateController::class, 'donationFailed'])->name('donations.failed');
 
 // PayMongo Webhook - Must be public (no auth)
 Route::post('/webhook/paymongo', [WebhookController::class, 'handlePayMongo'])->name('webhook.paymongo');
