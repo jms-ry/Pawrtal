@@ -216,6 +216,11 @@
       }
 
       if (data.success && data.checkout_url) {
+        // Close the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('monetaryDonationModal'))
+        if (modal) {
+          modal.hide()
+        }
         // Redirect to PayMongo checkout
         window.location.href = data.checkout_url
       } else {
