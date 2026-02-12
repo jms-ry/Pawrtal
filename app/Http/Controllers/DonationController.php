@@ -173,7 +173,7 @@ class DonationController extends Controller
     // Validate request
     $validated = $request->validate([
       'amount' => 'required|numeric|min:1',
-      'payment_method' => 'required|in:gcash,paymaya,card',
+      'payment_method' => 'required|in:gcash,card',
     ]);
 
     $user = Auth::user();
