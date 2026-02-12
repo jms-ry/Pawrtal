@@ -65,18 +65,18 @@
               </span>
               <i class="bi bi-check-circle-fill" v-if="method === 'gcash'"></i>
             </button>
-            <!-- Maya -->
+            <!-- Paymaya -->
             <button 
               type="button" 
               class="btn d-flex align-items-center justify-content-between" 
-              :class="method === 'maya' ? 'btn-dark' : 'btn-outline-dark'" 
-              @click="method = 'maya'"
+              :class="method === 'paymaya' ? 'btn-dark' : 'btn-outline-dark'" 
+              @click="method = 'paymaya'"
               :disabled="loading"
             >
               <span class="d-flex align-items-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Maya_logo.svg/128px-Maya_logo.svg.png?20220502032254" alt="Maya" class="me-2" style="height: 22px">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Maya_logo.svg/128px-Maya_logo.svg.png?20220502032254" alt="paymaya" class="me-2" style="height: 22px">
               </span>
-              <i class="bi bi-check-circle-fill" v-if="method === 'maya'"></i>
+              <i class="bi bi-check-circle-fill" v-if="method === 'paymaya'"></i>
             </button>
             <!-- Credit Card -->
             <button 
