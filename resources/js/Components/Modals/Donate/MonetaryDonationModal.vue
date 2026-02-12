@@ -65,18 +65,18 @@
               </span>
               <i class="bi bi-check-circle-fill" v-if="method === 'gcash'"></i>
             </button>
-            <!-- Paymaya -->
+            <!-- Maya -->
             <button 
               type="button" 
               class="btn d-flex align-items-center justify-content-between" 
-              :class="method === 'paymaya' ? 'btn-dark' : 'btn-outline-dark'" 
-              @click="method = 'paymaya'"
+              :class="method === 'maya' ? 'btn-dark' : 'btn-outline-dark'" 
+              @click="method = 'maya'"
               :disabled="loading"
             >
               <span class="d-flex align-items-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Maya_logo.svg/128px-Maya_logo.svg.png?20220502032254" alt="paymaya" class="me-2" style="height: 22px">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Maya_logo.svg/128px-Maya_logo.svg.png?20220502032254" alt="maya" class="me-2" style="height: 22px">
               </span>
-              <i class="bi bi-check-circle-fill" v-if="method === 'paymaya'"></i>
+              <i class="bi bi-check-circle-fill" v-if="method === 'maya'"></i>
             </button>
             <!-- Credit Card -->
             <button 
@@ -184,8 +184,8 @@
       return
     }
 
-    // Only handle GCash for now
-    if (method.value === 'gcash' || method.value === 'paymaya') {
+    // Only handle GCash and Maya for now
+    if (method.value === 'gcash' || method.value === 'maya') {
       await handleEWalletPayment()
     } else if (method.value === 'card') {
       error.value = 'Card payment is not yet available. Please use GCash or Maya.'
@@ -204,7 +204,7 @@
         },
         body: JSON.stringify({
           amount: amount.value,
-          payment_method: method.value // 'gcash' or 'paymaya'
+          payment_method: method.value // 'gcash' or 'maya'
         }),
         credentials: 'include'
       })
