@@ -20,7 +20,7 @@
               </div>
 
               <!-- Success Message -->
-              <h2 class="text-success fw-bold mb-3">Payment Successful!</h2>
+              <h2 class="text-success fw-bold mb-3">Your donation has been successfully recorded!</h2>
               <p class="text-muted mb-4">
                 Thank you for your generous donation. Your support helps provide food, shelter, and medical care to rescued animals.
               </p>
@@ -44,6 +44,11 @@
                   <div class="col-6 text-muted">Transaction Reference:</div>
                   <div class="col-6 fw-semibold">{{ donation.transaction_reference}}</div>
                 </div>
+                <div class="row">
+                  <small class="fw-semibold text-center mt-3">
+                    You can view the full details of the donation in your donation history.
+                  </small>
+                </div>
               </div>
 
               <div class="d-grid gap-2">
@@ -51,8 +56,8 @@
                   <i class="bi bi-list-ul me-2"></i>
                   View My Donations
                 </a>
-                <a href="/" class="btn btn-outline-secondary">
-                  Back to Home
+                <a href="/donate" class="btn btn-outline-secondary">
+                  Donate again
                 </a>
               </div>
 
