@@ -213,7 +213,7 @@ class DonationController extends Controller
       return response()->json([
         'success' => true,
         'donation_id' => $donation->id,
-        'checkout_url' => $session['attributes']['redirect']['checkout_url'],
+        'checkout_url' => $session['attributes']['checkout_url'],
       ]);
 
     } catch (\Exception $e) {
@@ -222,6 +222,7 @@ class DonationController extends Controller
       Log::error('Payment creation failed', [
         'user_id' => $user->id,
         'amount' => $validated['amount'],
+        'payment_method' => $validated['payment_method'],
         'error' => $e->getMessage(),
       ]);
 
