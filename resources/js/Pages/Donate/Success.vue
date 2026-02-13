@@ -40,10 +40,9 @@
                   <div class="col-6 text-muted">Payment Method:</div>
                   <div class="col-6 fw-semibold text-uppercase">{{ donation.payment_method }}</div>
                 </div>
-                <div class="row">
-                  <small class="fw-semibold text-center mt-3">
-                    You can view the full details of the donation in your donation history.
-                  </small>
+                <div class="row mb-2">
+                  <div class="col-6 text-muted">Transaction Reference:</div>
+                  <div class="col-6 fw-semibold">{{ donation.transaction_reference}}</div>
                 </div>
               </div>
 
