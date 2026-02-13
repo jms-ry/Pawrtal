@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReportAlertController;
+use App\Http\Controllers\WebhookController;
+use Illuminate\Support\Facades\Log;
+use App\Models\Donation;
 
 Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
@@ -113,7 +116,29 @@ Route::middleware(['auth'])->group(function () {
   });
 
   Route::post('/reports/{report}/alert', [ReportAlertController::class, 'store'])->name('reports.alert');
+
+  Route::post('/api/donations/create-payment', [DonationController::class, 'createPayment']);
 });
 
+Route::get('/donations/success', [DonateController::class, 'donationSuccess'])->name('donations.success');
 
+// PayMongo Webhook - Must be public (no auth)
+Route::post('/webhook/paymongo', [WebhookController::class, 'handlePayMongo'])->name('webhook.paymongo');
+
+Route::get('/cron/cleanup-donations', function() {
+  // Security: Check secret key
+  if (request()->query('secret') !== env('CRON_SECRET')) {
+    abort(403, 'Unauthorized');
+  }
+    
+  // Run the cleanup command
+  Artisan::call('donations:cleanup-expired');
+    
+    return response()->json([
+      'success' => true,
+      'message' => 'Cleanup executed',
+      'output' => Artisan::output(),
+      'timestamp' => now()->toDateTimeString()
+    ]);
+});
 require __DIR__.'/auth.php';

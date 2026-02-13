@@ -8,6 +8,9 @@ use App\Models\Donation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\PayMongoService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DonationController extends Controller
 {
@@ -24,7 +27,7 @@ class DonationController extends Controller
   */
   public function create()
   {
-    return view('donation.create');
+    
   }
 
   /**
@@ -157,5 +160,76 @@ class DonationController extends Controller
     $donation->restore();
     
     return redirect()->back()->with('success',  'Donation has been restored!');
+  }
+
+  /**
+   * Create PayMongo payment source for monetary donation
+   * 
+   * @param Request $request
+   * @return \Illuminate\Http\JsonResponse
+  */
+  public function createPayment(Request $request)
+  {
+    // Validate request
+    $validated = $request->validate([
+      'amount' => 'required|numeric|min:1',
+      'payment_method' => 'required|in:gcash',
+    ]);
+
+    $user = Auth::user();
+
+    // Convert amount to centavos (₱100.00 = 10000 centavos)
+    $amountInCentavos = (int) ($validated['amount'] * 100);
+
+    try {
+      DB::beginTransaction();
+
+      // Create PayMongo checkout session
+      $paymongoService = new PayMongoService();
+      $session = $paymongoService->createCheckoutSession(
+        $amountInCentavos,
+        'Donation to OSO'
+      );
+
+      if (!$session) {
+        throw new \Exception('Failed to create checkout session');
+      }
+
+      // Save donation record
+      $donation = Donation::create([
+        'user_id' => $user->id,
+        'donation_type' => 'monetary',
+        'amount' => $validated['amount'],
+        'status' => 'pending',
+        'payment_method' => $validated['payment_method'],
+        'payment_intent_id' => $session['id'],
+        'payment_status' => 'pending',
+        'transaction_reference' => null,
+        'paid_at' => null,
+      ]);
+
+      DB::commit();
+
+      return response()->json([
+        'success' => true,
+        'donation_id' => $donation->id,
+        'checkout_url' => $session['attributes']['checkout_url'],
+      ]);
+
+    } catch (\Exception $e) {
+      DB::rollBack();
+          
+      Log::error('Payment creation failed', [
+        'user_id' => $user->id,
+        'amount' => $validated['amount'],
+        'payment_method' => $validated['payment_method'],
+        'error' => $e->getMessage(),
+      ]);
+
+      return response()->json([
+        'success' => false,
+        'message' => 'Failed to create payment. Please try again.',
+      ], 500);
+    }
   }
 }
