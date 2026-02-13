@@ -181,26 +181,18 @@ class DonationController extends Controller
     // Convert amount to centavos (₱100.00 = 10000 centavos)
     $amountInCentavos = (int) ($validated['amount'] * 100);
 
-    // Prepare billing information
-    $billing = [
-      'name' => trim($user->first_name . ' ' . $user->last_name),
-      'email' => $user->email,
-      'phone' => $user->contact_number ?? '09000000000',
-    ];
-
     try {
       DB::beginTransaction();
 
-      // Create PayMongo source
+      // Create PayMongo checkout session
       $paymongoService = new PayMongoService();
-      $source = $paymongoService->createGCashSource(
+      $session = $paymongoService->createCheckoutSession(
         $amountInCentavos,
-        'Donation to Ormoc Stray Oasis', 
-        $billing
+        'Donation to OSO'
       );
 
-      if (!$source) {
-        throw new \Exception('Failed to create payment source');
+      if (!$session) {
+        throw new \Exception('Failed to create checkout session');
       }
 
       // Save donation record
@@ -210,7 +202,7 @@ class DonationController extends Controller
         'amount' => $validated['amount'],
         'status' => 'pending',
         'payment_method' => $validated['payment_method'],
-        'payment_intent_id' => $source['id'],
+        'payment_intent_id' => $session['id'],
         'payment_status' => 'pending',
         'transaction_reference' => null,
         'paid_at' => null,
@@ -221,7 +213,7 @@ class DonationController extends Controller
       return response()->json([
         'success' => true,
         'donation_id' => $donation->id,
-        'checkout_url' => $source['attributes']['redirect']['checkout_url'],
+        'checkout_url' => $session['attributes']['redirect']['checkout_url'],
       ]);
 
     } catch (\Exception $e) {

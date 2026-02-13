@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
-use App\Services\PayMongoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -23,7 +22,7 @@ class WebhookController extends Controller
     try {
       $payload = $request->all();
             
-      // Extract event type - CORRECTED PATH
+      // Extract event type
       $eventType = $payload['data']['attributes']['type'] ?? null;
       $eventData = $payload['data']['attributes']['data'] ?? null;
 
@@ -35,24 +34,11 @@ class WebhookController extends Controller
         return response()->json(['message' => 'Invalid payload'], 400);
       }
 
-      // Handle different event types
-      switch ($eventType) {
-        case 'source.chargeable':
-          error_log('Calling handleSourceChargeable');
-          $this->handleSourceChargeable($eventData);
-        break;
-                    
-        case 'payment.paid':
-          error_log('Calling handlePaymentPaid');
-          $this->handlePaymentPaid($eventData);
-        break;
-                    
-        case 'payment.failed':
-          error_log('Calling handlePaymentFailed');
-          $this->handlePaymentFailed($eventData);
-        break;
-                    
-        default:
+      // Handle checkout session payment
+      if ($eventType === 'checkout_session.payment.paid') {
+        error_log('Handling checkout_session.payment.paid');
+        $this->handleCheckoutSessionPaid($eventData);
+      } else {
         Log::info('Unhandled webhook event type', ['type' => $eventType]);
       }
 
@@ -70,92 +56,35 @@ class WebhookController extends Controller
   }
 
   /**
-    * Handle source.chargeable event
-    * This fires when payment source is ready to be charged
-    * We just log it without updating the donation status
-  */
-  private function handleSourceChargeable($eventData)
-  {
-    $sourceId = $eventData['id'] ?? null;
-    
-    error_log('handleSourceChargeable - Source ID: ' . $sourceId);
-    
-    if (!$sourceId) {
-      Log::warning('Source ID missing in source.chargeable event');
-      return;
-    }
-
-    Log::info('Source chargeable received', [
-      'source_id' => $sourceId,
-      'status' => $eventData['attributes']['status'] ?? null
-    ]);
-
-    // Find donation
-    $donation = Donation::where('payment_intent_id', $sourceId)->first();
-    
-    if (!$donation) {
-      error_log('Donation not found for source: ' . $sourceId);
-      Log::warning('Donation not found for source', ['source_id' => $sourceId]);
-      return;
-    }
-
-    error_log('Creating payment for source: ' . $sourceId);
-
-    // Create payment to charge the source
-    try {
-      $paymongoService = new PayMongoService();
-      $payment = $paymongoService->createPayment($sourceId, $donation->amount);
-        
-      if (!$payment) {
-        error_log('Failed to create payment');
-        Log::error('Failed to create payment for source', ['source_id' => $sourceId]);
-        return;
-      }
-
-      error_log('Payment created successfully: ' . $payment['id']);
-      Log::info('Payment created', [
-        'source_id' => $sourceId,
-        'payment_id' => $payment['id']
-      ]);
-
-      // The payment.paid webhook will handle updating the donation
-        
-    } catch (\Exception $e) {
-      error_log('Error creating payment: ' . $e->getMessage());
-      Log::error('Error creating payment', [
-        'source_id' => $sourceId,
-        'error' => $e->getMessage()
-      ]);
-    }
-  }
-
-  /**
-    * Handle payment.paid event
+    * Handle checkout_session.payment.paid event
     * This fires when payment is successfully completed
   */
-  private function handlePaymentPaid($eventData)
-  {  
-    $paymentId = $eventData['id'] ?? null;
-    $sourceId = $eventData['attributes']['source']['id'] ?? null;
+  private function handleCheckoutSessionPaid($eventData)
+  {
+    $sessionId = $eventData['id'] ?? null;
+    $payments = $eventData['attributes']['payments'] ?? [];
+    $paymentId = $payments[0]['id'] ?? null; // Get first payment
         
-    error_log('handlePaymentPaid - Payment ID: ' . $paymentId . ', Source ID: ' . $sourceId);
+    error_log('handleCheckoutSessionPaid - Session ID: ' . $sessionId . ', Payment ID: ' . $paymentId);
         
-    if (!$sourceId) {
-      Log::warning('Source ID missing in payment.paid event');
+    if (!$sessionId) {
+      Log::warning('Session ID missing in checkout_session.payment.paid event');
       return;
     }
 
-    Log::info('Payment paid', [
-      'source_id' => $sourceId,
+    Log::info('Checkout session payment paid', [
+      'session_id' => $sessionId,
       'payment_id' => $paymentId
     ]);
 
-    // Find donation by payment_intent_id
-    $donation = Donation::where('payment_intent_id', $sourceId)->first();
+    // Find donation by payment_intent_id (which stores checkout session ID)
+    $donation = Donation::where('payment_intent_id', $sessionId)
+      ->where('donation_type', 'monetary')
+    ->first();
         
     if (!$donation) {
-      error_log('Donation not found for source: ' . $sourceId);
-      Log::error('Donation not found for payment', ['source_id' => $sourceId]);
+      error_log('Donation not found for session: ' . $sessionId);
+      Log::error('Donation not found for checkout session', ['session_id' => $sessionId]);
       return;
     }
 
@@ -172,47 +101,8 @@ class WebhookController extends Controller
     error_log('Donation updated successfully');
     Log::info('Donation marked as paid and accepted', [
       'donation_id' => $donation->id,
-      'payment_id' => $paymentId
-    ]);
-  }
-
-  /**
-    * Handle payment.failed event
-    * This fires when payment fails or is cancelled
-  */
-  private function handlePaymentFailed($eventData)
-  {
-    $sourceId = $eventData['attributes']['source']['id'] ?? null;
-        
-    error_log('handlePaymentFailed - Source ID: ' . $sourceId);
-        
-    if (!$sourceId) {
-      Log::warning('Source ID missing in payment.failed event');
-      return;
-    }
-
-    Log::info('Payment failed', ['source_id' => $sourceId]);
-
-    // Find donation by payment_intent_id
-    $donation = Donation::where('payment_intent_id', $sourceId)->first();
-        
-    if (!$donation) {
-      error_log('Donation not found for source: ' . $sourceId);
-      Log::warning('Donation not found for failed payment', ['source_id' => $sourceId]);
-      return;
-    }
-
-    error_log('Marking donation as failed');
-
-    // Update donation: payment failed
-    $donation->update([
-      'payment_status' => 'failed',
-      'status' => 'cancelled',
-    ]);
-
-    error_log('Donation marked as failed');
-    Log::info('Donation marked as failed and cancelled', [
-      'donation_id' => $donation->id
+      'payment_id' => $paymentId,
+      'session_id' => $sessionId
     ]);
   }
 }

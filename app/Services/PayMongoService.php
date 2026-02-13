@@ -18,77 +18,6 @@ class PayMongoService
   }
 
   /**
-    * Create a GCash payment source
-    * 
-    * @param int $amount Amount in centavos (₱100 = 10000)
-    * @param string $description Payment description
-    * @param array $billing Billing details
-    * @return array|null
-  */
-  public function createGCashSource($amount, $description = 'Donation', $billing = [])
-  {
-    try {
-      $response = Http::withBasicAuth($this->secretKey, '')
-      ->post("{$this->baseUrl}/sources", [
-        'data' => [
-          'attributes' => [
-            'amount' => $amount,
-            'redirect' => [
-              'success' => route('donations.success'),
-              'failed' => route('donate.index'),
-            ],
-            'type' => 'gcash',
-            'currency' => 'PHP',
-            'billing' => $billing,
-          ]
-        ]
-      ]);
-
-      if ($response->successful()) {
-        return $response->json()['data'];
-      }
-
-      Log::error('PayMongo Source Creation Failed', [
-        'response' => $response->json(),
-        'status' => $response->status()
-      ]);
-
-      return null;
-    } catch (\Exception $e) {
-      Log::error('PayMongo API Error', [
-        'message' => $e->getMessage()
-      ]);
-      return null;
-    }
-  }
-
-  /**
-    * Retrieve source by ID
-    * 
-    * @param string $sourceId
-    * @return array|null
-  */
-  public function getSource($sourceId)
-  {
-    try {
-      $response = Http::withBasicAuth($this->secretKey, '')
-      ->get("{$this->baseUrl}/sources/{$sourceId}");
-
-      if ($response->successful()) {
-        return $response->json()['data'];
-      }
-
-      return null;
-    } catch (\Exception $e) {
-      Log::error('PayMongo Get Source Error', [
-        'message' => $e->getMessage(),
-        'source_id' => $sourceId
-      ]);
-      return null;
-    }
-  }
-
-  /**
    * Verify webhook payload structure and basic security
    * 
    * @param array $payload
@@ -127,40 +56,48 @@ class PayMongoService
   }
 
   /**
-   * Create a payment to charge a source
-   * 
-   * @param string $sourceId
-   * @param float $amount Amount in pesos
-   * @return array|null
-   */
-  public function createPayment($sourceId, $amount)
+ * Create a checkout session for GCash payment
+ * 
+ * @param int $amount Amount in centavos (₱100 = 10000)
+ * @param string $description Payment description
+ * @param array $billing Billing details (optional for checkout session)
+ * @return array|null
+ */
+  public function createCheckoutSession($amount, $description = 'Donation')
   {
     try {
-      $amountInCentavos = (int) ($amount * 100);
-          
       $response = Http::withBasicAuth($this->secretKey, '')
-      ->post("{$this->baseUrl}/payments", [
+      ->post("{$this->baseUrl}/checkout_sessions", [
         'data' => [
           'attributes' => [
-            'amount' => $amountInCentavos,
-            'source' => [
-              'id' => $sourceId,
-              'type' => 'source'
+            'send_email_receipt' => true,
+            'show_description' => true,
+            'show_line_items' => true,
+            'description' => $description,
+            'line_items' => [
+              [
+                'currency' => 'PHP',
+                'amount' => $amount,
+                'description' => $description,
+                'name' => 'Donation to OSO',
+                'quantity' => 1
+              ]
             ],
-            'currency' => 'PHP',
-            'description' => 'Donation Payment'
+            'payment_method_types' => ['gcash'], // Only GCash
+            'success_url' => route('donations.success'),
+            'cancel_url' => route('donate.index'), // User cancels payment
           ]
         ]
       ]);
 
       if ($response->successful()) {
-        Log::info('Payment created successfully', [
-          'payment_id' => $response->json()['data']['id']
+        Log::info('Checkout session created successfully', [
+          'session_id' => $response->json()['data']['id']
         ]);
         return $response->json()['data'];
       }
 
-      Log::error('PayMongo Payment Creation Failed', [
+      Log::error('PayMongo Checkout Session Creation Failed', [
         'response' => $response->json(),
         'status' => $response->status()
       ]);
@@ -168,7 +105,7 @@ class PayMongoService
       return null;
           
     } catch (\Exception $e) {
-      Log::error('PayMongo Payment API Error', [
+      Log::error('PayMongo Checkout Session API Error', [
         'message' => $e->getMessage()
       ]);
       return null;
