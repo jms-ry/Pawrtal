@@ -45,12 +45,16 @@ class InspectionSchedule extends Model
   protected static function boot()
   {
     parent::boot();
-
+    
     static::creating(function ($model) {
-      if (empty($model->status)) {
+      // Now this will work properly!
+      if ($model->status === null) {
         $today = now()->toDateString();
+            
         if ($model->inspection_date == $today) {
           $model->status = 'now';
+        } elseif ($model->inspection_date < $today) {
+          $model->status = 'missed';
         } else {
           $model->status = 'upcoming';
         }
@@ -58,25 +62,29 @@ class InspectionSchedule extends Model
     });
   }
 
-  public function inspectionStatus()
-  {
-    return $this->getStatusAttribute($this->status);
-  }
-
-  public function getStatusAttribute($value)
-  {
-    if (in_array($value, ['done', 'cancelled'])) {
-      return $value;
+  public function getCurrentStatus()
+  { 
+    $status = $this->attributes['status'] ?? null;
+    
+    if (in_array($status, ['done', 'cancelled'])) {
+      return $status;
     }
     
     $today = now()->toDateString();
     
     if ($this->inspection_date == $today) {
       return 'now';
-    }else if($this->inspection_date < $today){
+    } elseif ($this->inspection_date < $today) {
       return 'missed';
     }
     
     return 'upcoming';
   }
+
+  public function inspectionStatus()
+  {
+    return $this->getCurrentStatus();
+  }
+
+  
 }

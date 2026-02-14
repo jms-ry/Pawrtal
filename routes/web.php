@@ -141,4 +141,22 @@ Route::get('/cron/cleanup-donations', function() {
       'timestamp' => now()->toDateTimeString()
     ]);
 });
+
+// Cron endpoint for daily inspection notifications
+Route::get('/cron/notify-inspections', function() {
+  // Security: Check secret key (same secret as cleanup)
+  if (request()->query('secret') !== env('CRON_SECRET')) {
+    abort(403, 'Unauthorized');
+  }
+    
+  // Run the notification command
+  Artisan::call('inspections:notify-today');
+    
+  return response()->json([
+    'success' => true,
+    'message' => 'Inspection notifications sent',
+    'output' => Artisan::output(),
+    'timestamp' => now('Asia/Manila')->toDateTimeString()
+  ]);
+});
 require __DIR__.'/auth.php';

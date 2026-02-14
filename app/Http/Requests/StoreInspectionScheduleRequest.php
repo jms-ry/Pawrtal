@@ -78,7 +78,7 @@ class StoreInspectionScheduleRequest extends FormRequest
             }
           },
         ],
-      'status' => 'nullable|in:upcoming,now,done,cancelled,missed',
+      
     ];
   }
 }
