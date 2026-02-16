@@ -31,7 +31,7 @@ class AdminStaffController extends Controller
         'inspector_name' => $schedule->inspectorName(),
         'inspection_location' => $schedule->inspectionLocation(),
         'inspection_date' => $schedule->inspection_date,
-        'status' => $schedule->status
+        'status' => $schedule->inspectionStatus()
       ];
     });
     $previousUrl = url()->previous();
