@@ -266,7 +266,7 @@ class UserController extends Controller
         'inspector_name' => $schedule->inspectorName(),
         'inspection_location' => $schedule->inspectionLocation(),
         'inspection_date' => $schedule->inspection_date,
-        'status' => $schedule->status
+        'status' => $schedule->inspectionStatus(),
       ];
     });
     
