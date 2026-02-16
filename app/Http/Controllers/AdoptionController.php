@@ -34,7 +34,20 @@ class AdoptionController extends Controller
       })
       ->paginate(9)
     ->withQueryString();
-
+    
+    if ($user && !$user->isAdminOrStaff()) {
+      $adoptables->getCollection()->transform(function ($adoptable) use ($user) {
+        // Check if user has an active application for this rescue
+        $activeApplication = $user->adoptionApplications()
+          ->where('rescue_id', $adoptable->id)
+          ->whereIn('status', ['pending', 'under_review', 'approved'])
+        ->exists();
+            
+        $adoptable->user_has_active_application = $activeApplication;
+            
+        return $adoptable;
+      });
+    }
 
     return Inertia::render('Adoption/Index',[
       'adoptables' => $adoptables,

@@ -48,7 +48,10 @@
           </div>
           <div v-else class="col-12 text-center mx-auto d-flex gap-2 flex-row">
             <a :href="`/rescues/${adoptable.id}`" class="btn btn-success w-100">View Profile</a>
-            <a class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal"
+            <button v-if="adoptable.user_has_active_application" class="btn btn-warning w-100 fw-bolder position-relative" disabled title="You already have an active application for this rescue">
+              Already Applied
+            </button>
+            <a v-else class="btn btn-primary w-100 fw-bolder" data-bs-toggle="modal"
               :data-user-id="user?.id"
               :data-adoptable-name="adoptable.name"
               :data-adoptable-id="adoptable.id"
