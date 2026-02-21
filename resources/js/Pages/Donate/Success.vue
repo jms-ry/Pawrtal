@@ -56,7 +56,7 @@
                   <i class="bi bi-list-ul me-2"></i>
                   View My Donations
                 </a>
-                <a href="/donate" class="btn btn-outline-secondary">
+                <a href="/donate" class="btn btn-light">
                   Donate again
                 </a>
               </div>
