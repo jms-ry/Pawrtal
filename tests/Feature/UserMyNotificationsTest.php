@@ -768,25 +768,30 @@ class UserMyNotificationsTest extends TestCase
     $user = User::factory()->create();
     $this->actingAs($user);
 
+    // Create notification
     $user->notifications()->create([
       'id' => Str::uuid()->toString(),
       'type' => ReportArchivedNotification::class,
       'data' => ['message' => "Notification number 1 for Max & Ruby has been created."],
       'read_at' => now(),
-      'created_at' => now(),
     ]);
     
+    // Verify it exists before attack
+    $this->assertDatabaseCount('notifications', 1);
+    
+    // SQL injection attempt
     $response = $this->get(route('users.myNotifications', [
       'search' => "'; DROP TABLE notifications; --"
     ]));
     
     $response->assertStatus(200);
+    
     $response->assertInertia(fn ($page) =>
       $page->component('User/MyNotifications')->has('notifications.data', 0)
     );
     
-    // Verify the table still exists
-    $this->assertDatabaseHas('notifications', ['created_at' => now()]);
+    // Table and data should still exist
+    $this->assertDatabaseCount('notifications', 1);
   }
 
   public function test_read_at_filter_is_case_insensitive()
