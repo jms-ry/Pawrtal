@@ -168,7 +168,7 @@ class DonationController extends Controller
    * @param Request $request
    * @return \Illuminate\Http\JsonResponse
   */
-  public function createPayment(Request $request)
+  public function createPayment(Request $request , PayMongoService $paymongoService)
   {
     // Validate request
     $validated = $request->validate([
@@ -184,8 +184,7 @@ class DonationController extends Controller
     try {
       DB::beginTransaction();
 
-      // Create PayMongo checkout session
-      $paymongoService = new PayMongoService();
+      
       $session = $paymongoService->createCheckoutSession(
         $amountInCentavos,
         'Donation to OSO'
