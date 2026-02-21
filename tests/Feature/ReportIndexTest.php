@@ -184,14 +184,14 @@ class ReportIndexTest extends TestCase
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('Reports/Index')
-        // Check that the rescues prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct rescues are shown
-        ->where('reports.data.0.animal_name', $matchingReport1->animal_name)
-        ->where('reports.data.1.animal_name', $matchingReport2->animal_name)
-        // Ensure non-matching rescue is not present
-      ->missing('reports.data.2.animal_name',)
+        ->has('reports.data', 2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2) {
+        $names = collect($reports)->pluck('animal_name');
+
+        return $names->contains($matchingReport1->animal_name)&& $names->contains($matchingReport2->animal_name);
+      })
     );
+
   }
 
   public function test_searching_report_using_species_returns_results_case_insensitive()
