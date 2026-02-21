@@ -33,10 +33,11 @@ class DonateController extends Controller
     
     $donation = null;
     
-    if ($sourceId) {
+    if ($sourceId && Auth::check()) {
       // Try to find by source ID
       $donation = Donation::where('payment_intent_id', $sourceId)
         ->where('donation_type', 'monetary')
+        ->where('user_id', Auth::id())
       ->first();
             
       error_log('Donation found by source: ' . ($donation ? 'YES - ID: ' . $donation->id : 'NO'));
