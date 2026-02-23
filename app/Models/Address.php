@@ -24,6 +24,13 @@ class Address extends Model
 
   public function fullAddress() : string
   {
-    return "{$this->barangay}, {$this->municipality}, {$this->province}, {$this->zip_code}";
+    return collect([
+      $this->barangay,
+      $this->municipality,
+      $this->province,
+      $this->zip_code,
+    ])
+    ->filter()
+    ->implode(', ');
   }
 }
