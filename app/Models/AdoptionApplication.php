@@ -182,7 +182,7 @@ class AdoptionApplication extends Model
   }
   public function getStatusLabelAttribute()
   {
-    return Str::of($this->status)->replace('_',' ')->title();
+    return Str::of($this->status)->replace('_',' ')->title()->toString();
   }
 
   public function getApplicationDateFormattedAttribute()
