@@ -119,13 +119,14 @@ class UserMyAdoptionApplicationsTest extends TestCase
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('User/MyAdoptionApp')
-        // Check that the adoption applications prop exists and is paginated
-        ->has('adoptionApplications.data')
-        // Check that the correct adoption applications are shown
-        ->where('adoptionApplications.data.0.reason_for_adoption', $matchingApplication1->reason_for_adoption)
-        ->where('adoptionApplications.data.1.reason_for_adoption', $matchingApplication2->reason_for_adoption)
-        // Ensure non-matching adoption applications is not present
-      ->missing('adoptionApplications.data.2.reason_for_adoption',)
+        ->has('adoptionApplications.data',2)
+        ->where('adoptionApplications.data', function ($applications) use ($matchingApplication1, $matchingApplication2, $nonMatchingApplication) {
+          $reasons = collect($applications)->pluck('reason_for_adoption');
+
+          return $reasons->contains($matchingApplication1->reason_for_adoption)
+            && $reasons->contains($matchingApplication2->reason_for_adoption)
+          && !$reasons->contains($nonMatchingApplication->reason_for_adoption);
+        })
     );
   }
 

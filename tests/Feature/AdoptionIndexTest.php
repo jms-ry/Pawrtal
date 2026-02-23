@@ -20,21 +20,34 @@ class AdoptionIndexTest extends TestCase
     $availableRescues = Rescue::factory()->available()->count(3)->create();
     $adoptedRescues = Rescue::factory()->count(2)->create();
     $unavailableRescues = Rescue::factory()->unavailable()->count(2)->create();
-
+    
     $response = $this->get(route('adoption.index'));
+    
     $response->assertStatus(200);
-
-    foreach ($availableRescues as $rescue) {
-      $response->assertSee($rescue->name_formatted);
-    }
-
-    foreach ($adoptedRescues as $rescue) {
-      $response->assertDontSee($rescue->name_formatted);
-    }
-
-    foreach ($unavailableRescues as $rescue) {
-      $response->assertDontSee($rescue->name_formatted);
-    }
+    
+    $response->assertInertia(function (Assert $page) use ($availableRescues, $adoptedRescues, $unavailableRescues) {
+      $page->component('Adoption/Index') ->has('adoptables.data', 3); // Only 3 available rescues
+        
+      // Get the returned data
+      $returnedIds = collect($page->toArray()['props']['adoptables']['data'])
+        ->pluck('id')
+      ->toArray();
+        
+      // Assert available rescues ARE present
+      foreach ($availableRescues as $rescue) {
+        $this->assertContains($rescue->id, $returnedIds);
+      }
+        
+      // Assert adopted rescues are NOT present
+      foreach ($adoptedRescues as $rescue) {
+        $this->assertNotContains($rescue->id, $returnedIds);
+      }
+        
+      // Assert unavailable rescues are NOT present
+      foreach ($unavailableRescues as $rescue) {
+        $this->assertNotContains($rescue->id, $returnedIds);
+      }
+    });
   }
   public function test_guest_user_can_access_adoption_index()
   {

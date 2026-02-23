@@ -184,14 +184,14 @@ class ReportIndexTest extends TestCase
     $response->assertInertia(fn (Assert $page) =>
       $page
         ->component('Reports/Index')
-        // Check that the rescues prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct rescues are shown
-        ->where('reports.data.0.animal_name', $matchingReport1->animal_name)
-        ->where('reports.data.1.animal_name', $matchingReport2->animal_name)
-        // Ensure non-matching rescue is not present
-      ->missing('reports.data.2.animal_name',)
+        ->has('reports.data', 2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2) {
+        $names = collect($reports)->pluck('animal_name');
+
+        return $names->contains($matchingReport1->animal_name)&& $names->contains($matchingReport2->animal_name);
+      })
     );
+
   }
 
   public function test_searching_report_using_species_returns_results_case_insensitive()
@@ -219,12 +219,12 @@ class ReportIndexTest extends TestCase
       $page
         ->component('Reports/Index')
         // Check that the rescues prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct rescues are shown
-        ->where('reports.data.0.species', $matchingReport1->species)
-        ->where('reports.data.1.species', $matchingReport2->species)
-        // Ensure non-matching rescue is not present
-      ->missing('reports.data.2.species',)
+        ->has('reports.data',2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2) {
+        $species = collect($reports)->pluck('species');
+
+        return $species->contains($matchingReport1->species)&& $species->contains($matchingReport2->species);
+      }) 
     );
   }
 
@@ -253,12 +253,11 @@ class ReportIndexTest extends TestCase
       $page
         ->component('Reports/Index')
         // Check that the rescues prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct rescues are shown
-        ->where('reports.data.0.sex', $matchingReport1->sex)
-        ->where('reports.data.1.sex', $matchingReport2->sex)
-        // Ensure non-matching rescue is not present
-      ->missing('reports.data.2.sex',)
+        ->has('reports.data',2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2) {
+        $sexes = collect($reports)->pluck('sex');
+        return $sexes->contains($matchingReport1->sex)&& $sexes->contains($matchingReport2->sex);
+      })
     );
   }
 
@@ -287,12 +286,12 @@ class ReportIndexTest extends TestCase
       $page
         ->component('Reports/Index')
         // Check that the rescues prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct rescues are shown
-        ->where('reports.data.0.breed', $matchingReport1->breed)
-        ->where('reports.data.1.breed', $matchingReport2->breed)
-        // Ensure non-matching rescue is not present
-      ->missing('reports.data.2.breed',)
+        ->has('reports.data',2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2) {
+        $breeds = collect($reports)->pluck('breed');
+
+        return $breeds->contains($matchingReport1->breed)&& $breeds->contains($matchingReport2->breed);
+      })
     );
   }
 
@@ -321,12 +320,12 @@ class ReportIndexTest extends TestCase
       $page
         ->component('Reports/Index')
         // Check that the rescues prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct rescues are shown
-        ->where('reports.data.0.color', $matchingReport1->color)
-        ->where('reports.data.1.color', $matchingReport2->color)
-        // Ensure non-matching rescue is not present
-      ->missing('reports.data.2.color',)
+        ->has('reports.data',2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2) {
+        $colors = collect($reports)->pluck('color');
+
+        return $colors->contains($matchingReport1->color)&& $colors->contains($matchingReport2->color);
+      })
     );
   }
 
@@ -355,12 +354,12 @@ class ReportIndexTest extends TestCase
       $page
         ->component('Reports/Index')
         // Check that the rescues prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct rescues are shown
-        ->where('reports.data.0.type', $matchingReport1->type)
-        ->where('reports.data.1.type', $matchingReport2->type)
-        // Ensure non-matching rescue is not present
-      ->missing('reports.data.2.type',)
+        ->has('reports.data',2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2) {
+        $types = collect($reports)->pluck('type');
+
+        return $types->contains($matchingReport1->type)&& $types->contains($matchingReport2->type);
+      })
     );
   }
 

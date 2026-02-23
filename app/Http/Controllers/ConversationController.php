@@ -65,7 +65,12 @@ class ConversationController extends Controller
   public function store(Request $request)
   {
     $request->validate([
-      'participant_id' => 'required|exists:users,id|different:' . Auth::id(),
+      'participant_id' => [
+        'required',
+        'integer',                  
+        'exists:users,id',
+        'not_in:' . Auth::id(),     
+      ],
     ]);
 
     $user = Auth::user();
@@ -89,7 +94,7 @@ class ConversationController extends Controller
     // Create new conversation
     $conversation = Conversation::findOrCreate($user->id, $participantId);
 
-    return redirect()->route('conversations.index')->with('success', 'Conversation started successfully');
+    return redirect()->route('conversations.index')->with('success', 'Conversation started successfully.');
   }
 
   // public function show(Conversation $conversation)

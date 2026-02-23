@@ -159,12 +159,14 @@ class AdminStaffReportsTest extends TestCase
       $page
         ->component('AdminStaff/Reports')
         // Check that the reports prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct reports are shown
-        ->where('reports.data.0.species', $matchingReport1->species)
-        ->where('reports.data.1.species', $matchingReport2->species)
-        // Ensure non-matching report is not present
-      ->missing('reports.data.2.species',)
+        ->has('reports.data', 2)
+      ->where('reports.data',function ($reports) use ($matchingReport1, $matchingReport2, $nonMatchingReport) {
+        $species = collect($reports)->pluck('species');
+
+        return $species->contains($matchingReport1->species)
+          && $species->contains($matchingReport2->species)
+        && !$species->contains($nonMatchingReport->species);
+      })
     );
   }
 
