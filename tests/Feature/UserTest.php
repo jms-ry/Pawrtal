@@ -68,21 +68,21 @@ class UserTest extends TestCase
 
   public function test_get_role_returns_headline_cased_admin(): void
   {
-    $user = User::factory()->make(['role' => 'admin']);
+    $user = User::factory()->admin()->make();
 
     $this->assertSame('Admin', $user->getRole());
   }
 
   public function test_get_role_returns_headline_cased_staff(): void
   {
-    $user = User::factory()->make(['role' => 'staff']);
+    $user = User::factory()->staff()->make();
 
     $this->assertSame('Staff', $user->getRole());
   }
 
   public function test_get_role_returns_headline_cased_regular_user(): void
   {
-    $user = User::factory()->make(['role' => 'regular_user']);
+    $user = User::factory()->make();
 
     $this->assertSame('Regular User', $user->getRole());
   }
@@ -93,21 +93,21 @@ class UserTest extends TestCase
 
   public function test_is_admin_or_staff_returns_true_for_admin(): void
   {
-    $user = User::factory()->make(['role' => 'admin']);
+    $user = User::factory()->admin()->make();
 
     $this->assertTrue($user->isAdminOrStaff());
   }
 
   public function test_is_admin_or_staff_returns_true_for_staff(): void
   {
-    $user = User::factory()->make(['role' => 'staff']);
+    $user = User::factory()->staff()->make();
 
     $this->assertTrue($user->isAdminOrStaff());
   }
 
   public function test_is_admin_or_staff_returns_false_for_regular_user(): void
   {
-    $user = User::factory()->make(['role' => 'regular_user']);
+    $user = User::factory()->make();
 
     $this->assertFalse($user->isAdminOrStaff());
   }
@@ -118,21 +118,21 @@ class UserTest extends TestCase
 
   public function test_is_non_admin_or_staff_returns_true_for_regular_user(): void
   {
-    $user = User::factory()->make(['role' => 'regular_user']);
+    $user = User::factory()->make();
 
     $this->assertTrue($user->isNonAdminOrStaff());
   }
 
   public function test_is_non_admin_or_staff_returns_false_for_admin(): void
   {
-    $user = User::factory()->make(['role' => 'admin']);
+    $user = User::factory()->admin()->make();
 
     $this->assertFalse($user->isNonAdminOrStaff());
   }
 
   public function test_is_non_admin_or_staff_returns_false_for_staff(): void
   {
-    $user = User::factory()->make(['role' => 'staff']);
+    $user = User::factory()->staff()->make();
 
     $this->assertFalse($user->isNonAdminOrStaff());
   }
