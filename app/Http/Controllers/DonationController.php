@@ -187,7 +187,7 @@ class DonationController extends Controller
       
       $session = $paymongoService->createCheckoutSession(
         $amountInCentavos,
-        'Donation to OSO'
+        'Donation to Lorem Ipsum',
       );
 
       if (!$session) {
