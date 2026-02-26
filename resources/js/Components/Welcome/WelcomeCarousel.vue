@@ -18,6 +18,7 @@
               <img src="/images/welcome/dog-2.png" alt="Happy pet" class="d-block w-100 h-100 object-fit-cover border-0">
               <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
                 <h1 class="display-5 fw-bold">You can’t buy love, but you’ll find it in a rescue.</h1>
+                <p class="lead fs-4">Open your home to a second chance and gain a lifetime of unconditional love.</p>
                 <a :href="`/adoption`" class="btn btn-primary btn-lg fw-bolder mt-2">ADOPT FROM PAWRTAL</a>
               </div>
             </div>
