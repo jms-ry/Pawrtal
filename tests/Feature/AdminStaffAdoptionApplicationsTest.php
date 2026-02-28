@@ -458,7 +458,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
     );
   }
 
-  public function test_oldest_sort_filter_sorts_reports_in_ascending_order()
+  public function test_oldest_sort_filter_sorts_applications_in_ascending_order()
   {
     $staff = User::factory()->staff()->create();
 
@@ -477,21 +477,21 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
       $page
         ->component('AdminStaff/AdoptionApplications')
         ->has('adoptionApplications.data')
-        ->where('adoptionApplications.data', function ($applications) use ($application1, $application2, $application3) {
-          $dates = collect($applications)->pluck('application_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+      ->where('adoptionApplications.data', function ($applications) use ($application1, $application2, $application3) {
+        $ids = collect($applications)->pluck('id')->toArray();
 
-          $expectedOrder = [
-            $application1->application_date->toDateString(),
-            $application2->application_date->toDateString(),
-            $application3->application_date->toDateString(),
-          ];
+        $expectedOrder = [
+          $application1->id,
+          $application2->id,
+          $application3->id,
+        ];
 
-          return $dates === $expectedOrder;
-        })
+        return $ids === $expectedOrder;
+      })
     );
   }
 
-  public function test_newest_sort_filter_sorts_reports_in_descending_order()
+  public function test_newest_sort_filter_sorts_applications_in_descending_order()
   {
     $staff = User::factory()->staff()->create();
 
@@ -511,16 +511,16 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
         ->component('AdminStaff/AdoptionApplications')
         ->has('adoptionApplications.data')
         ->where('adoptionApplications.data', function ($applications) use ($application1, $application2, $application3) {
-          $dates = collect($applications)->pluck('application_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+        $ids = collect($applications)->pluck('id')->toArray();
 
-          $expectedOrder = [
-            $application3->application_date->toDateString(),
-            $application2->application_date->toDateString(),
-            $application1->application_date->toDateString(),
-          ];
+        $expectedOrder = [
+          $application3->id,
+          $application2->id,
+          $application1->id,
+        ];
 
-          return $dates === $expectedOrder;
-        })
+        return $ids === $expectedOrder;
+      })
     );
   }
 
@@ -544,16 +544,16 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
 
     $this->assertCount(3, $applications);
 
-    $dates = collect($applications)->pluck('application_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+    $ids = collect($applications)->pluck('id')->toArray();
 
     $expectedOrder = [
-      $application3->application_date->toDateString(),
-      $application2->application_date->toDateString(),
-      $application1->application_date->toDateString(),
+      $application3->id,
+      $application2->id,
+      $application1->id,
     ];
 
 
-    $this->assertSame($expectedOrder, $dates, 'Adoption application should be ordered by application_date descending by default.');
+    $this->assertSame($expectedOrder, $ids, 'Adoption application should be ordered by application_date descending by default.');
 
   }
 
