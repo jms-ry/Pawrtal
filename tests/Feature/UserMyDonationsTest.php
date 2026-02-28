@@ -487,17 +487,17 @@ class UserMyDonationsTest extends TestCase
       $page
         ->component('User/MyDonations')
         ->has('donations.data')
-        ->where('donations.data', function ($donations) use ($donation1, $donation2, $donation3) {
-          $dates = collect($donations)->pluck('donation_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+      ->where('donations.data', function ($donations) use ($donation1, $donation2, $donation3) {
+        $ids = collect($donations)->pluck('id')->toArray();
 
-          $expectedOrder = [
-            $donation1->donation_date->toDateString(),
-            $donation2->donation_date->toDateString(),
-            $donation3->donation_date->toDateString(),
-          ];
+        $expectedOrder = [
+          $donation1->id,
+          $donation2->id,
+          $donation3->id,
+        ];
 
-          return $dates === $expectedOrder;
-        })
+        return $ids === $expectedOrder;
+      })
     );
   }
 
@@ -520,17 +520,17 @@ class UserMyDonationsTest extends TestCase
       $page
         ->component('User/MyDonations')
         ->has('donations.data')
-        ->where('donations.data', function ($donations) use ($donation1, $donation2, $donation3) {
-          $dates = collect($donations)->pluck('donation_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+      ->where('donations.data', function ($donations) use ($donation1, $donation2, $donation3) {
+        $ids = collect($donations)->pluck('id')->toArray();
 
-          $expectedOrder = [
-            $donation3->donation_date->toDateString(),
-            $donation2->donation_date->toDateString(),
-            $donation1->donation_date->toDateString(),
-          ];
+        $expectedOrder = [
+          $donation3->id,
+          $donation2->id,
+          $donation1->id,
+        ];
 
-          return $dates === $expectedOrder;
-        })
+        return $ids === $expectedOrder;
+      })
     );
   }
 
@@ -712,16 +712,16 @@ class UserMyDonationsTest extends TestCase
 
     $this->assertCount(3, $donations);
 
-    $dates = collect($donations)->pluck('donation_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+    $ids = collect($donations)->pluck('id')->toArray();
 
     $expectedOrder = [
-      $donation3->donation_date->toDateString(),
-      $donation2->donation_date->toDateString(),
-      $donation1->donation_date->toDateString(),
+      $donation3->id,
+      $donation2->id,
+      $donation1->id,
     ];
 
 
-    $this->assertSame($expectedOrder, $dates, 'Donations should be ordered by donation_date descending by default.');
+    $this->assertSame($expectedOrder, $ids, 'Donations should be ordered by donation_date descending by default.');
 
   }
   public function test_empty_string_search_returns_all_available_donations()

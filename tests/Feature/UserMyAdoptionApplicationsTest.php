@@ -460,17 +460,17 @@ class UserMyAdoptionApplicationsTest extends TestCase
       $page
         ->component('User/MyAdoptionApp')
         ->has('adoptionApplications.data')
-        ->where('adoptionApplications.data', function ($applications) use ($application1, $application2, $application3) {
-          $dates = collect($applications)->pluck('application_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+      ->where('adoptionApplications.data', function ($applications) use ($application1, $application2, $application3) {
+        $ids = collect($applications)->pluck('id')->toArray();
 
-          $expectedOrder = [
-            $application1->application_date->toDateString(),
-            $application2->application_date->toDateString(),
-            $application3->application_date->toDateString(),
-          ];
+        $expectedOrder = [
+          $application1->id,
+          $application2->id,
+          $application3->id,
+        ];
 
-          return $dates === $expectedOrder;
-        })
+        return $ids === $expectedOrder;
+      })
     );
   }
 
@@ -493,17 +493,17 @@ class UserMyAdoptionApplicationsTest extends TestCase
       $page
         ->component('User/MyAdoptionApp')
         ->has('adoptionApplications.data')
-        ->where('adoptionApplications.data', function ($applications) use ($application1, $application2, $application3) {
-          $dates = collect($applications)->pluck('application_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+      ->where('adoptionApplications.data', function ($applications) use ($application1, $application2, $application3) {
+        $ids = collect($applications)->pluck('id')->toArray();
 
-          $expectedOrder = [
-            $application3->application_date->toDateString(),
-            $application2->application_date->toDateString(),
-            $application1->application_date->toDateString(),
-          ];
+        $expectedOrder = [
+          $application3->id,
+          $application2->id,
+          $application1->id,
+        ];
 
-          return $dates === $expectedOrder;
-        })
+        return $ids === $expectedOrder;
+      })
     );
   }
 
@@ -527,16 +527,16 @@ class UserMyAdoptionApplicationsTest extends TestCase
 
     $this->assertCount(3, $applications);
 
-    $dates = collect($applications)->pluck('application_date')->map(fn($date) => substr($date, 0, 10))->toArray();
+    $ids = collect($applications)->pluck('id')->toArray();
 
     $expectedOrder = [
-      $application3->application_date->toDateString(),
-      $application2->application_date->toDateString(),
-      $application1->application_date->toDateString(),
+      $application3->id,
+      $application2->id,
+      $application1->id,
     ];
 
 
-    $this->assertSame($expectedOrder, $dates, 'Adoption application should be ordered by application_date descending by default.');
+    $this->assertSame($expectedOrder, $ids, 'Adoption application should be ordered by application_date descending by default.');
 
   }
 

@@ -355,15 +355,15 @@ class UserMyNotificationsTest extends TestCase
         ->component('User/MyNotifications')
         ->has('notifications.data')
       ->where('notifications.data', function ($notifications) use ($notification1, $notification2, $notification3) {
-        $dates = collect($notifications)->pluck('created_at')->map(fn($date) => substr($date, 0, 10))->toArray();
+        $ids = collect($notifications)->pluck('id')->toArray();
 
         $expectedOrder = [
-          $notification3->created_at->toDateString(), // oldest
-          $notification2->created_at->toDateString(),
-          $notification1->created_at->toDateString(), // newest
+          $notification3->id, // oldest
+          $notification2->id,
+          $notification1->id, // newest
         ];
 
-        return $dates === $expectedOrder;
+        return $ids === $expectedOrder;
       })
     );
   }
@@ -409,15 +409,15 @@ class UserMyNotificationsTest extends TestCase
         ->component('User/MyNotifications')
         ->has('notifications.data')
       ->where('notifications.data', function ($notifications) use ($notification1, $notification2, $notification3) {
-        $dates = collect($notifications)->pluck('created_at')->map(fn($date) => substr($date, 0, 10))->toArray();
+        $ids = collect($notifications)->pluck('id')->toArray();
 
         $expectedOrder = [
-          $notification1->created_at->toDateString(), // newest
-          $notification2->created_at->toDateString(),
-          $notification3->created_at->toDateString(), // oldest
+          $notification1->id, 
+          $notification2->id,
+          $notification3->id, 
         ];
 
-        return $dates === $expectedOrder;
+        return $ids === $expectedOrder;
       })
     );
   }
@@ -613,16 +613,16 @@ class UserMyNotificationsTest extends TestCase
 
     $this->assertCount(3, $notifications);
 
-    $dates = collect($notifications)->pluck('created_at')->map(fn($date) => substr($date, 0, 10))->toArray();
+    $ids = collect($notifications)->pluck('id')->toArray();
 
     $expectedOrder = [
-      $notification1->created_at->toDateString(), // newest
-      $notification2->created_at->toDateString(),
-      $notification3->created_at->toDateString(), // oldest
+      $notification1->id, // newest
+      $notification2->id,
+      $notification3->id, // oldest
     ];
 
 
-    $this->assertSame($expectedOrder, $dates, 'Notifications should be ordered by created_at descending by default.');
+    $this->assertSame($expectedOrder, $ids, 'Notifications should be ordered by created_at descending by default.');
 
   }
 

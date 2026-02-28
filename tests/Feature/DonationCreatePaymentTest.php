@@ -45,7 +45,7 @@ class DonationCreatePaymentTest extends TestCase
     $this->mock(PayMongoService::class, function ($mock) use ($mockSession) {
       $mock->shouldReceive('createCheckoutSession')
         ->once()
-        ->with(10000, 'Donation to OSO') // ₱100 = 10000 centavos
+        ->with(10000, 'Donation to Lorem Ipsum') // ₱100 = 10000 centavos
       ->andReturn($mockSession);
     });
 
@@ -170,7 +170,7 @@ class DonationCreatePaymentTest extends TestCase
     $this->mock(PayMongoService::class, function ($mock) use ($mockSession) {
       $mock->shouldReceive('createCheckoutSession')
         ->once()
-        ->with(25050, 'Donation to OSO') // ₱250.50 = 25050 centavos
+        ->with(25050, 'Donation to Lorem Ipsum') // ₱250.50 = 25050 centavos
       ->andReturn($mockSession);
     });
 
@@ -371,7 +371,7 @@ class DonationCreatePaymentTest extends TestCase
       $this->mock(PayMongoService::class, function ($mock) use ($mockSession, $testCase) {
         $mock->shouldReceive('createCheckoutSession')
           ->once()
-          ->with($testCase['centavos'], 'Donation to OSO')
+          ->with($testCase['centavos'], 'Donation to Lorem Ipsum')
         ->andReturn($mockSession);
       });
 
@@ -515,7 +515,7 @@ class DonationCreatePaymentTest extends TestCase
     $this->mock(PayMongoService::class, function ($mock) use ($mockSession) {
       $mock->shouldReceive('createCheckoutSession')
         ->once()
-        ->with(1000000, 'Donation to OSO') // ₱10,000 = 1,000,000 centavos
+        ->with(1000000, 'Donation to Lorem Ipsum') // ₱10,000 = 1,000,000 centavos
       ->andReturn($mockSession);
     });
 
