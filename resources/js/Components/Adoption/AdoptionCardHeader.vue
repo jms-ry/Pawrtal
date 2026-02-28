@@ -58,7 +58,10 @@
           <label class="form-check-label mb-1 mb-md-0 ms-1 fw-bold font-monospace" for="rescueSwitch" id="switchLabel">Switch to AI recommendation?</label>
         </div>
         <div class="d-flex justify-content-md-end justify-content-start">
-          <button type="button" class="btn btn-primary fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none" id="matchRescueButton" data-switch-search-button-target="matchButton">Match Me a Rescue!</button>
+          <button type="button" class="btn btn-primary fw-bold align-self-md-end align-self-start mt-auto mb-1 d-none" id="matchRescueButton" data-switch-search-button-target="matchButton" 
+          data-bs-toggle="modal"
+          :data-user-id="user?.id" 
+          :data-bs-target="!user ? '#loginReminderModal' : (user.canAdopt ? '#rescueRecommendationModal' : '#profileReminderModal')">Match Me a Rescue!</button>
         </div>
         <!-- Search input for larger screens -->
         <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
@@ -117,7 +120,11 @@
     filters: {
       type: Object,
       default: () => ({})
-    }
+    },
+    user: {
+      type: Object,
+      default: () => null
+    },
   });
 
   const emit = defineEmits(['search', 'filter']);

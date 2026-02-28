@@ -2,11 +2,18 @@
   <Head title="Adoption"></Head>
   <AppLayout>
     <div class="card mt-2 mt-md-3 mb-4 mb-md-2 border-0 me-2 me-md-5 ms-2 ms-md-5 px-1 px-md-5">
-      <div class="card-body border-0 p-2 p-md-5">
+      <div class="card-body border-0 p-2 p-md-5" data-controller="profile-reminder">
+        <LoginReminder />
+        <ProfileReminder
+          :user = "user"
+        />
+        <RescueRecommendationModal />
+
         <AdoptionCardHeader 
           :filters="filters"
           @search="handleSearch"
           @filter="handleFilter"
+          :user = "user"
         />
 
         <AdoptionDisplay 
@@ -27,6 +34,9 @@
   import AdoptionCardHeader from '../../Components/Adoption/AdoptionCardHeader.vue';
   import AdoptionDisplay from '../../Components/Adoption/AdoptionDisplay.vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
+  import LoginReminder from '../../Components/Modals/LoginReminder.vue';
+  import ProfileReminder from '../../Components/Modals/ProfileReminder.vue';
+  import RescueRecommendationModal from '../../Components/Modals/Adoption/RescueRecommendationModal.vue';
 
   const props = defineProps({
     adoptables: {

@@ -1,9 +1,6 @@
 <template>
-  <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="profile-reminder adoption-application">
-    <ProfileReminder
-      :user = "user"
-    />
-    <LoginReminder />
+  <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="adoption-application">
+    
     <AdoptionApplicationForm />
 
     <!-- No results message -->
@@ -121,8 +118,6 @@
 <script setup>
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
-  import ProfileReminder from '@/Components/Modals/ProfileReminder.vue';
-  import LoginReminder from '@/Components/Modals/LoginReminder.vue';
   import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
   const props = defineProps({
     adoptables: {
