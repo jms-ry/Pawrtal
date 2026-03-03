@@ -67,13 +67,11 @@
               <input type="text" name="condition" class="form-control" placeholder="Animal condition" aria-label="Animal condition" id="floating_animal_condition" :class="conditionValidationClass" @blur="validateCondition" v-model="conditionValue">
               <label for="floating_animal_distinctive_features" class="form-label fw-bold">Condition</label>
               <small class="invalid-feedback fw-bold">{{ conditionErrorMessage }}</small>
-              <small class="valid-feedback text-dark">{{ conditionErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
               <input type="text" name="temporary_shelter" class="form-control" placeholder="Animal temporary" aria-label="Animal temporary shelter" id="floating_animal_temporary_shelter" :class="shelterValidationClass" @blur="validateShelter" v-model="shelterValue">
               <label for="floating_animal_temporary_shelter" class="form-label fw-bold">Temporary Shelter</label>
               <small class="invalid-feedback fw-bold">{{ shelterErrorMessage }}</small>
-              <small class="valid-feedback text-dark">{{ shelterErrorMessage }}</small>
             </div>
           </div>
 
@@ -360,9 +358,9 @@
     const regex = /^[A-Za-z\s]+$/
 
     if(!condition){
-      conditionIsValid.value = true
-      conditionErrorMessage.value = "This field can be empty."
-      return true
+      conditionIsValid.value = false
+      conditionErrorMessage.value = "Condition is required."
+      return false
     }
     if(condition.length < 4){
       conditionIsValid.value = false
@@ -393,9 +391,9 @@
     const regex = /^[\p{L}0-9\s.,#'"\-()/]{5,100}$/u
 
     if(!shelter){
-      shelterIsValid.value = true
-      shelterErrorMessage.value = "This field can be empty."
-      return true
+      shelterIsValid.value = false
+      shelterErrorMessage.value = "Temporary Shelter is required."
+      return false
     }
 
     if(shelter.length < 4){
