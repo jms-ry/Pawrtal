@@ -121,12 +121,14 @@ class AdminStaffReportsTest extends TestCase
       $page
         ->component('AdminStaff/Reports')
         // Check that the reports prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct reports are shown
-        ->where('reports.data.0.animal_name', $matchingReport1->animal_name)
-        ->where('reports.data.1.animal_name', $matchingReport2->animal_name)
-        // Ensure non-matching report is not present
-      ->missing('reports.data.2.animal_name',)
+        ->has('reports.data', 2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2, $nonMatchingReport) {
+        $names = collect($reports)->pluck('animal_name');
+
+        return $names->contains($matchingReport1->animal_name)
+          && $names->contains($matchingReport2->animal_name)
+        && !$names->contains($nonMatchingReport->animal_name);
+      })
     );
   }
 
@@ -199,12 +201,13 @@ class AdminStaffReportsTest extends TestCase
       $page
         ->component('AdminStaff/Reports')
         // Check that the reports prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct reports are shown
-        ->where('reports.data.0.sex', $matchingReport1->sex)
-        ->where('reports.data.1.sex', $matchingReport2->sex)
-        // Ensure non-matching report is not present
-      ->missing('reports.data.2.sex',)
+        ->has('reports.data', 2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2, $nonMatchingReport) {
+        $sexes = collect($reports)->pluck('sex');
+        return $sexes->contains($matchingReport1->sex)
+          && $sexes->contains($matchingReport2->sex)
+        && !$sexes->contains($nonMatchingReport->sex);  
+      })
     );
   }
 
@@ -237,12 +240,14 @@ class AdminStaffReportsTest extends TestCase
       $page
         ->component('AdminStaff/Reports')
         // Check that the reports prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct reports are shown
-        ->where('reports.data.0.breed', $matchingReport1->breed)
-        ->where('reports.data.1.breed', $matchingReport2->breed)
-        // Ensure non-matching report is not present
-      ->missing('reports.data.2.breed',)
+        ->has('reports.data',2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2, $nonMatchingReport) {
+        $breeds = collect($reports)->pluck('breed');
+
+        return $breeds->contains($matchingReport1->breed)
+          && $breeds->contains($matchingReport2->breed)
+        && !$breeds->contains($nonMatchingReport->breed);
+      })
     );
   }
 
@@ -275,12 +280,14 @@ class AdminStaffReportsTest extends TestCase
       $page
         ->component('AdminStaff/Reports')
         // Check that the reports prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct reports are shown
-        ->where('reports.data.0.color', $matchingReport1->color)
-        ->where('reports.data.1.color', $matchingReport2->color)
-        // Ensure non-matching report is not present
-      ->missing('reports.data.2.color',)
+        ->has('reports.data',2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2, $nonMatchingReport) {
+        $colors = collect($reports)->pluck('color');
+
+        return $colors->contains($matchingReport1->color)
+          && $colors->contains($matchingReport2->color)
+        && !$colors->contains($nonMatchingReport->color);
+      })
     );
   }
 
@@ -313,12 +320,14 @@ class AdminStaffReportsTest extends TestCase
       $page
         ->component('AdminStaff/Reports')
         // Check that the reports prop exists and is paginated
-        ->has('reports.data')
-        // Check that the correct reports are shown
-        ->where('reports.data.0.type', $matchingReport1->type)
-        ->where('reports.data.1.type', $matchingReport2->type)
-        // Ensure non-matching report is not present
-      ->missing('reports.data.2.type',)
+        ->has('reports.data',2)
+      ->where('reports.data', function ($reports) use ($matchingReport1, $matchingReport2, $nonMatchingReport) {
+        $types = collect($reports)->pluck('type');
+
+        return $types->contains($matchingReport1->type)
+          && $types->contains($matchingReport2->type)
+        && !$types->contains($nonMatchingReport->type);
+      })
     );
   }
 
