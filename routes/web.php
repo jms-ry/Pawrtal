@@ -19,6 +19,7 @@ use App\Http\Controllers\ReportAlertController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Log;
 use App\Models\Donation;
+use App\Http\Controllers\RecommendationController;
 
 Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
@@ -120,6 +121,8 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/api/donations/create-payment', [DonationController::class, 'createPayment']);
 
   Route::get('/donations/success', [DonateController::class, 'donationSuccess'])->name('donations.success');
+
+  Route::post('/api/recommendations/match', [RecommendationController::class, 'getMatches'])->name('recommendations.match');
 });
 
 

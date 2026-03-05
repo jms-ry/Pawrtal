@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4" data-controller="adoption-application">
+  <div class="container-fluid mx-auto shadow-lg p-3 mb-5 rounded-4">
     
     <AdoptionApplicationForm />
 

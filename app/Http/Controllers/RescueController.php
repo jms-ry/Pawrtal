@@ -128,6 +128,15 @@ class RescueController extends Controller
     $user = $user?->load('address', 'household');
     $rescue->loadCount('adoptionApplications');
     
+    if ($user && !$user->isAdminOrStaff()) {
+      $activeApplication = $user->adoptionApplications()
+        ->where('rescue_id', $rescue->id)
+        ->whereIn('status', ['pending', 'under_review', 'approved'])
+      ->exists();
+        
+      $rescue->user_has_active_application = $activeApplication;
+    }
+
     return Inertia::render('Rescues/Show',[
       'user' => $user ? [
         'id' => $user->id,
