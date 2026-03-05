@@ -66,7 +66,10 @@
 
         <div v-if="rescue.is_available">
           <div v-if="user?.isNonAdminOrStaff || !user" class="d-flex justify-content-center me-1">
-            <div class="d-flex justify-content-center me-1">
+            <div v-if="rescue.user_has_active_application" class="d-flex justify-content-center me-1">
+              <a class="btn btn-lg btn-warning disabled fw-bold">Already Applied</a>
+            </div>
+            <div v-else class="d-flex justify-content-center me-1">
               <a class="btn btn-lg btn-primary fw-bold mt-4 mt-md-0 mb-2 mb-md-0" data-bs-toggle="modal"
                 :data-user-id="user?.id"
                 :data-adoptable-name="rescue.name"
