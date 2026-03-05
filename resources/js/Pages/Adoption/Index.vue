@@ -2,12 +2,14 @@
   <Head title="Adoption"></Head>
   <AppLayout>
     <div class="card mt-2 mt-md-3 mb-4 mb-md-2 border-0 me-2 me-md-5 ms-2 ms-md-5 px-1 px-md-5">
-      <div class="card-body border-0 p-2 p-md-5" data-controller="profile-reminder">
+      <div class="card-body border-0 p-2 p-md-5" data-controller="profile-reminder adoption-application">
         <LoginReminder />
         <ProfileReminder
           :user = "user"
         />
-        <RescueRecommendationModal />
+        <RescueRecommendationModal 
+          :user = "user"
+        />
 
         <AdoptionCardHeader 
           :filters="filters"

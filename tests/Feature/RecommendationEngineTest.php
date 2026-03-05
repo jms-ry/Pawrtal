@@ -158,4 +158,245 @@ class RecommendationEngineTest extends TestCase
       $matches[0]['score']
     );
   }
+
+  /**
+    * Test: Rescues with active applications are excluded from recommendations
+  */
+  public function test_excludes_rescues_with_active_applications()
+  {
+    $user = User::factory()->create();
+    $user->household()->create([
+      'house_structure' => 'house',
+      'household_members' => 2,
+      'have_children' => false,
+      'has_other_pets' => false,
+    ]);
+
+    // Create 3 rescues that match user preferences
+    $rescue1 = Rescue::factory()->create([
+      'name' => 'Buddy',
+      'size' => 'medium',
+      'age' => '2 years old',
+      'sex' => 'male',
+      'description' => 'Friendly and energetic dog.',
+      'adoption_status' => 'available',
+    ]);
+
+    $rescue2 = Rescue::factory()->create([
+      'name' => 'Max',
+      'size' => 'medium',
+      'age' => '3 years old',
+      'sex' => 'male',
+      'description' => 'Calm and gentle dog.',
+      'adoption_status' => 'available',
+    ]);
+
+    $rescue3 = Rescue::factory()->create([
+      'name' => 'Luna',
+      'size' => 'medium',
+      'age' => '2 years old',
+      'sex' => 'female',
+      'description' => 'Playful and loving dog.',
+      'adoption_status' => 'available',
+    ]);
+
+    // User already has an active application for rescue1 (Buddy)
+    $user->adoptionApplications()->create([
+      'rescue_id' => $rescue1->id,
+      'status' => 'pending',
+      'preferred_inspection_start_date' => now()->addDays(7),
+      'preferred_inspection_end_date' => now()->addDays(14),
+      'valid_id' => fake()->imageUrl(640, 480, 'documents', true),
+      'supporting_documents' => [
+        fake()->imageUrl(640, 480, 'documents', true),
+        fake()->imageUrl(640, 480, 'documents', true)
+      ],
+      'reason_for_adoption' => 'I love dogs!',
+    ]);
+
+    // Get recommendations
+    $response = $this->actingAs($user)->postJson('/api/recommendations/match', [
+      'size' => 'medium',
+      'age_preference' => 'any',
+      'sex' => 'any',
+      'energy_level' => 'any',
+      'maintenance_level' => 'any',
+    ]);
+
+    $response->assertOk();
+
+    $matches = $response->json('matches');
+    $matchedRescueIds = collect($matches)->pluck('rescue.id')->toArray();
+
+    // Buddy (rescue1) should NOT be in recommendations
+    $this->assertNotContains($rescue1->id, $matchedRescueIds);
+
+    // Max and Luna should be in recommendations
+    $this->assertContains($rescue2->id, $matchedRescueIds);
+    $this->assertContains($rescue3->id, $matchedRescueIds);
+
+    // Should have 2 matches (not 3)
+    $this->assertEquals(2, count($matches));
+  }
+
+  /**
+    * Test: Only excludes rescues with active application statuses
+  */
+  public function test_only_excludes_active_application_statuses()
+  {
+    $user = User::factory()->create();
+    $user->household()->create([
+      'house_structure' => 'house',
+      'household_members' => 2,
+      'have_children' => false,
+      'has_other_pets' => false,
+    ]);
+
+    $rescue1 = Rescue::factory()->create([
+      'size' => 'medium',
+      'age' => '2 years old',
+      'description' => 'Friendly dog.',
+      'adoption_status' => 'available',
+    ]);
+
+    $rescue2 = Rescue::factory()->create([
+      'size' => 'medium',
+      'age' => '2 years old',
+      'description' => 'Playful dog.',
+      'adoption_status' => 'available',
+    ]);
+
+    // User has REJECTED application for rescue1 (should still show in recommendations)
+    $user->adoptionApplications()->create([
+      'rescue_id' => $rescue1->id,
+      'status' => 'rejected',
+      'preferred_inspection_start_date' => now()->addDays(7),
+      'preferred_inspection_end_date' => now()->addDays(14),
+      'valid_id' => fake()->imageUrl(640, 480, 'documents', true),
+      'supporting_documents' => [
+        fake()->imageUrl(640, 480, 'documents', true),
+        fake()->imageUrl(640, 480, 'documents', true)
+      ],
+      'reason_for_adoption' => 'I love dogs!',
+    ]);
+
+    // User has CANCELLED application for rescue2 (should still show in recommendations)
+    $user->adoptionApplications()->create([
+      'rescue_id' => $rescue2->id,
+      'status' => 'cancelled',
+      'preferred_inspection_start_date' => now()->addDays(7),
+      'preferred_inspection_end_date' => now()->addDays(14),
+      'valid_id' => fake()->imageUrl(640, 480, 'documents', true),
+      'supporting_documents' => [
+        fake()->imageUrl(640, 480, 'documents', true),
+        fake()->imageUrl(640, 480, 'documents', true)
+      ],
+      'reason_for_adoption' => 'I love dogs!',
+    ]);
+
+    // Get recommendations
+    $response = $this->actingAs($user)->postJson('/api/recommendations/match', [
+      'size' => 'medium',
+      'age_preference' => 'any',
+      'sex' => 'any',
+      'energy_level' => 'any',
+      'maintenance_level' => 'any',
+    ]);
+
+    $response->assertOk();
+
+    $matches = $response->json('matches');
+    $matchedRescueIds = collect($matches)->pluck('rescue.id')->toArray();
+
+    // Both rescues should appear (rejected and cancelled are not active)
+    $this->assertContains($rescue1->id, $matchedRescueIds);
+    $this->assertContains($rescue2->id, $matchedRescueIds);
+
+    $this->assertEquals(2, count($matches));
+  }
+
+  /**
+    * Test: Multiple active applications exclude all applicable rescues
+  */
+  public function test_excludes_all_rescues_with_active_applications()
+  {
+    $user = User::factory()->create();
+    $user->household()->create([
+      'house_structure' => 'house',
+      'household_members' => 2,
+      'have_children' => false,
+      'has_other_pets' => false,
+    ]);
+
+    $rescue1 = Rescue::factory()->create([
+      'size' => 'medium',
+      'age' => '2 years old',
+      'description' => 'Friendly dog.',
+      'adoption_status' => 'available',
+    ]);
+
+    $rescue2 = Rescue::factory()->create([
+      'size' => 'medium',
+      'age' => '2 years old',
+      'description' => 'Playful dog.',
+      'adoption_status' => 'available',
+    ]);
+
+    $rescue3 = Rescue::factory()->create([
+      'size' => 'medium',
+      'age' => '2 years old',
+      'description' => 'Calm dog.',
+      'adoption_status' => 'available',
+    ]);
+
+    // User has pending application for rescue1
+    $user->adoptionApplications()->create([
+      'rescue_id' => $rescue1->id,
+      'status' => 'pending',
+      'preferred_inspection_start_date' => now()->addDays(7),
+      'preferred_inspection_end_date' => now()->addDays(14),
+      'valid_id' => fake()->imageUrl(640, 480, 'documents', true),
+      'supporting_documents' => [
+        fake()->imageUrl(640, 480, 'documents', true),
+        fake()->imageUrl(640, 480, 'documents', true)
+      ],
+      'reason_for_adoption' => 'I love dogs!',
+    ]);
+
+    // User has under_review application for rescue2
+    $user->adoptionApplications()->create([
+      'rescue_id' => $rescue2->id,
+      'status' => 'under_review',
+      'preferred_inspection_start_date' => now()->addDays(7),
+      'preferred_inspection_end_date' => now()->addDays(14),
+      'valid_id' => fake()->imageUrl(640, 480, 'documents', true),
+      'supporting_documents' => [
+        fake()->imageUrl(640, 480, 'documents', true),
+        fake()->imageUrl(640, 480, 'documents', true)
+      ],
+      'reason_for_adoption' => 'I love dogs!',
+    ]);
+
+    // Get recommendations
+    $response = $this->actingAs($user)->postJson('/api/recommendations/match', [
+      'size' => 'medium',
+      'age_preference' => 'any',
+      'sex' => 'any',
+      'energy_level' => 'any',
+      'maintenance_level' => 'any',
+    ]);
+
+    $response->assertOk();
+
+    $matches = $response->json('matches');
+    $matchedRescueIds = collect($matches)->pluck('rescue.id')->toArray();
+
+    // rescue1 and rescue2 should NOT be in recommendations
+    $this->assertNotContains($rescue1->id, $matchedRescueIds);
+     $this->assertNotContains($rescue2->id, $matchedRescueIds);
+
+    // Only rescue3 should be in recommendations
+    $this->assertContains($rescue3->id, $matchedRescueIds);
+    $this->assertEquals(1, count($matches));
+  }
 }

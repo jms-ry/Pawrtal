@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Rescue;
 use App\Helpers\TextAnalysisHelper;
+use App\Models\AdoptionApplication;
 
 class RecommendationService
 {
@@ -17,15 +18,28 @@ class RecommendationService
   /**
     * Get recommended rescues based on user preferences and household
   */
-  public function getRecommendations(array $preferences, array $household)
+  public function getRecommendations(array $preferences, array $household, $userId = null)
   {
     // Get all available rescues
     $availableRescues = Rescue::where('adoption_status', 'available')->get();
+    
+    $excludeRescueIds = [];
+    if ($userId) {
+      $excludeRescueIds = AdoptionApplication::where('user_id', $userId)
+        ->whereIn('status', ['pending', 'under_review', 'approved'])
+        ->pluck('rescue_id')
+      ->toArray();
+    }
+    
     $scoredRescues = [];
 
     foreach ($availableRescues as $rescue) {
+      if (in_array($rescue->id, $excludeRescueIds)) {
+        continue;
+      }
+        
       $score = $this->calculateCompatibilityScore($rescue, $preferences, $household);
-      
+        
       // Only include rescues with score >= 60
       if ($score >= 60) {
         $scoredRescues[] = [

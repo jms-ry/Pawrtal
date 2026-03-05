@@ -237,10 +237,16 @@
                       <a :href="`/rescues/${match.rescue.id}`" class="btn btn-sm btn-success" data-bs-dismiss="modal">
                         View Profile
                       </a>
-                      <button v-if="!match.rescue.user_has_active_application" class="btn btn-sm btn-primary" @click="openAdoptionModal(match.rescue)">
+                      <button v-if="!match.rescue.user_has_active_application" class="btn btn-sm btn-primary" @click="closeRecommendationModal()"
+                        data-bs-toggle="modal"
+                        :data-user-id="user?.id"
+                        :data-adoptable-name="match.rescue.name"
+                        :data-adoptable-id="match.rescue.id"
+                        :data-bs-target="!user ? '#loginReminderModal' : (user.canAdopt ? '#adoptionApplicationFormModal' : '#profileReminderModal')"
+                      >
                         Adopt Me
                       </button>
-                      <button v-else class="btn btn-sm btn-secondary" disabled >
+                      <button v-else class="btn btn-sm btn-warning" disabled >
                         Already Applied
                       </button>
                     </div>
@@ -270,6 +276,13 @@
 <script setup>
   import { ref } from 'vue'
   import { Modal } from 'bootstrap'
+
+  const props = defineProps({
+    user: {
+      type: Object,
+      default: null
+    }
+  })
 
   const step = ref('form') // 'form', 'loading', or 'results'
   const matches = ref([])
@@ -401,13 +414,13 @@
     }
   }
 
-  const openAdoptionModal = (rescue) => {
+  const closeRecommendationModal = () => {
     // Close recommendation modal
-    const modal = Modal.getInstance(document.getElementById('rescueRecommendationModal'))
-    if (modal) modal.hide()
-    
-    // Open adoption modal (depends on your existing implementation)
-    // You might need to emit an event or use a global state
+    const recommendationModal = Modal.getInstance(document.getElementById('rescueRecommendationModal'))
+    if (recommendationModal) {
+      recommendationModal.hide()
+    }
+
   }
 </script>
 

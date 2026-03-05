@@ -41,10 +41,17 @@ class RecommendationController extends Controller
       'number_of_current_pets' => $user->household->number_of_current_pets ?? 0,
     ];
 
+    // Get recommendations
     $recommendations = $this->recommendationService->getRecommendations(
       $validated,
-      $household
+      $household,
+      $user->id
     );
+
+    // Check for active applications for each rescue
+    foreach ($recommendations as &$recommendation) {
+      $recommendation['rescue']->user_has_active_application = false;
+    }
 
     return response()->json([
       'success' => true,
