@@ -17,7 +17,7 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     @inertiaHead
   </head>
-  <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100 overflow-auto">
+  <body class="antialiased bg-secondary text-dark d-flex flex-column min-vh-100 overflow-x-hidden">
     @inertia
   </body>
   
