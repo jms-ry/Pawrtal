@@ -202,7 +202,7 @@ class AdminStaffController extends Controller
     ->withQueryString();
 
     $previousUrl = url()->previous();
-    $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/donations']);
+    $showBackNav = !Str::contains($previousUrl, ['/login', '/register']);
 
     return Inertia::render('AdminStaff/Donations',[
       'donations' => $donations,
@@ -267,7 +267,7 @@ class AdminStaffController extends Controller
     $user = Auth::user();
     $inspectors = User::query()->whereIn('role', ['admin', 'staff'])->get();
     $previousUrl = url()->previous();
-    $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/adoption-applications']);
+    $showBackNav = !Str::contains($previousUrl, ['/login', '/register']);
       
     return Inertia::render('AdminStaff/AdoptionApplications',[
       'adoptionApplications' => $adoptionApplications,
