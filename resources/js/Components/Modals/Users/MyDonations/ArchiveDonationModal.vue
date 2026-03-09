@@ -5,8 +5,8 @@
       <form @submit.prevent="submitForm">
         <div class="modal-body bg-info-subtle border-0">
           <div class="d-flex d-flex-row justify-content-start align-items-center mt-4">
-            <i class="bi bi-archive-fill me-3 text-warning fs-2"></i>
-            <p class="fw-bold font-monospace mt-2 fs-5 text-start">Archive this donation?</p>
+            <i class="bi bi-archive-fill me-2 text-warning fs-2"></i>
+            <p class="fw-bold font-monospace mt-3 fs-5 text-start">Archive this donation?</p>
           </div>
           <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
             <button class="btn btn-warning me-1" type="submit">Yes</button>

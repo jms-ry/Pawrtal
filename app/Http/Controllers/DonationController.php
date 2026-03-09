@@ -162,6 +162,15 @@ class DonationController extends Controller
     return redirect()->back()->with('success',  'Donation has been restored!');
   }
 
+  public function forceDelete(Donation $donation)
+  {
+    $this->authorize('forceDelete', $donation);
+    
+    $donation->forceDelete();
+
+    return redirect()->route('users.myDonations')->with('success', 'Donation permanently deleted successfully.');
+  }
+
   /**
    * Create PayMongo payment source for monetary donation
    * 

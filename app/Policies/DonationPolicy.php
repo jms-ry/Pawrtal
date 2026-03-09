@@ -67,23 +67,37 @@ class DonationPolicy
   /**
     * Determine whether the user can permanently delete the model.
   */
-  public function forceDelete(User $user, Donation $donation): bool
+  public function forceDelete(User $user, Donation $donation): Response
   {
-    return false;
+    // Only donation owner can delete their own donations
+    if ($donation->user_id !== $user->id) {
+      return Response::deny('Only donation owner can permanently delete their donations.');
+    }
+    
+    // Can delete anything except accepted donations
+    if (in_array($donation->status, ['rejected', 'cancelled'])) {
+      return Response::allow();
+    }
+    
+    // Accepted donations are permanent records for transparency
+    return Response::deny(
+      'Only rejected or cancelled donations can be permanently deleted. ' .
+      'Pending donations must be cancelled first, and accepted donations are kept for transparency.'
+    );
   }
 
   public function cancel(User $user, Donation $donation): bool
   {
-    return $donation->user_id === $user->id;
+    return $donation->user_id === $user->id && $donation->status === 'pending';
   }
 
   public function accept(User $user, Donation $donation): bool
   {
-    return $user->isAdminOrStaff();
+    return $user->isAdminOrStaff() && $donation->status === 'pending';
   }
 
   public function reject(User $user, Donation $donation): bool
   {
-    return $user->isAdminOrStaff();
+    return $user->isAdminOrStaff() && $donation->status === 'pending';
   }
 }

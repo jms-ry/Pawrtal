@@ -100,7 +100,7 @@
           </div>
           <div v-if=!rescue.deleted_at class="d-flex justify-content-center me-1">
             <a v-if="rescue.adoption_applications_count > 0" class="btn btn-lg btn-light fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#archiveRescueProfileModal" >Archive Profile</a>
-            <button v-else class="btn btn-lg btn-danger fw-bold mt-0 mb-2 mb-md-2 dropdown-toggle" data-bs-toggle="dropdown"> Delete Profile</button>
+            <button v-else class="btn btn-lg btn-danger fw-bold mt-0 mb-2 mb-md-2 dropdown-toggle" data-bs-toggle="dropdown"> Delete Profile
               <ul class="dropdown-menu">
                 <li>
                   <a class="dropdown-item fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#archiveRescueProfileModal" >Archive Profile</a>
@@ -109,6 +109,7 @@
                   <a class="dropdown-item text-danger fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#forceDeleteRescueProfileModal" >Delete Permanently</a>
                 </li>
               </ul>
+            </button>
           </div>
           <div v-else class="d-flex justify-content-center me-1">
             <a class="btn btn-lg btn-success fw-bold mt-0 mb-2 mb-md-2" data-bs-toggle="modal" data-bs-target="#restoreRescueProfileModal" >Restore Profile</a>

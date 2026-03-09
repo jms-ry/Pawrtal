@@ -99,6 +99,8 @@ Route::middleware(['auth'])->group(function () {
   Route::patch('/reports/{report}/restore', [ReportController::class, 'restore'])->name('reports.restore');
 
   Route::patch('/donations/{donation}/restore', [DonationController::class, 'restore'])->name('donations.restore');
+  
+  Route::delete('/donations/{donation}/force-delete', [DonationController::class, 'forceDelete'])->name('donations.forceDelete');
 
   Route::patch('/adoption-applications/{adoption_application}/restore', [AdoptionApplicationController::class, 'restore'])->name('adoption_applications.restore');
 
