@@ -90,6 +90,10 @@ class AdoptionApplicationController extends Controller
     if($request->status === 'approved'){
       $this->authorize('approve',$adoptionApplication);
       $adoptionApplication->update($requestData);
+
+      if($adoptionApplication->rescue_id){
+        $adoptionApplication->rescue()->update(['adoption_status' => 'adopted']);
+      }
       return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been approved.');
     }
 
