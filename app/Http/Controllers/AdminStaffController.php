@@ -144,7 +144,7 @@ class AdminStaffController extends Controller
     ->withQueryString();
 
     $previousUrl = url()->previous();
-    $showBackNav = !Str::contains($previousUrl, ['/login', '/register','/dashboard/reports']);
+    $showBackNav = !Str::contains($previousUrl, ['/login', '/register']);
 
     return Inertia::render('AdminStaff/Reports',[
       'reports' => $reports,
