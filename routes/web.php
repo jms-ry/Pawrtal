@@ -79,8 +79,11 @@ Route::middleware(['auth'])->group(function () {
   // update - update a specific rescue
   Route::put('/rescues/{rescue}', [RescueController::class, 'update'])->name('rescues.update');
 
-  // destroy - delete a specific rescue
+  // destroy - delete (soft delete) a specific rescue
   Route::delete('/rescues/{rescue}', [RescueController::class, 'destroy'])->name('rescues.destroy');
+
+  // permantently delete a specific rescue
+  Route::delete('/rescues/{rescue}/force-delete', [RescueController::class, 'forceDelete'])->name('rescues.forceDelete');
 
   Route::patch('/rescues/{rescue}/restore', [RescueController::class, 'restore'])->name('rescues.restore');
 

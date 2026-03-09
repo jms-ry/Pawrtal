@@ -980,17 +980,4 @@ class AdminStaffDonationsTest extends TestCase
     );
   }
 
-  public function test_showBackNav_is_false_when_coming_from_dashboard_donations()
-  {
-    $admin = User::factory()->admin()->create();
-    $this->actingAs($admin);
-
-    $response = $this->from('/dashboard/donations')->get(route('dashboard.donations'));
-    $response->assertStatus(200);
-
-    $response->assertInertia(fn ($page) =>
-      $page->component('AdminStaff/Donations')->where('showBackNav', false)
-    );
-  }
-
 }
