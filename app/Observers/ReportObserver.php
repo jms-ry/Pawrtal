@@ -28,9 +28,7 @@ class ReportObserver
   */
   public function deleted(Report $report): void
   {
-    if ($report->isForceDeleting() === false && $report->user) {
-      $report->user->notify(new ReportArchivedNotification($report));
-    }
+    
   }
 
   /**
@@ -38,9 +36,7 @@ class ReportObserver
   */
   public function restored(Report $report): void
   {
-    if($report->user){
-      $report->user->notify(new ReportRestoredNotification($report));
-    }
+    
   }
 
   /**
