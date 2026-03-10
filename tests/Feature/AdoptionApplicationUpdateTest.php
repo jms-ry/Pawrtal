@@ -5,8 +5,11 @@ namespace Tests\Feature;
 use App\Models\AdoptionApplication;
 use App\Models\Rescue;
 use App\Models\User;
+use App\Notifications\AdoptionApplicationApprovedNotification;
+use App\Notifications\AdoptionApplicationRejectedNotification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
@@ -146,25 +149,26 @@ class AdoptionApplicationUpdateTest extends TestCase
 
   public function test_admin_user_can_approve_under_review_adoption_application()
   {
-    
+    $rescue = Rescue::factory()->available()->create();
     $user1 = User::factory()->create();
     $admin = User::factory()->admin()->create();
 
     $application = AdoptionApplication::factory()->under_review()->create([
-      'user_id' => $user1->id
+      'user_id' => $user1->id,
+      'rescue_id' => $rescue->id
     ]);
 
     $this->actingAs($admin);
     
-    $response = $this->from(route('users.myAdoptionApplications'))->put(route('adoption-applications.update', $application), [
+    $response = $this->from(route('dashboard.adoptionApplications'))->put(route('adoption-applications.update', $application), [
       'status' => 'approved',
       'review_date' => Carbon::now(),
       'review_notes' => 'This application is approved.',
-      'reviewed_by' => $admin->name,
+      'reviewed_by' => $admin->fullName(),
       
     ]);
 
-    $response->assertRedirect(route('users.myAdoptionApplications'));
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
     $response->assertSessionHas('success','Adoption application for '. $application->rescue->name. ' has been approved.');
   }
 
@@ -284,24 +288,25 @@ class AdoptionApplicationUpdateTest extends TestCase
 
   public function test_staff_user_can_approve_under_review_adoption_application()
   {
-    
+    $rescue = Rescue::factory()->available()->create();
     $user1 = User::factory()->create();
     $staff = User::factory()->staff()->create();
 
     $application = AdoptionApplication::factory()->under_review()->create([
-      'user_id' => $user1->id
+      'user_id' => $user1->id,
+      'rescue_id' => $rescue->id
     ]);
 
     $this->actingAs($staff);
     
-    $response = $this->from(route('users.myAdoptionApplications'))->put(route('adoption-applications.update', $application), [
+    $response = $this->from(route('dashboard.adoptionApplications'))->put(route('adoption-applications.update', $application), [
       'status' => 'approved',
       'review_date' => Carbon::now(),
       'review_notes' => 'This application is approved.',
       'reviewed_by' => $staff->name,
     ]);
 
-    $response->assertRedirect(route('users.myAdoptionApplications'));
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
     $response->assertSessionHas('success','Adoption application for '. $application->rescue->name. ' has been approved.');
   }
 
@@ -558,7 +563,7 @@ class AdoptionApplicationUpdateTest extends TestCase
 
     $this->actingAs($admin);
     
-    $response = $this->from(route('users.myAdoptionApplications'))->put(route('adoption-applications.update', $application), [
+    $response = $this->from(route('dashboard.adoptionApplications'))->put(route('adoption-applications.update', $application), [
       'status' => 'rejected',
       'review_date' => Carbon::now(),
       'review_notes' => 'This application is rejected.',
@@ -566,7 +571,7 @@ class AdoptionApplicationUpdateTest extends TestCase
       
     ]);
 
-    $response->assertRedirect(route('users.myAdoptionApplications'));
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
     $response->assertSessionHas('error','Adoption application for '. $application->rescue->name. ' has been rejected.');
   }
 
@@ -581,7 +586,7 @@ class AdoptionApplicationUpdateTest extends TestCase
 
     $this->actingAs($admin);
     
-    $response = $this->from(route('users.myAdoptionApplications'))->put(route('adoption-applications.update', $application), [
+    $response = $this->from(route('dashboard.adoptionApplications'))->put(route('adoption-applications.update', $application), [
       'status' => 'rejected',
       'review_date' => Carbon::now(),
       'review_notes' => 'This application is rejected.',
@@ -589,7 +594,7 @@ class AdoptionApplicationUpdateTest extends TestCase
       
     ]);
 
-    $response->assertRedirect(route('users.myAdoptionApplications'));
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
     $response->assertSessionHas('error','Adoption application for '. $application->rescue->name. ' has been rejected.');
   }
 
@@ -679,14 +684,14 @@ class AdoptionApplicationUpdateTest extends TestCase
 
     $this->actingAs($staff);
     
-    $response = $this->from(route('users.myAdoptionApplications'))->put(route('adoption-applications.update', $application), [
+    $response = $this->from(route('dashboard.adoptionApplications'))->put(route('adoption-applications.update', $application), [
       'status' => 'rejected',
       'review_date' => Carbon::now(),
       'review_notes' => 'This application is rejected.',
       'reviewed_by' => $staff->name,
     ]);
 
-    $response->assertRedirect(route('users.myAdoptionApplications'));
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
     $response->assertSessionHas('error','Adoption application for '. $application->rescue->name. ' has been rejected.');
   }
   public function test_staff_user_can_reject_pending_adoption_application()
@@ -700,14 +705,14 @@ class AdoptionApplicationUpdateTest extends TestCase
 
     $this->actingAs($staff);
     
-    $response = $this->from(route('users.myAdoptionApplications'))->put(route('adoption-applications.update', $application), [
+    $response = $this->from(route('dashboard.adoptionApplications'))->put(route('adoption-applications.update', $application), [
       'status' => 'rejected',
       'review_date' => Carbon::now(),
       'review_notes' => 'This application is rejected.',
       'reviewed_by' => $staff->name,
     ]);
 
-    $response->assertRedirect(route('users.myAdoptionApplications'));
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
     $response->assertSessionHas('error','Adoption application for '. $application->rescue->name. ' has been rejected.');
   }
 
@@ -1374,5 +1379,354 @@ class AdoptionApplicationUpdateTest extends TestCase
     ]);
 
     $response->assertSessionHasErrors('review_date');
+  }
+
+  public function test_approving_application_updates_rescue_adoption_status_to_adopted()
+  {
+    $rescue = Rescue::factory()->available()->create();
+    $user1 = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+
+    $application = AdoptionApplication::factory()->under_review()->create([
+      'user_id' => $user1->id,
+      'rescue_id' => $rescue->id
+    ]);
+
+    $this->actingAs($admin);
+    
+    $response = $this->from(route('dashboard.adoptionApplications'))->put(route('adoption-applications.update', $application), [
+      'status' => 'approved',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'This application is approved.',
+      'reviewed_by' => $admin->name,
+      
+    ]);
+
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
+    $response->assertSessionHas('success','Adoption application for '. $application->rescue->name. ' has been approved.');
+
+    //Check rescue adoption status was updated to adopted
+    $this->assertDatabaseHas('rescues', [
+      'id' => $rescue->id,
+      'adoption_status' => 'adopted',
+    ]);
+
+    // Verify the rescue model is updated
+    $rescue->refresh();
+    $this->assertEquals('adopted', $rescue->adoption_status);
+
+    // Verify the application status is approved
+    $application->refresh();
+    $this->assertEquals('approved', $application->status);
+    $this->assertEquals('This application is approved.', $application->review_notes);
+    $this->assertNotNull($application->review_date);
+  }
+
+  public function test_rejecting_application_does_not_change_rescue_adoption_status()
+  {
+    $rescue = Rescue::factory()->available()->create();
+    $user1 = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+
+    $application = AdoptionApplication::factory()->under_review()->create([
+      'user_id' => $user1->id,
+      'rescue_id' => $rescue->id
+    ]);
+
+    $this->actingAs($admin);
+    
+    $response = $this->from(route('dashboard.adoptionApplications'))
+    ->put(route('adoption-applications.update', $application), [
+      'status' => 'rejected',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'Application does not meet requirements.',
+      'reviewed_by' => $admin->name,
+    ]);
+
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
+    $response->assertSessionHas('error');
+
+    // Check rescue adoption status remains available
+    $this->assertDatabaseHas('rescues', [
+      'id' => $rescue->id,
+      'adoption_status' => 'available',
+    ]);
+
+    $rescue->refresh();
+    $this->assertEquals('available', $rescue->adoption_status);
+  }
+
+  public function test_approving_application_auto_rejects_other_pending_applications()
+  {
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $user3 = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+
+    // Create multiple applications for the same rescue
+    $application1 = AdoptionApplication::factory()->create([
+      'user_id' => $user1->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'under_review',
+    ]);
+
+    $application2 = AdoptionApplication::factory()->create([
+      'user_id' => $user2->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'pending',
+    ]);
+
+    $application3 = AdoptionApplication::factory()->create([
+      'user_id' => $user3->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'under_review',
+    ]);
+
+    $this->actingAs($admin);
+        
+    // Approve application1
+    $response = $this->put(route('adoption-applications.update', $application1), [
+      'status' => 'approved',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'This application is approved.',
+      'reviewed_by' => $admin->fullName(),
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    // Check application1 is approved
+    $this->assertDatabaseHas('adoption_applications', [
+      'id' => $application1->id,
+      'status' => 'approved',
+    ]);
+
+    // Check application2 is auto-rejected
+    $this->assertDatabaseHas('adoption_applications', [
+      'id' => $application2->id,
+      'status' => 'rejected',
+      'review_notes' => "Automatically rejected because another applicant was approved for {$rescue->name}.",
+      'reviewed_by' => 'System',
+    ]);
+
+    // Check application3 is auto-rejected
+    $this->assertDatabaseHas('adoption_applications', [
+      'id' => $application3->id,
+      'status' => 'rejected',
+      'review_notes' => "Automatically rejected because another applicant was approved for {$rescue->name}.",
+      'reviewed_by' => 'System',
+    ]);
+
+    // Check rescue is adopted
+    $rescue->refresh();
+    $this->assertEquals('adopted', $rescue->adoption_status);
+  }
+
+  /**
+    * Test: Auto-reject only affects pending and under_review applications
+  */
+  public function test_auto_reject_only_affects_pending_and_under_review_applications()
+  {
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $user3 = User::factory()->create();
+    $user4 = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+
+    // Create applications with different statuses
+    $approvedApp = AdoptionApplication::factory()->create([
+      'user_id' => $user1->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'under_review',
+    ]);
+
+    $pendingApp = AdoptionApplication::factory()->create([
+      'user_id' => $user2->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'pending',
+    ]);
+
+    $alreadyRejectedApp = AdoptionApplication::factory()->create([
+      'user_id' => $user3->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'rejected',
+    ]);
+
+    $cancelledApp = AdoptionApplication::factory()->create([
+      'user_id' => $user4->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'cancelled',
+    ]);
+
+    $this->actingAs($admin);
+        
+    // Approve approvedApp
+    $this->put(route('adoption-applications.update', $approvedApp), [
+      'status' => 'approved',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'Approved.',
+      'reviewed_by' => $admin->fullName(),
+    ]);
+
+    // Check pending was auto-rejected
+    $pendingApp->refresh();
+    $this->assertEquals('rejected', $pendingApp->status);
+    $this->assertEquals('System', $pendingApp->reviewed_by);
+
+    // Check already rejected was NOT touched
+    $alreadyRejectedApp->refresh();
+    $this->assertEquals('rejected', $alreadyRejectedApp->status);
+    $this->assertNotEquals('System', $alreadyRejectedApp->reviewed_by);
+
+    // Check cancelled was NOT touched
+    $cancelledApp->refresh();
+    $this->assertEquals('cancelled', $cancelledApp->status);
+  }
+
+  /**
+    * Test: Cannot approve application if rescue already adopted
+  */
+  public function test_cannot_approve_application_if_rescue_already_adopted()
+  {
+    $rescue = Rescue::factory()->create(['adoption_status' => 'adopted']);
+    $user = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+
+    $application = AdoptionApplication::factory()->create([
+      'user_id' => $user->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'under_review',
+    ]);
+
+    $this->actingAs($admin);
+        
+    $response = $this->from(route('dashboard.adoptionApplications'))->put(route('adoption-applications.update', $application), [
+      'status' => 'approved',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'This application is approved.',
+      'reviewed_by' => $admin->fullName(),
+    ]);
+
+    // Should redirect with error
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
+    $response->assertSessionHas('error', 'This rescue has already been adopted.');
+
+    // Application should not be approved
+    $application->refresh();
+    $this->assertNotEquals('approved', $application->status);
+    $this->assertEquals('under_review', $application->status);
+  }
+
+  /**
+    * Test: Auto-rejected applications have correct review data
+  */
+  public function test_auto_rejected_applications_have_correct_review_data()
+  {
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+
+    $approvedApp = AdoptionApplication::factory()->create([
+      'user_id' => $user1->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'under_review',
+    ]);
+
+    $pendingApp = AdoptionApplication::factory()->create([
+      'user_id' => $user2->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'pending',
+    ]);
+
+    $this->actingAs($admin);
+        
+    // Approve application
+    $this->put(route('adoption-applications.update', $approvedApp), [
+      'status' => 'approved',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'Approved.',
+      'reviewed_by' => $admin->fullName(),
+    ]);
+
+    $pendingApp->refresh();
+
+    // Check auto-rejected application has correct data
+    $this->assertEquals('rejected', $pendingApp->status);
+    $this->assertEquals('System', $pendingApp->reviewed_by);
+    $this->assertEquals(
+      "Automatically rejected because another applicant was approved for {$rescue->name}.",
+      $pendingApp->review_notes
+    );
+    $reviewDate = Carbon::parse($pendingApp->review_date);
+    $this->assertTrue($reviewDate->isToday());
+  }
+
+  public function test_observer_sends_notifications_for_auto_rejected_applications()
+  {
+    Notification::fake();
+
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $user3 = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+
+    $approvedApp = AdoptionApplication::factory()->create([
+      'user_id' => $user1->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'under_review',
+    ]);
+
+    $pendingApp = AdoptionApplication::factory()->create([
+      'user_id' => $user2->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'pending',
+    ]);
+
+    $underReviewApp = AdoptionApplication::factory()->create([
+      'user_id' => $user3->id,
+      'rescue_id' => $rescue->id,
+      'status' => 'under_review',
+    ]);
+
+    $this->actingAs($admin);
+        
+    // Approve application
+    $this->put(route('adoption-applications.update', $approvedApp), [
+      'status' => 'approved',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'Approved.',
+      'reviewed_by' => $admin->fullName(),
+    ]);
+
+    // Refresh models to get updated data
+    $approvedApp->refresh();
+    $pendingApp->refresh();
+    $underReviewApp->refresh();
+    
+    // Verify statuses were updated correctly
+    $this->assertEquals('approved', $approvedApp->status);
+    $this->assertEquals('rejected', $pendingApp->status);
+    $this->assertEquals('rejected', $underReviewApp->status);
+
+    // Assert notifications sent to auto-rejected users
+    Notification::assertSentTo(
+      $user2,
+      AdoptionApplicationRejectedNotification::class
+    );
+
+    Notification::assertSentTo(
+      $user3,
+      AdoptionApplicationRejectedNotification::class
+    );
+
+    // Assert notification sent to approved user
+    Notification::assertSentTo(
+      $user1,
+      AdoptionApplicationApprovedNotification::class
+    );
   }
 }
