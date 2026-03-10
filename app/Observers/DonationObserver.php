@@ -44,9 +44,7 @@ class DonationObserver
   */
   public function deleted(Donation $donation): void
   {
-    if($donation->isForceDeleting() === false && $donation->user){
-      $donation->user->notify(new DonationArchivedNotification($donation));
-    }
+    
   }
 
   /**
@@ -54,9 +52,7 @@ class DonationObserver
   */
   public function restored(Donation $donation): void
   {
-    if($donation->user){
-      $donation->user->notify(new DonationRestoredNotification($donation));
-    }
+    
   }
 
   /**
