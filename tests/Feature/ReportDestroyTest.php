@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Report;
 use App\Models\User;
+use App\Notifications\ReportArchivedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ReportDestroyTest extends TestCase
@@ -207,5 +209,27 @@ class ReportDestroyTest extends TestCase
     $response = $this->delete(route('reports.destroy', $report));
 
     $response->assertForbidden();
+  }
+
+  public function test_report_archive_notification_is_sent_after_successful_destroy_or_archive()
+  {
+    Notification::fake();
+
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+
+    $report = Report::factory()->lost()->create([
+      'user_id' => $user->id,
+      'status' => 'resolved'
+    ]);
+
+    $this->actingAs($staff);
+
+    $response = $this->delete(route('reports.destroy', $report));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Report has been archived!');
+
+    Notification::assertSentTo($user, ReportArchivedNotification::class);
   }
 }
