@@ -6,6 +6,7 @@ use App\Http\Requests\StoreDonationRequest;
 use App\Http\Requests\UpdateDonationRequest;
 use App\Models\Donation;
 use App\Notifications\DonationArchivedNotification;
+use App\Notifications\DonationForceDeleteNotification;
 use App\Notifications\DonationRestoredNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -177,6 +178,8 @@ class DonationController extends Controller
     $this->authorize('forceDelete', $donation);
     
     $donation->forceDelete();
+
+    $donation->user->notify(new DonationForceDeleteNotification($donation));
 
     return redirect()->route('users.myDonations')->with('success', 'Donation permanently deleted successfully.');
   }

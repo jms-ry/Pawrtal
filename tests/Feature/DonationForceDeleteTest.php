@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Donation;
 use App\Models\User;
+use App\Notifications\DonationForceDeleteNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class DonationForceDeleteTest extends TestCase
@@ -119,5 +121,44 @@ class DonationForceDeleteTest extends TestCase
 
     // Assuming you have a policy method called 'forceDelete' for Donation
     $this->assertFalse($user->can('forceDelete', $donation));
+  }
+
+  public function test_admin_user_cannot_force_delete_a_donation()
+  {
+    $admin = User::factory()->admin()->create();
+    $otherUser = User::factory()->create();
+    $donation = Donation::factory()->cancelled()->create(['user_id' => $otherUser->id]);
+
+    $response = $this->actingAs($admin)->delete(route('donations.forceDelete', $donation->id));
+
+    $response->assertForbidden();
+    $this->assertNotNull(Donation::withTrashed()->find($donation->id));
+  }
+
+  public function test_staff_user_cannot_force_delete_a_donation()
+  {
+    $staff = User::factory()->staff()->create();
+    $otherUser = User::factory()->create();
+    $donation = Donation::factory()->cancelled()->create(['user_id' => $otherUser->id]);
+
+    $response = $this->actingAs($staff)->delete(route('donations.forceDelete', $donation->id));
+
+    $response->assertForbidden();
+    $this->assertNotNull(Donation::withTrashed()->find($donation->id));
+  }
+
+  public function test_force_delete_notification_is_sent_after_a_successful_force_delete()
+  {
+    Notification::fake();
+
+    $user = User::factory()->create();
+    $donation = Donation::factory()->cancelled()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user)->delete(route('donations.forceDelete', $donation->id));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Donation permanently deleted successfully.');
+
+    Notification::assertSentTo($user, DonationForceDeleteNotification::class);
   }
 }
