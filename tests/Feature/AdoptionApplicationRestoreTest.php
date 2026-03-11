@@ -7,6 +7,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\AdoptionApplication;
 use App\Models\User;
+use App\Notifications\AdoptionApplicationRestoredNotification;
+use Illuminate\Support\Facades\Notification;
 
 class AdoptionApplicationRestoreTest extends TestCase
 {
@@ -183,5 +185,27 @@ class AdoptionApplicationRestoreTest extends TestCase
      $response = $this->patch(route('adoption_applications.restore', $application));
 
     $response->assertForbidden();
+  }
+
+  public function test_adoption_application_restore_notification_is_sent_after_a_successful_restore()
+  {
+    Notification::fake();
+
+    $user1 = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+
+    $application = AdoptionApplication::factory()->approved()->trashed()->create([
+      'user_id' => $user1->id
+    ]);
+
+    $this->actingAs($staff);
+
+    $response = $this->from(route('dashboard.adoptionApplications'))->patch(route('adoption_applications.restore', $application));
+
+    $response->assertRedirect(route('dashboard.adoptionApplications'));
+    $response->assertSessionHas('success','Adoption application for '. $application->rescue->name. ' has been restored.');
+
+    Notification::assertSentTo($user1,AdoptionApplicationRestoredNotification::class);
+
   }
 }

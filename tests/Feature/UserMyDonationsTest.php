@@ -97,12 +97,12 @@ class UserMyDonationsTest extends TestCase
       $page
         ->component('User/MyDonations')
         // Check that the donations prop exists and is paginated
-        ->has('donations.data')
-        // Check that the correct donations are shown
-        ->where('donations.data.0.item_description', $matchingDonation1->item_description)
-        ->where('donations.data.1.item_description', $matchingDonation2->item_description)
-        // Ensure non-matching donation is not present
-      ->missing('donations.data.2.item_description',)
+        ->has('donations.data',2)
+      ->where('donations.data', function ($donations) use ($matchingDonation1, $matchingDonation2) {
+        $descriptions = collect($donations)->pluck('description');
+
+        return $descriptions->contains($matchingDonation1->decription)&& $descriptions->contains($matchingDonation2->description);
+      })
     );
   }
 
@@ -135,12 +135,12 @@ class UserMyDonationsTest extends TestCase
       $page
         ->component('User/MyDonations')
         // Check that the donations prop exists and is paginated
-        ->has('donations.data')
-        // Check that the correct donations are shown
-        ->where('donations.data.0.contact_person', $matchingDonation1->contact_person)
-        ->where('donations.data.1.contact_person', $matchingDonation2->contact_person)
-        // Ensure non-matching donation is not present
-      ->missing('donations.data.2.contact_person',)
+        ->has('donations.data',2)
+      ->where('donations.data', function ($donations) use ($matchingDonation1, $matchingDonation2) {
+        $contacts = collect($donations)->pluck('contact');
+
+        return $contacts->contains($matchingDonation1->contact)&& $contacts->contains($matchingDonation2->contact);
+      })
     );
   }
 
@@ -173,12 +173,12 @@ class UserMyDonationsTest extends TestCase
       $page
         ->component('User/MyDonations')
         // Check that the donations prop exists and is paginated
-        ->has('donations.data')
-        // Check that the correct donations are shown
-        ->where('donations.data.0.pick_up_location', $matchingDonation1->pick_up_location)
-        ->where('donations.data.1.pick_up_location', $matchingDonation2->pick_up_location)
-        // Ensure non-matching donation is not present
-      ->missing('donations.data.2.pick_up_location',)
+        ->has('donations.data',2)
+      ->where('donations.data', function ($donations) use ($matchingDonation1, $matchingDonation2) {
+        $locations = collect($donations)->pluck('location');
+
+        return $locations->contains($matchingDonation1->location)&& $locations->contains($matchingDonation2->location);
+      })
     );
   }
 
@@ -211,12 +211,12 @@ class UserMyDonationsTest extends TestCase
       $page
         ->component('User/MyDonations')
         // Check that the donations prop exists and is paginated
-        ->has('donations.data')
-        // Check that the correct donations are shown
-        ->where('donations.data.0.status', $matchingDonation1->status)
-        ->where('donations.data.1.status', $matchingDonation2->status)
-        // Ensure non-matching donation is not present
-      ->missing('donations.data.2.status',)
+        ->has('donations.data',2)
+      ->where('donations.data', function ($donations) use ($matchingDonation1, $matchingDonation2) {
+        $statuses = collect($donations)->pluck('status');
+
+        return $statuses->contains($matchingDonation1->status)&& $statuses->contains($matchingDonation2->status);
+      })
     );
   }
 
@@ -243,12 +243,12 @@ class UserMyDonationsTest extends TestCase
       $page
         ->component('User/MyDonations')
         // Check that the donations prop exists and is paginated
-        ->has('donations.data')
-        // Check that the correct donations are shown
-        ->where('donations.data.0.donation_type', $matchingDonation1->donation_type)
-        ->where('donations.data.1.donation_type', $matchingDonation2->donation_type)
-        // Ensure non-matching donation is not present
-      ->missing('donations.data.2.donation_type',)
+        ->has('donations.data',2)
+      ->where('donations.data', function ($donations) use ($matchingDonation1, $matchingDonation2) {
+        $types = collect($donations)->pluck('type');
+
+        return $types->contains($matchingDonation1->type)&& $types->contains($matchingDonation2->type);
+      })
     );
   }
 

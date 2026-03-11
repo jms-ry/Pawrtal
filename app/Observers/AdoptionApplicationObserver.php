@@ -44,9 +44,7 @@ class AdoptionApplicationObserver
   */
   public function deleted(AdoptionApplication $adoptionApplication): void
   {
-    if(!$adoptionApplication->isForceDeleting() && $adoptionApplication->user){
-      $adoptionApplication->user->notify(new AdoptionApplicationArchivedNotification($adoptionApplication));
-    }
+    
   }
 
   /**
@@ -54,9 +52,7 @@ class AdoptionApplicationObserver
   */
   public function restored(AdoptionApplication $adoptionApplication): void
   {
-    if($adoptionApplication->user){
-      $adoptionApplication->user->notify(new AdoptionApplicationRestoredNotification($adoptionApplication));
-    }
+   
   }
 
   /**

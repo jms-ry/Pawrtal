@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\AdoptionApplication;
 use App\Models\User;
+use App\Notifications\AdoptionApplicationArchivedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class AdoptionApplicationDestroyTest extends TestCase
@@ -310,5 +312,24 @@ class AdoptionApplicationDestroyTest extends TestCase
 
    $response = $this->from(route('users.myAdoptionApplications'))->delete(route('adoption-applications.destroy', $application));
     $response->assertForbidden();
+  }
+
+  public function test_adoption_application_archive_notification_is_sent_after_a_successfuly_destroy_or_archive()
+  {
+    Notification::fake();
+
+    $user1 = User::factory()->create();
+
+    $application = AdoptionApplication::factory()->approved()->create([
+      'user_id' => $user1->id,
+    ]);
+
+    $this->actingAs($user1);
+    
+    $response = $this->from(route('users.myAdoptionApplications'))->delete(route('adoption-applications.destroy', $application));
+    $response->assertRedirect(route('users.myAdoptionApplications'));
+    $response->assertSessionHas('warning','Adoption application for '. $application->rescue->name. ' has been archived.');
+
+    Notification::assertSentTo($user1, AdoptionApplicationArchivedNotification::class);
   }
 }

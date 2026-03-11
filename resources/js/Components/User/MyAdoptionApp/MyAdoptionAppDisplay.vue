@@ -31,7 +31,6 @@
               <th scope="col">Application Date</th>
               <th scope="col">Status</th>
               <th scope="col">Archived?</th>
-              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -40,7 +39,6 @@
               <td>{{ adoptionApplication.rescue_name_formatted }}</td>
               <td>{{ adoptionApplication.application_date_formatted }}</td>
               <td>{{ adoptionApplication.status_label }}</td>
-              <td>{{ adoptionApplication.archived }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
                   <a class="btn btn-success fw-bolder me-1" data-bs-toggle="modal" data-bs-target="#viewApplicationModal"

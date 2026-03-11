@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAdoptionApplicationRequest;
 use App\Http\Requests\UpdateAdoptionApplicationRequest;
+use App\Notifications\AdoptionApplicationRestoredNotification;
 use Illuminate\Http\Request;
 use App\Models\AdoptionApplication;
+use App\Notifications\AdoptionApplicationArchivedNotification;
 use App\Notifications\AdoptionApplicationForceDeleteNotification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 class AdoptionApplicationController extends Controller
 {
@@ -162,8 +165,12 @@ class AdoptionApplicationController extends Controller
   public function destroy(AdoptionApplication $adoptionApplication)
   {
     $this->authorize('delete', $adoptionApplication);
-    
+
+    $archiveBy = Auth::user();
+
     $adoptionApplication->delete();
+
+    $adoptionApplication->user->notify(new AdoptionApplicationArchivedNotification($adoptionApplication,$archiveBy));
 
     return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been archived.');
   }
@@ -172,8 +179,12 @@ class AdoptionApplicationController extends Controller
   {
     $this->authorize('restore', $adoptionApplication);
 
+    $restoredBy = Auth::user();
+
     $adoptionApplication->restore();
 
+    $adoptionApplication->user->notify(new AdoptionApplicationRestoredNotification($adoptionApplication,$restoredBy));
+    
     return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been restored.');
   }
 
