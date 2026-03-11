@@ -53,8 +53,7 @@
 
               <div class="d-grid gap-2">
                 <a href="/users/my-donations" class="btn btn-primary btn-lg">
-                  <i class="bi bi-list-ul me-2"></i>
-                  View My Donations
+                  View My Donation History
                 </a>
                 <a href="/donate" class="btn btn-light">
                   Donate again
