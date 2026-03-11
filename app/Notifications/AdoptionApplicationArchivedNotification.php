@@ -39,7 +39,7 @@ class AdoptionApplicationArchivedNotification extends Notification
     $archivedByOwner = $this->archivedBy->id === $notifiable->id;
 
     if($archivedByOwner) {
-      $message = "Your archived your {$this->adoptionApplication->status} for {$this->adoptionApplication->rescue->name}. Check \"My Adoption Applications\" for more details.";
+      $message = "You archived your {$this->adoptionApplication->status} for {$this->adoptionApplication->rescue->name}. Check \"My Adoption Applications\" for more details.";
     } else {
       $archiverName = $this->archivedBy->fullName();
       $message = "Your {$this->adoptionApplication->status} for {$this->adoptionApplication->rescue->name} has been archived by {$archiverName}. Check \"My Adoption Applications\" for more details.";

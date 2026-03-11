@@ -24,7 +24,7 @@ class DonationObserver
   */
   public function updated(Donation $donation): void
   {
-    if($donation->user){
+    if($donation->wasChanged('status') && $donation->user){
       if($donation->status ==='cancelled'){
         $donation->user->notify(new DonationCancelledNotification($donation));
       }

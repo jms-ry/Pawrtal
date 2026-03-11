@@ -24,7 +24,7 @@ class AdoptionApplicationObserver
   */
   public function updated(AdoptionApplication $adoptionApplication): void
   {
-    if($adoptionApplication->user){
+    if($adoptionApplication->wasChanged('status') && $adoptionApplication->user){
       if($adoptionApplication->status === 'cancelled'){
         $adoptionApplication->user->notify(new AdoptionApplicationCancelledNotification($adoptionApplication));
       }
