@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDonationRequest;
 use App\Http\Requests\UpdateDonationRequest;
 use App\Models\Donation;
+use App\Notifications\DonationArchivedNotification;
+use App\Notifications\DonationForceDeleteNotification;
+use App\Notifications\DonationRestoredNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -141,12 +144,16 @@ class DonationController extends Controller
   public function destroy(Donation $donation)
   {
     $this->authorize('delete', $donation);
-    
-    if ($donation->status === 'pending') {
-      return redirect()->back()->with('error', 'Pending donations cannot be deleted.');
+
+    $archiveBy = Auth::user();
+
+    if ($donation->status !== 'accepted') {
+      return redirect()->back()->with('error', 'Only accepted donations can be archived.');
     }
 
     $donation->delete();
+
+    $donation->user->notify(new DonationArchivedNotification($donation, $archiveBy));
 
     return redirect()->back()->with('warning', 'Donation has been archived!');
   }
@@ -157,9 +164,24 @@ class DonationController extends Controller
   {
     $this->authorize('restore', $donation);
 
+    $restoredBy = Auth::user();
+
     $donation->restore();
     
+    $donation->user->notify(new DonationRestoredNotification($donation,$restoredBy));
+    
     return redirect()->back()->with('success',  'Donation has been restored!');
+  }
+
+  public function forceDelete(Donation $donation)
+  {
+    $this->authorize('forceDelete', $donation);
+    
+    $donation->forceDelete();
+
+    $donation->user->notify(new DonationForceDeleteNotification($donation));
+
+    return redirect()->route('users.myDonations')->with('success', 'Donation permanently deleted successfully.');
   }
 
   /**

@@ -1,13 +1,12 @@
 <template>
-  <div class="modal fade me-2" id="cancelDonationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="cancelDonationModalLabel" aria-hidden="true">
+  <div class="modal fade me-2" id="forceDeleteApplicationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="forceDeleteApplicationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-sm-scrollable">
     <div class="modal-content ">
       <form @submit.prevent="submitForm">
         <div class="modal-body bg-info-subtle border-0">
-          <input type="hidden" name="status" class="form-control" v-model="form.status">
           <div class="d-flex d-flex-row justify-content-start align-items-center mt-4">
-            <i class="bi bi-exclamation-triangle-fill me-2 text-warning fs-2"></i>
-            <p class="fw-bold font-monospace mt-3 fs-5 text-start">Wanna cancel your donation?</p>
+            <i class="bi bi-trash-fill me-2 text-danger fs-2"></i>
+            <p class="fw-bold font-monospace mt-3 fs-5 text-start">Permanently delete this application?</p>
           </div>
           <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
             <button class="btn btn-warning me-1" type="submit">Yes</button>
@@ -22,34 +21,28 @@
 
 <script setup>
   import { Modal } from 'bootstrap'
-  import { useForm } from '@inertiajs/vue3'
+  import { router } from '@inertiajs/vue3'
   import { ref, onMounted } from 'vue'
 
-  const donationId = ref(null)
+  const applicationId = ref(null)
 
   onMounted(() => {
-    const modalEl = document.getElementById('cancelDonationModal')
+    const modalEl = document.getElementById('forceDeleteApplicationModal')
     
     modalEl.addEventListener('show.bs.modal', (event) => {
       const button = event.relatedTarget 
       
-      donationId.value = button.getAttribute('data-donation-id')
+      applicationId.value = button.getAttribute('data-application-id')
     })
   })
 
-  const form = useForm({
-    status: 'cancelled',
-    _method:'PUT'
-
-  })
-
   function submitForm() {
-    if (!donationId.value) {
+    if (!applicationId.value) {
       console.error('No ID available')
       return
     }
     
-    form.put(`/donations/${donationId.value}`, {
+    router.delete(`/adoption-applications/${applicationId.value}/force-delete`, {
       preserveScroll: false,
       preserveState: false,
       onSuccess: () => {
@@ -59,7 +52,7 @@
   }
 
   function closeModal(){
-    const modalEl = document.getElementById('cancelDonationModal')
+    const modalEl = document.getElementById('forceDeleteApplicationModal')
     const modal = Modal.getInstance(modalEl)
     if (modal) {
       modal.hide()
@@ -70,6 +63,6 @@
     document.body.style.removeProperty('overflow')
     document.body.style.removeProperty('padding-right')
     
-    donationId.value = null
+    applicationId.value = null
   }
 </script>

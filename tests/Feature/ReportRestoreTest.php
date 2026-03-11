@@ -7,6 +7,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Report;
 use App\Models\User;
+use App\Notifications\ReportRestoredNotification;
+use Illuminate\Support\Facades\Notification;
 
 class ReportRestoreTest extends TestCase
 {
@@ -191,5 +193,27 @@ class ReportRestoreTest extends TestCase
 
     $response = $this->patch(route('reports.restore', $report));
     $response->assertForbidden();
+  }
+
+  public function test_report_restore_notification_is_sent_after_successful_restore()
+  {
+    Notification::fake();
+
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+
+    $report = Report::factory()->lost()->trashed()->create([
+      'user_id' => $user->id,
+      'status' => 'resolved'
+    ]);
+
+    $this->actingAs($staff);
+
+    $response = $this->patch(route('reports.restore', $report));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success',  'Report has been restored!');
+
+    Notification::assertSentTo($user, ReportRestoredNotification::class);
   }
 }

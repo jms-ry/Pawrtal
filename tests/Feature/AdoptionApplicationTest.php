@@ -29,58 +29,58 @@ class AdoptionApplicationTest extends TestCase
   }
 
   // -------------------------------------------------------------------------
-  // canArchive()
+  // canDelete()
   // -------------------------------------------------------------------------
 
-  public function test_can_archive_returns_true_when_status_is_cancelled(): void
+  public function test_can_delete_returns_true_when_status_is_cancelled(): void
   {
     $application = $this->createAdoptionApplication(['status' => 'cancelled']);
 
-    $this->assertTrue($application->canArchive());
+    $this->assertTrue($application->canDelete());
   }
 
-  public function test_can_archive_returns_true_when_status_is_approved(): void
+  public function test_can_delete_returns_false_when_status_is_approved(): void
   {
     $application = $this->createAdoptionApplication(['status' => 'approved']);
 
-    $this->assertTrue($application->canArchive());
+    $this->assertFalse($application->canDelete());
   }
 
-  public function test_can_archive_returns_true_when_status_is_rejected(): void
+  public function test_can_delete_returns_true_when_status_is_rejected(): void
   {
     $application = $this->createAdoptionApplication(['status' => 'rejected']);
 
-    $this->assertTrue($application->canArchive());
+    $this->assertTrue($application->canDelete());
   }
 
-  public function test_can_archive_returns_null_when_status_is_pending(): void
+  public function test_can_delete_returns_false_when_status_is_pending(): void
   {
     $application = $this->createAdoptionApplication(['status' => 'pending']);
 
-    $this->assertNull($application->canArchive());
+    $this->assertFalse($application->canDelete());
   }
 
-  public function test_can_archive_returns_null_when_status_is_under_review(): void
+  public function test_can_delete_returns_false_when_status_is_under_review(): void
   {
     $application = $this->createAdoptionApplication(['status' => 'under_review']);
 
-    $this->assertNull($application->canArchive());
+    $this->assertFalse($application->canDelete());
   }
 
-  public function test_can_archive_returns_false_when_application_is_soft_deleted(): void
+  public function test_can_delete_returns_true_when_application_is_soft_deleted(): void
   {
     $application = $this->createAdoptionApplication(['status' => 'cancelled']);
     $application->delete();
 
-    $this->assertFalse($application->fresh()->canArchive());
+    $this->assertTrue($application->fresh()->canDelete());
   }
 
-  public function test_can_archive_returns_false_for_approved_status_when_soft_deleted(): void
+  public function test_can_delete_returns_false_for_approved_status_when_soft_deleted(): void
   {
     $application = $this->createAdoptionApplication(['status' => 'approved']);
     $application->delete();
 
-    $this->assertFalse($application->fresh()->canArchive());
+    $this->assertFalse($application->fresh()->canDelete());
   }
 
   // -------------------------------------------------------------------------

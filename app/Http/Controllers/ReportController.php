@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\Report;
+use App\Notifications\ReportArchivedNotification;
+use App\Notifications\ReportRestoredNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -152,11 +154,15 @@ class ReportController extends Controller
   {
     $this->authorize('delete',$report);
 
+    $archivedBy = Auth::user();
+
     if($report->status === 'active'){
       return redirect()->back()->with('error', 'Active reports cannot be archived.');
     }
 
     $report->delete();
+
+    $report->user->notify(new ReportArchivedNotification($report, $archivedBy));
 
     return redirect()->back()->with('warning',  'Report has been archived!');
   }
@@ -165,7 +171,11 @@ class ReportController extends Controller
   {
     $this->authorize('restore', $report);
 
+    $restoredBy = Auth::user();
+
     $report->restore();
+
+    $report->user->notify(new ReportRestoredNotification($report, $restoredBy));
 
     return redirect()->back()->with('success',  'Report has been restored!');
   }

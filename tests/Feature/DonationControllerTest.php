@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Notifications\DonationRestoredNotification;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Donation;
+use App\Notifications\DonationArchivedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class DonationControllerTest extends TestCase
@@ -1023,7 +1026,7 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('error', 'Pending donations cannot be deleted.');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
 
   public function test_donation_owner_can_destroyArchive_accepted_donations()
@@ -1042,7 +1045,7 @@ class DonationControllerTest extends TestCase
     $response->assertSessionHas('warning', 'Donation has been archived!');
   }
 
-  public function test_donation_owner_can_destroyArchive_cancelled_donations()
+  public function test_donation_owner_cannot_destroyArchive_cancelled_donations()
   {
     $user = User::factory()->create();
 
@@ -1055,10 +1058,10 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('warning', 'Donation has been archived!');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
 
-  public function test_donation_owner_can_destroyArchive_rejected_donations()
+  public function test_donation_owner_cannot_destroyArchive_rejected_donations()
   {
     $user = User::factory()->create();
 
@@ -1071,7 +1074,7 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('warning', 'Donation has been archived!');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
 
   public function test_admin_user_cannot_destroyArchive_pending_donations()
@@ -1086,7 +1089,7 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('error', 'Pending donations cannot be deleted.');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
 
   public function test_admin_user_can_destroyArchive_accepted_donations()
@@ -1104,7 +1107,7 @@ class DonationControllerTest extends TestCase
     $response->assertSessionHas('warning', 'Donation has been archived!');
   }
 
-  public function test_admin_user_can_destroyArchive_cancelled_donations()
+  public function test_admin_user_cannot_destroyArchive_cancelled_donations()
   {
     $admin = User::factory()->admin()->create();
     $user2 = User::factory()->create();
@@ -1116,10 +1119,10 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('warning', 'Donation has been archived!');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
 
-  public function test_admin_user_can_destroyArchive_rejected_donations()
+  public function test_admin_user_cannot_destroyArchive_rejected_donations()
   {
     $admin = User::factory()->admin()->create();
     $user2 = User::factory()->create();
@@ -1131,7 +1134,7 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('warning', 'Donation has been archived!');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
 
   public function test_staff_user_cannot_destroyArchive_pending_donations()
@@ -1146,7 +1149,7 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('error', 'Pending donations cannot be deleted.');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
 
   public function test_staff_user_can_destroyArchive_accepted_donations()
@@ -1164,7 +1167,7 @@ class DonationControllerTest extends TestCase
     $response->assertSessionHas('warning', 'Donation has been archived!');
   }
 
-  public function test_staff_user_can_destroyArchive_cancelled_donations()
+  public function test_staff_user_cannot_destroyArchive_cancelled_donations()
   {
     $staff = User::factory()->staff()->create();
     $user2 = User::factory()->create();
@@ -1176,10 +1179,10 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('warning', 'Donation has been archived!');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
 
-  public function test_staff_user_can_destroyArchive_rejected_donations()
+  public function test_staff_user_cannot_destroyArchive_rejected_donations()
   {
     $staff = User::factory()->staff()->create();
     $user2 = User::factory()->create();
@@ -1191,7 +1194,7 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
 
     $response->assertRedirect();
-    $response->assertSessionHas('warning', 'Donation has been archived!');
+    $response->assertSessionHas('error', 'Only accepted donations can be archived.');
   }
   public function test_donation_is_soft_deleted_when_destoryedArchived()
   {
@@ -1220,6 +1223,26 @@ class DonationControllerTest extends TestCase
 
     $response = $this->delete(route('donations.destroy', $donation));
     $response->assertForbidden();
+  }
+
+  public function test_donation_archive_notification_is_sent_after_destroy()
+  {
+    Notification::fake();
+
+    $user = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->accepted()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+
+    Notification::assertSentTo($user,DonationArchivedNotification::class);
   }
   /** End of destroy/archive function test cases */
 
@@ -1389,6 +1412,26 @@ class DonationControllerTest extends TestCase
     $response = $this->patch(route('donations.restore', $donation));
 
     $response->assertForbidden();
+  }
+
+  public function test_donation_restore_notification_is_sent_after_restore()
+  {
+    Notification::fake();
+
+    $user = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->accepted()->trashed()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success',  'Donation has been restored!');
+
+    Notification::assertSentTo($user,DonationRestoredNotification::class);
   }
   /** End of restore/unarchive function test cases */
 

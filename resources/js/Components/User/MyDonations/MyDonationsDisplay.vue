@@ -22,8 +22,8 @@
     </div>
     <div v-else>
       <!--Large Screen Table-->
-      <div class="d-none d-md-block">
-        <table class="table table-hover table-striped align-middle text-center">
+      <div class="d-none d-md-block mb-md-5">
+        <table class="table table-hover table-striped align-middle text-center mb-md-5">
           <thead class="table-primary">
             <tr>
               <th scope="col">#</th>
@@ -36,7 +36,7 @@
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody >
             <tr v-for="(donation, index) in donations.data" :key="donation.id">
               <th scope="row">{{ index + 1 }}</th>
               <td>{{ donation.donation_type_formatted }}</td>
@@ -73,8 +73,13 @@
                     :data-donation-type="donation.donation_type"
                     :data-donation-image="donation.donation_image_url"
                   >Update </a>
-                  <a v-else-if ="!donation.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
-                  <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
+                  <div v-else-if=!donation.deleted_at class="d-flex justify-content-center me-1">
+                    <a v-if="donation.status === 'accepted'" class="btn btn-secondary fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
+                    <a v-else class="btn btn-danger fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#forceDeleteDonationModal" :data-donation-id="donation.id">Delete</a>
+                  </div>
+                  <div v-else class="d-flex justify-content-center me-1">
+                    <a  class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -83,7 +88,7 @@
       </div>
       <!--Small Screen Table-->
       <div class="d-md-none d-block">
-        <table class="table table-striped table-hover align-middle text-center">
+        <table class="table table-striped table-hover align-middle text-center mb-5">
           <thead class="table-primary">
             <tr>
               <th scope="col">#</th>
@@ -124,8 +129,13 @@
                   :data-donation-type="donation.donation_type"
                   :data-donation-image="donation.donation_image_url"
                 >Update</a>
-                <a v-else-if ="!donation.deleted_at" class="btn btn-light fw-bolder ms-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id" >Archive </a>
-                <a v-else class="btn btn-info fw-bolder w-100" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
+                <div v-else-if=!donation.deleted_at>
+                  <a v-if="donation.status === 'accepted'" class="btn btn-secondary fw-bolder ms-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
+                  <a v-else class="btn btn-danger fw-bolder ms-1 w-100" data-bs-toggle="modal" data-bs-target="#forceDeleteDonationModal" :data-donation-id="donation.id">Delete</a>
+                </div>
+                <div v-else >
+                  <a  class="btn btn-info fw-bolder ms-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -133,6 +143,7 @@
       </div>
       <ViewDonationModal/>
       <ArchiveDonationModal/>
+      <ForceDeleteDonationModal/>
       <UpdateInKindDonation
         :user="user"
       />
@@ -200,6 +211,7 @@
   import ArchiveDonationModal from '../../Modals/Users/MyDonations/ArchiveDonationModal.vue';
   import UpdateInKindDonation from '../../Modals/Donate/UpdateInKindDonation.vue';
   import UnarchiveDonationModal from '../../Modals/Users/MyDonations/UnarchiveDonationModal.vue';
+  import ForceDeleteDonationModal from '../../Modals/Users/MyDonations/ForceDeleteDonationModal.vue';
 
   const props = defineProps({
     donations: {

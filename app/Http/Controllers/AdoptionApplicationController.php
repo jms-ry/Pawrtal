@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAdoptionApplicationRequest;
 use App\Http\Requests\UpdateAdoptionApplicationRequest;
 use Illuminate\Http\Request;
 use App\Models\AdoptionApplication;
+use App\Notifications\AdoptionApplicationForceDeleteNotification;
 use Illuminate\Support\Facades\Storage;
 class AdoptionApplicationController extends Controller
 {
@@ -89,11 +90,32 @@ class AdoptionApplicationController extends Controller
     //approve adoption applicaiton
     if($request->status === 'approved'){
       $this->authorize('approve',$adoptionApplication);
+
+      // Check if rescue is already adopted (race condition prevention)
+      if ($adoptionApplication->rescue->adoption_status === 'adopted') {
+        return redirect()->back()->with('error', 'This rescue has already been adopted.');
+      }
+
       $adoptionApplication->update($requestData);
 
       if($adoptionApplication->rescue_id){
         $adoptionApplication->rescue()->update(['adoption_status' => 'adopted']);
       }
+
+      $otherApplications = AdoptionApplication::where('rescue_id',$adoptionApplication->rescue_id)
+        ->where('id', '!=', $adoptionApplication->id)
+        ->whereIn('status',['pending','under_review'])
+      ->get();
+
+      foreach($otherApplications as $otherApp){
+        $otherApp->update([
+          'status' => 'rejected',
+          'review_notes' => "Automatically rejected because another applicant was approved for {$adoptionApplication->rescue->name}.",
+          'reviewed_by' => 'System',
+          'review_date' => now(),
+        ]);
+      }
+
       return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been approved.');
     }
 
@@ -153,5 +175,16 @@ class AdoptionApplicationController extends Controller
     $adoptionApplication->restore();
 
     return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been restored.');
+  }
+
+  public function forceDelete(AdoptionApplication $adoptionApplication)
+  {
+    $this->authorize('forceDelete',$adoptionApplication);
+
+    $adoptionApplication->forceDelete();
+
+    $adoptionApplication->user->notify(new AdoptionApplicationForceDeleteNotification($adoptionApplication));
+
+    return redirect()->route('users.myAdoptionApplications')->with('success', 'Adoption application permanently deleted successfully.');
   }
 }

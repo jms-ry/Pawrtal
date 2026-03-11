@@ -64,10 +64,10 @@
                     :data-donation-payment-status="donation.payment_status_formatted"
                     :data-donation-transaction-ref="donation.transaction_reference_formatted"
                   >View </a>
-                  <div v-if="donation.status !== 'pending'">
-                    <a v-if="!donation.deleted_at" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
-                    <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
+                  <div v-if="!donation.deleted_at">
+                    <a v-show="donation.status === 'accepted'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
                   </div>
+                  <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
                 </div>
               </td>
             </tr>
@@ -108,10 +108,10 @@
                   :data-donation-transaction-ref="donation.transaction_reference_formatted"
                   >View 
                 </a>
-                <div v-if="donation.status !== 'pending'">
-                  <a v-if="!donation.deleted_at"  class="btn btn-light fw-bolder mb-1 w-100"  data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive</a>
-                  <a v-else class="btn btn-info fw-bolder w-100" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
+                <div v-if="!donation.deleted_at">
+                  <a v-show="donation.status === 'accepted'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
                 </div>
+                <a v-else class="btn btn-info fw-bolder w-100" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
               </td>
             </tr>
           </tbody>

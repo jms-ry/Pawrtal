@@ -200,7 +200,7 @@ class RescueController extends Controller
   }
 
   /**
-    * Remove the specified resource from storage.
+    * Soft delete (archive) the specified resource from storage.
   */
   public function destroy(Rescue $rescue)
   {
@@ -221,5 +221,14 @@ class RescueController extends Controller
     $rescue->restore();
 
     return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' has been restored!');
+  }
+
+  public function forceDelete(Rescue $rescue)
+  {
+    $this->authorize('forceDelete', $rescue);
+    
+    $rescue->forceDelete();
+
+    return redirect()->route('rescues.index')->with('success', 'Rescue permanently deleted successfully.');
   }
 }

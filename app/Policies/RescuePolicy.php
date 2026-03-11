@@ -69,8 +69,23 @@ class RescuePolicy
   /**
     * Determine whether the user can permanently delete the model.
   */
-  public function forceDelete(User $user, Rescue $rescue): bool
+  public function forceDelete(User $user, Rescue $rescue): Response
   {
-    return false;
+    if (!$user->isAdminOrStaff()) {
+      return Response::deny('Only administrators and staff can permanently delete rescues.');
+    }
+    
+    $activeApplicationsCount = $rescue->adoptionApplications()
+      ->whereIn('status', ['pending', 'under_review', 'approved'])
+    ->count();
+    
+    if ($activeApplicationsCount > 0) {
+      return Response::deny(
+        "Cannot permanently delete this rescue. It has {$activeApplicationsCount} active or approved adoption application(s). " .
+        "Approved applications must be retained for record-keeping."
+      );
+    }
+    
+    return Response::allow();
   }
 }

@@ -54,34 +54,29 @@ class AdoptionApplication extends Model
     'reviewed_date_formatted',
     'reviewed_by_formatted',
     'inspection_schedule_status',
-    'can_archive'
+    'can_delete'
   ];
   protected $casts = [
     'supporting_documents' => 'array'
   ];
 
-  public function getCanArchiveAttribute()
+  public function getCanDeleteAttribute()
   {
-    return $this->canArchive();
+    return $this->canDelete();
   }
   
-  public function canArchive()
+  public function canDelete()
   {
-    if(!$this->trashed()){
-      if($this->status === 'cancelled'){
-        return true;
-      }
-
-      if($this->status === 'approved'){
-        return true;
-      }
-
-      if($this->status === 'rejected'){
-        return true;
-      }
-    }else{
-      return false;
+    if($this->status === 'cancelled'){
+      return true;
     }
+
+    if($this->status === 'rejected'){
+      return true;
+    }
+
+    return false;
+      
   }
   public function getInspectionScheduleStatusAttribute()
   {

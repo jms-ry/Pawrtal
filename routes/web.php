@@ -79,8 +79,11 @@ Route::middleware(['auth'])->group(function () {
   // update - update a specific rescue
   Route::put('/rescues/{rescue}', [RescueController::class, 'update'])->name('rescues.update');
 
-  // destroy - delete a specific rescue
+  // destroy - delete (soft delete) a specific rescue
   Route::delete('/rescues/{rescue}', [RescueController::class, 'destroy'])->name('rescues.destroy');
+
+  // permantently delete a specific rescue
+  Route::delete('/rescues/{rescue}/force-delete', [RescueController::class, 'forceDelete'])->name('rescues.forceDelete');
 
   Route::patch('/rescues/{rescue}/restore', [RescueController::class, 'restore'])->name('rescues.restore');
 
@@ -96,8 +99,12 @@ Route::middleware(['auth'])->group(function () {
   Route::patch('/reports/{report}/restore', [ReportController::class, 'restore'])->name('reports.restore');
 
   Route::patch('/donations/{donation}/restore', [DonationController::class, 'restore'])->name('donations.restore');
+  
+  Route::delete('/donations/{donation}/force-delete', [DonationController::class, 'forceDelete'])->name('donations.forceDelete');
 
   Route::patch('/adoption-applications/{adoption_application}/restore', [AdoptionApplicationController::class, 'restore'])->name('adoption_applications.restore');
+
+  Route::delete('/adoption-applications/{adoption_application}/force-delete', [AdoptionApplicationController::class, 'forceDelete'])->name('adoption_applications.forceDelete');
 
   Route::resource('inspection-schedules',InspectionScheduleController::class)->except('index','show','create','edit','destroy');
 

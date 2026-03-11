@@ -53,7 +53,7 @@ class AdoptionApplicationPolicy
       return false;
     }
     
-    if (in_array($adoptionApplication->status, ['pending', 'under_review'])) {
+    if ($adoptionApplication->status !== 'approved') {
       return false;
     }
 
@@ -75,15 +75,24 @@ class AdoptionApplicationPolicy
   /**
     * Determine whether the user can permanently delete the model.
   */
-  public function forceDelete(User $user, AdoptionApplication $adoptionApplication): bool
-  {
-    return false;
+  public function forceDelete(User $user, AdoptionApplication $adoptionApplication): Response
+  { 
+    if($adoptionApplication->user_id !== $user->id)
+    {
+      return Response::deny('Only application owner can delete.');
+    }
+
+    if(in_array($adoptionApplication->status,['rejected','cancelled'])){
+      return Response::allow();
+    }
+    
+    return Response::deny();
   }
 
   public function cancel(User $user, AdoptionApplication $adoptionApplication): bool
   {
     if($adoptionApplication->status === 'pending'){
-      return $adoptionApplication->user_id === $user->id;
+      return $adoptionApplication->user_id === $user->id && !$user->isAdminOrStaff();
     }
 
     return false;
