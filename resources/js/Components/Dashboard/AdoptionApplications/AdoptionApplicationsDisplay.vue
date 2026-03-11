@@ -30,7 +30,6 @@
               <th scope="col">Applicant Name</th>
               <th scope="col">Application Date</th>
               <th scope="col">Status</th>
-              <th scope="col">Archived?</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
@@ -41,7 +40,6 @@
               <td>{{ adoptionApplication.applicant_full_name }}</td>
               <td>{{ adoptionApplication.application_date_formatted }}</td>
               <td>{{ adoptionApplication.status_label }}</td>
-              <td>{{ adoptionApplication.archived }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
                   <a class="btn btn-success fw-bolder me-1"data-bs-toggle="modal" data-bs-target="#viewApplicationModal"
@@ -72,8 +70,10 @@
                     :data-application-inspection-status="adoptionApplication.inspection_schedule_status"
                   >View
                   </a>
-                  <a v-if="adoptionApplication.can_archive === true" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                  <a v-else-if="adoptionApplication.deleted_at" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
+                  <div v-if="!adoptionApplication.deleted_at" class="d-flex justify-content-center me-1">
+                    <a v-if="adoptionApplication.status === 'approved'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                  </div>
+                  <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
                 </div>
               </td>
             </tr>
@@ -125,8 +125,10 @@
                   :data-application-inspection-status="adoptionApplication.inspection_schedule_status"
                   >View 
                 </a>
-                <a v-if="adoptionApplication.can_archive === true" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                <a v-else-if="adoptionApplication.deleted_at" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
+                <div v-if="!adoptionApplication.deleted_at" >
+                  <a v-if="adoptionApplication.status === 'approved'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                </div>
+                <a v-else class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
               </td>
             </tr>
           </tbody>

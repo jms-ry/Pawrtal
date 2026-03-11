@@ -104,6 +104,8 @@ Route::middleware(['auth'])->group(function () {
 
   Route::patch('/adoption-applications/{adoption_application}/restore', [AdoptionApplicationController::class, 'restore'])->name('adoption_applications.restore');
 
+  Route::delete('/adoption-applications/{adoption_application}/force-delete', [AdoptionApplicationController::class, 'forceDelete'])->name('adoption_applications.forceDelete');
+
   Route::resource('inspection-schedules',InspectionScheduleController::class)->except('index','show','create','edit','destroy');
 
   Route::resource('users',UserController::class)->except('create','edit');

@@ -6,7 +6,7 @@ use App\Http\Requests\StoreAdoptionApplicationRequest;
 use App\Http\Requests\UpdateAdoptionApplicationRequest;
 use Illuminate\Http\Request;
 use App\Models\AdoptionApplication;
-use App\Notifications\AdoptionApplicationRejectedNotification;
+use App\Notifications\AdoptionApplicationForceDeleteNotification;
 use Illuminate\Support\Facades\Storage;
 class AdoptionApplicationController extends Controller
 {
@@ -175,5 +175,16 @@ class AdoptionApplicationController extends Controller
     $adoptionApplication->restore();
 
     return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been restored.');
+  }
+
+  public function forceDelete(AdoptionApplication $adoptionApplication)
+  {
+    $this->authorize('forceDelete',$adoptionApplication);
+
+    $adoptionApplication->forceDelete();
+
+    $adoptionApplication->user->notify(new AdoptionApplicationForceDeleteNotification($adoptionApplication));
+
+    return redirect()->route('users.myAdoptionApplications')->with('success', 'Adoption application permanently deleted successfully.');
   }
 }

@@ -71,8 +71,11 @@
                     :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                     >Update 
                   </a>
-                  <a v-if="adoptionApplication.can_archive" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                  <a v-if="adoptionApplication.deleted_at" class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
+                  <div v-else-if="!adoptionApplication.deleted_at" class="d-flex justify-content-center me-1">
+                    <a v-if="adoptionApplication.status === 'approved'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                    <a v-if="adoptionApplication.can_delete" class="btn btn-danger fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#forceDeleteApplicationModal" :data-application-id="adoptionApplication.id" >Delete </a>
+                  </div>
+                  <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
                 </div>
               </td>
             </tr>
@@ -124,8 +127,11 @@
                   :data-application-reason-for-adoption="adoptionApplication.reason_for_adoption_formatted"
                   >Update
                 </a>
-                <a v-if="adoptionApplication.can_archive" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                <a v-if="adoptionApplication.deleted_at" class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
+                <div v-else-if="!adoptionApplication.deleted_at" >
+                  <a v-if="adoptionApplication.status === 'approved'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                  <a v-if="adoptionApplication.can_delete" class="btn btn-danger fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#forceDeleteApplicationModal" :data-application-id="adoptionApplication.id" >Delete </a>
+                </div>
+                <a v-else class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
               </td>
             </tr>
           </tbody>
@@ -188,6 +194,7 @@
       :user="user"
     />
     <ArchiveApplicationModal/>
+    <ForceDeleteApplicationModal/>
     <UpdateAdoptionApplicationForm 
       :user="user"
     />
@@ -202,6 +209,7 @@
   import ArchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/ArchiveApplicationModal.vue';
   import UpdateAdoptionApplicationForm from '../../Modals/Adoption/UpdateAdoptionApplicationForm.vue';
   import UnarchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/UnarchiveApplicationModal.vue';
+  import ForceDeleteApplicationModal from '../../Modals/Users/MyAdoptionApplications/ForceDeleteApplicationModal.vue';
 
   const props = defineProps({
     adoptionApplications: {
