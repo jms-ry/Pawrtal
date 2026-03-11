@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 class AdoptionApplicationForceDeleteTest extends TestCase
 {
+  use RefreshDatabase;
   public function test_guest_user_cannot_force_delete_adoption_application()
   {
     $application = AdoptionApplication::factory()->create();

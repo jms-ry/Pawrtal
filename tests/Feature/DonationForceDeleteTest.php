@@ -10,6 +10,7 @@ use Tests\TestCase;
 
 class DonationForceDeleteTest extends TestCase
 {
+  use RefreshDatabase;
   public function test_guest_user_cannot_force_delete_donation()
   {
     $donation = Donation::factory()->create();

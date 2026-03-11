@@ -92,7 +92,7 @@ class AdoptionApplicationPolicy
   public function cancel(User $user, AdoptionApplication $adoptionApplication): bool
   {
     if($adoptionApplication->status === 'pending'){
-      return $adoptionApplication->user_id === $user->id;
+      return $adoptionApplication->user_id === $user->id && !$user->isAdminOrStaff();
     }
 
     return false;
