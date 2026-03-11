@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Notifications\DonationRestoredNotification;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Donation;
+use App\Notifications\DonationArchivedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class DonationControllerTest extends TestCase
@@ -1221,6 +1224,26 @@ class DonationControllerTest extends TestCase
     $response = $this->delete(route('donations.destroy', $donation));
     $response->assertForbidden();
   }
+
+  public function test_donation_archive_notification_is_sent_after_destroy()
+  {
+    Notification::fake();
+
+    $user = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->accepted()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->delete(route('donations.destroy', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'Donation has been archived!');
+
+    Notification::assertSentTo($user,DonationArchivedNotification::class);
+  }
   /** End of destroy/archive function test cases */
 
 
@@ -1389,6 +1412,26 @@ class DonationControllerTest extends TestCase
     $response = $this->patch(route('donations.restore', $donation));
 
     $response->assertForbidden();
+  }
+
+  public function test_donation_restore_notification_is_sent_after_restore()
+  {
+    Notification::fake();
+
+    $user = User::factory()->create();
+
+    $donation = Donation::factory()->inKind()->accepted()->trashed()->create([
+      'user_id' => $user->id,
+    ]);
+
+    $this->actingAs($user);
+
+    $response = $this->patch(route('donations.restore', $donation));
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success',  'Donation has been restored!');
+
+    Notification::assertSentTo($user,DonationRestoredNotification::class);
   }
   /** End of restore/unarchive function test cases */
 
