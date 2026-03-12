@@ -33,14 +33,25 @@ return Application::configure(basePath: dirname(__DIR__))
       ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-    $exceptions->render(function (TokenMismatchException $e, $request) {
-        $redirectTo = $request->header('referer') 
-            ? back() 
-            : redirect()->route('register'); // Fallback to register
-        
-        return $redirectTo
-            ->withInput($request->except('password', 'password_confirmation'))
-            ->with('error', 'Your session has expired. Please try again.');
-    });
-})
+        // Handle CSRF token mismatch (419 errors)
+        $exceptions->render(function (TokenMismatchException $e, $request) {
+            // For AJAX/Inertia requests
+            if ($request->expectsJson() || $request->header('X-Inertia')) {
+                return response()->json([
+                    'message' => 'Your session has expired. Please refresh the page and try again.'
+                ], 419);
+            }
+            
+            // For form submissions with referer (normal case)
+            if ($request->headers->has('referer')) {
+                return redirect()
+                    ->back()
+                    ->withInput($request->except('password', 'password_confirmation'))
+                    ->with('error', 'Your session has expired. Please try again.');
+            }
+            
+            // Fallback: Show custom 419 error page
+            return response()->view('errors.419', [], 419);
+        });
+    })
     ->create();
