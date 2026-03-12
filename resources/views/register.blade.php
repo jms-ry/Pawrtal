@@ -71,5 +71,10 @@
         </form>
       </div>
     </div>
+    <form action="{{ route('test-419') }}" method="POST">
+    @csrf
+    <input type="text" name="email" value="test@example.com">
+    <button type="submit">Test 419 Error</button>
+</form>
   </div>
 @endsection
