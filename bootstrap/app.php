@@ -33,12 +33,14 @@ return Application::configure(basePath: dirname(__DIR__))
       ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // Handle CSRF token mismatch (419 errors)
-        $exceptions->render(function (TokenMismatchException $e, $request) {
-            return redirect()
-                ->back()
-                ->withInput($request->except('password', 'password_confirmation'))
-                ->with('error', 'Your session has expired. Please try again.');
-        });
-    })
+    $exceptions->render(function (TokenMismatchException $e, $request) {
+        $redirectTo = $request->header('referer') 
+            ? back() 
+            : redirect()->route('register'); // Fallback to register
+        
+        return $redirectTo
+            ->withInput($request->except('password', 'password_confirmation'))
+            ->with('error', 'Your session has expired. Please try again.');
+    });
+})
     ->create();
