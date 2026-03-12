@@ -43,6 +43,9 @@ Route::middleware('guest')->group(function () {
   });
 });
 
+Route::get('/test-419', function () {
+  throw new \Illuminate\Session\TokenMismatchException();
+});
 Route::middleware(['auth'])->group(function () {
 
   Route::prefix('dashboard')->group(function () {
