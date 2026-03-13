@@ -117,7 +117,7 @@
 
 <script setup>
   import { router } from '@inertiajs/vue3';
-  import { computed } from 'vue';
+  import { computed, onMounted } from 'vue';
   import AdoptionApplicationForm from '@/Components/Modals/Adoption/AdoptionApplicationForm.vue';
   const props = defineProps({
     adoptables: {
@@ -134,6 +134,11 @@
     }
   });
 
+  onMounted(() => {
+    const gif = new Image();
+    gif.src = "/animations/pet-love.gif";
+  }) 
+  
   const hasActiveFilters = computed(() => {
     return !!(props.filters.search || props.filters.sex || props.filters.size);
   });
