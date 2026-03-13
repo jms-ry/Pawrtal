@@ -279,7 +279,7 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { Modal } from 'bootstrap'
 
   const props = defineProps({
@@ -288,6 +288,11 @@
       default: null
     }
   })
+
+  onMounted(() => {
+    const gif = new Image();
+    gif.src = "/animations/pet-love.gif";
+  }) 
 
   const step = ref('form') // 'form', 'loading', or 'results'
   const matches = ref([])
