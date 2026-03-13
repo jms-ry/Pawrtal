@@ -128,7 +128,12 @@
           <div class="text-center mb-4">
             <!-- Animated Icon -->
             <div class="mb-4">
-              <i class="bi bi-stars display-1 text-warning loading-pulse"></i>
+              <img 
+                src="/animations/pet-love.gif" 
+                alt="Loading..." 
+                style="width: 150px; height: 150px;"
+                class="loading-animation"
+              >
             </div>
 
             <!-- Loading Message -->
@@ -469,21 +474,6 @@
 }
 
 /* Loading Animations */
-.loading-pulse {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.1);
-  }
-}
-
 .loading-message {
   animation: fadeInOut 1.5s ease-in-out infinite;
   min-height: 30px;
@@ -509,5 +499,11 @@
   border-radius: 15px;
   font-size: 14px;
   transition: width 0.3s ease;
+}
+
+/* Loading Animation Video */
+.loading-animation {
+  border-radius: 50%;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 </style>
