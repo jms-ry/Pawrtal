@@ -24,11 +24,9 @@ class UpdateUserRequest extends FormRequest
     return [
       'first_name' => 'nullable|string|max:255',
       'last_name' => 'nullable|string|max:255',
-      'contact_number' => 'nullable|string|max:20',
+      'contact_number' => 'nullable|string|max:11',
       'role' => 'nullable|in:admin,staff,user',
       'email' => 'nullable|email|max:255|unique:users,email,' . $this->user->id,
-      'address_id' => 'nullable|exists:addresses,id',
-      'household_id' => 'nullable|exists:households,id',
       'password' => 'nullable|string|min:8|confirmed',
     ];
   }

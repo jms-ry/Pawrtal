@@ -64,16 +64,18 @@ class UserController extends Controller
     * Update the specified resource in storage.
   */
   public function update(UpdateUserRequest $request, User $user)
-    {
-      $requestData = $request->all();
+  {
+    $this->authorize('update',$user);
+    
+    $requestData = $request->all();
 
-      if (!empty($requestData['password'])) {
-        $user->password = $requestData['password'];
-      }
+    if (!empty($requestData['password'])) {
+      $user->password = $requestData['password'];
+    }
 
-      $user->update($requestData);
+    $user->update($requestData);
 
-      return redirect()->back()->with('info', 'User profile has been updated!');
+    return redirect()->back()->with('info', 'User profile has been updated!');
   }
 
   /**
