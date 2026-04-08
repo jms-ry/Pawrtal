@@ -32,7 +32,7 @@
 <script setup>
   import { Head } from '@inertiajs/vue3';
   import { router } from '@inertiajs/vue3';
-  import { ref } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
   import AdoptionCardHeader from '../../Components/Adoption/AdoptionCardHeader.vue';
   import AdoptionDisplay from '../../Components/Adoption/AdoptionDisplay.vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
@@ -54,6 +54,24 @@
       default: () => ({})
     }
   });
+  const preloadImages = (list) => {
+    list.slice(0, 8).forEach(adoptable => {
+      const img = new Image()
+      img.src = adoptable.profile_image_url
+    })
+  }
+
+  onMounted(() => {
+    if (props.adoptables?.data?.length) {
+      preloadImages(props.adoptables.data)
+    }
+  })
+
+  watch(() => props.adoptables.data, (newVal) => {
+    if (newVal?.length) {
+      preloadImages(newVal)
+    }
+  })
 
   let searchTimeout = ref(null);
 

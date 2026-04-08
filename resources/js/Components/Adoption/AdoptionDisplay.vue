@@ -33,8 +33,8 @@
           <span class="text-dark fw-bolder text-uppercase fs-4 ms-2 mt-5 p-2 font-monospace">{{ adoptable.name }}</span>
           <span v-show="adoptable.adoption_applications_count > 0" class="badge border-0 position-absolute top-0 end-0 m-2 px-2 py-2 bg-info fs-6 bg-opacity-75 text-dark fw-bold rounded">{{adoptable.adoption_applications_count}}</span>
         </div>
-        <div class="p-2 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
-          <img :src="adoptable.profile_image_url" :alt="adoptable.name" class="w-100 h-100 object-fit-cover rounded-4">
+        <div class="p-2 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative">
+          <img :src="adoptable.profile_image_url" :alt="adoptable.name" class="rescue-img w-100 h-100 object-fit-cover rounded-4" loading="lazy" @load="e => e.target.classList.add('loaded')">
           <div class="position-absolute bottom-0 start-0 end-0 bg-warning-subtle bg-opacity-0 text-dark p-2 text-center">
             <strong>{{ adoptable.tag_label }}</strong>
           </div>
@@ -167,3 +167,20 @@
     })
   };
 </script>
+
+<style scoped>
+  .rescue-card{
+    height: 300px;
+  }
+
+  .rescue-img {
+    filter: blur(10px);
+    transform: scale(1.05);
+    transition: filter 0.3s ease, transform 0.3s ease;
+  }
+
+  .rescue-img.loaded {
+    filter: blur(0);
+    transform: scale(1);
+  }
+</style>

@@ -30,7 +30,7 @@
         </div>
 
         <div class="p-2 mt-1 rescue-card border-0 rounded-4 overflow-hidden shadow-lg position-relative">
-          <img :src="rescue.profile_image_url" :alt="rescue.name" class="w-100 h-100 object-fit-cover rounded-4">
+          <img :src="rescue.profile_image_url" :alt="rescue.name" class="rescue-img w-100 h-100 object-fit-cover rounded-4" loading="lazy" @load="e => e.target.classList.add('loaded')">
           <div class="position-absolute bottom-0 start-0 end-0 bg-warning-subtle bg-opacity-0 text-dark p-2 text-center">
             <strong>{{ rescue.tag_label }}</strong>
           </div>
@@ -170,5 +170,16 @@
 <style scoped>
   .rescue-card{
     height: 300px;
+  }
+
+  .rescue-img {
+    filter: blur(10px);
+    transform: scale(1.05);
+    transition: filter 0.3s ease, transform 0.3s ease;
+  }
+
+  .rescue-img.loaded {
+    filter: blur(0);
+    transform: scale(1);
   }
 </style>

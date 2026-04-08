@@ -22,7 +22,7 @@
 <script setup>
   import { Head } from '@inertiajs/vue3';
   import { router } from '@inertiajs/vue3';
-  import { ref } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
   import RescuesCardHeader from '@/Components/Rescues/RescuesCardHeader.vue';
   import RescuesDisplay from '@/Components/Rescues/RescuesDisplay.vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
@@ -37,6 +37,24 @@
       default: () => ({})
     }
   });
+  const preloadImages = (list) => {
+    list.slice(0, 8).forEach(rescue => {
+      const img = new Image()
+      img.src = rescue.profile_image_url
+    })
+  }
+
+  onMounted(() => {
+    if (props.rescues?.data?.length) {
+      preloadImages(props.rescues.data)
+    }
+  })
+
+  watch(() => props.rescues.data, (newVal) => {
+    if (newVal?.length) {
+      preloadImages(newVal)
+    }
+  })
 
   let searchTimeout = ref(null);
 
