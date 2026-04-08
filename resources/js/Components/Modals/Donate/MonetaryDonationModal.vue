@@ -61,7 +61,7 @@
               :disabled="loading"
             >
               <span class="d-flex align-items-center">
-                <img src="/images/donate/logo.png" alt="GCash" class="me-2" style="height: 22px">
+                <img src="/images/donate/image.png" alt="GCash" class="me-2" style="height: 22px">
               </span>
               <i class="bi bi-check-circle-fill" v-if="method === 'gcash'"></i>
             </button>
