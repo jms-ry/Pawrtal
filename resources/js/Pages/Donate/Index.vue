@@ -42,6 +42,7 @@
 
 <script setup>
   import { Head } from '@inertiajs/vue3';
+  import { onMounted } from 'vue';
   import LoginReminder from '@/Components/Modals/LoginReminder.vue';
   import CreateInKIndDonation from '../../Components/Modals/Donate/CreateInKIndDonation.vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
@@ -53,4 +54,9 @@
       default: () => null
     }
   });
+
+  onMounted(() => {
+    const logo = new Image();
+    logo.src = "/donate/image.png";
+  }) 
 </script>
