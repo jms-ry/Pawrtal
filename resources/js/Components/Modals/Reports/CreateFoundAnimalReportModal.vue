@@ -535,7 +535,7 @@
     }
     router.post('/reports', formData, {
       forceFormData: true,
-      preserveScroll: true,
+      preserveScroll: false,
       preserveState: false,
       onSuccess:() => {
         closeModal()

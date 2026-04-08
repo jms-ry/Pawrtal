@@ -162,7 +162,7 @@
 
     router.get('/rescues', params, {
       preserveState: false,
-      preserveScroll: true,
+      preserveScroll: false,
     });
   };
 </script>

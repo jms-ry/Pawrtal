@@ -278,7 +278,7 @@
 
     router.get(`/users/my-reports`,params,{
       preserveState:true,
-      preserveScroll:true,
+      preserveScroll:false,
     })
   };
 </script>

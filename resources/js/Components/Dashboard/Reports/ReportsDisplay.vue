@@ -223,7 +223,7 @@
 
     router.get(`/dashboard/reports`,params,{
       preserveState:true,
-      preserveScroll:true,
+      preserveScroll:false,
     })
   };
 </script>

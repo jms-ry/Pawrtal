@@ -221,7 +221,7 @@
 
     router.get(`/dashboard/donations`,params,{
       preserveState:true,
-      preserveScroll:true,
+      preserveScroll:false,
     })
   };
 </script>

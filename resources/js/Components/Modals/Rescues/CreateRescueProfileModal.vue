@@ -671,7 +671,7 @@
     }
     router.post('/rescues', formData, {
       forceFormData: true,
-      preserveScroll: true,
+      preserveScroll: false,
       preserveState: false,
       onSuccess: () => {
         closeModal()

@@ -244,7 +244,7 @@
 
     router.get(`/dashboard/adoption-applications`,params,{
       preserveState:true,
-      preserveScroll:true,
+      preserveScroll:false,
     })
   };
 </script>

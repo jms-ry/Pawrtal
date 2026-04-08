@@ -205,7 +205,7 @@
       return
     }
     form.put(`/users/${props.user.id}`,{
-      preserveScroll: true,
+      preserveScroll: false,
       preserveState: false,
     })
   }

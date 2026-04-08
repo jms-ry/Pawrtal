@@ -229,7 +229,7 @@
 
     router.get(`/users/my-notifications`,params,{
       preserveState:true,
-      preserveScroll:true,
+      preserveScroll:false,
     })
   };
 

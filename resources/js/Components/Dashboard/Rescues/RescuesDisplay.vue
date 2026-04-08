@@ -170,7 +170,7 @@
 
     router.get('/dashboard/rescues', params, {
       preserveState: false,
-      preserveScroll: true,
+      preserveScroll: false,
     });
   };
 </script>

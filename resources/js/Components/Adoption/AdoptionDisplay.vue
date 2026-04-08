@@ -163,7 +163,7 @@
 
     router.get(`/adoption`,params,{
       preserveState:true,
-      preserveScroll:true,
+      preserveScroll:false,
     })
   };
 </script>

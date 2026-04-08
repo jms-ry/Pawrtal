@@ -256,7 +256,7 @@
 
     router.get(`/users/my-donations`,params,{
       preserveState:true,
-      preserveScroll:true,
+      preserveScroll:false,
     })
   };
 </script>
