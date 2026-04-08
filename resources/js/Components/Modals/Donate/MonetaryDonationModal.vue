@@ -61,7 +61,7 @@
               :disabled="loading"
             >
               <span class="d-flex align-items-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/GCash_logo.svg/512px-GCash_logo.svg.png?20230830061433" alt="GCash" class="me-2" style="height: 22px">
+                <img src="/image.png" alt="GCash" class="me-2" style="height: 22px">
               </span>
               <i class="bi bi-check-circle-fill" v-if="method === 'gcash'"></i>
             </button>
