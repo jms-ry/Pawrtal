@@ -316,14 +316,13 @@ class RescueUpdateTest extends TestCase
     $existingImage1 = UploadedFile::fake()->image('existing1.jpg');
     $existingImage2 = UploadedFile::fake()->image('existing2.jpg');
 
+    $existingPath1 = $existingImage1->store('images/rescues/gallery_images', 'public');
+    $existingPath2 = $existingImage2->store('images/rescues/gallery_images', 'public');
+
     $rescue = Rescue::factory()->create([
-      'images' => [
-        $existingImage1->store('images/rescues/gallery_images', 'public'),
-        $existingImage2->store('images/rescues/gallery_images', 'public'),
-      ],
+      'images' => [$existingPath1, $existingPath2],
     ]);
 
-    // Confirm the old images exist
     foreach ($rescue->images as $path) {
       Storage::disk('public')->assertExists($path);
     }
@@ -345,32 +344,25 @@ class RescueUpdateTest extends TestCase
       'images' => [$newImage1, $newImage2],
     ];
 
-    // Perform the update request
     $response = $this->put(route('rescues.update', $rescue), $updatedData);
-
     $response->assertRedirect(route('rescues.show', $rescue->id));
     $response->assertSessionHas('info', 'Rescue Profile for ' . $updatedData['name'] . ' has been updated!');
 
-    // Refresh model to get latest state
     $rescue->refresh();
 
-    // Assert all new images exist in storage
+    // Assert total count is 4 (2 existing + 2 new)
+    $this->assertCount(4, $rescue->images, 'Rescue should now have 4 images total.');
+
+    // Assert existing image paths are still present
+    $this->assertTrue(in_array($existingPath1, $rescue->images));
+    $this->assertTrue(in_array($existingPath2, $rescue->images));
+
+    // Assert all stored paths exist in storage
     foreach ($rescue->images as $path) {
       Storage::disk('public')->assertExists($path);
     }
 
-    // Assert that the new images were appended (not replaced)
-    $this->assertCount(4, $rescue->images, 'Rescue should now have 4 images total.');
-
-    // Assert that the existing image paths are still in the images array
-    $this->assertTrue(in_array($existingImage1->hashName('images/rescues/gallery_images'), $rescue->images));
-    $this->assertTrue(in_array($existingImage2->hashName('images/rescues/gallery_images'), $rescue->images));
-
-    // Assert that the new image paths are also included
-    $this->assertTrue(in_array($newImage1->hashName('images/rescues/gallery_images'), $rescue->images));
-    $this->assertTrue(in_array($newImage2->hashName('images/rescues/gallery_images'), $rescue->images));
-
-    // Assert database was updated with the merged images array
+    // Assert database was updated
     $this->assertDatabaseHas('rescues', [
       'id' => $rescue->id,
       'name' => 'Updated Name',

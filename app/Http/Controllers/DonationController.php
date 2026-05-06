@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\PayMongoService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Str;
 class DonationController extends Controller
 {
   /**
@@ -54,7 +54,9 @@ class DonationController extends Controller
       foreach ($descriptions as $index => $desc) {
         $imagePath = null;
         if (isset($images[$index])) {
-          $imagePath = $images[$index]->store('images/donation/donation_images', 'public');
+          $file = $images[$index];
+          $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+          $imagePath = $file->storeAs('images/donation/donation_images', $filename, 'public');
         }
 
         Donation::create([
@@ -124,18 +126,21 @@ class DonationController extends Controller
     $this->authorize('update', $donation);
 
     if ($request->hasFile('donation_image')) {
-      if($donation->donation_image && Storage::disk('public')->exists($donation->donation_image)){
+      if ($donation->donation_image && Storage::disk('public')->exists($donation->donation_image)) {
         Storage::disk('public')->delete($donation->donation_image);
       }
-      $imagePath = $request->file('donation_image')->store('images/donation/donation_images', 'public');
+
+      $file = $request->file('donation_image');
+      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+      $imagePath = $file->storeAs('images/donation/donation_images', $filename, 'public');
       $requestData['donation_image'] = $imagePath;
-    }else{
+    } else {
       unset($requestData['donation_image']);
     }
 
     $donation->update($requestData);
 
-    return redirect()->back()->with('info','Donation has been updated.');
+    return redirect()->back()->with('info', 'Donation has been updated.');
   }
 
   /**

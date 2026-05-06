@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Str;
 class ReportController extends Controller
 {
   /**
@@ -97,8 +97,9 @@ class ReportController extends Controller
     $requestData = $request->validated();
 
     if ($request->hasFile('image')) {
-      $imagePath = $request->file('image')->store('images/reports/reports_images', 'public');
-
+      $file = $request->file('image');
+      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+      $imagePath = $file->storeAs('images/reports/reports_images', $filename, 'public');
       $requestData['image'] = $imagePath;
     }
 
@@ -128,22 +129,25 @@ class ReportController extends Controller
   */
   public function update(UpdateReportRequest $request, Report $report)
   {
-    $this->authorize('update',$report);
+    $this->authorize('update', $report);
 
     $requestData = $request->validated();
 
     if ($request->hasFile('image')) {
-      if($report->image && Storage::disk('public')->exists($report->image)){
+      if ($report->image && Storage::disk('public')->exists($report->image)) {
         Storage::disk('public')->delete($report->image);
       }
-      $imagePath = $request->file('image')->store('images/reports/reports_images', 'public');
+
+      $file = $request->file('image');
+      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+      $imagePath = $file->storeAs('images/reports/reports_images', $filename, 'public');
       $requestData['image'] = $imagePath;
-    }else{
+    } else {
       unset($requestData['image']);
     }
 
     $report->update($requestData);
-    
+
     return redirect()->back()->with('info', $report->getTypeFormattedAttribute() . ' Report updated successfully!');
   }
 

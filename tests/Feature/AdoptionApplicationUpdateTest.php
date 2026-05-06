@@ -1013,12 +1013,12 @@ class AdoptionApplicationUpdateTest extends TestCase
     $existingDocument1 = UploadedFile::fake()->create('image1.jpg');
     $existingDocument2 = UploadedFile::fake()->create('document.pdf');
 
+    $existingPath1 = $existingDocument1->store('images/adoption_applications/supporting_documents', 'public');
+    $existingPath2 = $existingDocument2->store('images/adoption_applications/supporting_documents', 'public');
+
     $application = AdoptionApplication::factory()->create([
       'user_id' => $user->id,
-      'supporting_documents' => [
-        $existingDocument1->store('images/adoption_applications/supporting_documents', 'public'),
-        $existingDocument2->store('images/adoption_applications/supporting_documents', 'public')
-      ]
+      'supporting_documents' => [$existingPath1, $existingPath2]
     ]);
 
     foreach ($application->supporting_documents as $path) {
@@ -1031,32 +1031,29 @@ class AdoptionApplicationUpdateTest extends TestCase
     $newImage2 = UploadedFile::fake()->create('new2.jpg');
 
     $updatedData = [
-      'supporting_documents' => [$newImage1,$newImage2],
+      'supporting_documents' => [$newImage1, $newImage2],
       'reason_for_adoption' => 'updated reason'
     ];
 
     $response = $this->put(route('adoption-applications.update', $application), $updatedData);
     $response->assertRedirect();
-    $response->assertSessionHas('info','Adoption application for '. $application->rescue->name. ' has been updated.');
+    $response->assertSessionHas('info', 'Adoption application for ' . $application->rescue->name . ' has been updated.');
 
     $application->refresh();
 
+    // Assert total count is 4 (2 existing + 2 new)
+    $this->assertCount(4, $application->supporting_documents, 'Supporting documents should now have 4 files total.');
+
+    // Assert existing document paths are still present
+    $this->assertTrue(in_array($existingPath1, $application->supporting_documents));
+    $this->assertTrue(in_array($existingPath2, $application->supporting_documents));
+
+    // Assert all stored paths exist in storage
     foreach ($application->supporting_documents as $path) {
       Storage::disk('public')->assertExists($path);
     }
 
-    // Assert that the new images were appended (not replaced)
-    $this->assertCount(4, $application->supporting_documents, 'Supporting documents should now have 4 files total.');
-
-    // Assert that the existing image paths are still in the images array
-    $this->assertTrue(in_array($existingDocument1->hashName('images/adoption_applications/supporting_documents'), $application->supporting_documents));
-    $this->assertTrue(in_array($existingDocument2->hashName('images/adoption_applications/supporting_documents'), $application->supporting_documents));
-
-    // Assert that the new image paths are also included
-    $this->assertTrue(in_array($newImage1->hashName('images/adoption_applications/supporting_documents'), $application->supporting_documents));
-    $this->assertTrue(in_array($newImage2->hashName('images/adoption_applications/supporting_documents'), $application->supporting_documents));
-
-    // Assert database was updated with the merged images array
+    // Assert database was updated with the merged documents array
     $this->assertDatabaseHas('adoption_applications', [
       'id' => $application->id,
       'reason_for_adoption' => 'updated reason',

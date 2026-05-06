@@ -173,7 +173,6 @@ class RescueStoreTest extends TestCase
     $response->assertRedirect();
     $response->assertSessionHas('success', 'Rescue profile for ' . $rescueData['name'] . ' has been created!');
 
-    
     $this->assertDatabaseHas('rescues', [
       'name' => $rescueData['name'],
       'species' => $rescueData['species'],
@@ -190,12 +189,15 @@ class RescueStoreTest extends TestCase
       'adoption_status' => $rescueData['adoption_status'],
     ]);
 
-    // Assert profile image was stored
-    Storage::disk('public')->assertExists('images/rescues/profile_images/' . $profileImage->hashName());
+    // Retrieve stored rescue to get UUID-generated filenames
+    $rescue = Rescue::where('name', $rescueData['name'])->first();
 
-    // Assert additional images were stored
-    foreach ($images as $image) {
-      Storage::disk('public')->assertExists('images/rescues/gallery_images/' . $image->hashName());
+    // Assert profile image was stored using path saved in database
+    Storage::disk('public')->assertExists($rescue->profile_image);
+
+    // Assert gallery images were stored using paths saved in database
+    foreach ($rescue->images as $imagePath) {
+      Storage::disk('public')->assertExists($imagePath);
     }
   }
 
@@ -314,41 +316,35 @@ class RescueStoreTest extends TestCase
 
   public function test_empty_images_array_is_stored_when_no_gallery_images_provided()
   {
-    //  Fake storage (in case profile_image is uploaded)
     Storage::fake('public');
 
     $admin = User::factory()->admin()->create();
     $this->actingAs($admin);
 
-    // Prepare rescue data WITHOUT gallery images
     $profileImage = UploadedFile::fake()->image('profile.jpg');
 
     $rescueData = [
       'name' => fake()->firstName(),
-        'species' => fake()->word(),
-        'breed' => fake()->word(),
-        'description' => fake()->sentence(),
-        'sex' => fake()->randomElement(['male', 'female']),
-        'age' => fake()->word(),
-        'size' => fake()->randomElement(['small', 'medium', 'large']),
-        'color' => fake()->colorName(),
-        'distinctive_features' => fake()->sentence(),
-        'profile_image' => $profileImage,
-        'images' => [], // no gallery images
-        'health_status' => 'healthy',
-        'vaccination_status' => 'vaccinated',
-        'spayed_neutered' => 'true',
-        'adoption_status' => 'adopted',
+      'species' => fake()->word(),
+      'breed' => fake()->word(),
+      'description' => fake()->sentence(),
+      'sex' => fake()->randomElement(['male', 'female']),
+      'age' => fake()->word(),
+      'size' => fake()->randomElement(['small', 'medium', 'large']),
+      'color' => fake()->colorName(),
+      'distinctive_features' => fake()->sentence(),
+      'profile_image' => $profileImage,
+      'images' => [],
+      'health_status' => 'healthy',
+      'vaccination_status' => 'vaccinated',
+      'spayed_neutered' => 'true',
+      'adoption_status' => 'adopted',
     ];
 
-    // Make the POST request
     $response = $this->post(route('rescues.store'), $rescueData);
-
-    //  Assert redirect + session success
     $response->assertRedirect();
     $response->assertSessionHas('success', 'Rescue profile for ' . $rescueData['name'] . ' has been created!');
 
-    // Assert database record exists
     $this->assertDatabaseHas('rescues', [
       'name' => $rescueData['name'],
       'species' => $rescueData['species'],
@@ -365,11 +361,13 @@ class RescueStoreTest extends TestCase
       'adoption_status' => $rescueData['adoption_status'],
     ]);
 
-    // Assert profile image was stored
-    Storage::disk('public')->assertExists('images/rescues/profile_images/' . $profileImage->hashName());
-
-    //  Assert images field is stored as empty array
+    // Retrieve stored rescue to get UUID-generated filename
     $rescue = Rescue::where('name', $rescueData['name'])->first();
+
+    // Assert profile image was stored using path saved in database
+    Storage::disk('public')->assertExists($rescue->profile_image);
+
+    // Assert images field is stored as empty array
     $this->assertIsArray($rescue->images);
     $this->assertEmpty($rescue->images);
   }
@@ -957,34 +955,29 @@ class RescueStoreTest extends TestCase
 
     $this->actingAs($admin);
     $profileImage = UploadedFile::fake()->image('profile.jpg');
-    $images = null;
 
     $rescueData = [
       'name' => fake()->firstName(),
       'species' => fake()->word(),
       'breed' => null,
       'description' => fake()->sentence(),
-      'sex' => fake()->randomElement(['male','female']),
+      'sex' => fake()->randomElement(['male', 'female']),
       'age' => null,
       'size' => null,
       'color' => null,
       'distinctive_features' => null,
       'profile_image' => $profileImage,
-      'images' => $images,
+      'images' => null,
       'health_status' => 'healthy',
       'vaccination_status' => 'vaccinated',
       'spayed_neutered' => 'true',
       'adoption_status' => 'adopted',
     ];
 
-    // Make the POST request
     $response = $this->post(route('rescues.store'), $rescueData);
-
-    //  Assert redirect + session success
     $response->assertRedirect();
     $response->assertSessionHas('success', 'Rescue profile for ' . $rescueData['name'] . ' has been created!');
 
-    // Assert database record exists
     $this->assertDatabaseHas('rescues', [
       'name' => $rescueData['name'],
       'species' => $rescueData['species'],
@@ -1001,7 +994,10 @@ class RescueStoreTest extends TestCase
       'adoption_status' => $rescueData['adoption_status'],
     ]);
 
-    // Assert profile image was stored
-    Storage::disk('public')->assertExists('images/rescues/profile_images/' . $profileImage->hashName());
+    // Retrieve stored rescue to get UUID-generated filename
+    $rescue = Rescue::where('name', $rescueData['name'])->first();
+
+    // Assert profile image was stored using path saved in database
+    Storage::disk('public')->assertExists($rescue->profile_image);
   }
 }

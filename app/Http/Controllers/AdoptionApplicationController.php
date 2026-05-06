@@ -11,6 +11,7 @@ use App\Notifications\AdoptionApplicationArchivedNotification;
 use App\Notifications\AdoptionApplicationForceDeleteNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 class AdoptionApplicationController extends Controller
 {
   /**
@@ -34,31 +35,37 @@ class AdoptionApplicationController extends Controller
   */
   public function store(StoreAdoptionApplicationRequest $request)
   {
-    $this->authorize('create',AdoptionApplication::class);
+    $this->authorize('create', AdoptionApplication::class);
     
     $requestData = $request->validated();
 
-    if($request->hasFile('valid_id')){
-      $validIdPath = $request->file('valid_id')->store('images/adoption_applications/valid_ids','public');
-
+    if ($request->hasFile('valid_id')) {
+      $file = $request->file('valid_id');
+      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+      $validIdPath = $file->storeAs('images/adoption_applications/valid_ids', $filename, 'public');
       $requestData['valid_id'] = $validIdPath;
     }
 
-    if($request->hasFile('supporting_documents')){
+    if ($request->hasFile('supporting_documents')) {
       $supporting_documents = [];
 
-      foreach ($request->file('supporting_documents') as $supporting_document){
-        $supportingDocumentPath = $supporting_document->store('images/adoption_applications/supporting_documents','public');
-        $supporting_documents [] = $supportingDocumentPath;
+      foreach ($request->file('supporting_documents') as $supporting_document) {
+        $filename = Str::uuid() . '.' . $supporting_document->getClientOriginalExtension();
+        $supportingDocumentPath = $supporting_document->storeAs(
+          'images/adoption_applications/supporting_documents',
+          $filename,
+          'public'
+        );
+        $supporting_documents[] = $supportingDocumentPath;
       }
       $requestData['supporting_documents'] = $supporting_documents;
-    }else{
+    } else {
       $requestData['supporting_documents'] = [];
     }
 
     $adoption_application = AdoptionApplication::create($requestData);
 
-    return redirect()->route('users.myAdoptionApplications')->with('success', 'Adoption application for '. $adoption_application->rescue->name. ' was submitted!');
+    return redirect()->route('users.myAdoptionApplications')->with('success', 'Adoption application for ' . $adoption_application->rescue->name . ' was submitted!');
   }
 
   /**
@@ -129,34 +136,43 @@ class AdoptionApplicationController extends Controller
       return redirect()->back()->with('error','Adoption application for '. $adoptionApplication->rescue->name. ' has been rejected.');
     }
 
-    $this->authorize('update',$adoptionApplication);
+    $this->authorize('update', $adoptionApplication);
 
-    if($request->hasFile('valid_id')){
-      if($adoptionApplication->valid_id && Storage::disk('public')->exists($adoptionApplication->valid_id)){
+    if ($request->hasFile('valid_id')) {
+      if ($adoptionApplication->valid_id && Storage::disk('public')->exists($adoptionApplication->valid_id)) {
         Storage::disk('public')->delete($adoptionApplication->valid_id);
       }
 
-      $validIdPath = $request->file('valid_id')->store('images/adoption_applications/valid_ids', 'public');
+      $file = $request->file('valid_id');
+      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+      $validIdPath = $file->storeAs('images/adoption_applications/valid_ids', $filename, 'public');
       $requestData['valid_id'] = $validIdPath;
-    }else{
+    } else {
       unset($requestData['valid_id']);
     }
 
-    if($request->hasFile('supporting_documents')) {
+    if ($request->hasFile('supporting_documents')) {
       $existingDocuments = $adoptionApplication->supporting_documents ?? [];
       $documents = [];
+
       foreach ($request->file('supporting_documents') as $document) {
-        $documentPath = $document->store('images/adoption_applications/supporting_documents', 'public');
+        $filename = Str::uuid() . '.' . $document->getClientOriginalExtension();
+        $documentPath = $document->storeAs(
+          'images/adoption_applications/supporting_documents',
+          $filename,
+          'public'
+        );
         $documents[] = $documentPath;
       }
+
       $requestData['supporting_documents'] = array_merge($existingDocuments, $documents);
-    }else{
+    } else {
       unset($requestData['supporting_documents']);
     }
-    
-    $adoptionApplication-> update($requestData);
-    
-    return redirect()->back()->with('info','Adoption application for '. $adoptionApplication->rescue->name. ' has been updated.');
+
+    $adoptionApplication->update($requestData);
+
+    return redirect()->back()->with('info', 'Adoption application for ' . $adoptionApplication->rescue->name . ' has been updated.');
   }
 
   /**

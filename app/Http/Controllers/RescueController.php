@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-
+use Illuminate\Support\Str;
 class RescueController extends Controller
 {
   /**
@@ -82,15 +82,17 @@ class RescueController extends Controller
     $requestData = $request->validated();
 
     if ($request->hasFile('profile_image')) {
-      $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');
-
+      $file = $request->file('profile_image');
+      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+      $profileImagePath = $file->storeAs('images/rescues/profile_images', $filename, 'public');
       $requestData['profile_image'] = $profileImagePath;
     }
 
-    if($request->hasFile('images')) {
+    if ($request->hasFile('images')) {
       $images = [];
       foreach ($request->file('images') as $image) {
-        $imagePath = $image->store('images/rescues/gallery_images', 'public');
+        $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
+        $imagePath = $image->storeAs('images/rescues/gallery_images', $filename, 'public');
         $images[] = $imagePath;
       }
       $requestData['images'] = $images;
@@ -100,7 +102,7 @@ class RescueController extends Controller
 
     $rescue = Rescue::create($requestData);
     
-    return redirect()->back()->with('success', 'Rescue profile for '. $rescue->name. ' has been created!');
+    return redirect()->back()->with('success', 'Rescue profile for ' . $rescue->name . ' has been created!');
   }
 
   /**
@@ -171,32 +173,37 @@ class RescueController extends Controller
     $this->authorize('update', $rescue);
     $requestData = $request->validated();
 
-    if($request->hasFile('profile_image')){
-      if($rescue->profile_image && Storage::disk('public')->exists($rescue->profile_image)){
+    if ($request->hasFile('profile_image')) {
+      if ($rescue->profile_image && Storage::disk('public')->exists($rescue->profile_image)) {
         Storage::disk('public')->delete($rescue->profile_image);
       }
 
-      $profileImagePath = $request->file('profile_image')->store('images/rescues/profile_images', 'public');
+      $file = $request->file('profile_image');
+      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+      $profileImagePath = $file->storeAs('images/rescues/profile_images', $filename, 'public');
       $requestData['profile_image'] = $profileImagePath;
-    }else{
+    } else {
       unset($requestData['profile_image']);
     }
 
-    if($request->hasFile('images')) {
+    if ($request->hasFile('images')) {
       $existingImages = $rescue->images ?? [];
       $images = [];
+
       foreach ($request->file('images') as $image) {
-        $imagePath = $image->store('images/rescues/gallery_images', 'public');
+        $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
+        $imagePath = $image->storeAs('images/rescues/gallery_images', $filename, 'public');
         $images[] = $imagePath;
       }
+
       $requestData['images'] = array_merge($existingImages, $images);
-    }else{
+    } else {
       unset($requestData['images']);
     }
     
-    $rescue-> update($requestData);
+    $rescue->update($requestData);
 
-    return redirect()->route('rescues.show',$rescue->id)->with('info','Rescue Profile for '. $rescue->name. ' has been updated!');
+    return redirect()->route('rescues.show', $rescue->id)->with('info', 'Rescue Profile for ' . $rescue->name . ' has been updated!');
   }
 
   /**

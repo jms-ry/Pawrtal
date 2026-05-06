@@ -231,9 +231,8 @@ class AdoptionApplicationStoreTest extends TestCase
 
     $response = $this->post(route('adoption-applications.store'), $applicationData);
     $response->assertRedirect(route('users.myAdoptionApplications'));
-    $response->assertSessionHas('success', 'Adoption application for '. $rescue->name. ' was submitted!');
+    $response->assertSessionHas('success', 'Adoption application for ' . $rescue->name . ' was submitted!');
 
-    
     $this->assertDatabaseHas('adoption_applications', [
       'user_id' => $applicationData['user_id'],
       'rescue_id' => $applicationData['rescue_id'],
@@ -242,12 +241,17 @@ class AdoptionApplicationStoreTest extends TestCase
       'reason_for_adoption' => $applicationData['reason_for_adoption'],
     ]);
 
-    // Assert valid id was stored
-    Storage::disk('public')->assertExists('images/adoption_applications/valid_ids/' . $validId->hashName());
+    // Retrieve the stored application to get the actual UUID-generated filenames
+    $adoptionApplication = AdoptionApplication::where('user_id', $user->id)
+      ->where('rescue_id', $rescue->id)
+    ->first();
 
-    // Assert supporting documents were stored
-    foreach ($supportingDocuments as $document) {
-      Storage::disk('public')->assertExists('images/adoption_applications/supporting_documents/' . $document->hashName());
+    // Assert valid id was stored using the path saved in the database
+    Storage::disk('public')->assertExists($adoptionApplication->valid_id);
+
+    // Assert supporting documents were stored using the paths saved in the database
+    foreach ($adoptionApplication->supporting_documents as $documentPath) {
+      Storage::disk('public')->assertExists($documentPath);
     }
   }
 

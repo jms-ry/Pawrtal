@@ -180,7 +180,6 @@ class ReportStoreTest extends TestCase
     $response->assertRedirect();
     $response->assertSessionHas('success', 'Lost Dog Report has been created!');
 
-    
     $this->assertDatabaseHas('reports', [
       'type' => $reportData['type'],
       'animal_name' => $reportData['animal_name'],
@@ -197,8 +196,11 @@ class ReportStoreTest extends TestCase
       'user_id' => $reportData['user_id']
     ]);
 
-    // Assert profile image was stored
-    Storage::disk('public')->assertExists('images/reports/reports_images/' . $image->hashName());
+    // Retrieve stored report to get UUID-generated filename
+    $report = Report::where('animal_name', $reportData['animal_name'])->first();
+
+    // Assert image was stored using path saved in database
+    Storage::disk('public')->assertExists($report->image);
   }
 
   public function test_image_is_stored_in_correct_location()
@@ -235,7 +237,6 @@ class ReportStoreTest extends TestCase
     $response->assertRedirect();
     $response->assertSessionHas('success', 'Lost Dog Report has been created!');
 
-    
     $this->assertDatabaseHas('reports', [
       'type' => $reportData['type'],
       'animal_name' => $reportData['animal_name'],
@@ -252,12 +253,14 @@ class ReportStoreTest extends TestCase
       'user_id' => $reportData['user_id']
     ]);
 
-    // Assert profile image was stored
-    Storage::disk('public')->assertExists('images/reports/reports_images/' . $image->hashName());
+    // Retrieve stored report to get UUID-generated filename
+    $report = Report::where('animal_name', $reportData['animal_name'])->first();
 
-    $report = Report::where('type', $reportData['type'])->first();
-
+    // Assert image was stored using path saved in database
     Storage::disk('public')->assertExists($report->image);
+
+    // Assert image is stored in the correct directory
+    $this->assertStringStartsWith('images/reports/reports_images/', $report->image);
   }
 
   public function test_creating_report_without_user_id_fails_validation()
@@ -931,7 +934,12 @@ class ReportStoreTest extends TestCase
     $response = $this->post(route('reports.store'), $reportData);
     $response->assertRedirect();
     $this->assertDatabaseCount('reports', 1);
-    Storage::disk('public')->assertExists('images/reports/reports_images/' . $image->hashName());
+
+    // Retrieve stored report to get UUID-generated filename
+    $report = Report::first();
+
+    // Assert image was stored using path saved in database
+    Storage::disk('public')->assertExists($report->image);
   }
 
   public function test_creating_report_with_png_image_succeeds()
