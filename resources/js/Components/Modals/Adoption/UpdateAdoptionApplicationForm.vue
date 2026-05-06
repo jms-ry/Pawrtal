@@ -45,8 +45,8 @@
             </div>
           </div>
           <div class="modal-footer bg-info-subtle">
-            <button class="btn btn-primary me-1" type="submit" >Submit Application</button>
-            <button class="btn btn-danger" type="button" @click="closeModal()">Close</button>
+            <button class="btn btn-primary me-1" type="submit" >Update Application</button>
+            <button class="btn btn-danger" type="button" @click="closeModal()">Cancel</button>
           </div>
         </form>
       </div>
