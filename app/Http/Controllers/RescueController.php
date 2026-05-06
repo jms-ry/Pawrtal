@@ -229,6 +229,6 @@ class RescueController extends Controller
     
     $rescue->forceDelete();
 
-    return redirect()->route('rescues.index')->with('success', 'Rescue permanently deleted successfully.');
+    return redirect()->route('dashboard.rescues')->with('success', 'Rescue permanently deleted successfully.');
   }
 }
