@@ -265,7 +265,7 @@
           <div v-if="matches.length > 0" class="mt-4 d-flex gap-2 justify-content-center">
             <button class="btn btn-primary" @click="backToForm">
               <i class="bi bi-arrow-left me-2"></i>
-              New Search
+              Try Again
             </button>
             <button class="btn btn-secondary" data-bs-dismiss="modal" @click="resetModal">
               <i class="bi bi-grid me-2"></i>

@@ -30,7 +30,7 @@
               <th scope="col">Rescue Name</th>
               <th scope="col">Application Date</th>
               <th scope="col">Status</th>
-              <th scope="col">Archived?</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>

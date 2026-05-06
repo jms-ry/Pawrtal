@@ -281,14 +281,14 @@ class RescueForceDeleteTest extends TestCase
   /**
     * Test: Force delete redirects to trash view
   */
-  public function test_force_delete_redirects_to_rescues_index()
+  public function test_force_delete_redirects_to_dashboard_rescues()
   {
     $admin = User::factory()->admin()->create();
     $rescue = Rescue::factory()->create();
 
     $response = $this->actingAs($admin)->delete(route('rescues.forceDelete', $rescue->id));
 
-    $response->assertRedirect(route('rescues.index'));
+    $response->assertRedirect(route('dashboard.rescues'));
   }
 
   /**

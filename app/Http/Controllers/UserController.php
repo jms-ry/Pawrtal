@@ -220,11 +220,6 @@ class UserController extends Controller
                 // Search in rescue name
               ->orWhereHas('rescue', function ($rescueQ) use ($word) {
                 $rescueQ->whereRaw("LOWER(name) LIKE LOWER(?)", ['%' . $word . '%']);
-              })
-              // Search in user first name
-              ->orWhereHas('user', function ($userQ) use ($word) {
-              $userQ->whereRaw("LOWER(first_name) LIKE LOWER(?)", ['%' . $word . '%'])
-                ->orWhereRaw("LOWER(last_name) LIKE LOWER(?)", ['%' . $word . '%']);
               });
             });
           }

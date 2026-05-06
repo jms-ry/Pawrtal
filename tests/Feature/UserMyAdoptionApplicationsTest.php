@@ -197,61 +197,6 @@ class UserMyAdoptionApplicationsTest extends TestCase
     );
   }
 
-  public function test_searching_adoption_applications_using_user_first_name_returns_results_case_insensitive() 
-  {
-    $user1 = User::factory()->create(['first_name' => 'Maxwell']);
-
-    $this->actingAs($user1);
-
-    $matchingApplication1 = AdoptionApplication::factory()->rejected()->create(['user_id' => $user1->id]);
-
-    $matchingApplication2 = AdoptionApplication::factory()->rejected()->create(['user_id' => $user1->id]);
-    // Act: Perform a GET request with a lowercase search term
-    $response = $this->get(route('users.myAdoptionApplications', ['search' => 'maxwell']));
-
-    // Assert: Response OK
-    $response->assertStatus(200);
-
-    // Assert that the matching applications are present and non-matching are not
-    $response->assertInertia(fn (Assert $page) =>
-      $page
-        ->component('User/MyAdoptionApp')
-        // Check that the adoption applications prop exists and is paginated
-        ->has('adoptionApplications.data')
-        // Check that the correct adoption applications are shown
-        ->where('adoptionApplications.data.0.user.first_name', $matchingApplication1->user->first_name)
-      ->where('adoptionApplications.data.1.user.first_name', $matchingApplication2->user->first_name)
-    );
-  }
-
-  public function test_searching_adoption_applications_using_user_last_name_returns_results_case_insensitive() 
-  {
-    $user = User::factory()->create(['last_name' => 'Maxwell']);
-
-    $this->actingAs($user);
-
-    $matchingApplication1 = AdoptionApplication::factory()->rejected()->create(['user_id' => $user->id]);
-
-    $matchingApplication2 = AdoptionApplication::factory()->rejected()->create(['user_id' => $user->id]);
-
-    // Act: Perform a GET request with a lowercase search term
-    $response = $this->get(route('users.myAdoptionApplications', ['search' => 'maxwell']));
-
-    // Assert: Response OK
-    $response->assertStatus(200);
-
-    // Assert that the matching applications are present and non-matching are not
-    $response->assertInertia(fn (Assert $page) =>
-      $page
-        ->component('User/MyAdoptionApp')
-        // Check that the adoption applications prop exists and is paginated
-        ->has('adoptionApplications.data')
-        // Check that the correct adoption applications are shown
-        ->where('adoptionApplications.data.0.user.last_name', $matchingApplication1->user->last_name)
-      ->where('adoptionApplications.data.1.user.last_name', $matchingApplication2->user->last_name)
-    );
-  }
-
   public function test_search_with_no_matches_returns_empty_results()
   {
     $user = User::factory()->create();
@@ -545,11 +490,13 @@ class UserMyAdoptionApplicationsTest extends TestCase
     // Test that multiple filters and a search works at the same time.
 
 
-    $user = User::factory()->create(['first_name' => 'Maxwell']);
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['name' => 'Maxwell']);
+
 
     $this->actingAs($user);
 
-    AdoptionApplication::factory()->for($user)->approved()->create();
+    AdoptionApplication::factory()->for($user)->approved()->create(['rescue_id' => $rescue->id]);
 
     AdoptionApplication::factory()->for($user)->count(2)->rejected()->create();
     AdoptionApplication::factory()->for($user)->count(2)->rejected()->create();
@@ -566,8 +513,8 @@ class UserMyAdoptionApplicationsTest extends TestCase
       $page->component('User/MyAdoptionApp')
         ->where('filters.status', 'approved')
         ->where('filters.search', 'maxwell')
-        ->has('adoptionApplications.data', 1) 
-        ->where('adoptionApplications.data.0.user.first_name', 'Maxwell')
+        ->has('adoptionApplications.data', 1)
+        ->where('adoptionApplications.data.0.rescue.name', 'Maxwell')
       ->where('adoptionApplications.data.0.status', 'approved')
     );
   }
@@ -577,11 +524,12 @@ class UserMyAdoptionApplicationsTest extends TestCase
     // Test taht trashed records still hidden for non-admin/staff users
 
     // Arrange
-    $user = User::factory()->create(['first_name' => 'Maxwell']);
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['name' => 'Maxwell']);
 
-    $visible = AdoptionApplication::factory()->for($user)->approved()->count(3)->create();
+    $visible = AdoptionApplication::factory()->for($user)->approved()->count(3)->create(['rescue_id' => $rescue->id]);
 
-    $trashed = AdoptionApplication::factory()->for($user)->approved()->trashed()->count(4)->create();
+    $trashed = AdoptionApplication::factory()->for($user)->approved()->trashed()->count(4)->create(['rescue_id' => $rescue->id]);
     
     $this->actingAs($user);
 
@@ -601,11 +549,12 @@ class UserMyAdoptionApplicationsTest extends TestCase
 
   public function test_search_and_filter_results_are_paginated_with_10_items_page()
   {
-    $user = User::factory()->create(['first_name' => 'Maxwell']);
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['name' => 'Maxwell']);
 
-    AdoptionApplication::factory()->for($user)->approved()->count(13)->create();
+    AdoptionApplication::factory()->for($user)->approved()->count(10)->create(['rescue_id' => $rescue->id]);
 
-    AdoptionApplication::factory()->for($user)->rejected()->count(3)->create();
+    AdoptionApplication::factory()->for($user)->rejected()->create(['rescue_id' => $rescue->id]);
 
     $this->actingAs($user);
     
@@ -702,18 +651,18 @@ class UserMyAdoptionApplicationsTest extends TestCase
 
   public function test_search_handles_special_characters_safely()
   {
-    $user = User::factory()->create(['first_name' => "O'Malley"]);
-
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['name' => "O'Malley"]);
     $this->actingAs($user);
 
-    AdoptionApplication::factory()->for($user)->create();
+    AdoptionApplication::factory()->for($user)->create(['rescue_id' => $rescue->id]);
     
     $response = $this->get(route('users.myAdoptionApplications', ['search' => "O'Mal"]));
     
     $response->assertInertia(fn ($page) =>
       $page->component('User/MyAdoptionApp')
         ->has('adoptionApplications.data')
-      ->where('adoptionApplications.data.0.user.first_name', "O' Malley")
+      ->where('adoptionApplications.data.0.rescue.name', "O'Malley")
     );
   }
 
@@ -734,10 +683,11 @@ class UserMyAdoptionApplicationsTest extends TestCase
 
   public function test_search_with_url_encoded_characters()
   {
-    $user = User::factory()->create(['first_name' => "Max & Ruby"]);
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['name' => "Max & Ruby"]);
     $this->actingAs($user);
 
-    AdoptionApplication::factory()->for($user)->create();
+    AdoptionApplication::factory()->for($user)->create(['rescue_id' => $rescue->id]);
     
     $response = $this->get(route('users.myAdoptionApplications', ['search' => 'Max & Ruby']));
     
