@@ -7,7 +7,7 @@
       <div class="card bg-info text-dark">
         <div class="card-body">
           <div class="d-flex justify-content-between">
-            <h5 class="card-title">Total Application</h5>
+            <h5 class="card-title">Total Applications</h5>
              <a :href="`/dashboard/adoption-applications`" class="fs-6 text-dark font-monospace fw-bold">Manage Applications</a>
           </div>
           <h2 class="card-text">
