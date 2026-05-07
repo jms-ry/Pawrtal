@@ -75,7 +75,8 @@
                   >Update </a>
                   <div v-else-if=!donation.deleted_at class="d-flex justify-content-center me-1">
                     <a v-if="donation.status === 'accepted'" class="btn btn-secondary fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveDonationModal" :data-donation-id="donation.id">Archive </a>
-                    <a v-else class="btn btn-danger fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#forceDeleteDonationModal" :data-donation-id="donation.id">Delete</a>
+                    <a v-if="donation.status === 'rejected'" class="btn btn-danger fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#forceDeleteDonationModal" :data-donation-id="donation.id">Delete</a>
+                    <a v-if="donation.status === 'cancelled'" class="btn btn-danger fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#forceDeleteDonationModal" :data-donation-id="donation.id">Delete</a>
                   </div>
                   <div v-else class="d-flex justify-content-center me-1">
                     <a  class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreDonationModal" :data-donation-id="donation.id">Unarchive</a>
