@@ -41,14 +41,5 @@ class UserSeeder extends Seeder
       'contact_number' => '1234567890',
       'role' => 'regular_user',
     ]);
-
-    User::create(attributes:[
-      'first_name' => 'Guest',
-      'last_name' => 'User',
-      'email' => 'guest@example.com',
-      'password' => bcrypt('password'),
-      'contact_number' => '1234567890',
-      'role' => 'regular_user',
-    ]);
   }
 }

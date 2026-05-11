@@ -38,13 +38,5 @@ class AddressSeeder extends Seeder
       'zip_code' => '5679',
       'user_id' => $users[2]
     ]);
-
-    Address::create([
-      'barangay' => 'Plaridel',
-      'municipality' => 'Baybay City',
-      'province' => 'Leyte',
-      'zip_code' => '5679',
-      'user_id' => $users[3]
-    ]);
   }
 }

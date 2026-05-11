@@ -52,7 +52,7 @@ class ReportSeeder extends Seeder
     ]);
 
     Report::create([
-      'user_id' => $users[3],
+      'user_id' => $users[1],
       'animal_name' => 'Lucy',
       'type' => 'lost',
       'species' => 'Dog',
@@ -86,7 +86,7 @@ class ReportSeeder extends Seeder
     ]);
 
     Report::create([
-      'user_id' => $users[3],
+      'user_id' => $users[2],
       'type' => 'lost',
       'animal_name' => 'Daisy',
       'species' => 'Dog',
@@ -122,7 +122,7 @@ class ReportSeeder extends Seeder
     ]);
 
     Report::create([
-      'user_id' => $users[3],
+      'user_id' => $users[1],
       'type' => 'found',
       'species' => 'Dog',
       'breed' => 'Aspin',
@@ -158,7 +158,7 @@ class ReportSeeder extends Seeder
     ]);
 
     Report::create([
-      'user_id' => $users[3],
+      'user_id' => $users[0],
       'type' => 'found',
       'species' => 'Dog',
       'breed' => 'Aspin',
@@ -175,7 +175,7 @@ class ReportSeeder extends Seeder
     ]);
 
     Report::create([
-      'user_id' => $users[3],
+      'user_id' => $users[0],
       'type' => 'found',
       'species' => 'Dog',
       'breed' => 'Aspin',
