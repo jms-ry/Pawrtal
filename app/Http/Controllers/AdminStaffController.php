@@ -286,4 +286,24 @@ class AdminStaffController extends Controller
     ]); 
     
   }
+
+  public function accountManagement()
+  {
+    if(Gate::denies('admin-access',Auth::user()))
+    {
+      return redirect('/')->with('error', 'You do not have authorization. Access denied!');
+    }
+
+    $users = User::query()->where('role', 'staff')
+    ->paginate(10)
+    ->withQueryString();
+    $previousUrl = url()->previous();
+    $showBackNav = !Str::contains($previousUrl, ['/login', '/register']);
+
+    return Inertia::render('AdminStaff/AccountManagement',[
+      'users' => $users,
+      'previousUrl' => $previousUrl,
+      'showBackNav' => $showBackNav,
+    ]);
+  }
 }

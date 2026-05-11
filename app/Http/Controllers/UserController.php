@@ -32,7 +32,26 @@ class UserController extends Controller
   */
   public function store(Request $request)
   {
-    //
+    $this->authorize('create', User::class);
+
+    $request->validate([
+      'first_name' => 'required|string|max:255',
+      'last_name' => 'required|string|max:255',
+      'email' => 'required|email|unique:users,email',
+      'contact_number' => 'required|string|max:20',
+      'password' => 'required|min:8|confirmed',
+    ]);
+
+    User::create([
+      'first_name' => $request->first_name,
+      'last_name' => $request->last_name,
+      'email' => $request->email,
+      'contact_number' => $request->contact_number,
+      'password' => bcrypt($request->password),
+      'role' => 'staff',
+    ]);
+
+    return redirect()->back()->with('success', 'Staff account created successfully.');
   }
 
   /**

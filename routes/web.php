@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reports', [AdminStaffController::class, 'reports'])->name('dashboard.reports');
     Route::get('donations', [AdminStaffController::class, 'donations'])->name('dashboard.donations');
     Route::get('adoption-applications', [AdminStaffController::class, 'adoptionApplications'])->name('dashboard.adoptionApplications');
+    Route::get('account-management', [AdminStaffController::class, 'accountManagement'])->name('dashboard.accountManagement');
   });
 
   Route::get('/dashboard',[AdminStaffController::class, 'index']);

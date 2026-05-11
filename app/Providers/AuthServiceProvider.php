@@ -38,6 +38,10 @@ class AuthServiceProvider extends ServiceProvider
     Gate::define('admin-staff-access', function ($user) {
       return $user->isAdminOrStaff();
     });
+
+    Gate::define('admin-access', function ($user) {
+      return $user->isAdmin();
+    });
   }
 
   protected $policies = [

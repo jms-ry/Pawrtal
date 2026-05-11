@@ -36,6 +36,7 @@
                 <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
                 <template v-if="user.isAdminOrStaff">
                   <li><a class="dropdown-item" href="/dashboard">Manage</a></li>
+                  <li v-show="user.isAdmin"><a class="dropdown-item" href="/dashboard/account-management">Account Management</a></li>
                   <li><a class="dropdown-item" href="/users/my-schedules">My Schedules</a></li>
                 </template>
                 <template v-else>
@@ -187,7 +188,6 @@
                     </span>
                   </span>
                 </button>
-
                 <!-- Notification Dropdown (Preview Only) -->
                 <ul class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 380px; max-height: 450px;">
                   <!-- Header -->
@@ -245,6 +245,7 @@
                   <li><a class="dropdown-item" :href="`/users/${user.id}`">Profile</a></li>
                   <template v-if="user.isAdminOrStaff">
                     <li><a class="dropdown-item" href="/dashboard">Manage</a></li>
+                    <li v-show="user.isAdmin"><a class="dropdown-item" href="/dashboard/account-management">Account Management</a></li>
                     <li><a class="dropdown-item" href="/users/my-schedules">My Schedules</a></li>
                   </template>
                   <template v-else>
@@ -281,7 +282,7 @@
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 
   const unreadMessages = computed(() => page.props.unreadMessages ?? [])
-const unreadMessagesCount = computed(() => page.props.unreadMessagesCount ?? 0)
+  const unreadMessagesCount = computed(() => page.props.unreadMessagesCount ?? 0)
 
   // Time ago helper
   const timeAgo = (timestamp) => {
