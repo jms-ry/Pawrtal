@@ -58,9 +58,13 @@ class AdminStaffController extends Controller
     $sexFilter = $request->get('sex');
     $sizeFilter = $request->get('size');
     $statusFilter = $request->get('status');
+    $showArchived = $request->boolean('archived');
 
     $rescues = Rescue::query()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->withCount('adoptionApplications')
       ->when($search, function ($query, $search) {
         return $query->whereRaw('LOWER(name) LIKE LOWER(?)', ['%' . $search . '%']);
@@ -96,6 +100,7 @@ class AdminStaffController extends Controller
         'sex' => $sexFilter,
         'size' => $sizeFilter,
         'status' => $statusFilter,
+        'archived' => $showArchived,
       ],
     ]);
   }

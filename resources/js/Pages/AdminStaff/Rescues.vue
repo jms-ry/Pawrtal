@@ -82,7 +82,11 @@
     if (newFilters.status) {
       params.status = newFilters.status;
     }
-  
+    
+    if (newFilters.archived) {
+      params.archived = newFilters.archived;
+    }
+    
     router.get('/dashboard/rescues', params, {
       preserveState: true,
       preserveScroll: false,

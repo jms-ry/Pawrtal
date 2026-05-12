@@ -66,6 +66,17 @@
             </div>
           </div>
         </fieldset>
+        <div class="ms-md-3 p-1 mt-0 mb-0 d-flex align-items-end">
+          <button 
+            type="button" 
+            @click="toggleArchived" 
+            class="btn w-100"
+            :class="showArchived ? 'btn-warning' : 'btn-outline-secondary'"
+          >
+            <i class="bi" :class="showArchived ? 'bi-archive-fill' : 'bi-archive'"></i>
+            {{ showArchived ? 'Viewing Archived' : 'View Archived' }}
+          </button>
+        </div>
       </div>
       
       <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end" v-bind:data-controller="props.user?.isAdminOrStaff ? 'rescue-switch' : null">
@@ -148,6 +159,7 @@
   const selectedSex = ref('');
   const selectedSize = ref('');
   const selectedStatus = ref('');
+  const showArchived = ref(false);
 
   const hasActiveFilters = computed(() => {
     return !!(props.filters.search || props.filters.sex || props.filters.size || props.filters.status);
@@ -158,7 +170,14 @@
     selectedSex.value = props.filters.sex || '';
     selectedSize.value = props.filters.size || '';
     selectedStatus.value = props.filters.status || '';
+    showArchived.value = props.filters.archived || false;
   });
+
+  const toggleArchived = () => {
+    showArchived.value = !showArchived.value;
+    const filterData = { archived: showArchived.value };
+    emit('filter', filterData);
+  };
 
   watch(() => props.filters, (newFilters) => {
     searchInput.value = newFilters.search || '';
