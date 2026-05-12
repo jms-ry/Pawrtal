@@ -80,7 +80,11 @@
     if (newFilters.sort) {
       params.sort = newFilters.sort;
     }
-  
+    
+    if (newFilters.archived) {
+      params.archived = newFilters.archived;
+    }
+    
     router.get('/users/my-reports', params, {
       preserveState: true,
       preserveScroll: false,

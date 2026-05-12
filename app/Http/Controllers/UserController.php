@@ -115,9 +115,13 @@ class UserController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
 
     $reports = $user->reports()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
@@ -153,13 +157,14 @@ class UserController extends Controller
         'type' => $typeFilter,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
       'previousUrl' => $previousUrl,
     ]);
   }
 
   public function myDonations(Request $request)
-{
+  {
     $previousUrl = url()->previous();
     $user = Auth::user();
     $search = $request->get('search');
@@ -213,7 +218,7 @@ class UserController extends Controller
       ],
       'previousUrl' => $previousUrl,
     ]);
-}
+  }
 
   public function myAdoptionApplications(Request $request)
   {
