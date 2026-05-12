@@ -60,6 +60,17 @@
             </div>
           </div>
         </fieldset>
+        <div class="ms-md-3 p-1 mt-0 mb-0 d-flex align-items-end">
+          <button 
+            type="button" 
+            @click="toggleArchived" 
+            class="btn w-100"
+            :class="showArchived ? 'btn-warning' : 'btn-outline-secondary'"
+          >
+            <i class="bi" :class="showArchived ? 'bi-archive-fill' : 'bi-archive'"></i>
+            {{ showArchived ? 'Viewing Archived' : 'View Archived' }}
+          </button>
+        </div>
       </div>
 
       <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end">
@@ -112,6 +123,7 @@
   const searchInput = ref('');
   const selectedStatus = ref('');
   const selectedSort = ref('');
+  const showArchived = ref(false);
 
   const hasActiveFilters = computed(() => {
     return !!(props.filters.search || props.filters.status || props.filters.sort);
@@ -121,8 +133,14 @@
     searchInput.value = props.filters.search || '';
     selectedStatus.value = props.filters.status || '';
     selectedSort.value = props.filters.sort || '';
+    showArchived.value = props.filters.archived || false;
   });
 
+  const toggleArchived = () => {
+    showArchived.value = !showArchived.value;
+    const filterData = { archived: showArchived.value };
+    emit('filter', filterData);
+  };
   watch(() => props.filters, (newFilters) => {
     searchInput.value = newFilters.search || '';
     selectedStatus.value = newFilters.status || '';

@@ -243,9 +243,13 @@ class AdminStaffController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
 
     $adoptionApplications = AdoptionApplication::query()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with(['user','rescue','inspectionSchedule'])
       ->withCount('inspectionSchedule')
       ->when($search, function ($query, $search) {
@@ -292,6 +296,7 @@ class AdminStaffController extends Controller
         'search' => $search,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
       'inspectors' => $inspectors,
       'user' => $user?[

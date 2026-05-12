@@ -233,8 +233,13 @@ class UserController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
+
     $adoptionApplications = $user->adoptionApplications()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->withCount('inspectionSchedule')
       ->with(['user','rescue'])
       ->when($search, function ($query, $search) {
@@ -270,6 +275,7 @@ class UserController extends Controller
         'search' => $search,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
       'previousUrl' => $previousUrl,
     ]);
