@@ -52,7 +52,7 @@ class AdminStaffRescuesTest extends TestCase
     $response->assertStatus(200);
   }
 
-  public function test_admin_user_can_view_all_records()
+  public function test_admin_user_can_view_all_non_trashed_records()
   {
     $nonTrashed = Rescue::factory()->count(3)->create();
     $trashed = Rescue::factory()->trashed()->count(3)->create();
@@ -69,11 +69,11 @@ class AdminStaffRescuesTest extends TestCase
     }
 
     foreach ($trashed as $rescue) {
-      $response->assertSee($rescue->name_formatted);
+      $response->assertDontSee($rescue->name_formatted);
     }
   }
 
-  public function test_staff_user_can_view_all_records()
+  public function test_staff_user_can_view_all_non_trashed_records()
   {
     $nonTrashed = Rescue::factory()->count(3)->create();
     $trashed = Rescue::factory()->trashed()->count(3)->create();
@@ -90,7 +90,7 @@ class AdminStaffRescuesTest extends TestCase
     }
 
     foreach ($trashed as $rescue) {
-      $response->assertSee($rescue->name_formatted);
+      $response->assertDontSee($rescue->name_formatted);
     }
   }
 
@@ -477,7 +477,7 @@ class AdminStaffRescuesTest extends TestCase
 
     $adminResponse->assertInertia(fn ($page) =>
       $page->component('AdminStaff/Rescues')
-        ->has('rescues.data', 7) // visible + trashed
+        ->has('rescues.data', 3) 
         ->where('filters.sex', 'male')
         ->where('filters.size', 'medium')
       ->where('filters.status', 'available')

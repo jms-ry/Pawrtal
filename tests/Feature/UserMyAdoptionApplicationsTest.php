@@ -541,7 +541,7 @@ class UserMyAdoptionApplicationsTest extends TestCase
 
     $response->assertInertia(fn ($page) =>
       $page->component('User/MyAdoptionApp')
-        ->has('adoptionApplications.data', 7) // visible + trashed
+        ->has('adoptionApplications.data', 3)
         ->where('filters.search', 'maxwell')
       ->where('filters.status', 'approved')
     );

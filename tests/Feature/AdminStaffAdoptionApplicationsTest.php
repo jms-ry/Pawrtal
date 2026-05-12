@@ -52,7 +52,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
     $response->assertStatus(200);
   }
 
-  public function test_admin_user_can_view_all_records()
+  public function test_admin_user_can_view_all_non_trashed_records()
   {
     $nonTrashed = AdoptionApplication::factory()->count(3)->create();
     $trashed = AdoptionApplication::factory()->cancelled()->trashed()->count(3)->create();
@@ -69,11 +69,11 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
     }
 
     foreach ($trashed as $application) {
-     $response->assertSee($application->user->fullName());
+     $response->assertDontSee($application->user->fullName());
     }
   }
 
-  public function test_staff_user_can_view_all_records()
+  public function test_staff_user_can_view_all_non_trashed_records()
   {
     $nonTrashed = AdoptionApplication::factory()->count(3)->create();
     $trashed = AdoptionApplication::factory()->cancelled()->trashed()->count(3)->create();
@@ -90,7 +90,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
     }
 
     foreach ($trashed as $application) {
-     $response->assertSee($application->user->fullName());
+     $response->assertDontSee($application->user->fullName());
     }
   }
 
@@ -616,7 +616,7 @@ class AdminStaffAdoptionApplicationsTest extends TestCase
 
     $adminResponse->assertInertia(fn ($page) =>
       $page->component('AdminStaff/AdoptionApplications')
-        ->has('adoptionApplications.data', 7) // visible + trashed
+        ->has('adoptionApplications.data', 3)
         ->where('filters.search', 'maxwell')
       ->where('filters.status', 'approved')
     );

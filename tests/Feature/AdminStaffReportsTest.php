@@ -645,7 +645,7 @@ class AdminStaffReportsTest extends TestCase
 
     $adminResponse->assertInertia(fn ($page) =>
       $page->component('AdminStaff/Reports')
-        ->has('reports.data', 7) // visible + trashed
+        ->has('reports.data', 3)
         ->where('filters.type', 'lost')
       ->where('filters.status', 'active')
     );
