@@ -171,9 +171,13 @@ class AdminStaffController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
 
     $donations = Donation::query()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
@@ -213,6 +217,7 @@ class AdminStaffController extends Controller
         'donation_type' => $typeFilter,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
     ]);
   }

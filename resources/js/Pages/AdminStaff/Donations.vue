@@ -24,7 +24,7 @@
 <script setup>
   import { Head } from '@inertiajs/vue3';
   import { router } from '@inertiajs/vue3';
-  import { ref } from 'vue';
+  import { ref} from 'vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
   import DonationsHeader from '../../Components/Dashboard/Donations/DonationsHeader.vue';
   import DonationsDisplay from '../../Components/Dashboard/Donations/DonationsDisplay.vue';
@@ -63,6 +63,7 @@
     applyFilters(filterData);
   };
 
+
   const applyFilters = (newFilters) => {
     const params = {};
   
@@ -81,7 +82,11 @@
     if (newFilters.sort) {
       params.sort = newFilters.sort;
     }
-  
+    
+    if (newFilters.archived) {
+      params.archived = newFilters.archived;
+    }
+    
     router.get('/dashboard/donations', params, {
       preserveState: true,
       preserveScroll: false,

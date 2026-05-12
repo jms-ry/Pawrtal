@@ -159,17 +159,21 @@ class UserController extends Controller
   }
 
   public function myDonations(Request $request)
-  {
+{
     $previousUrl = url()->previous();
     $user = Auth::user();
     $search = $request->get('search');
-    $typeFilter = $request->get('donation_type');;
+    $typeFilter = $request->get('donation_type');
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
+    $showArchived = $request->boolean('archived');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
 
     $donations = $user->donations()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
@@ -205,10 +209,11 @@ class UserController extends Controller
         'donation_type' => $typeFilter,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
       'previousUrl' => $previousUrl,
     ]);
-  }
+}
 
   public function myAdoptionApplications(Request $request)
   {

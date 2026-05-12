@@ -71,8 +71,19 @@
             </div>
           </div>
         </fieldset>
+        <div class="ms-md-3 p-1 mt-0 mb-0 d-flex align-items-end">
+          <button 
+            type="button" 
+            @click="toggleArchived" 
+            class="btn w-100"
+            :class="showArchived ? 'btn-warning' : 'btn-outline-secondary'"
+          >
+            <i class="bi" :class="showArchived ? 'bi-archive-fill' : 'bi-archive'"></i>
+            {{ showArchived ? 'Viewing Archived' : 'View Archived' }}
+          </button>
+        </div>
       </div>
-
+      
       <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end">
         <!-- Search input for larger screens -->
         <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
@@ -126,6 +137,7 @@
   const selectedType = ref('');
   const selectedStatus = ref('');
   const selectedSort = ref('');
+  const showArchived = ref(false);
 
   const hasActiveFilters = computed(() => {
     return !!(props.filters.search || props.filters.donation_type || props.filters.status || props.filters.sort);
@@ -136,8 +148,14 @@
     selectedType.value = props.filters.donation_type || '';
     selectedStatus.value = props.filters.status || '';
     selectedSort.value = props.filters.sort || '';
+    showArchived.value = props.filters.archived || false;
   });
 
+  const toggleArchived = () => {
+    showArchived.value = !showArchived.value;
+    const filterData = { archived: showArchived.value };
+    emit('filter', filterData);
+  };
   watch(() => props.filters, (newFilters) => {
     searchInput.value = newFilters.search || '';
     selectedType.value = newFilters.donation_type || '';

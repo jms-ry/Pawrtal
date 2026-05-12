@@ -80,7 +80,11 @@
     if (newFilters.sort) {
       params.sort = newFilters.sort;
     }
-  
+    
+    if (newFilters.archived) {
+      params.archived = newFilters.archived;
+    }
+    
     router.get('/users/my-donations', params, {
       preserveState: true,
       preserveScroll: false,
