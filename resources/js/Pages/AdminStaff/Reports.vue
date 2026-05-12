@@ -79,7 +79,11 @@
     if (newFilters.sort) {
       params.sort = newFilters.sort;
     }
-  
+    
+    if (newFilters.archived) {
+      params.archived = newFilters.archived;
+    }
+    
     router.get('/dashboard/reports', params, {
       preserveState: true,
       preserveScroll: false,

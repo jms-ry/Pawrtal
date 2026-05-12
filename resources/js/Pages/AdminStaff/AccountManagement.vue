@@ -1,21 +1,17 @@
 <template>
-  <Head title="My Reports"></Head>
+  <Head title="Dashboard/AccountManagement"></Head>
   <AppLayout>
     <div class="container-fluid">
       <div class="card border-0 p-md-5">
-        <MyReportsCardHeader
-          :user="user"
-          :filters="filters"
-          @search="handleSearch"
-          @filter="handleFilter"
+
+        <AccountsHeader
           :previousUrl="previousUrl"
+          :showBackNav="showBackNav"
+        />
+        <AccountsDisplay
+          :users="users"
         />
 
-        <MyReportsDisplay
-          :reports = "reports"
-          :user="user"
-          :filters="filters"
-        />
       </div>
     </div>
   </AppLayout>
@@ -25,20 +21,16 @@
   import { Head } from '@inertiajs/vue3';
   import { router } from '@inertiajs/vue3';
   import { ref } from 'vue';
-  import MyReportsCardHeader from '../../Components/User/MyReports/MyReportsCardHeader.vue';
   import AppLayout from '../../Layouts/AppLayout.vue';
-  import MyReportsDisplay from '../../Components/User/MyReports/MyReportsDisplay.vue';
-
+  import AccountsDisplay from '../../Components/Dashboard/AccountManagement/AccountsDisplay.vue';
+  import AccountsHeader from '../../Components/Dashboard/AccountManagement/AccountsHeader.vue';
   const props = defineProps({
-    user: {
-      type:Object
-    },
-    reports: Object,
-    filters: {
+    users: {
       type: Object,
-      default: () => ({})
+      required: true
     },
-    previousUrl:String,
+    previousUrl: String,
+    showBackNav: Boolean,
   })
 
   let searchTimeout = ref(null);
@@ -80,12 +72,8 @@
     if (newFilters.sort) {
       params.sort = newFilters.sort;
     }
-    
-    if (newFilters.archived) {
-      params.archived = newFilters.archived;
-    }
-    
-    router.get('/users/my-reports', params, {
+  
+    router.get('/dashboard/account-management', params, {
       preserveState: true,
       preserveScroll: false,
       replace: true,

@@ -53,6 +53,7 @@ class User extends Authenticatable
     ];
   }
 
+  
   public function conversationsAsParticipant1()
   {
     return $this->hasMany(Conversation::class, 'participant1_id');
@@ -140,5 +141,10 @@ class User extends Authenticatable
   public function getFirstNameAttribute($value)
   {
     return Str::headline($value);
+  }
+
+  public function isAdmin(): bool
+  {
+    return $this->role === 'admin';
   }
 }

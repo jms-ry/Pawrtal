@@ -32,7 +32,26 @@ class UserController extends Controller
   */
   public function store(Request $request)
   {
-    //
+    $this->authorize('create', User::class);
+
+    $request->validate([
+      'first_name' => 'required|string|max:255',
+      'last_name' => 'required|string|max:255',
+      'email' => 'required|email|unique:users,email',
+      'contact_number' => 'required|string|max:20',
+      'password' => 'required|min:8|confirmed',
+    ]);
+
+    User::create([
+      'first_name' => $request->first_name,
+      'last_name' => $request->last_name,
+      'email' => $request->email,
+      'contact_number' => $request->contact_number,
+      'password' => bcrypt($request->password),
+      'role' => 'staff',
+    ]);
+
+    return redirect()->back()->with('success', 'Staff account created successfully.');
   }
 
   /**
@@ -96,9 +115,13 @@ class UserController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
 
     $reports = $user->reports()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
@@ -134,6 +157,7 @@ class UserController extends Controller
         'type' => $typeFilter,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
       'previousUrl' => $previousUrl,
     ]);
@@ -144,13 +168,17 @@ class UserController extends Controller
     $previousUrl = url()->previous();
     $user = Auth::user();
     $search = $request->get('search');
-    $typeFilter = $request->get('donation_type');;
+    $typeFilter = $request->get('donation_type');
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
+    $showArchived = $request->boolean('archived');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
 
     $donations = $user->donations()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
@@ -186,6 +214,7 @@ class UserController extends Controller
         'donation_type' => $typeFilter,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
       'previousUrl' => $previousUrl,
     ]);
@@ -204,8 +233,13 @@ class UserController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
+
     $adoptionApplications = $user->adoptionApplications()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->withCount('inspectionSchedule')
       ->with(['user','rescue'])
       ->when($search, function ($query, $search) {
@@ -241,6 +275,7 @@ class UserController extends Controller
         'search' => $search,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
       'previousUrl' => $previousUrl,
     ]);

@@ -3,7 +3,7 @@
     <h4 class="fs-5 mb-md-4 mb-4 mt-3 mt-md-0 me-5 align-items-start">
       <a :href="previousUrl" v-if="showBackNav" class="text-decoration-none font-monospace fw-bolder mb-md-0 mb-5 text-danger fs-4"><i class="bi bi-chevron-left"></i><span class="ms-0">Back </span></a>
     </h4>
-    <h3 class="text-center fw-bolder display-6 font-monospace mb-4 mt-3">Manage Reports</h3>
+    <h3 class="text-center fw-bolder display-6 font-monospace mb-4 mt-3">Manage Staff Accounts</h3>
 
     <!-- Active Filters Display -->
     <div v-if="hasActiveFilters" class="mb-3">
@@ -16,12 +16,12 @@
         </span>
         
         <span v-if="filters.type" class="badge bg-info text-dark d-flex flex-block align-items-center">
-          Type: {{ filters.type }}
+          Type: {{ filters.first_name }}
           <button @click="clearFilter('type')" class="btn-close btn-close-dark ms-1" aria-label="Clear size filter"></button>
         </span>
         
         <span v-if="filters.status" class="badge bg-info text-dark d-flex flex-block align-items-center">
-          Status: {{ getStatusLabel(filters.status) }}
+          Status: {{ getStatusLabel(filters.last_name) }}
           <button @click="clearFilter('status')" class="btn-close btn-close-dark ms-1" aria-label="Clear status filter"></button>
         </span>
 
@@ -37,86 +37,20 @@
     </div>
 
     <div class="row g-3 g-md-5 mb-md-2 mb-1 justify-content-end mt-md-0">
-      <div class="col-12 col-md-6 d-flex flex-column flex-md-row">
-        <fieldset class="p-1 mt-0 mb-0">
-          <legend class="fs-6 fw-bold mx-2 font-monospace" id="filter-legend">Filter by</legend>
-          <div class="row g-2 mt-0">
-            <div class="col-6">
-              <select v-model="selectedType" @change="onFilterChange('type', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
-                <option selected hidden value="">Type</option>
-                <option value="lost">Lost Reports</option>
-                <option value="found">Found Reports</option>
-              </select>
-            </div>
-            <div class="col-6">
-              <select v-model="selectedStatus" @change="onFilterChange('status', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
-                <option selected hidden value="">Status</option>
-                <option value="active">Active</option>
-                <option value="resolved">Resolved</option>
-              </select>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset class="ms-md-3 p-1 mt-0 mb-0">
-          <legend class="fs-6 fw-bold mx-2" id="sort-legend">Sort by</legend>
-          <div class="row g-2 mt-0">
-            <div class="col-12">
-              <select v-model="selectedSort" @change="onSortChange($event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
-                <option selected hidden value="">Report Date</option>
-                <option value="desc">Newest</option>
-                <option value="asc">Oldest</option>
-              </select>
-            </div>
-          </div>
-        </fieldset>
-        <div class="ms-md-3 p-1 mt-0 mb-0 d-flex align-items-end">
-          <button 
-            type="button" 
-            @click="toggleArchived" 
-            class="btn w-100"
-            :class="showArchived ? 'btn-warning' : 'btn-outline-secondary'"
-          >
-            <i class="bi" :class="showArchived ? 'bi-archive-fill' : 'bi-archive'"></i>
-            {{ showArchived ? 'Viewing Archived' : 'View Archived' }}
-          </button>
-        </div>
-      </div>
 
-      <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end">
-        <!-- Search input for larger screens -->
-        <div class="input-group w-50 h-50 d-none d-md-flex mt-auto mb-1 align-self-end">
-          <input type="text" v-model="searchInput" @input="onSearchInput" name="reportsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control">
-          <button 
-            v-if="searchInput" 
-            @click="clearSearch" 
-            class="btn btn-info" 
-            type="button" 
-            aria-label="Clear search"
-          > 
-            <i class="bi bi-x-lg fw-bolder fs-6"></i>
-          </button>
+      <div class="col-12 col-md-6 mt-5 d-flex flex-column justify-content-end">
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-primary fw-bold align-self-end mt-auto mb-1" id="createRescueProfileButton"  data-bs-toggle="modal" data-bs-target="#createStaffAccountModal">Create Staff Account</button>
         </div>
-        
-        <!-- Search input for smaller screens -->
-        <div class="input-group w-100 d-flex d-md-none px-1">
-          <input type="text" v-model="searchInput" @input="onSearchInput" name="reportsSearchField" aria-label="Search" placeholder="Search Reports" class="form-control">
-          <button 
-            v-if="searchInput" 
-            @click="clearSearch" 
-            class="btn btn-info" 
-            type="button" 
-            aria-label="Clear search"
-          > 
-            <i class="bi bi-x-lg fw-bolder fs-6"></i>
-          </button>
-         </div>
       </div>
     </div>
   </div>
+  <CreateStaffAccountModal/>
 </template>
 
 <script setup>
   import { ref, watch, onMounted, computed } from 'vue';
+  import CreateStaffAccountModal from '../../Modals/CreateStaffAccountModal.vue';
 
   const props = defineProps({
     previousUrl: String,
@@ -133,7 +67,6 @@
   const selectedType = ref('');
   const selectedStatus = ref('');
   const selectedSort = ref('');
-  const showArchived = ref(false);
 
   const hasActiveFilters = computed(() => {
     return !!(props.filters.search || props.filters.type || props.filters.status || props.filters.sort);
@@ -144,14 +77,8 @@
     selectedType.value = props.filters.type || '';
     selectedStatus.value = props.filters.status || '';
     selectedSort.value = props.filters.sort || '';
-    showArchived.value = props.filters.archived || false;
   });
-  
-  const toggleArchived = () => {
-    showArchived.value = !showArchived.value;
-    const filterData = { archived: showArchived.value };
-    emit('filter', filterData);
-  };
+
   watch(() => props.filters, (newFilters) => {
     searchInput.value = newFilters.search || '';
     selectedType.value = newFilters.type || '';

@@ -51,18 +51,18 @@
     })
   }
 
-  function closeModal(){
-    const modalEl = document.getElementById('restoreDonationModal')
-    const modal = Modal.getOrCreateInstance(modalEl)
-    if (modal) {
-      modal.hide()
+  function closeModal() {
+    const modalEl = document.getElementById('restoreDonationModal');
+    if (modalEl) {
+      const modal = Modal.getOrCreateInstance(modalEl);
+      modal.hide();
     }
 
-    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove())
-    document.body.classList.remove('modal-open')
-    document.body.style.removeProperty('overflow')
-    document.body.style.removeProperty('padding-right')
-    
-    donationId.value = null
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('overflow');
+    document.body.style.removeProperty('padding-right');
+
+    donationId.value = null;
   }
 </script>

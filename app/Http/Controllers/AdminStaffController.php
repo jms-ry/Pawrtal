@@ -58,9 +58,13 @@ class AdminStaffController extends Controller
     $sexFilter = $request->get('sex');
     $sizeFilter = $request->get('size');
     $statusFilter = $request->get('status');
+    $showArchived = $request->boolean('archived');
 
     $rescues = Rescue::query()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->withCount('adoptionApplications')
       ->when($search, function ($query, $search) {
         return $query->whereRaw('LOWER(name) LIKE LOWER(?)', ['%' . $search . '%']);
@@ -96,6 +100,7 @@ class AdminStaffController extends Controller
         'sex' => $sexFilter,
         'size' => $sizeFilter,
         'status' => $statusFilter,
+        'archived' => $showArchived,
       ],
     ]);
   }
@@ -113,9 +118,13 @@ class AdminStaffController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
 
     $reports = Report::query()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['animal_name','species', 'sex' ,'breed', 'color', 'type'];
@@ -155,6 +164,7 @@ class AdminStaffController extends Controller
         'type' => $typeFilter,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
     ]);
   }
@@ -171,9 +181,13 @@ class AdminStaffController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
 
     $donations = Donation::query()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with('user')
       ->when($search, function ($query, $search) {
         $columns = ['item_description','contact_person', 'pick_up_location' ,'status', 'donation_type'];
@@ -213,6 +227,7 @@ class AdminStaffController extends Controller
         'donation_type' => $typeFilter,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
     ]);
   }
@@ -228,9 +243,13 @@ class AdminStaffController extends Controller
     $statusFilter = $request->get('status');
     $sortOrder = $request->get('sort');
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
+    $showArchived = $request->boolean('archived');
 
     $adoptionApplications = AdoptionApplication::query()
-      ->withTrashed()
+      ->when($showArchived, 
+        fn ($q) => $q->onlyTrashed(),
+        fn ($q) => $q->withoutTrashed()
+      )
       ->with(['user','rescue','inspectionSchedule'])
       ->withCount('inspectionSchedule')
       ->when($search, function ($query, $search) {
@@ -277,6 +296,7 @@ class AdminStaffController extends Controller
         'search' => $search,
         'status' => $statusFilter,
         'sort' => $sortOrder,
+        'archived' => $showArchived,
       ],
       'inspectors' => $inspectors,
       'user' => $user?[
@@ -285,5 +305,25 @@ class AdminStaffController extends Controller
       ]:null
     ]); 
     
+  }
+
+  public function accountManagement()
+  {
+    if(Gate::denies('admin-access',Auth::user()))
+    {
+      return redirect('/')->with('error', 'You do not have authorization. Access denied!');
+    }
+
+    $users = User::query()->where('role', 'staff')
+    ->paginate(10)
+    ->withQueryString();
+    $previousUrl = url()->previous();
+    $showBackNav = !Str::contains($previousUrl, ['/login', '/register']);
+
+    return Inertia::render('AdminStaff/AccountManagement',[
+      'users' => $users,
+      'previousUrl' => $previousUrl,
+      'showBackNav' => $showBackNav,
+    ]);
   }
 }
