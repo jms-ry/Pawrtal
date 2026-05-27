@@ -18,8 +18,9 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReportAlertController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Log;
-use App\Models\Donation;
+use App\Models\User;
 use App\Http\Controllers\RecommendationController;
+use Illuminate\Http\Request;
 
 Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
@@ -43,6 +44,10 @@ Route::middleware('guest')->group(function () {
   });
 });
 
+Route::get('/api/check-email', function (Request $request) {
+  $exists = User::where('email', $request->email)->exists();
+  return response()->json(['exists' => $exists]);
+});
 Route::middleware(['auth'])->group(function () {
 
   Route::prefix('dashboard')->group(function () {

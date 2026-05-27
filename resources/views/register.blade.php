@@ -39,7 +39,7 @@
           </div>
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-6 form-floating">
-              <input type="email" id="floating_email" name="email" class="form-control" placeholder="Email" aria-label="Email" data-form-validation-target="emailInput" data-action="blur->form-validation#validateEmail">
+              <input type="email" id="floating_email" name="email" class="form-control" placeholder="Email" aria-label="Email" data-form-validation-target="emailInput" data-action="blur->form-validation#validateEmail" data-email-check="register">
               <label for="floating_email" class="form-label">Email</label>
               <small class="invalid-feedback fw-bold" data-form-validation-target="emailFeedback"></small>
             </div>

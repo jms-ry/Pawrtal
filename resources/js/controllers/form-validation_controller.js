@@ -71,24 +71,38 @@ export default class extends Controller {
     this.updateFormFeedback()
   }
 
-  validateEmail(){
-
+  async validateEmail(){
     if (!this.hasEmailInputTarget || !this.hasEmailFeedbackTarget) return
-
     const input = this.emailInputTarget
     const feedback = this.emailFeedbackTarget
     const value = input.value.trim()
-
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-
+    const formType = input.dataset.emailCheck // Get form type
+    
     if (value === "") {
       this.setInvalid(input, feedback, "Email is required.")
     } else if (!regex.test(value)) {
       this.setInvalid(input, feedback, "Please enter a valid email address.")
     } else {
-      this.setValid(input, feedback)
+      // Only check if email exists on register form
+      if (formType === "register") {
+        try {
+          const response = await fetch(`/api/check-email?email=${encodeURIComponent(value)}`)
+          const data = await response.json()
+          
+          if (data.exists) {
+            this.setInvalid(input, feedback, "Email is already taken.")
+          } else {
+            this.setValid(input, feedback)
+          }
+        } catch (error) {
+          this.setInvalid(input, feedback, "Error checking email availability.")
+        }
+      } else {
+        // Login form - skip email existence check
+        this.setValid(input, feedback)
+      }
     }
-
     this.updateFormFeedback()
   }
 

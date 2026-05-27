@@ -34,16 +34,17 @@ class AppServiceProvider extends ServiceProvider
     });
     Inertia::share([
       'auth' => function () {
+        if (!auth()->check()) {
+          return [];
+        }
+        
         return [
-          'user' => auth()->user() ? [
-            'id' => auth()->user()->id,
+          'user' => [
+            'id' => auth()->id(),
             'name' => auth()->user()->fullName(),
-            'role' => auth()->user()->role,
-            'email' => auth()->user()->email,
-            'contact_number' => auth()->user()->contact_number,
             'isAdminOrStaff' => auth()->user()->isAdminOrStaff(),
             'isAdmin' => auth()->user()->isAdmin(),
-          ] : null,
+          ],
         ];
       },
     ]);
