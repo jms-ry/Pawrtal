@@ -14,7 +14,7 @@
           @csrf
           <div class="row g-0 me-2 me-md-0">
             <div class="col-12 col-md-8 w-md-75 ms-2 ms-md-5 form-floating">
-              <input type="email" class="form-control" id="floating_email" name="email" placeholder="Email" autofocus data-form-validation-target="emailInput" data-action="blur->form-validation#validateEmail" data-email-check="login">
+              <input type="email" class="form-control" id="floating_email" name="email" placeholder="Email" data-form-validation-target="emailInput" data-action="blur->form-validation#validateEmail" data-email-check="login">
               <label for="floating_email" class="form-label">Email</label>
               <small class="invalid-feedback fw-bold" data-form-validation-target="emailFeedback"></small>
             </div>

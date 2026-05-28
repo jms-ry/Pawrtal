@@ -193,16 +193,16 @@ export default class extends Controller {
   }
 
   updateFormFeedback() {
-  const hasInvalid = this.element.querySelectorAll(".is-invalid").length > 0
+    const hasInvalid = this.element.querySelectorAll(".is-invalid").length > 0
 
-  if (hasInvalid) {
-    this.formFeedbackTarget.textContent = "Please correct the errors above."
-    this.formFeedbackTarget.style.display = "block"
-  } else {
-    this.formFeedbackTarget.textContent = ""
-    this.formFeedbackTarget.style.display = "none"
+    if (hasInvalid) {
+      this.formFeedbackTarget.textContent = "Please correct the errors above."
+      this.formFeedbackTarget.style.display = "block"
+    } else {
+      this.formFeedbackTarget.textContent = ""
+      this.formFeedbackTarget.style.display = "none"
+    }
   }
-}
   setInvalid(input, feedback, message) {
     input.classList.remove("is-valid")
     input.classList.add("is-invalid")

@@ -27,7 +27,7 @@
           @csrf
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-6 form-floating">
-              <input type="text" name="first_name" class="form-control" placeholder="First name" aria-label="First name" id="floating_first_name" autofocus data-form-validation-target="firstNameInput" data-action="blur->form-validation#validateFirstName">
+              <input type="text" name="first_name" class="form-control" placeholder="First name" aria-label="First name" id="floating_first_name" data-form-validation-target="firstNameInput" data-action="blur->form-validation#validateFirstName">
               <label for="floating_first_name" class="form-label">First Name</label>
               <small class="invalid-feedback fw-bold" data-form-validation-target="firstNameFeedback"></small>
             </div>

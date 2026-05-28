@@ -175,7 +175,7 @@
     return ''
   })
 
-  function validateEmail(){
+  async function validateEmail(){
     const email = form.email.trim()
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
@@ -184,9 +184,26 @@
       emailErrorMessage.value = "Email is required."
       return false
     }
+    
     if(!regex.test(email)){
       emailIsValid.value = false
       emailErrorMessage.value = "Please input a valid email address."
+      return false
+    }
+
+    // Check if email exists (but allow current user's email)
+    try {
+      const response = await fetch(`/api/check-email?email=${encodeURIComponent(email)}&id=${props.user.id}`)
+      const data = await response.json()
+      
+      if(data.exists){
+        emailIsValid.value = false
+        emailErrorMessage.value = "Email is already taken."
+        return false
+      }
+    } catch(error){
+      emailIsValid.value = false
+      emailErrorMessage.value = "Error checking email availability."
       return false
     }
 

@@ -45,7 +45,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('/api/check-email', function (Request $request) {
-  $exists = User::where('email', $request->email)->exists();
+  $exists = User::where('email', $request->email)
+    ->where('id', '!=', $request->id)
+    ->exists();
   return response()->json(['exists' => $exists]);
 });
 Route::middleware(['auth'])->group(function () {
