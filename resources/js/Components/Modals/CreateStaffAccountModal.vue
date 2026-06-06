@@ -146,7 +146,7 @@
     return ''
   })
 
-  function validateEmail() {
+  async function validateEmail() {
     const email = emailValue.value.trim()
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -159,6 +159,21 @@
     if (!regex.test(email)) {
       emailIsValid.value = false
       emailErrorMessage.value = 'Please enter a valid email address'
+      return false
+    }
+
+    try {
+      const response = await fetch(`/api/check-email?email=${encodeURIComponent(email)}`)
+      const data = await response.json()
+      
+      if(data.exists){
+        emailIsValid.value = false
+        emailErrorMessage.value = "Email is already taken."
+        return false
+      }
+    } catch(error){
+      emailIsValid.value = false
+      emailErrorMessage.value = "Error checking email availability."
       return false
     }
 
@@ -297,6 +312,25 @@
     firstNameIsValid.value = null
     firstNameErrorMessage.value = ''
 
+    lastNameValue.value = ''
+    lastNameIsValid.value = null
+    lastNameErrorMessage.value = ''
+
+    emailValue.value = ''
+    emailIsValid.value = null
+    emailErrorMessage.value = ''
+
+    contactNumberValue.value = ''
+    contactNumberIsValid.value = null
+    contactNumberErrorMessage.value = ''
+
+    passwordValue.value = ''
+    passwordIsValid.value = null
+    passwordErrorMessage.value = '' 
+
+    passwordConfirmationValue.value = ''
+    passwordConfirmationIsValid.value = null
+    passwordConfirmationErrorMessage.value = ''
     
   }
 </script>
