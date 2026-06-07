@@ -311,6 +311,10 @@ class AdminStaffController extends Controller
   {
     if(Gate::denies('admin-access',Auth::user()))
     {
+      if(Auth::user()->role === 'staff')
+      {
+        return redirect('/dashboard')->with('error', 'You do not have authorization. Access denied!');
+      }
       return redirect('/')->with('error', 'You do not have authorization. Access denied!');
     }
 
