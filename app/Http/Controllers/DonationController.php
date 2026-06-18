@@ -113,13 +113,35 @@ class DonationController extends Controller
 
     if($request->status === 'accepted'){
       $this->authorize('accept', $donation);
-      $donation->update($requestData);
+
+      DB::transaction(function () use ($donation, $requestData) {
+        $lockedDonation = Donation::lockForUpdate()->find($donation->id);
+
+        // Re-check policy on the freshly locked row
+        if ($lockedDonation->status !== 'pending') {
+          abort(403);
+        }
+
+        $lockedDonation->update($requestData);
+      });
+
       return redirect()->back()->with('success','Donation has been accepted.');
     }
 
     if($request->status === 'rejected'){
       $this->authorize('reject', $donation);
-      $donation->update($requestData);
+      
+      DB::transaction(function () use ($donation, $requestData) {
+        $lockedDonation = Donation::lockForUpdate()->find($donation->id);
+
+        // Re-check policy on the freshly locked row
+        if ($lockedDonation->status !== 'pending') {
+          abort(403);
+        }
+
+        $lockedDonation->update($requestData);
+      });
+
       return redirect()->back()->with('error','Donation has been rejected.');
     }
 

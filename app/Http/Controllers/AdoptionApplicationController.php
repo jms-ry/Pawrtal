@@ -12,6 +12,8 @@ use App\Notifications\AdoptionApplicationForceDeleteNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use App\Models\Rescue;
 class AdoptionApplicationController extends Controller
 {
   /**
@@ -98,42 +100,69 @@ class AdoptionApplicationController extends Controller
       return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been cancelled.');
     }
     //approve adoption applicaiton
-    if($request->status === 'approved'){
-      $this->authorize('approve',$adoptionApplication);
+    if ($request->status === 'approved') {
+      $this->authorize('approve', $adoptionApplication);
 
-      // Check if rescue is already adopted (race condition prevention)
-      if ($adoptionApplication->rescue->adoption_status === 'adopted') {
-        return redirect()->back()->with('error', 'This rescue has already been adopted.');
+      $alreadyProcessed = false;
+
+      DB::transaction(function () use ($adoptionApplication, $requestData, &$alreadyProcessed) {
+        $lockedApplication = AdoptionApplication::lockForUpdate()->find($adoptionApplication->id);
+
+        // Re-check policy condition on freshly locked row
+        if ($lockedApplication->status !== 'under_review') {
+          $alreadyProcessed = true;
+          return;
+        }
+
+        // Also lock the rescue to prevent double-adoption
+        $rescue = Rescue::lockForUpdate()->find($lockedApplication->rescue_id);
+
+        if ($rescue && $rescue->adoption_status === 'adopted') {
+          $alreadyProcessed = true;
+          return;
+        }
+
+        $lockedApplication->update($requestData);
+
+        if ($lockedApplication->rescue_id) {
+          $rescue->update(['adoption_status' => 'adopted']);
+        }
+
+        AdoptionApplication::where('rescue_id', $lockedApplication->rescue_id)
+          ->where('id', '!=', $lockedApplication->id)
+          ->whereIn('status', ['pending', 'under_review'])
+          ->each(function ($otherApp) use ($lockedApplication) {
+            $otherApp->update([
+              'status' => 'rejected',
+              'review_notes' => "Automatically rejected because another applicant was approved for {$lockedApplication->rescue->name}.",
+              'reviewed_by' => 'System',
+              'review_date' => now(),
+            ]);
+          });
+      });
+
+      if ($alreadyProcessed) {
+        return redirect()->back()->with('error', 'This application has already been processed.');
       }
 
-      $adoptionApplication->update($requestData);
-
-      if($adoptionApplication->rescue_id){
-        $adoptionApplication->rescue()->update(['adoption_status' => 'adopted']);
-      }
-
-      $otherApplications = AdoptionApplication::where('rescue_id',$adoptionApplication->rescue_id)
-        ->where('id', '!=', $adoptionApplication->id)
-        ->whereIn('status',['pending','under_review'])
-      ->get();
-
-      foreach($otherApplications as $otherApp){
-        $otherApp->update([
-          'status' => 'rejected',
-          'review_notes' => "Automatically rejected because another applicant was approved for {$adoptionApplication->rescue->name}.",
-          'reviewed_by' => 'System',
-          'review_date' => now(),
-        ]);
-      }
-
-      return redirect()->back()->with('success','Adoption application for '. $adoptionApplication->rescue->name. ' has been approved.');
+      return redirect()->back()->with('success', 'Adoption application for ' . $adoptionApplication->rescue->name . ' has been approved.');
     }
 
     //reject adoption application 
-    if($request->status === 'rejected'){
-      $this->authorize('reject',$adoptionApplication);
-      $adoptionApplication->update($requestData);
-      return redirect()->back()->with('error','Adoption application for '. $adoptionApplication->rescue->name. ' has been rejected.');
+    if ($request->status === 'rejected') {
+      $this->authorize('reject', $adoptionApplication);
+
+      DB::transaction(function () use ($adoptionApplication, $requestData) {
+        $lockedApplication = AdoptionApplication::lockForUpdate()->find($adoptionApplication->id);
+
+        if (!in_array($lockedApplication->status, ['pending', 'under_review'])) {
+          abort(403);
+        }
+
+        $lockedApplication->update($requestData);
+      });
+
+      return redirect()->back()->with('error', 'Adoption application for ' . $adoptionApplication->rescue->name . ' has been rejected.');
     }
 
     $this->authorize('update', $adoptionApplication);

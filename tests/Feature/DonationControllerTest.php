@@ -766,6 +766,127 @@ class DonationControllerTest extends TestCase
     $this->assertDatabaseHas('donations', $updatedData);
   }
 
+  public function test_accepting_pending_donation_succeeds()
+  {
+    $user = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $donation = Donation::factory()->inKind()->create(['user_id' => $user->id]);
+
+    $response = $this->put(route('donations.update', $donation), [
+      'status' => 'accepted',
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Donation has been accepted.');
+
+    $this->assertDatabaseHas('donations', [
+        'id' => $donation->id,
+        'status' => 'accepted',
+    ]);
+  }
+
+  public function test_accepting_already_accepted_donation_is_forbidden()
+  {
+    $user = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $donation = Donation::factory()->inKind()->create(['user_id' => $user->id, 'status' => 'accepted']);
+
+    $response = $this->put(route('donations.update', $donation), [
+      'status' => 'accepted',
+    ]);
+
+    $response->assertForbidden();
+
+    // Ensure status remains accepted and wasn't double-written
+    $this->assertDatabaseHas('donations', [
+      'id' => $donation->id,
+      'status' => 'accepted',
+    ]);
+  }
+
+  public function test_concurrent_acceptance_of_same_donation_only_succeeds_once()
+  {
+    $user = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+    $staff = User::factory()->staff()->create();
+
+    $donation = Donation::factory()->inKind()->create(['user_id' => $user->id]);
+
+    // Simulate admin accepting first
+    $this->actingAs($admin);
+    $this->put(route('donations.update', $donation), [
+      'status' => 'accepted',
+    ]);
+
+    // Simulate staff trying to accept the same donation right after
+    $this->actingAs($staff);
+    $response = $this->put(route('donations.update', $donation), [
+      'status' => 'accepted',
+    ]);
+
+    $response->assertForbidden();
+
+    // Ensure only one acceptance recorded
+    $this->assertDatabaseHas('donations', [
+      'id' => $donation->id,
+      'status' => 'accepted',
+    ]);
+  }
+
+  public function test_staff_can_accept_pending_donation()
+  {
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $this->actingAs($staff);
+
+    $donation = Donation::factory()->inKind()->create(['user_id' => $user->id]);
+
+    $response = $this->put(route('donations.update', $donation), [
+      'status' => 'accepted',
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success', 'Donation has been accepted.');
+
+    $this->assertDatabaseHas('donations', [
+      'id' => $donation->id,
+      'status' => 'accepted',
+    ]);
+  }
+
+  public function test_concurrent_rejection_of_same_donation_only_succeeds_once()
+  {
+    $user = User::factory()->create();
+    $admin = User::factory()->admin()->create();
+    $staff = User::factory()->staff()->create();
+
+    $donation = Donation::factory()->inKind()->create(['user_id' => $user->id]);
+
+    // Simulate admin accepting first
+    $this->actingAs($admin);
+    $this->put(route('donations.update', $donation), [
+      'status' => 'rejected',
+    ]);
+
+    // Simulate staff trying to accept the same donation right after
+    $this->actingAs($staff);
+    $response = $this->put(route('donations.update', $donation), [
+      'status' => 'rejected',
+    ]);
+
+    $response->assertForbidden();
+
+    // Ensure only one acceptance recorded
+    $this->assertDatabaseHas('donations', [
+      'id' => $donation->id,
+      'status' => 'rejected',
+    ]);
+  }
+
   public function test_cannot_update_with_invalid_status()
   {
     $user = User::factory()->create();

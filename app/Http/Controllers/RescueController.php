@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 class RescueController extends Controller
 {
   /**
@@ -171,6 +172,14 @@ class RescueController extends Controller
   public function update(UpdateRescueRequest $request, Rescue $rescue)
   { 
     $this->authorize('update', $rescue);
+    
+    $incoming = Carbon::parse($request->last_updated_at)->utc()->toDateTimeString();
+    $current  = $rescue->updated_at->utc()->toDateTimeString();
+
+    if ($incoming !== $current) {
+      return redirect()->back()->with('error', 'This rescue profile has been modified by another user. Please refresh the page and try again.');
+    }
+
     $requestData = $request->validated();
 
     if ($request->hasFile('profile_image')) {

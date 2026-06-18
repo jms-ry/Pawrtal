@@ -7,6 +7,7 @@
           <h5 class="modal-title">Update {{ rescue.name_formatted }}'s Profile</h5>
         </div>
         <form @submit.prevent="submitForm">
+          <input type="hidden" name="last_updated_at" v-model="form.last_updated_at">
           <div class="modal-body bg-info-subtle border-0">
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
@@ -175,7 +176,8 @@
     description: '',
     profile_image: null,
     images: null,
-    _method: 'PUT'
+    _method: 'PUT',
+    last_updated_at: ''
   })
   // Initialize form with rescue data
   onMounted(() => {
@@ -208,6 +210,7 @@
       // Reset file inputs
       form.profile_image = null
       form.images = null
+      form.last_updated_at = props.rescue.updated_at || ''
     }
   }
 
@@ -692,7 +695,8 @@
     const formData = new FormData()
   
     formData.append('_method', 'PUT')
-  
+    formData.append('last_updated_at', form.last_updated_at || '')
+
     formData.append('name', form.name || '')
     formData.append('species', form.species || '')
     formData.append('breed', form.breed || '')

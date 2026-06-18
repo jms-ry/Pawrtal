@@ -109,11 +109,7 @@ class AdoptionApplicationPolicy
 
   public function reject(User $user, AdoptionApplication $adoptionApplication): bool
   {
-    if($adoptionApplication->status === 'pending'){
-      return $user->isAdminOrStaff();
-    }
-
-    if($adoptionApplication->status === 'under_review'){
+    if (in_array($adoptionApplication->status, ['pending', 'under_review'])) {
       return $user->isAdminOrStaff();
     }
 

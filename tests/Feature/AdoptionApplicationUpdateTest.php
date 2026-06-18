@@ -1608,7 +1608,7 @@ class AdoptionApplicationUpdateTest extends TestCase
 
     // Should redirect with error
     $response->assertRedirect(route('dashboard.adoptionApplications'));
-    $response->assertSessionHas('error', 'This rescue has already been adopted.');
+    $response->assertSessionHas('error', 'This application has already been processed.');
 
     // Application should not be approved
     $application->refresh();
@@ -1725,5 +1725,48 @@ class AdoptionApplicationUpdateTest extends TestCase
       $user1,
       AdoptionApplicationApprovedNotification::class
     );
+  }
+
+  public function test_concurrent_approval_of_same_adoption_application_only_succeeds_once()
+  {
+    $admin = User::factory()->admin()->create();
+    $staff = User::factory()->staff()->create();
+
+    $user = User::factory()->create();
+
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $application = AdoptionApplication::factory()->under_review()->create(['rescue_id' => $rescue->id, 'user_id' => $user->id]);
+
+    // Simulate admin approving first
+    $this->actingAs($admin);
+    $response = $this->put(route('adoption-applications.update', $application), [
+      'status' => 'approved',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'This application is approved.',
+      'reviewed_by' => $admin->fullName(),
+    ]);
+
+    // Simulate staff trying to approve the same application right after
+    $this->actingAs($staff);
+    $response = $this->put(route('adoption-applications.update', $application), [
+      'status' => 'approved',
+      'review_date' => Carbon::now(),
+      'review_notes' => 'This application is approved.',
+      'reviewed_by' => $staff->fullName(),
+    ]);
+
+    $response->assertForbidden();
+
+    // Ensure application is approved only once
+    $this->assertDatabaseHas('adoption_applications', [
+      'id' => $application->id,
+      'status' => 'approved',
+    ]);
+
+    // Ensure rescue is marked adopted only once
+    $this->assertDatabaseHas('rescues', [
+      'id' => $rescue->id,
+      'adoption_status' => 'adopted',
+    ]);
   }
 }

@@ -1018,4 +1018,80 @@ class RescueUpdateTest extends TestCase
     $this->assertSoftDeleted('rescues', ['id' => $rescue->id]);
   }
 
+  public function test_updating_rescue_with_stale_timestamp_fails()
+  {
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $rescue = Rescue::factory()->create();
+
+    $updatedData = [
+      'name' => 'Updated Name',
+      'species' => 'Updated Dog',
+      'breed' => null,
+      'distinctive_features' => null,
+      'age' => null,
+      'size' => null,
+      'color' => null,
+      'description' => 'A friendly dog',
+      'sex' => 'male',
+      'health_status' => 'healthy',
+      'vaccination_status' => 'vaccinated',
+      'spayed_neutered' => 'true',
+      'adoption_status' => 'available',
+      'images' => null,
+      'profile_image' => null,
+      'last_updated_at' => '2000-01-01T00:00:00.000000Z', // stale timestamp
+    ];
+
+    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('error', 'This rescue profile has been modified by another user. Please refresh the page and try again.');
+
+    // Ensure the record was NOT updated
+    $this->assertDatabaseMissing('rescues', [
+      'id' => $rescue->id,
+      'name' => 'Updated Name',
+    ]);
+  }
+
+  public function test_updating_rescue_with_correct_timestamp_succeeds()
+  {
+    $admin = User::factory()->admin()->create();
+    $this->actingAs($admin);
+
+    $rescue = Rescue::factory()->create();
+
+    $updatedData = [
+      'name' => 'Updated Name',
+      'species' => 'Updated Dog',
+      'breed' => null,
+      'distinctive_features' => null,
+      'age' => null,
+      'size' => null,
+      'color' => null,
+      'description' => 'A friendly dog',
+      'sex' => 'male',
+      'health_status' => 'healthy',
+      'vaccination_status' => 'vaccinated',
+      'spayed_neutered' => 'true',
+      'adoption_status' => 'available',
+      'images' => null,
+      'profile_image' => null,
+      'last_updated_at' => $rescue->updated_at->toISOString(), // correct timestamp
+    ];
+
+    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+
+    $response->assertRedirect(route('rescues.show', $rescue->id));
+    $response->assertSessionHas('info', 'Rescue Profile for ' . $updatedData['name'] . ' has been updated!');
+
+    $this->assertDatabaseHas('rescues', array_merge(
+      ['id' => $rescue->id],
+      collect($updatedData)
+        ->except(['images', 'profile_image', 'last_updated_at'])
+      ->toArray()
+    ));
+  }
 }
