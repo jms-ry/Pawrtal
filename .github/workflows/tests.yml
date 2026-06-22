@@ -62,6 +62,21 @@ jobs:
           DB_PASSWORD: "12341234"
         run: php artisan migrate --force
 
+      - name: Verify DB connection and tables
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: pawrtal_testing
+          DB_USERNAME: postgres
+          DB_PASSWORD: "12341234"
+        run: |
+          php artisan tinker --execute="echo DB::connection()->getDatabaseName();"
+          PGPASSWORD=12341234 psql -h 127.0.0.1 -U postgres -d pawrtal_testing -c "\dt"
+
+      - name: Clear config cache
+        run: php artisan config:clear
+
       - name: Run test suite
         env:
           DB_CONNECTION: pgsql
