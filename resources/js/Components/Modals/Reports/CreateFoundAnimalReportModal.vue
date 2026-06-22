@@ -97,11 +97,8 @@
           </div>
         </div>
         <div class="modal-footer bg-info-subtle">
-          <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
-              <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
-            </button>
-          <button class="btn btn-danger" type="button" @click="closeModal" :disabled="isSubmitting">Close</button>
+          <button class="btn btn-primary me-1" type="submit">Submit Report</button>
+          <button class="btn btn-danger" type="button" @click="closeModal">Close</button>
         </div>
       </form>
     </div>
@@ -120,7 +117,6 @@
       default: () => null
     }
   })
-  const isSubmitting = ref(false)
 
   const  speciesValue = ref('')
   const  speciesIsValid = ref(null) 
@@ -541,15 +537,9 @@
       forceFormData: true,
       preserveScroll: false,
       preserveState: false,
-      onStart: () => {
-        isSubmitting.value = true
-      },
       onSuccess:() => {
         closeModal()
         form.reset()
-      },
-      onFinish: () => {
-        isSubmitting.value = false
       },
     })
   }
