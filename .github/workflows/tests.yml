@@ -63,4 +63,11 @@ jobs:
         run: php artisan migrate --force
 
       - name: Run test suite
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: pawrtal_testing
+          DB_USERNAME: postgres
+          DB_PASSWORD: "12341234"
         run: php artisan test
