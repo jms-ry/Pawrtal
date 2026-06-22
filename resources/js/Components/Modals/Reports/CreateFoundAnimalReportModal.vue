@@ -7,7 +7,7 @@
         <h5 class="modal-title">Create a New Found Animal Report!</h5>
       </div>
       <form  @submit="submitForm">
-        <div class="modal-body bg-info-subtle border-0">
+        <div class="modal-body bg-info-subtle border-0" :class="{ 'opacity-50': isSubmitting }" >
           <input type="hidden" name="type" class="form-control" value="found">
           <input type="hidden" name="user_id" class="form-control" :value="user?.id">
           <div class="row g-2 mt-2">
