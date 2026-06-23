@@ -15,15 +15,15 @@
             <h6 class="fw-bolder text-uppercase font-monospace mt-2">Inspection Details:</h6>
             <form @submit.prevent="submitForm">
               <input type="hidden" name="application_id" class="form-control" v-model="form.application_id">
-              <div class="form-floating">
-                <input type="text" name="inspection_location" class="form-control" placeholder="Inspection_location" aria-label="Inspection_location" id="floating_inspection_location" @blur="validateLocation" :class="locationValidationClass" v-model="form.inspection_location">
+              <div class="form-floating" :class="{ 'opacity-50': isSubmitting }">
+                <input type="text" :disabled="isSubmitting" name="inspection_location" class="form-control" placeholder="Inspection_location" aria-label="Inspection_location" id="floating_inspection_location" @blur="validateLocation" :class="locationValidationClass" v-model="form.inspection_location">
                 <label for="floating_inspection_location" class="form-label fw-bold">Inspection Address</label>
                 <small class="invalid-feedback fw-bold">{{ addressErrorMessage }}</small>
               </div>
 
-              <div class="row g-2 mt-2">
+              <div class="row g-2 mt-2" :class="{ 'opacity-50': isSubmitting }">
                 <div class="col-12 col-md-6 form-floating">
-                  <select name="inspector_id" id="floating_inspector_id" class="form-select" aria-label="size-select" @blur="validateInspector" :class="inspectorValidationClass" v-model="form.inspector_id" >
+                  <select name="inspector_id" :disabled="isSubmitting" id="floating_inspector_id" class="form-select" aria-label="size-select" @blur="validateInspector" :class="inspectorValidationClass" v-model="form.inspector_id" >
                     <option selected hidden value="">Inspectors</option>
                     <option v-for="inspector in inspectors" :key="inspector.id" :value="inspector.id">
                       {{ inspector.first_name }}
@@ -33,7 +33,7 @@
                   <small class="invalid-feedback fw-bold">{{ inspectorErrorMessage }}</small>
                 </div>
                  <div class="col-12 col-md-6 form-floating">
-                  <input type="date" name="inspection_date" class="form-control" placeholder="Inspection date" aria-label="Inspection seen date" id="floating_inspection_date" @blur="validateDate" :class="dateValidationClass" v-model="form.inspection_date">
+                  <input type="date" :disabled="isSubmitting" name="inspection_date" class="form-control" placeholder="Inspection date" aria-label="Inspection seen date" id="floating_inspection_date" @blur="validateDate" :class="dateValidationClass" v-model="form.inspection_date">
                   <label for="floating_inspection_date" class="form-label fw-bold">Assign Inspection Date</label>
                   <small class="invalid-feedback fw-bold">{{ dateErrorMessage }}</small>
                  </div>
@@ -42,8 +42,11 @@
               <hr class="text-dark mt-3 mb-2">
 
               <div class="modal-footer border-0 bg-info-subtle">
-                <button type="submit" class="btn btn-success me-2">Set Inspection</button>
-                <button type="button" class="btn btn-danger ms-1" @click="closeModal">Close</button>
+                <button type="submit" class="btn btn-success me-2" :disabled="isSubmitting">
+                  <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  {{ isSubmitting ? 'Processing...' : 'Set Inspection' }}
+                </button>
+                <button type="button" class="btn btn-danger ms-1" @click="closeModal" :disabled="isSubmitting">Close</button>
               </div>
             </form>
             
@@ -65,6 +68,8 @@
   const fullAddress = ref(null)
   const startDate = ref(null)
   const endDate = ref(null)
+  
+  const isSubmitting = ref(false)
 
   const props = defineProps({
     inspectors: Object
@@ -218,9 +223,15 @@
       data: formData,
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
-     },
+      },
+      onFinish: () => {
+        isSubmitting.value = false
+      },
       onError: (errors) => {
         console.error("Validation errors:", errors)
       }

@@ -10,8 +10,8 @@
             <form @submit.prevent="submitForm">
               <input class="form-check-input" type="hidden" name="status" id="statusRejected" v-model="form.status">
               <!-- Review Notes Textarea (Floating) -->
-              <div class="form-floating mb-3">
-                <textarea class="form-control" id="reviewNotes" name="review_notes" placeholder="Enter your review comments..." style="height: 100px" @blur="validateReviewNotes" :class="notesValidationClass" v-model="form.review_notes"></textarea>
+              <div class="form-floating mb-3" :class="{ 'opacity-50': isSubmitting }">
+                <textarea class="form-control" :disabled="isSubmitting" id="reviewNotes" name="review_notes" placeholder="Enter your review comments..." style="height: 100px" @blur="validateReviewNotes" :class="notesValidationClass" v-model="form.review_notes"></textarea>
                 <label for="reviewNotes">Leave a review note.</label>
                 <div v-if="notesErrorMessage" class="invalid-feedback d-block">
                   {{ notesErrorMessage }}
@@ -24,8 +24,11 @@
 
               <!-- Submit Button -->
               <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Submit Decision</button>
-                <button type="button" class="btn btn-danger" @click="closeModal">Cancel</button>
+                <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
+                  <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  {{ isSubmitting ? 'Submitting...' : 'Submit Decision' }}
+                </button>
+                <button type="button" class="btn btn-danger" @click="closeModal" :disabled="isSubmitting">Cancel</button>
               </div>
             </form>
             
@@ -48,6 +51,7 @@
   })
 
   const applicationId = ref(null)
+  const isSubmitting = ref(false)
 
   const form = useForm({
     status:'rejected',
@@ -115,9 +119,15 @@
     form.put(`/adoption-applications/${applicationId.value}`,{
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
-     },
+      },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
   function closeModal(){

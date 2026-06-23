@@ -9,17 +9,17 @@
             
             <form @submit.prevent="submitForm">
               <!-- Status Radio Buttons (Horizontal) -->
-              <div class="mb-3">
+              <div class="mb-3" :class="{ 'opacity-50': isSubmitting }">
                 <label class="form-label fw-semibold">Decision Status</label>
                 <div class="d-flex gap-3">
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="statusApproved" value="approved" @change="validateStatus" v-model="form.status">
+                    <input class="form-check-input" :disabled="isSubmitting" type="radio" name="status" id="statusApproved" value="approved" @change="validateStatus" v-model="form.status">
                     <label class="form-check-label" for="statusApproved">
                       Approve this application
                     </label>
                   </div>
                   <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="statusRejected" value="rejected" @change="validateStatus" v-model="form.status">
+                    <input class="form-check-input"  type="radio" name="status" id="statusRejected" value="rejected" @change="validateStatus" v-model="form.status">
                     <label class="form-check-label" for="statusRejected">
                       Reject this application
                     </label>
@@ -31,8 +31,8 @@
               </div>
 
               <!-- Review Notes Textarea (Floating) -->
-              <div class="form-floating mb-3">
-                <textarea class="form-control" id="reviewNotes" name="review_notes" placeholder="Enter your review comments..." style="height: 100px" @blur="validateReviewNotes" :class="notesValidationClass" v-model="form.review_notes"></textarea>
+              <div class="form-floating mb-3" :class="{ 'opacity-50': isSubmitting }">
+                <textarea class="form-control" :disabled="isSubmitting" id="reviewNotes" name="review_notes" placeholder="Enter your review comments..." style="height: 100px" @blur="validateReviewNotes" :class="notesValidationClass" v-model="form.review_notes"></textarea>
                 <label for="reviewNotes">Review Notes</label>
                 <div v-if="notesErrorMessage" class="invalid-feedback d-block">
                   {{ notesErrorMessage }}
@@ -45,8 +45,11 @@
 
               <!-- Submit Button -->
               <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Submit Decision</button>
-                <button type="button" class="btn btn-danger" @click="closeModal">Cancel</button>
+                <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
+                  <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  {{ isSubmitting ? 'Submitting...' : 'Submit Decision' }}
+                </button>
+                <button type="button" class="btn btn-danger" :disabled="isSubmitting" @click="closeModal">Cancel</button>
               </div>
             </form>
             
@@ -69,6 +72,7 @@
   })
 
   const applicationId = ref(null)
+  const isSubmitting = ref(false)
 
   const form = useForm({
     status:'',
@@ -149,9 +153,15 @@
     form.put(`/adoption-applications/${applicationId.value}`,{
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
-     },
+      },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
   function closeModal(){
