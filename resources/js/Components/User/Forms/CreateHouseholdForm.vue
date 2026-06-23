@@ -1,22 +1,22 @@
 <template>
   <form @submit.prevent="submitForm" method="POST">
-    <div class="card bg-warning-subtle border-0 p-3 p-md-5">
+    <div class="card bg-warning-subtle border-0 p-3 p-md-5" :class="{ 'opacity-50': isSubmitting }">
       <input type="hidden" name="user_id" class="form-control" :value="user.id">
       <div class="row g-2">
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" name="house_structure" :class="houseStructureValidationClass" @blur="validateHouseStructure" v-model="houseStructureValue" class="form-control" placeholder="House Structure" aria-label="House Structure" id="floating_house_structure" >
+          <input type="text" :disabled="isSubmitting" name="house_structure" :class="houseStructureValidationClass" @blur="validateHouseStructure" v-model="houseStructureValue" class="form-control" placeholder="House Structure" aria-label="House Structure" id="floating_house_structure" >
           <label for="floating_house_structure" class="form-label">House Structure (e.g Apartment, Tiny House, Cabin, etc.)</label>
           <small class="invalid-feedback fw-bold">{{ houseStructureErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-6 form-floating">
-          <input type="number" min="1" name="household_members" :class="householdMembersValidationClass" @blur="validateHouseholdMembers" v-model="householdMembersValue" class="form-control" placeholder="House Members" aria-label="House Members" id="floating_house_members">
+          <input type="number" :disabled="isSubmitting" min="1" name="household_members" :class="householdMembersValidationClass" @blur="validateHouseholdMembers" v-model="householdMembersValue" class="form-control" placeholder="House Members" aria-label="House Members" id="floating_house_members">
           <label for="floating_house_members" class="form-label">House members (including yourself)</label>
           <small class="invalid-feedback fw-bold">{{ householdMembersErrorMessage }}</small>
         </div>
       </div>
       <div class="row g-2 mt-2">
         <div class="col-12 col-md-6 form-floating">
-          <select name="have_children" :class="haveChildrenValidationClass" @blur="validateHaveChildren" v-model="haveChildrenValue" id="floating_have_children" class="form-select" aria-label="children-select">
+          <select name="have_children" :disabled="isSubmitting" :class="haveChildrenValidationClass" @blur="validateHaveChildren" v-model="haveChildrenValue" id="floating_have_children" class="form-select" aria-label="children-select">
             <option hidden value="" >Are there children in the house?</option>
             <option value="true" >Yes</option>
             <option value="false" >No</option>
@@ -25,14 +25,14 @@
           <small class="invalid-feedback fw-bold">{{ haveChildrenErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-6 form-floating" v-show="haveChildrenValue === 'true'" id="number_of_children_div">
-          <input type="number" min="1" name="number_of_children" :class="numberOfChildrenValidationClass" @blur="validateNumberOfChildren" v-model="numberOfChildrenValue" class="form-control" placeholder="Number of Children" aria-label="Number of Children" id="floating_number_of_children">
+          <input type="number" :disabled="isSubmitting" min="1" name="number_of_children" :class="numberOfChildrenValidationClass" @blur="validateNumberOfChildren" v-model="numberOfChildrenValue" class="form-control" placeholder="Number of Children" aria-label="Number of Children" id="floating_number_of_children">
           <label for="floating_number_of_children" class="form-label">Number of Children</label>
           <small class="invalid-feedback fw-bold" id="numberOfChildrenFeedback">{{ numberOfChildrenErrorMessage }}</small>
         </div>
       </div>
       <div class="row g-2 mt-2">
         <div class="col-12 col-md-4 form-floating">
-          <select name="has_other_pets" id="floating_has_other_pets" :class="hasOtherPetsValidationClass" @blur="validateHasOtherPets" v-model="hasOtherPetsValue" class="form-select" aria-label="other-pet-select">
+          <select name="has_other_pets" :disabled="isSubmitting" id="floating_has_other_pets" :class="hasOtherPetsValidationClass" @blur="validateHasOtherPets" v-model="hasOtherPetsValue" class="form-select" aria-label="other-pet-select">
             <option hidden value="">Do you have other pets?</option>
             <option value="true" >Yes</option>
             <option value="false" >No</option>
@@ -41,12 +41,12 @@
           <small class="invalid-feedback fw-bold">{{ hasOtherPetsErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-4 form-floating" v-show="hasOtherPetsValue === 'true'" id="current_pets_div">
-          <input type="text" id="floating_current_pets" name="current_pets" :class="currentPetsValidationClass" @blur="validateCurrentPets" v-model="currentPetsValue" class="form-control" placeholder="Current Pet/s" aria-label="Current Pet/s">
+          <input type="text" :disabled="isSubmitting" id="floating_current_pets" name="current_pets" :class="currentPetsValidationClass" @blur="validateCurrentPets" v-model="currentPetsValue" class="form-control" placeholder="Current Pet/s" aria-label="Current Pet/s">
           <label for="floating_current_pets" class="form-label">Current Pet/s (Separate with comma(,) if more than one) </label>
           <small class="invalid-feedback fw-bold">{{ currentPetsErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-4 form-floating" v-show="hasOtherPetsValue === 'true'" id="number_of_current_pets_div">
-          <input type="number" min="1" id="floating_number_of_current_pets" name="number_of_current_pets" :class="numberOfCurrentPetsValidationClass" @blur="validateNumberOfCurrentPets" v-model="numberOfCurrentPetsValue" class="form-control" placeholder="Number of Current Pet/s" aria-label="Number of Current Pet/s">
+          <input type="number" :disabled="isSubmitting" min="1" id="floating_number_of_current_pets" name="number_of_current_pets" :class="numberOfCurrentPetsValidationClass" @blur="validateNumberOfCurrentPets" v-model="numberOfCurrentPetsValue" class="form-control" placeholder="Number of Current Pet/s" aria-label="Number of Current Pet/s">
           <label for="floating_number_of_current_pets" class="form-label">Number of Current Pet/s</label>
           <small class="invalid-feedback fw-bold">{{ numberOfCurrentPetsErrorMessage }}</small>
         </div>
@@ -54,10 +54,16 @@
     </div>
     <div class="card-footer border-0 bg-warning-subtle">
       <div class="justify-content-end d-none d-md-flex mt-3 mt-md-0">
-        <button type="submit" class="btn btn-success fw-bolder">Create Household</button>
+        <button type="submit" class="btn btn-success fw-bolder" :disabled="isSubmitting">
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSubmitting ? 'Submitting...' : 'Submit Household' }}
+        </button>
       </div>
       <div class="d-md-none">
-        <button type="submit" class="btn btn-success w-100 fw-bolder">Create Household</button>
+        <button type="submit" class="btn btn-success w-100 fw-bolder" :disabled="isSubmitting">
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSubmitting ? 'Submitting...' : 'Submit Household' }}
+        </button>
       </div>
     </div>
   </form>
@@ -66,6 +72,9 @@
 <script setup>
   import { router} from '@inertiajs/vue3'
   import { ref, computed,} from 'vue'
+
+  const isSubmitting = ref(false)
+
   const props = defineProps({
     user: {
       type: Object,
@@ -303,6 +312,12 @@
     router.post('/households',formData,{
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
 </script>

@@ -1,27 +1,27 @@
 <template>
   <form @submit.prevent="submitForm" method="POST" class="">
-    <div class="card bg-warning-subtle border-0 p-3 p-md-5">
+    <div class="card bg-warning-subtle border-0 p-3 p-md-5" :class="{ 'opacity-50': isSubmitting }">
       <input type="hidden" name="user_id" v-model="form.user_id">
       <div class="row g-2">
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" name="barangay" class="form-control" :class="barangayValidationClass" @blur="validateBarangay" placeholder="Barangay" aria-label="Barangay" id="floating_barangay" v-model="form.barangay">
+          <input type="text" :disabled="isSubmitting" name="barangay" class="form-control" :class="barangayValidationClass" @blur="validateBarangay" placeholder="Barangay" aria-label="Barangay" id="floating_barangay" v-model="form.barangay">
           <label for="floating_barangay" class="form-label">Barangay</label>
           <small class="invalid-feedback fw-bold">{{ barangayErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" name="municipality" class="form-control" :class="municipalityValidationClass" @blur="validateMunicipality" placeholder="Municipality" aria-label="Municipality" id="floating_municipality" v-model="form.municipality">
+          <input type="text" :disabled="isSubmitting" name="municipality" class="form-control" :class="municipalityValidationClass" @blur="validateMunicipality" placeholder="Municipality" aria-label="Municipality" id="floating_municipality" v-model="form.municipality">
           <label for="floating_municipality" class="form-label">Municipality</label>
           <small class="invalid-feedback fw-bold">{{ municipalityErrorMessage }}</small>
         </div>
       </div>
       <div class="row g-2 mt-2">
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" id="floating_province" name="province" :class="provinceValidationClass" @blur="validateProvince" class="form-control" placeholder="Province" aria-label="Province" v-model="form.province">
+          <input type="text" :disabled="isSubmitting" id="floating_province" name="province" :class="provinceValidationClass" @blur="validateProvince" class="form-control" placeholder="Province" aria-label="Province" v-model="form.province">
           <label for="floating_province" class="form-label">Province</label>
           <small class="invalid-feedback fw-bold">{{ provinceErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" id="floating_zip_code" name="zip_code" :class="zipCodeValidationClass" @blur="validateZipCode" class="form-control" placeholder="Zip Code" aria-label="Zip Code" v-model="form.zip_code">
+          <input type="text" :disabled="isSubmitting" id="floating_zip_code" name="zip_code" :class="zipCodeValidationClass" @blur="validateZipCode" class="form-control" placeholder="Zip Code" aria-label="Zip Code" v-model="form.zip_code">
           <label for="floating_zip_code" class="form-label">Zip Code</label>
           <small class="invalid-feedback fw-bold">{{ zipCodeErrorMessage }}</small>
         </div>
@@ -29,14 +29,20 @@
     </div>
     <div class="card-footer border-0 bg-warning-subtle">
       <div class="justify-content-end d-none d-md-flex mt-3 mt-md-0">
-        <button type="submit" class="btn btn-info fw-bolder me-2">Update Address</button>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteAddressModal" class="btn btn-danger fw-bolder"
+        <button type="submit" class="btn btn-info fw-bolder me-2" :disabled="isSubmitting">
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSubmitting ? 'Updating...' : 'Update Address' }}
+        </button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteAddressModal" :disabled="isSubmitting" class="btn btn-danger fw-bolder"
           :data-address-id="user.address.id">Delete Address
         </button>
       </div>
       <div class="d-md-none">
-        <button type="submit" class="btn btn-info w-100 fw-bolder">Update Address</button>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteAddressModal" class="btn btn-danger w-100 fw-bolder mt-2"
+        <button type="submit" class="btn btn-info w-100 fw-bolder" :disabled="isSubmitting">
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSubmitting ? 'Updating...' : 'Update Address' }}
+        </button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#deleteAddressModal" :disabled="isSubmitting" class="btn btn-danger w-100 fw-bolder mt-2"
           :data-address-id="user.address.id">Delete Address
         </button>
       </div>
@@ -47,6 +53,8 @@
 <script setup>
   import { useForm } from '@inertiajs/vue3';
   import { ref, computed } from 'vue'
+
+  const isSubmitting = ref(false)
 
   const props = defineProps({
     user: {
@@ -218,6 +226,12 @@
     form.put(`/addresses/${props.user.address.id}`,{
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
 </script>

@@ -1,26 +1,26 @@
 <template>
   <form @submit.prevent="submitForm" class="">
-    <div class="card bg-warning-subtle border-0 p-3 p-md-5">
+    <div class="card bg-warning-subtle border-0 p-3 p-md-5" :class="{ 'opacity-50': isSubmitting }">
       <div class="row g-2">
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" name="first_name" :class="firstNameValidationClass" @blur="validateFirstName" class="form-control" placeholder="First name" aria-label="First name" id="floating_first_name" v-model="form.first_name">
+          <input type="text" :disabled="isSubmitting" name="first_name" :class="firstNameValidationClass" @blur="validateFirstName" class="form-control" placeholder="First name" aria-label="First name" id="floating_first_name" v-model="form.first_name">
           <label for="floating_first_name" class="form-label">First Name</label>
           <small class="invalid-feedback fw-bold">{{ firstNameErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" name="last_name" :class="lastNameValidationClass" @blur="validateLastName" class="form-control" placeholder="Last name" aria-label="Last name" id="floating_last_name" v-model="form.last_name">
+          <input type="text" :disabled="isSubmitting" name="last_name" :class="lastNameValidationClass" @blur="validateLastName" class="form-control" placeholder="Last name" aria-label="Last name" id="floating_last_name" v-model="form.last_name">
           <label for="floating_last_name" class="form-label">Last Name</label>
           <small class="invalid-feedback fw-bold">{{ lastNameErrorMessage }}</small>
         </div>
       </div>
       <div class="row g-2 mt-2">
         <div class="col-12 col-md-6 form-floating">
-          <input type="tel" id="floating_contact_number" :class="contactNumberValidationClass" @blur="validateContactNumber" name="contact_number" class="form-control" placeholder="Contact Number" aria-label="Contact Number" v-model="form.contact_number">
+          <input type="tel" :disabled="isSubmitting" id="floating_contact_number" :class="contactNumberValidationClass" @blur="validateContactNumber" name="contact_number" class="form-control" placeholder="Contact Number" aria-label="Contact Number" v-model="form.contact_number">
           <label for="floating_contact_number" class="form-label">Contact Number</label>
           <small class="invalid-feedback fw-bold">{{ contactNumberErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-6 form-floating">
-          <input type="email" id="floating_email" :class="emailValidationClass" @blur="validateEmail" name="email" class="form-control" placeholder="Email" aria-label="Email" v-model="form.email">
+          <input type="email" :disabled="isSubmitting" id="floating_email" :class="emailValidationClass" @blur="validateEmail" name="email" class="form-control" placeholder="Email" aria-label="Email" v-model="form.email">
           <label for="floating_email" class="form-label">Email</label>
           <small class="invalid-feedback fw-bold">{{ emailErrorMessage }}</small>
         </div>
@@ -28,10 +28,16 @@
     </div>
     <div class="card-footer border-0 bg-warning-subtle">
       <div class="justify-content-end d-none d-md-flex mt-3 mt-md-0">
-        <button type="submit" class="btn btn-info fw-bolder">Update Information</button>
+        <button type="submit" class="btn btn-info fw-bolder" :disabled="isSubmitting">
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSubmitting ? 'Updating...' : 'Update Information' }}
+        </button>
       </div>
       <div class="d-md-none">
-        <button type="submit" class="btn btn-info w-100 fw-bolder">Update Information</button>
+        <button type="submit" class="btn btn-info w-100 fw-bolder" :disabled="isSubmitting">
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSubmitting ? 'Updating...' : 'Update Information' }}
+        </button>
       </div>
     </div>
   </form>
@@ -40,6 +46,8 @@
 <script setup>
   import { useForm } from '@inertiajs/vue3';
   import {ref, computed } from 'vue'
+
+  const isSubmitting = ref(false)
 
   const props = defineProps({
     user: {
@@ -224,6 +232,12 @@
     form.put(`/users/${props.user.id}`,{
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
   

@@ -9,8 +9,11 @@
             <p class="fw-bold font-monospace mt-2 fs-5 text-start">Are you sure you wanna delete your Household Information?</p>
           </div>
           <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
-            <button class="btn btn-danger me-1" type="submit">Yes</button>
-            <button class="btn btn-warning" type="button"  data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-danger me-1" type="submit" :disabled="isSubmitting">
+              <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isSubmitting ? 'Processing...' : 'Yes' }}
+            </button>
+            <button class="btn btn-warning" type="button"  data-bs-dismiss="modal" :disabled="isSubmitting">Cancel</button>
           </div>
         </div>
       </form>
@@ -23,6 +26,8 @@
   import { Modal } from 'bootstrap'
   import { router } from '@inertiajs/vue3'
   import { ref, onMounted } from 'vue'
+
+  const isSubmitting = ref(false)
 
   const householdId = ref(null)
 
@@ -45,8 +50,14 @@
     router.delete(`/households/${householdId.value}`, {
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
+      },
+      onFinish: () => {
+        isSubmitting.value = false
       },
       onError: (errors) => {
         console.error('Error deleting household:', errors)

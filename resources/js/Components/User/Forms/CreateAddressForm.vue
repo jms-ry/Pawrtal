@@ -1,27 +1,27 @@
 <template>
   <form @submit="submitForm" method="POST">
-    <div class="card bg-warning-subtle border-0 p-3 p-md-5">
+    <div class="card bg-warning-subtle border-0 p-3 p-md-5" :class="{ 'opacity-50': isSubmitting }">
       <input type="hidden" name="user_id" class="form-control" :value="user?.id">
       <div class="row g-2">
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" name="barangay" :class="barangayValidationClass" v-model="barangayValue" @blur="validateBarangay" class="form-control" placeholder="Barangay" aria-label="Barangay" id="floating_barangay">
+          <input type="text" :disabled="isSubmitting" name="barangay" :class="barangayValidationClass" v-model="barangayValue" @blur="validateBarangay" class="form-control" placeholder="Barangay" aria-label="Barangay" id="floating_barangay">
           <label for="floating_barangay" class="form-label">Barangay</label>
           <small class="invalid-feedback fw-bold">{{ barangayErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" name="municipality" :class="municipalityValidationClass" v-model="municipalityValue" @blur="validateMunicipality" class="form-control" placeholder="Municipality" aria-label="Municipality" id="floating_municipality">
+          <input type="text" :disabled="isSubmitting" name="municipality" :class="municipalityValidationClass" v-model="municipalityValue" @blur="validateMunicipality" class="form-control" placeholder="Municipality" aria-label="Municipality" id="floating_municipality">
           <label for="floating_municipality" class="form-label">Municipality</label>
           <small class="invalid-feedback fw-bold">{{ municipalityErrorMessage }}</small>
         </div>
       </div>
       <div class="row g-2 mt-2">
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" id="floating_province" name="province" :class="provinceValidationClass" v-model="provinceValue" @blur="validateProvince" class="form-control" placeholder="Province" aria-label="Province">
+          <input type="text" :disabled="isSubmitting" id="floating_province" name="province" :class="provinceValidationClass" v-model="provinceValue" @blur="validateProvince" class="form-control" placeholder="Province" aria-label="Province">
           <label for="floating_province" class="form-label">Province</label>
           <small class="invalid-feedback fw-bold">{{ provinceErrorMessage }}</small>
         </div>
         <div class="col-12 col-md-6 form-floating">
-          <input type="text" id="floating_zip_code" name="zip_code" :class="zipCodeValidationClass" v-model="zipCodeValue" @blur="validateZipCode" class="form-control" placeholder="Zip Code" aria-label="Zip Code">
+          <input type="text" :disabled="isSubmitting" id="floating_zip_code" name="zip_code" :class="zipCodeValidationClass" v-model="zipCodeValue" @blur="validateZipCode" class="form-control" placeholder="Zip Code" aria-label="Zip Code">
           <label for="floating_zip_code" class="form-label">Zip Code</label>
           <small class="invalid-feedback fw-bold">{{ zipCodeErrorMessage }}</small>
         </div>
@@ -29,10 +29,16 @@
     </div>
     <div class="card-footer border-0 bg-warning-subtle">
       <div class="justify-content-end d-none d-md-flex mt-3 mt-md-0">
-        <button type="submit" class="btn btn-success fw-bolder">Create Address</button>
+        <button type="submit" class="btn btn-success fw-bolder" :disabled="isSubmitting">
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSubmitting ? 'Submitting...' : 'Submit Address' }}
+        </button>
       </div>
       <div class="d-md-none">
-        <button type="submit" class="btn btn-success w-100 fw-bolder">Create Address</button>
+        <button type="submit" class="btn btn-success w-100 fw-bolder" :disabled="isSubmitting">
+          <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isSubmitting ? 'Submitting...' : 'Submit Address' }}
+        </button>
       </div>
     </div>
   </form>
@@ -42,6 +48,7 @@
   import { router} from '@inertiajs/vue3'
   import { ref, computed } from 'vue'
 
+  const isSubmitting = ref(false)
   const props = defineProps({
     user: {
       type: Object,
@@ -212,6 +219,12 @@
     router.post('/addresses',formData,{
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
 </script>
