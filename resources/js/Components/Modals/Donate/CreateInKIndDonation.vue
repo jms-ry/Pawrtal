@@ -59,7 +59,7 @@
           <!--Large Screen-->
           <div class="modal-footer bg-info-subtle d-none d-md-flex justify-content-between">
             <div>
-              <button class="btn btn-info me-1" type="button" @click="addDonationItem">New Donation Item</button>
+              <button class="btn btn-info me-1" type="button" :disabled="isSubmitting" @click="addDonationItem">New Donation Item</button>
             </div>
             <div>
               <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
@@ -72,7 +72,7 @@
           <!--Small Screen-->
           <div class="modal-footer bg-info-subtle d-md-none d-flex justify-content-center">
             <div>
-              <button class="btn btn-subtle-outline-primary me-1" type="button" @click="addDonationItem">New Donation Item</button>
+              <button class="btn btn-subtle-outline-primary me-1" :disabled="isSubmitting" type="button" @click="addDonationItem">New Donation Item</button>
             </div>
             <div>
               <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
