@@ -7,17 +7,17 @@
           <h5 class="modal-title">Submit Adoption Application for <strong id="adoption_form_adoptable-name">Rescue Name</strong></h5>
         </div>
         <form @submit="submitForm">
-          <div class="modal-body bg-info-subtle border-0">
+          <div class="modal-body bg-info-subtle border-0" :class="{ 'opacity-50': isSubmitting }">
             <input type="hidden" name="user_id" class="form-control" id="adoption_form_user_id">
             <input type="hidden" name="rescue_id" class="form-control" id="adoption_form_rescue_id">
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-6 form-floating">
-                <input type="date" name="preferred_inspection_start_date" :class="startDateValidationClass" @blur="validateStartDate" v-model="startDateValue" class="form-control" placeholder="Inspection Start Date" aria-label="Inspection Start Date" id="floating_preferred_inspection_start_date">
+                <input type="date" :disabled="isSubmitting" name="preferred_inspection_start_date" :class="startDateValidationClass" @blur="validateStartDate" v-model="startDateValue" class="form-control" placeholder="Inspection Start Date" aria-label="Inspection Start Date" id="floating_preferred_inspection_start_date">
                 <label for="floating_preferred_inspection_start_date" class="form-label fw-bold">Inspection Start Date</label>
                 <small class="invalid-feedback fw-bold">{{ startDateErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-6 form-floating">
-                <input type="date" name="preferred_inspection_end_date" :class="endDateValidationClass" @blur="validateEndDate" v-model="endDateValue" class="form-control" placeholder="Inspection End Date" aria-label="Inspection End Date" id="floating_preferred_inspection_end_date">
+                <input type="date" :disabled="isSubmitting" name="preferred_inspection_end_date" :class="endDateValidationClass" @blur="validateEndDate" v-model="endDateValue" class="form-control" placeholder="Inspection End Date" aria-label="Inspection End Date" id="floating_preferred_inspection_end_date">
                 <label for="floating_preferred_inspection_end_date" class="form-label fw-bold">Inspection End Date</label>
                 <small class="invalid-feedback fw-bold">{{ endDateErrorMessage }}</small>
               </div>
@@ -26,27 +26,30 @@
             <div class="row g-2 mt-3">
               <div class="col-12 col-md-6">
                 <label for="valid_id" class="form-label fw-bold">Upload Valid ID</label>
-                <input type="file" name="valid_id" id="valid_id" class="form-control" accept="image/*,.pdf,.doc,.docx" @change="validateValidID">
+                <input type="file" :disabled="isSubmitting" name="valid_id" id="valid_id" class="form-control" accept="image/*,.pdf,.doc,.docx" @change="validateValidID">
                 <small class="invalid-feedback fw-bold">{{ validIdErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-6">
                 <label for="supporting_documents" class="form-label fw-bold">Upload Supporting Documents</label>
-                <input type="file" name="supporting_documents[]" id="supporting_documents" class="form-control" accept="image/*,.pdf,.doc,.docx" multiple @change="validateSupportingDocuments">
+                <input type="file" :disabled="isSubmitting" name="supporting_documents[]" id="supporting_documents" class="form-control" accept="image/*,.pdf,.doc,.docx" multiple @change="validateSupportingDocuments">
                 <small class="invalid-feedback fw-bold">{{ supportingDocumentsErrorMessage }}</small>
               </div>
             </div>
 
             <div class="row g-2 mt-3">
               <div class="col-12 form-floating">
-                <textarea name="reason_for_adoption" id="floating_reason_for_adoption" :class="reasonForAdoptionValidationClass" @blur="validateReasonForAdoption" v-model="reasonForAdoptionValue" class="form-control" placeholder="Reason for adoption" aria-label="Reason for adoption" style="height: 100px"></textarea>
+                <textarea name="reason_for_adoption" :disabled="isSubmitting" id="floating_reason_for_adoption" :class="reasonForAdoptionValidationClass" @blur="validateReasonForAdoption" v-model="reasonForAdoptionValue" class="form-control" placeholder="Reason for adoption" aria-label="Reason for adoption" style="height: 100px"></textarea>
                 <label for="floating_reason_for_adoption" class="form-label fw-bold">State your reason for adoption</label>
                 <small class="invalid-feedback fw-bold">{{ reasonForAdoptionErrorMessage }}</small>
               </div>
             </div>
           </div>
           <div class="modal-footer bg-info-subtle">
-            <button class="btn btn-primary me-1" type="submit" >Submit Application</button>
-            <button class="btn btn-danger" type="button" @click="closeModal()">Close</button>
+            <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
+              <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
+            </button>
+            <button class="btn btn-danger" type="button" :disabled="isSubmitting" @click="closeModal()">Close</button>
           </div>
         </form>
       </div>
@@ -58,6 +61,8 @@
   import { router } from '@inertiajs/vue3'
   import { Modal } from 'bootstrap'
   import { ref, computed } from 'vue'
+
+  const isSubmitting = ref(false)
 
   const startDateValue = ref('')
   const startDateIsValid = ref(null)
@@ -261,10 +266,15 @@
       forceFormData: true,
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
       },
-
+      onFinish: () => {
+        isSubmitting.value = false
+      },
       onError: (errors) => {
         console.error("Validation errors:", errors)
       }
