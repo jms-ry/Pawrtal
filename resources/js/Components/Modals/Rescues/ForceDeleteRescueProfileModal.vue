@@ -9,8 +9,11 @@
               <h4 class="fw-bold font-monospace mt-2 fs-5">Permanently Delete {{ rescue.name_formatted }}'s Profile?</h4>
             </div>
             <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
-              <button class="btn btn-danger me-1" type="submit">Yes</button>
-              <button class="btn btn-warning" type="button"  data-bs-dismiss="modal">Cancel</button>
+              <button class="btn btn-danger me-1" type="submit" :disabled="isSubmitting">
+                <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isSubmitting ? 'Processing...' : 'Yes' }}
+              </button>
+              <button class="btn btn-warning" type="button" data-bs-dismiss="modal" :disabled="isSubmitting">Cancel</button>
             </div>
           </div>
         </form>
@@ -22,6 +25,9 @@
 <script setup>
   import { Modal } from 'bootstrap'
   import { router } from '@inertiajs/vue3'
+  import { ref } from 'vue'
+  
+  const isSubmitting = ref(false)
 
   const props = defineProps({
     rescue: {
@@ -34,6 +40,9 @@
     router.delete(`/rescues/${props.rescue.id}/force-delete`, {
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         const modalEl = document.getElementById('forceDeleteRescueProfileModal')
         const modal = Modal.getInstance(modalEl)
@@ -45,6 +54,9 @@
         document.body.classList.remove('modal-open')
         document.body.style.removeProperty('overflow')
         document.body.style.removeProperty('padding-right')
+      },
+      onFinish: () => {
+        isSubmitting.value = false
       }
     })
   }

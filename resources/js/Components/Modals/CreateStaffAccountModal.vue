@@ -7,15 +7,15 @@
           <h5 class="modal-title">Create a New Staff Account</h5>
         </div>
         <form @submit="submitForm" class="">
-        <div class="modal-body bg-info-subtle border-0">
+        <div class="modal-body bg-info-subtle border-0" :class="{ 'opacity-50': isSubmitting }">
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-6 form-floating">
-              <input type="text" name="first_name" class="form-control" placeholder="First Name" aria-label="First Name" id="floating_first_name" autocomplete="true" autofocus :class="firstNameValidationClass" @blur="validateFirstName" v-model="firstNameValue">
+              <input type="text" :disabled="isSubmitting" name="first_name" class="form-control" placeholder="First Name" aria-label="First Name" id="floating_first_name" autocomplete="true" autofocus :class="firstNameValidationClass" @blur="validateFirstName" v-model="firstNameValue">
               <label for="floating_first_name" class="form-label fw-bold">First Name</label>
               <small class="invalid-feedback fw-bold">{{ firstNameErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-6 form-floating">
-              <input type="text" name="last_name" class="form-control" placeholder="Last Name" aria-label="Last Name" id="floating_last_name" autocomplete="true" autofocus :class="lastNameValidationClass" @blur="validateLastName" v-model="lastNameValue">
+              <input type="text" :disabled="isSubmitting" name="last_name" class="form-control" placeholder="Last Name" aria-label="Last Name" id="floating_last_name" autocomplete="true" autofocus :class="lastNameValidationClass" @blur="validateLastName" v-model="lastNameValue">
               <label for="floating_last_name" class="form-label fw-bold">Last Name</label>
               <small class="invalid-feedback fw-bold">{{ lastNameErrorMessage }}</small>
             </div>
@@ -23,12 +23,12 @@
 
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-6 form-floating">
-              <input type="email" name="email" class="form-control" placeholder="Email" aria-label="Email" id="floating_email" autocomplete="true" autofocus :class="emailValidationClass" @blur="validateEmail" v-model="emailValue">
+              <input type="email" :disabled="isSubmitting" name="email" class="form-control" placeholder="Email" aria-label="Email" id="floating_email" autocomplete="true" autofocus :class="emailValidationClass" @blur="validateEmail" v-model="emailValue">
               <label for="floating_email" class="form-label fw-bold">Email</label>
               <small class="invalid-feedback fw-bold">{{ emailErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-6 form-floating">
-              <input type="tel" id="floating_contact_number" :class="contactNumberValidationClass" @blur="validateContactNumber" name="contact_number" class="form-control" placeholder="Contact Number" aria-label="Contact Number" v-model="contactNumberValue">
+              <input type="tel" :disabled="isSubmitting" id="floating_contact_number" :class="contactNumberValidationClass" @blur="validateContactNumber" name="contact_number" class="form-control" placeholder="Contact Number" aria-label="Contact Number" v-model="contactNumberValue">
               <label for="floating_contact_number" class="form-label">Contact Number</label>
               <small class="invalid-feedback fw-bold">{{ contactNumberErrorMessage }}</small>
             </div>
@@ -36,12 +36,12 @@
 
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-6 form-floating">
-              <input type="text" name="password" class="form-control" placeholder="Password" aria-label="Password" id="floating_password" autocomplete="true" autofocus :class="passwordValidationClass" @blur="validatePassword" v-model="passwordValue">
+              <input type="password" :disabled="isSubmitting" name="password" class="form-control" placeholder="Password" aria-label="Password" id="floating_password" autocomplete="true" autofocus :class="passwordValidationClass" @blur="validatePassword" v-model="passwordValue">
               <label for="floating_password" class="form-label fw-bold">Password</label>
               <small class="invalid-feedback fw-bold">{{ passwordErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-6 form-floating">
-              <input type="text" name="password_confirmation" class="form-control" placeholder="Password Confirmation" aria-label="Password Confirmation" id="floating_password_confirmation" autocomplete="true" autofocus :class="passwordConfirmationValidationClass" @blur="validatePasswordConfirmation" v-model="passwordConfirmationValue">
+              <input type="password" :disabled="isSubmitting" name="password_confirmation" class="form-control" placeholder="Password Confirmation" aria-label="Password Confirmation" id="floating_password_confirmation" autocomplete="true" autofocus :class="passwordConfirmationValidationClass" @blur="validatePasswordConfirmation" v-model="passwordConfirmationValue">
               <label for="floating_password_confirmation" class="form-label fw-bold">Password Confirmation</label>
               <small class="invalid-feedback fw-bold">{{ passwordConfirmationErrorMessage }}</small>
             </div>
@@ -49,8 +49,11 @@
           
         </div>
         <div class="modal-footer bg-info-subtle">
-          <button class="btn btn-primary me-1" type="submit">Create Staff Account</button>
-          <button class="btn btn-danger" type="button"  @click="closeModal">Close</button>
+          <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
+            <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ isSubmitting ? 'Creating...' : 'Create Staff Account' }}
+          </button>
+          <button class="btn btn-danger" type="button" :disabled="isSubmitting" @click="closeModal">Close</button>
         </div>
       </form>
       </div>
@@ -61,6 +64,8 @@
   import { router } from '@inertiajs/vue3'
   import { Modal } from 'bootstrap'
   import { ref, computed } from 'vue'
+
+  const isSubmitting = ref(false)
 
   const firstNameValue = ref('')
   const firstNameIsValid = ref(null) 
@@ -290,10 +295,16 @@
       forceFormData: true,
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
         form.reset()
       },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
 

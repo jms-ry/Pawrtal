@@ -7,20 +7,20 @@
           <h5 class="modal-title">Create a New Rescue Profile</h5>
         </div>
         <form @submit="submitForm" class="">
-        <div class="modal-body bg-info-subtle border-0">
+        <div class="modal-body bg-info-subtle border-0" :class="{ 'opacity-50': isSubmitting }">
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-4 form-floating">
-              <input type="text" name="name" class="form-control" placeholder="Rescue name" aria-label="Rescue name" id="floating_rescue_name" autocomplete="true" autofocus :class="nameValidationClass" @blur="validateName" v-model="nameValue">
+              <input type="text" :disabled="isSubmitting" name="name" class="form-control" placeholder="Rescue name" aria-label="Rescue name" id="floating_rescue_name" autocomplete="true" autofocus :class="nameValidationClass" @blur="validateName" v-model="nameValue">
               <label for="floating_rescue_name" class="form-label fw-bold">Name</label>
               <small class="invalid-feedback fw-bold">{{ nameErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
-              <input type="text" name="species" id="floating_rescue_species" class="form-control" placeholder="Rescue name" aria-label="Rescue name" autocomplete="true" autofocus :class="speciesValidationClass" @blur="validateSpecies" v-model="speciesValue" >
+              <input type="text" :disabled="isSubmitting" name="species" id="floating_rescue_species" class="form-control" placeholder="Rescue name" aria-label="Rescue name" autocomplete="true" autofocus :class="speciesValidationClass" @blur="validateSpecies" v-model="speciesValue" >
               <label for="floating_rescue_species" class="form-label fw-bold">Species</label>
               <small class="invalid-feedback fw-bold">{{ speciesErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
-              <input type="text" name="breed" class="form-control" placeholder="Rescue breed" aria-label="Rescue breed" id="floating_rescue_breed" :class="breedValidationClass" @blur="validateBreed" v-model="breedValue">
+              <input type="text" :disabled="isSubmitting" name="breed" class="form-control" placeholder="Rescue breed" aria-label="Rescue breed" id="floating_rescue_breed" :class="breedValidationClass" @blur="validateBreed" v-model="breedValue">
               <label for="floating_rescue_breed" class="form-label fw-bold">Breed</label>
               <small class="invalid-feedback fw-bold">{{ breedErrorMessage }}</small>
               <small class="valid-feedback text-dark fw-light">{{ breedErrorMessage }}</small>
@@ -29,7 +29,7 @@
 
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-4 form-floating">
-              <select name="sex" :class="sexValidationClass" v-model="sexValue" @blur="validateSex"  id="floating_sex" class="form-select" aria-label="sex-select"  >
+              <select name="sex" :disabled="isSubmitting" :class="sexValidationClass" v-model="sexValue" @blur="validateSex"  id="floating_sex" class="form-select" aria-label="sex-select"  >
                 <option selected hidden value="">Sex</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -38,13 +38,13 @@
               <small class="invalid-feedback fw-bold">{{ sexErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
-              <input type="text" name="age" :class="ageValidationClass" @blur="validateAge" v-model="ageValue" class="form-control" placeholder="Rescue age" aria-label="Rescue age" id="floating_rescue_age">
+              <input type="text" :disabled="isSubmitting" name="age" :class="ageValidationClass" @blur="validateAge" v-model="ageValue" class="form-control" placeholder="Rescue age" aria-label="Rescue age" id="floating_rescue_age">
               <label for="floating_rescue_age" class="form-label fw-bold">Age (e.g 6 months old)</label>
               <small class="invalid-feedback fw-bold">{{ ageErrorMessage }}</small>
               <small class="valid-feedback text-dark fw-light">{{ ageErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
-              <select name="size" :class="sizeValidationClass" @blur="validateSize" v-model="sizeValue" id="floating_rescue_size" class="form-select" aria-label="size-select"  >
+              <select name="size" :disabled="isSubmitting" :class="sizeValidationClass" @blur="validateSize" v-model="sizeValue" id="floating_rescue_size" class="form-select" aria-label="size-select"  >
                 <option selected hidden value="">Size</option>
                 <option value="small">Small</option>
                 <option value="medium">Medium</option>
@@ -57,19 +57,19 @@
 
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-4 form-floating">
-              <input type="text" name="color" :class="colorValidationClass" @blur="validateColor" v-model="colorValue" class="form-control" placeholder="Rescue color" aria-label="Rescue color" id="floating_rescue_color">
+              <input type="text" :disabled="isSubmitting" name="color" :class="colorValidationClass" @blur="validateColor" v-model="colorValue" class="form-control" placeholder="Rescue color" aria-label="Rescue color" id="floating_rescue_color">
               <label for="floating_rescue_color" class="form-label fw-bold">Color</label>
               <small class="invalid-feedback fw-bold">{{ colorErrorMessage }}</small>
               <small class="valid-feedback text-dark fw-light">{{ colorErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
-              <input type="text" name="distinctive_features" :class="distinctiveFeaturesValidationClass" @blur="validateDistinctiveFeatures" v-model="distinctiveFeaturesValue" class="form-control" placeholder="Rescue distinctive features" aria-label="Rescue distinctive features" id="floating_rescue_distinctive_features">
+              <input type="text" :disabled="isSubmitting" name="distinctive_features" :class="distinctiveFeaturesValidationClass" @blur="validateDistinctiveFeatures" v-model="distinctiveFeaturesValue" class="form-control" placeholder="Rescue distinctive features" aria-label="Rescue distinctive features" id="floating_rescue_distinctive_features">
               <label for="floating_rescue_distinctive_features" class="form-label fw-bold">Distinctive Features</label>
               <small class="invalid-feedback fw-bold">{{ distinctiveFeaturesErrorMessage }}</small>
               <small class="valid-feedback text-dark fw-light">{{ distinctiveFeaturesErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
-              <select name="health_status" :class="healthStatusValidationClass" v-model="healthStatusValue" @blur="validateHealthStatus" id="floating_health_status" class="form-select" aria-label="health-status-select"  >
+              <select name="health_status" :disabled="isSubmitting" :class="healthStatusValidationClass" v-model="healthStatusValue" @blur="validateHealthStatus" id="floating_health_status" class="form-select" aria-label="health-status-select"  >
                 <option selected hidden value="">Health Status</option>
                 <option value="healthy">Healthy</option>
                 <option value="sick">Sick</option>
@@ -82,7 +82,7 @@
 
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-4 form-floating">
-              <select name="vaccination_status" :class="vaccinationStatusValidationClass" v-model="vaccinationStatusValue" @blur="validateVaccinationStatus" id="floating_vaccination_status" class="form-select" aria-label="vaccination-status-select"  >
+              <select name="vaccination_status" :disabled="isSubmitting" :class="vaccinationStatusValidationClass" v-model="vaccinationStatusValue" @blur="validateVaccinationStatus" id="floating_vaccination_status" class="form-select" aria-label="vaccination-status-select"  >
                 <option selected hidden value="">Vaccination Status</option>
                 <option value="vaccinated">Vaccinated</option>
                 <option value="partially_vaccinated">Partially Vaccinated</option>
@@ -92,7 +92,7 @@
               <small class="invalid-feedback fw-bold">{{ vaccinationStatusErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
-              <select name="spayed_neutered" :class="spayedNeuteredValidationClass" v-model="spayedNeuteredValue" @blur="validateSpayedNeutered" id="floating_spayed_neutered" class="form-select" aria-label="spayed-neutered-select"  >
+              <select name="spayed_neutered" :disabled="isSubmitting" :class="spayedNeuteredValidationClass" v-model="spayedNeuteredValue" @blur="validateSpayedNeutered" id="floating_spayed_neutered" class="form-select" aria-label="spayed-neutered-select"  >
                 <option selected hidden value="">Spay/Neutered</option>
                 <option value="true">Yes</option>
                 <option value="false">No</option>
@@ -101,7 +101,7 @@
               <small class="invalid-feedback fw-bold">{{ spayedNeuteredErrorMessage }}</small>
             </div>
             <div class="col-12 col-md-4 form-floating">
-              <select name="adoption_status" :class="adoptionStatusValidationClass" v-model="adoptionStatusValue" @blur="validateAdoptionStatus" id="floating_adoption_status" class="form-select" aria-label="adoption-status-select"  >
+              <select name="adoption_status" :disabled="isSubmitting" :class="adoptionStatusValidationClass" v-model="adoptionStatusValue" @blur="validateAdoptionStatus" id="floating_adoption_status" class="form-select" aria-label="adoption-status-select"  >
                 <option selected hidden value="">Adoption Status</option>
                 <option value="available">Available</option>
                 <option value="unavailable">Unavailable</option>
@@ -115,12 +115,12 @@
           <div class="row g-2 mt-2">
             <div class="col-12 col-md-6">
               <label for="profile_image" class="form-label fw-bold">Upload Profile Image</label>
-              <input type="file" name="profile_image" id="profile_image" class="form-control" accept="image/*" @change="validateProfileImage" >
+              <input type="file" :disabled="isSubmitting" name="profile_image" id="profile_image" class="form-control" accept="image/*" @change="validateProfileImage" >
               <small class="invalid-feedback fw-bold">{{ profileImageError }}</small>
             </div>
             <div class="col-12 col-md-6">
               <label for="images" class="form-label fw-bold">Additional Image/s</label>
-              <input type="file" name="images[]" id="images" class="form-control" accept="image/*" multiple @change="validateImages">
+              <input type="file" :disabled="isSubmitting" name="images[]" id="images" class="form-control" accept="image/*" multiple @change="validateImages">
               <small class="invalid-feedback fw-bold">{{ imagesError }}</small>
               <small class="valid-feedback text-dark fw-light">{{ imagesError }}</small>
             </div>
@@ -128,15 +128,18 @@
 
           <div class="row g-2 mt-2">
             <div class="col-12 form-floating">
-              <textarea name="description" :class="descriptionValidationClass" @blur="validateDescription" v-model="descriptionValue" id="floating_rescue_description" class="form-control" placeholder="Rescue description" aria-label="Rescue description" style="height: 100px"  ></textarea>
+              <textarea name="description" :disabled="isSubmitting" :class="descriptionValidationClass" @blur="validateDescription" v-model="descriptionValue" id="floating_rescue_description" class="form-control" placeholder="Rescue description" aria-label="Rescue description" style="height: 100px"  ></textarea>
               <label for="floating_rescue_description" class="form-label fw-bold">Description</label>
               <small class="invalid-feedback fw-bold">{{ descriptionErrorMessage }}</small>
             </div>
           </div>
         </div>
         <div class="modal-footer bg-info-subtle">
-          <button class="btn btn-primary me-1" type="submit">Create Rescue Profile</button>
-          <button class="btn btn-danger" type="button"  @click="closeModal">Close</button>
+          <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
+            <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ isSubmitting ? 'Creating...' : 'Create Rescue Profile' }}
+          </button>
+          <button class="btn btn-danger" type="button" :disabled="isSubmitting"  @click="closeModal">Close</button>
         </div>
       </form>
       </div>
@@ -147,6 +150,8 @@
   import { router } from '@inertiajs/vue3'
   import { Modal } from 'bootstrap'
   import { ref, computed } from 'vue'
+
+  const isSubmitting = ref(false)
 
   const nameValue = ref('')
   const nameIsValid = ref(null) 
@@ -206,14 +211,14 @@
     }
     
     if ( species.length < 2) {
-       speciesIsValid.value = false
-       speciesErrorMessage.value = 'Species must be at least 3 characters long'
+      speciesIsValid.value = false
+      speciesErrorMessage.value = 'Species must be at least 3 characters long'
       return false
     }
     
     if (!regex.test( species)) {
-       speciesIsValid.value = false
-       speciesErrorMessage.value = 'Species must not start with a number and no special characters'
+      speciesIsValid.value = false
+      speciesErrorMessage.value = 'Species must not start with a number and no special characters'
       return false
     }
     
@@ -651,21 +656,20 @@
     const isImagesValid = validateImages()
 
     if (!isNameValid 
-        || !isSpeciesValid 
-        || !isBreedValid 
-        || !isSexValid 
-        || !isAgeValid 
-        || !isSizeValid
-        || !isColorValid
-        || !isDistinctiveFeaturesValid
-        || !isHealthStatusValid
-        || !isVaccinationStatusValid
-        || !isAdoptionStatusValid
-        || !isSpayedNeuteredValid
-        || !isDescriptionValid
-        || !isProfileImageValid
-        || !isImagesValid
-
+      || !isSpeciesValid 
+      || !isBreedValid 
+      || !isSexValid 
+      || !isAgeValid 
+      || !isSizeValid
+      || !isColorValid
+      || !isDistinctiveFeaturesValid
+      || !isHealthStatusValid
+      || !isVaccinationStatusValid
+      || !isAdoptionStatusValid
+      || !isSpayedNeuteredValid
+      || !isDescriptionValid
+      || !isProfileImageValid
+      || !isImagesValid
       ) {
       return 
     }
@@ -673,10 +677,16 @@
       forceFormData: true,
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
         form.reset()
       },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
 

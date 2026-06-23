@@ -98,9 +98,9 @@
         </div>
         <div class="modal-footer bg-info-subtle">
           <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
-              <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
-            </button>
+            <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {{ isSubmitting ? 'Submitting...' : 'Submit Report' }}
+          </button>
           <button class="btn btn-danger" type="button" @click="closeModal" :disabled="isSubmitting">Close</button>
         </div>
       </form>
