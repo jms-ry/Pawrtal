@@ -9,8 +9,11 @@
               <h4 class="fw-bold font-monospace mt-2">Archive <span id="title"></span> Animal Report?</h4>
             </div>
             <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
-              <button class="btn btn-warning me-1" type="submit">Yes</button>
-              <button class="btn btn-danger" type="button"  data-bs-dismiss="modal">Cancel</button>
+              <button class="btn btn-warning me-1" type="submit" :disabled="isSubmitting">
+                <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isSubmitting ? 'Processing...' : 'Yes' }}
+              </button>
+              <button class="btn btn-danger" type="button"  data-bs-dismiss="modal" :disabled='isSubmitting'>Cancel</button>
             </div>
           </div>
         </form>
@@ -23,6 +26,7 @@
   import { router } from '@inertiajs/vue3'
   import { ref, onMounted } from 'vue'
 
+  const isSubmitting = ref(false)
   const reportId = ref(null)
 
   onMounted(() => {
@@ -44,8 +48,14 @@
     router.delete(`/reports/${reportId.value}`, {
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
+      },
+      onFinish: () => {
+        isSubmitting.value = false
       },
       onError: (errors) => {
         console.error('Error deleting report:', errors)

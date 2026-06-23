@@ -9,8 +9,11 @@
             <p class="fw-bold font-monospace mt-2 fs-5 text-start">Wanna Unarchive this application?</p>
           </div>
           <div class="d-flex d-flex-row justify-content-end align-items-center mb-1 mt-3">
-            <button class="btn btn-warning me-1" type="submit">Yes</button>
-            <button class="btn btn-danger" type="button"  data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-warning me-1" type="submit" :disabled="isSubmitting">
+              <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isSubmitting ? 'Processing...' : 'Yes' }}
+            </button>
+            <button class="btn btn-danger" type="button"  data-bs-dismiss="modal" :disabled>Cancel</button>
           </div>
         </div>
       </form>
@@ -25,6 +28,7 @@
   import { ref, onMounted } from 'vue'
 
   const applicationId = ref(null)
+  const isSubmitting = ref(false)
 
   onMounted(() => {
     const modalEl = document.getElementById('restoreApplicationModal')
@@ -45,9 +49,15 @@
     router.patch(`/adoption-applications/${applicationId.value}/restore`, {}, {
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
       },
+      onFinish: () => {
+        isSubmitting.value = false
+      }
     })
   }
 
