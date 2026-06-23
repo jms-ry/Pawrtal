@@ -12,17 +12,17 @@
             <input type="hidden" name="user_id" class="form-control" :value="user?.id">
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="animal_name" class="form-control" placeholder="Animal name" aria-label="Animal name" id="floating_animal_name" autocomplete="true" :class="animalNameValidationClass" @blur="validateAnimalName" v-model="animalNameValue">
+                <input type="text" name="animal_name" :disabled="isSubmitting" class="form-control" placeholder="Animal name" aria-label="Animal name" id="floating_animal_name" autocomplete="true" :class="animalNameValidationClass" @blur="validateAnimalName" v-model="animalNameValue">
                 <label for="floating_animal_name" class="form-label fw-bold">Animal's Name</label>
                 <small class="invalid-feedback fw-bold">{{ animalNameErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="species" class="form-control" placeholder="Animal species" aria-label="Animal species" id="floating_animal_species" autocomplete="true" :class="speciesValidationClass" @blur="validateSpecies" v-model="speciesValue">
+                <input type="text" name="species" :disabled="isSubmitting" class="form-control" placeholder="Animal species" aria-label="Animal species" id="floating_animal_species" autocomplete="true" :class="speciesValidationClass" @blur="validateSpecies" v-model="speciesValue">
                 <label for="floating_animal_species" class="form-label fw-bold">Species (e.g Dog, Cat, etc.)</label>
                 <small class="invalid-feedback fw-bold">{{ speciesErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="breed" class="form-control" placeholder="Animal breed" aria-label="Animal breed" id="floating_animal_breed" autocomplete="true" :class="breedValidationClass" @blur="validateBreed" v-model="breedValue">
+                <input type="text" name="breed" :disabled="isSubmitting" class="form-control" placeholder="Animal breed" aria-label="Animal breed" id="floating_animal_breed" autocomplete="true" :class="breedValidationClass" @blur="validateBreed" v-model="breedValue">
                 <label for="floating_animal_breed" class="form-label fw-bold">Breed</label>
                 <small class="invalid-feedback fw-bold">{{ breedErrorMessage }}</small>
               </div>
@@ -30,12 +30,12 @@
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="color" class="form-control" placeholder="Animal color" aria-label="Animal color" id="floating_animal_color" autocomplete="true" :class="colorValidationClass" @blur="validateColor" v-model="colorValue">
+                <input type="text" name="color" :disabled="isSubmitting" class="form-control" placeholder="Animal color" aria-label="Animal color" id="floating_animal_color" autocomplete="true" :class="colorValidationClass" @blur="validateColor" v-model="colorValue">
                 <label for="floating_animal_color" class="form-label fw-bold">Color</label>
                 <small class="invalid-feedback fw-bold">{{ colorErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <select name="sex" id="floating_sex" class="form-select" aria-label="sex-select" :class="sexValidationClass" @blur="validateSex" v-model="sexValue">
+                <select name="sex" :disabled="isSubmitting" id="floating_sex" class="form-select" aria-label="sex-select" :class="sexValidationClass" @blur="validateSex" v-model="sexValue">
                   <option selected hidden value="">Sex</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
@@ -45,7 +45,7 @@
                 <small class="invalid-feedback fw-bold">{{ sexErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="text" name="age_estimate" class="form-control" placeholder="Animal age estimate" aria-label="Animal age estimate" id="floating_animal_age_estimate" autocomplete="true" :class="ageValidationClass" @blur="validateAge" v-model="ageValue">
+                <input type="text" name="age_estimate" :disabled="isSubmitting" class="form-control" placeholder="Animal age estimate" aria-label="Animal age estimate" id="floating_animal_age_estimate" autocomplete="true" :class="ageValidationClass" @blur="validateAge" v-model="ageValue">
                 <label for="floating_animal_age_estimate" class="form-label fw-bold">Age Estimate (e.g 6 months old)</label>
                 <small class="invalid-feedback fw-bold">{{ ageErrorMessage }}</small>
               </div>
@@ -53,7 +53,7 @@
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-4 form-floating">
-                <select name="size" id="floating_animal_size" class="form-select" aria-label="size-select" :class="sizeValidationClass" @blur="validateSize" v-model="sizeValue">
+                <select name="size" :disabled="isSubmitting" id="floating_animal_size" class="form-select" aria-label="size-select" :class="sizeValidationClass" @blur="validateSize" v-model="sizeValue">
                   <option selected hidden value="">Size</option>
                   <option value="small">Small</option>
                   <option value="medium">Medium</option>
@@ -63,7 +63,7 @@
                 <small class="invalid-feedback fw-bold">{{ sizeErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-8 form-floating">
-                <input type="text" name="distinctive_features" class="form-control" placeholder="Animal distinctive features" aria-label="Animal distinctive features" id="floating_animal_distinctive_features" :class="distinctiveFeaturesValidationClass" @blur="validateDistinctiveFeatures" v-model="distinctiveFeaturesValue">
+                <input type="text" name="distinctive_features" :disabled="isSubmitting" class="form-control" placeholder="Animal distinctive features" aria-label="Animal distinctive features" id="floating_animal_distinctive_features" :class="distinctiveFeaturesValidationClass" @blur="validateDistinctiveFeatures" v-model="distinctiveFeaturesValue">
                 <label for="floating_animal_distinctive_features" class="form-label fw-bold">Distinctive Features</label>
                 <small class="invalid-feedback fw-bold">{{ distinctiveFeaturesErrorMessage }}</small>
                 <small class="valid-feedback text-dark fw-light">{{ distinctiveFeaturesErrorMessage }}</small>
@@ -72,12 +72,12 @@
 
             <div class="row g-2 mt-2">
               <div class="col-12 col-md-8 form-floating">
-                <input type="text" name="last_seen_location" class="form-control" placeholder="Animal last seen location" aria-label="Animal last seen location" id="floating_animal_last_seen_location" :class="locationValidationClass" @blur="validateLocation" v-model="locationValue">
+                <input type="text" name="last_seen_location" :disabled="isSubmitting" class="form-control" placeholder="Animal last seen location" aria-label="Animal last seen location" id="floating_animal_last_seen_location" :class="locationValidationClass" @blur="validateLocation" v-model="locationValue">
                 <label for="floating_animal_last_seen_location" class="form-label fw-bold">Last Seen Location</label>
                 <small class="invalid-feedback fw-bold">{{ locationErrorMessage }}</small>
               </div>
               <div class="col-12 col-md-4 form-floating">
-                <input type="date" name="last_seen_date" class="form-control" placeholder="Animal last seen date" aria-label="Animal last seen date" id="floating_animal_last_seen_date" :class="dateValidationClass" @blur="validateDate" v-model="dateValue">
+                <input type="date" name="last_seen_date" :disabled="isSubmitting" class="form-control" placeholder="Animal last seen date" aria-label="Animal last seen date" id="floating_animal_last_seen_date" :class="dateValidationClass" @blur="validateDate" v-model="dateValue">
                 <label for="floating_animal_last_seen_date" class="form-label fw-bold">Last Seen Date</label>
                 <small class="invalid-feedback fw-bold">{{ dateErrorMessage }}</small>
               </div>
@@ -86,7 +86,7 @@
             <div class="row g-2 mt-2">
               <div class="col-12">
                 <label for="image" class="form-label fw-bold">Upload an Image</label>
-                <input type="file" name="image" id="image" class="form-control" accept="image/*" @change="validateImage">
+                <input type="file" name="image" :disabled="isSubmitting" id="image" class="form-control" accept="image/*" @change="validateImage">
                 <div class="form-text">Please upload a clear photo of the lost animal.</div>
                 <small class="invalid-feedback fw-bold">{{ imageErrorMessage }}</small>
               </div>

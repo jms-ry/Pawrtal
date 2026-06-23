@@ -55,8 +55,8 @@
     }
   });
 
-  onMounted(() => {
-    const logo = new Image();
-    logo.src = "/donate/image.png";
-  }) 
+  // onMounted(() => {
+  //   const logo = new Image();
+  //   logo.src = "/donate/image.png";
+  // }) 
 </script>
