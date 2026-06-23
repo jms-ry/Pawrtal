@@ -7,31 +7,31 @@
           <h5 class="modal-title"><strong>Update In-kind Donation!</strong></h5>
         </div>
         <form @submit.prevent="submitForm">
-          <div class="modal-body bg-info-subtle border-0" id="donationModalBody">
+          <div class="modal-body bg-info-subtle border-0" id="donationModalBody" :class="{ 'opacity-50': isSubmitting }">
             <input type="hidden" name="user_id" class="form-control" v-model="form.user_id">
             <input type="hidden" name="donation_type" class="form-control" v-model="form.donation_type">
             <input type="hidden" name="status" class="form-control" v-model="form.status">
             <div class="mb-4">
               <div class="row g-2 mt-2">
                 <div class="col-12 col-md-6 form-floating">
-                  <input type="text" name="item_description" class="form-control" :class="itemDescriptionValidationClass" @blur="validateItemDescription" placeholder="Item Description" aria-label="Item Description" v-model="form.item_description">
+                  <input type="text" name="item_description" :disabled="isSubmitting" class="form-control" :class="itemDescriptionValidationClass" @blur="validateItemDescription" placeholder="Item Description" aria-label="Item Description" v-model="form.item_description">
                   <label class="form-label fw-bold">Item Description</label>
                   <small class="invalid-feedback fw-bold">{{ itemDescriptionErrorMessage }}</small>
                 </div>
                 <div class="col-12 col-md-6 form-floating">
-                  <input type="number" nam="item_quantity" class="form-control" :class="itemQuantityValidationClass" @blur="validateItemQuantity" min="1" placeholder="Item Quantity" aria-label="Item Quantity" v-model="form.item_quantity">
+                  <input type="number" :disabled="isSubmitting" name="item_quantity" class="form-control" :class="itemQuantityValidationClass" @blur="validateItemQuantity" min="1" placeholder="Item Quantity" aria-label="Item Quantity" v-model="form.item_quantity">
                   <label class="form-label fw-bold">Item Quantity</label>
                   <small class="invalid-feedback fw-bold">{{ itemQuantityErrorMessage }}</small>
                   </div>
                 </div>
               <div class="row g-2 mt-3">
                 <div class="col-12 col-md-6 form-floating">
-                  <input type="text" name="pick_up_location" class="form-control" :class="pickUpLocationValidationClass" @blur="validatePickUpLocation" placeholder="Pick up Location" aria-label="Pick up Location" v-model="form.pick_up_location">
+                  <input type="text" :disabled="isSubmitting" name="pick_up_location" class="form-control" :class="pickUpLocationValidationClass" @blur="validatePickUpLocation" placeholder="Pick up Location" aria-label="Pick up Location" v-model="form.pick_up_location">
                   <label class="form-label fw-bold">Pick up Location</label>
                   <small class="invalid-feedback fw-bold">{{ pickUpLocationErrorMessage }}</small>
                 </div>
                 <div class="col-12 col-md-6 form-floating">
-                  <input type="text" name="contact_person" class="form-control" :class="contactPersonValidationClass" @blur="validateContactPerson" placeholder="Contact Person" aria-label="Contact Person" v-model="form.contact_person">
+                  <input type="text" :disabled="isSubmitting" name="contact_person" class="form-control" :class="contactPersonValidationClass" @blur="validateContactPerson" placeholder="Contact Person" aria-label="Contact Person" v-model="form.contact_person">
                   <label class="form-label fw-bold">Contact Person</label>
                   <small class="invalid-feedback fw-bold">{{ contactPersonErrorMessage }}</small>
                 </div>
@@ -39,7 +39,7 @@
               <div class="row g-2 mt-3">
                 <div class="col-12">
                   <label class="form-label fw-bold">Upload Donation Image (Proof)</label>
-                  <input  type="file" name="donation_image" id="donation-image" class="form-control" accept="image/*" @change="handleImageChange">
+                  <input  type="file" :disabled="isSubmitting" name="donation_image" id="donation-image" class="form-control" accept="image/*" @change="handleImageChange">
                   <small class="invalid-feedback fw-bold">{{ imageErrorMessage }}</small>
                   <div v-show="!imageErrorMessage">
                     <small class="text-muted mt-3">Leave blank to keep existing image</small>
@@ -53,8 +53,11 @@
           </div>
           <div class="modal-footer bg-info-subtle d-flex justify-content-end">
             <div>
-              <button class="btn btn-primary me-1" type="submit">Update Donation</button>
-              <button class="btn btn-danger" type="button" @click="closeModal">Close</button>
+              <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
+                <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isSubmitting ? 'Updating...' : 'Update Donation' }}
+              </button>
+              <button class="btn btn-danger" type="button" :disabled="isSubmitting" @click="closeModal">Close</button>
             </div>
           </div>
         </form>
@@ -73,6 +76,7 @@
       default: () => null
     },
   })
+  const isSubmitting = ref(false)
 
   const donationId = ref(null)
   const donationStatus = ref(null)
@@ -312,8 +316,14 @@
       forceFormData:true,
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
+      },
+      onFinish: () => {
+        isSubmitting.value = false
       },
     })
   }

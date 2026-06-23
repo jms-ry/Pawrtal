@@ -7,7 +7,7 @@
           <h5 class="modal-title"><strong>Make In-kind Donation for the rescues!</strong></h5>
         </div>
         <form @submit.prevent="submitForm">
-          <div class="modal-body bg-info-subtle border-0" id="donationModalBody">
+          <div class="modal-body bg-info-subtle border-0" id="donationModalBody" :class="{ 'opacity-50': isSubmitting }">
             <input type="hidden" name="user_id" class="form-control" :value="user?.id">
             <input type="hidden" name="donation_type" class="form-control" value="in-kind">
             <input type="hidden" name="status" class="form-control" value="pending">
@@ -18,12 +18,12 @@
               <div class="mb-4">
                 <div class="row g-2 mt-2">
                   <div class="col-12 col-md-6 form-floating">
-                    <input type="text" :class="getValidationClass(item.validation.itemDescription)" @blur="validateItemDescription(index)" v-model="item.itemDescription" class="form-control" placeholder="Item Description" aria-label="Item Description">
+                    <input type="text" :disabled="isSubmitting" :class="getValidationClass(item.validation.itemDescription)" @blur="validateItemDescription(index)" v-model="item.itemDescription" class="form-control" placeholder="Item Description" aria-label="Item Description">
                     <label class="form-label fw-bold">Item Description</label>
                     <small class="invalid-feedback fw-bold">{{ item.errors.itemDescription }}</small>
                   </div>
                   <div class="col-12 col-md-6 form-floating">
-                    <input type="number" :class="getValidationClass(item.validation.itemQuantity)" @blur="validateItemQuantity(index)" v-model="item.itemQuantity"
+                    <input type="number" :disabled="isSubmitting" :class="getValidationClass(item.validation.itemQuantity)" @blur="validateItemQuantity(index)" v-model="item.itemQuantity"
                       class="form-control" min="1" placeholder="Item Quantity" aria-label="Item Quantity">
                     <label class="form-label fw-bold">Item Quantity</label>
                     <small class="invalid-feedback fw-bold">{{ item.errors.itemQuantity }}</small>
@@ -31,12 +31,12 @@
                 </div>
                 <div class="row g-2 mt-3">
                   <div class="col-12 col-md-6 form-floating">
-                    <input type="text" :class="getValidationClass(item.validation.pickUpLocation)" @blur="validatePickUpLocation(index)" v-model="item.pickUpLocation" class="form-control" placeholder="Pick up Location" aria-label="Pick up Location">
+                    <input type="text" :disabled="isSubmitting" :class="getValidationClass(item.validation.pickUpLocation)" @blur="validatePickUpLocation(index)" v-model="item.pickUpLocation" class="form-control" placeholder="Pick up Location" aria-label="Pick up Location">
                     <label class="form-label fw-bold">Pick up Location</label>
                     <small class="invalid-feedback fw-bold">{{ item.errors.pickUpLocation }}</small>
                   </div>
                   <div class="col-12 col-md-6 form-floating">
-                    <input type="text" :class="getValidationClass(item.validation.contactPerson)" @blur="validateContactPerson(index)" v-model="item.contactPerson" class="form-control" placeholder="Contact Person" aria-label="Contact Person">
+                    <input type="text" :disabled="isSubmitting" :class="getValidationClass(item.validation.contactPerson)" @blur="validateContactPerson(index)" v-model="item.contactPerson" class="form-control" placeholder="Contact Person" aria-label="Contact Person">
                     <label class="form-label fw-bold">Contact Person</label>
                     <small class="invalid-feedback fw-bold">{{ item.errors.contactPerson }}</small>
                   </div>
@@ -44,12 +44,12 @@
                 <div class="row g-2 mt-3">
                   <div class="col-12">
                     <label class="form-label fw-bold">Upload Donation Image (Proof)</label>
-                    <input  type="file" :class="getValidationClass(item.validation.donationImage)" class="form-control donation-image" @change="validateDonationImage($event, index)">
+                    <input  type="file" :disabled="isSubmitting" :class="getValidationClass(item.validation.donationImage)" class="form-control donation-image" @change="validateDonationImage($event, index)">
                     <div class="form-text">Please upload a clear photo of the donation item(s) as proof.</div>
                     <small class="invalid-feedback fw-bold">{{ item.errors.donationImage }}</small>
                   </div>
                 </div>
-                <button  v-if="index > 0" type="button" class="btn btn-danger mt-3" @click="removeDonationItem(index)">
+                <button :disabled="isSubmitting" v-if="index > 0" type="button" class="btn btn-danger mt-3" @click="removeDonationItem(index)">
                   Remove Donation Item
                 </button>
               </div>
@@ -62,8 +62,11 @@
               <button class="btn btn-info me-1" type="button" @click="addDonationItem">New Donation Item</button>
             </div>
             <div>
-              <button class="btn btn-primary me-1" type="submit">Submit Donation</button>
-              <button class="btn btn-danger" type="button" @click="closeModal">Close</button>
+              <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
+                <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isSubmitting ? 'Submitting...' : 'Submit Donation' }}
+              </button>
+              <button class="btn btn-danger" type="button" :disabled="isSubmitting" @click="closeModal">Close</button>
             </div>
           </div>
           <!--Small Screen-->
@@ -72,8 +75,11 @@
               <button class="btn btn-subtle-outline-primary me-1" type="button" @click="addDonationItem">New Donation Item</button>
             </div>
             <div>
-              <button class="btn btn-primary me-1" type="submit">Submit Donation</button>
-              <button class="btn btn-danger" type="button" @click="closeModal">Close</button>
+              <button class="btn btn-primary me-1" type="submit" :disabled="isSubmitting">
+                <span v-if="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isSubmitting ? 'Submitting...' : 'Submit Donation' }}
+              </button>
+              <button class="btn btn-danger" type="button" :disabled="isSubmitting" @click="closeModal">Close</button>
             </div>
           </div>
         </form>
@@ -94,6 +100,7 @@
     }
   })
 
+  const isSubmitting = ref(false)
   function createDonationItem() {
     return {
       id: Date.now() + Math.random(),
@@ -300,8 +307,14 @@
       forceFormData: true,
       preserveScroll: false,
       preserveState: false,
+      onStart: () => {
+        isSubmitting.value = true
+      },
       onSuccess: () => {
         closeModal()
+      },
+      onFinish: () => {
+        isSubmitting.value = false
       },
       onError: (errors) => {
         console.error("Validation errors:", errors)
