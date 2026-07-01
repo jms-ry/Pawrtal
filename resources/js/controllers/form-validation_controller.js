@@ -208,13 +208,16 @@ export default class extends Controller {
 
   updateFormFeedback() {
     const hasInvalid = this.element.querySelectorAll(".is-invalid").length > 0
-
+    const button = this.submitButtonTarget
+    
     if (hasInvalid) {
       this.formFeedbackTarget.textContent = "Please correct the errors above."
       this.formFeedbackTarget.style.display = "block"
+      button.disabled = true
     } else {
       this.formFeedbackTarget.textContent = ""
       this.formFeedbackTarget.style.display = "none"
+      button.disabled = false
     }
   }
   setInvalid(input, feedback, message) {
