@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\ValidationException;
 
 class RegisteredUserController extends Controller
 {
@@ -23,22 +22,18 @@ class RegisteredUserController extends Controller
   */
   public function store(Request $request): RedirectResponse
   {
-    try{
-      $request->validate([
-        'first_name' => ['required', 'string', 'max:255'],
-        'last_name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'lowercase', 'email', 'max:255',],
-        'contact_number' => [
-          'required',
-          'regex:/^09\d{9}$/', // must start with 09 and followed by 9 digits (total of 11)
-        ],
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-      ]);
-    } catch (ValidationException $e){
-      if (isset($e->errors()['email'])) {
-        Session::flash('error', 'An account with this email already exists. Please use a different email or try logging in.');
-      }
-      throw $e;
+    $request->validate([
+      'first_name' => ['required', 'string', 'max:255'],
+      'last_name' => ['required', 'string', 'max:255'],
+      'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
+      'contact_number' => ['required', 'regex:/^09\d{9}$/'],
+      'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
+
+    if (User::where('email', $request->email)->exists()) {
+      return redirect()->back()
+        ->with('error', 'An account with this email already exists. You can log in with it or use a different email.')
+      ->withInput($request->except('password', 'password_confirmation'));
     }
 
     $user = User::create([
