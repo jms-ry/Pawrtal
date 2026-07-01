@@ -28,7 +28,7 @@
           </div>
           <div class="row g-0 me-2 me-md-0 mt-4">
             <div class="col-12 col-md-8 ms-2 ms-md-5">
-              <button type="submit" class="btn btn-success w-100 fw-bolder">Sign in</button>
+              <button type="submit" class="btn btn-success w-100 fw-bolder" data-form-validation-target="submitButton">Sign in</button>
               <small class="invalid-feedback fw-bold" data-form-validation-target="formFeedback"></small>
               <a href="" class="text-decoration-none mt-2"><p class="text-center fw-bold mt-2 text-danger">Forgot your password?</p></a>
             </div>

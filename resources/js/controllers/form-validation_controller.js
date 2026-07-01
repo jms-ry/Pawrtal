@@ -16,7 +16,8 @@ export default class extends Controller {
     'passwordFeedback',
     'passwordConfirmationInput',
     'passwordConfirmationFeedback',
-    'formFeedback'
+    'formFeedback',
+    'submitButton'
   ];
   connect() {
   }
@@ -190,6 +191,19 @@ export default class extends Controller {
     if (hasInvalid) {
       event.preventDefault()
     }
+
+    if(this.hasSubmitButtonTarget) {
+      const button = this.submitButtonTarget
+      button.disabled = true
+      button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Signing in...`
+    }
+
+    if (this.hasFirstNameInputTarget) this.firstNameInputTarget.readOnly = true
+    if (this.hasLastNameInputTarget) this.lastNameInputTarget.readOnly = true
+    if (this.hasEmailInputTarget) this.emailInputTarget.readOnly = true
+    if (this.hasContactNumberInputTarget) this.contactNumberInputTarget.readOnly = true
+    if (this.hasPasswordInputTarget) this.passwordInputTarget.readOnly = true
+    if (this.hasPasswordConfirmationInputTarget) this.passwordConfirmationInputTarget.readOnly = true
   }
 
   updateFormFeedback() {

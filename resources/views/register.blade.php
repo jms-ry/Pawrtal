@@ -62,7 +62,7 @@
             </div>
           </div>
           <div class="d-flex flex-column mt-4 mb-3 align-items-center me-0 me-md-2 ms-0 ms-md-2 mt-2">
-            <button type="submit" class="btn btn-success w-100 fw-bolder">Create an Account</button>
+            <button type="submit" class="btn btn-success w-100 fw-bolder" data-form-validation-target="submitButton">Create an Account</button>
             <small class="invalid-feedback fw-bold" data-form-validation-target="formFeedback"></small>
             <div class="align-items-center text-center">
               <p class="mt-3">Already have an account? <a href="{{ url('/login') }}" class="fw-bolder text-success">Log in here</a></p>
