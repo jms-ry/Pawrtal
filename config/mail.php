@@ -96,9 +96,9 @@ return [
             ],
             'retry_after' => 60,
         ],
-        'mailtrap-sdk' => [
-            'transport' => 'mailtrap-sdk',
-        ],
+        // 'mailtrap-sdk' => [
+        //     'transport' => 'mailtrap-sdk',
+        // ],
 
     ],
 
