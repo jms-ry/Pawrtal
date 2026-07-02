@@ -1082,7 +1082,7 @@ class RescueUpdateTest extends TestCase
       'last_updated_at' => $rescue->updated_at->toISOString(), // correct timestamp
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect(route('rescues.show', $rescue->id));
     $response->assertSessionHas('info', 'Rescue Profile for ' . $updatedData['name'] . ' has been updated!');
