@@ -40,7 +40,9 @@ class NotifyTodaysInspections extends Command
     foreach ($todaysInspections as $inspection) {
       if ($inspection->inspector_id && $inspection->user) {
         $inspection->user->notify(new DailyInspectionReminderNotification($inspection));
-            
+        
+        sleep(1); 
+        
         $notifiedCount++;
             
         $this->info("Notified inspector: {$inspection->user->fullName()} for inspection #{$inspection->id}");

@@ -25,7 +25,7 @@ class InspectorInspectionScheduleNotification extends Notification
   */
   public function via($notifiable): array
   {
-    return ['database'];
+    return ['database','mail'];
   }
 
   /**
@@ -43,5 +43,23 @@ class InspectorInspectionScheduleNotification extends Notification
       'inspection_location' => $this->inspectionSchedule->inspectionLocation(),
       'message' => 'You have been scheduled to conduct a home inspection for an adoption applicant. Check "My Schedules" for more details.',
     ];
+  }
+
+  public function toMail($notifiable): MailMessage
+  {
+    $applicantName = $this->inspectionSchedule->adoptionApplication->user->fullName();
+    $inspectionDate = $this->inspectionSchedule->inspectionDate();
+    $inspectionLocation = $this->inspectionSchedule->inspectionLocation();
+
+    return (new MailMessage)
+      ->subject("New Home Inspection Assignment")
+      ->greeting("Hello, {$notifiable->first_name}!")
+      ->line("You have been assigned to conduct a home inspection for an adoption applicant. Here are the details:")
+      ->line("👤 Applicant: {$applicantName}")
+      ->line("📅 Inspection Date: {$inspectionDate}")
+      ->line("📍 Location: {$inspectionLocation}")
+      ->action('View My Schedules', url('users/my-schedules'))
+      ->line('Please make sure to be available on the scheduled date. If you have any concerns, coordinate with the admin or staff immediately.')
+    ->salutation('With regards, Ormoc Stray Oasis 🐶🐱');
   }
 }

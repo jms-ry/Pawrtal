@@ -17,6 +17,9 @@ class InspectionScheduleObserver
     if($inspectionSchedule->adoptionApplication?->user){
       $inspectionSchedule->adoptionApplication->user->notify(new ApplicantInspectionScheduleNotification($inspectionSchedule));
     }
+
+    sleep(1); 
+    
     //notify the inspector
     if($inspectionSchedule->user){
       $inspectionSchedule->user->notify(new InspectorInspectionScheduleNotification($inspectionSchedule));
