@@ -24,7 +24,7 @@ class DailyInspectionReminderNotification extends Notification
   */
   public function via($notifiable): array
   {
-    return ['database','mail'];
+    return ['database'];
   }
 
   /**
@@ -45,21 +45,4 @@ class DailyInspectionReminderNotification extends Notification
     ];
   }
 
-  public function toMail($notifiable): MailMessage
-  {
-    $applicantName = $this->inspectionSchedule->adoptionApplication->user?->fullName() ?? 'Unknown Applicant';
-    $inspectionDate = $this->inspectionSchedule->inspectionDate();
-    $inspectionLocation = $this->inspectionSchedule->inspectionLocation();
-
-    return (new MailMessage)
-      ->subject("Reminder: You Have a Home Inspection Scheduled Today!")
-      ->greeting("Hello, {$notifiable->first_name}!")
-      ->line("This is a friendly reminder that you have a home inspection scheduled for TODAY. Here are the details:")
-      ->line("👤 Applicant: {$applicantName}")
-      ->line("📅 Inspection Date: {$inspectionDate}")
-      ->line("📍 Location: {$inspectionLocation}")
-      ->action('View My Schedules', url('users/my-schedules'))
-      ->line('Please make sure you are available and prepared for the inspection. If you have any concerns, coordinate with the admin or staff immediately.')
-    ->salutation('With regards, Ormoc Stray Oasis 🐶🐱');
-  }
 }
