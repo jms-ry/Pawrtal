@@ -52,7 +52,7 @@ class RegistrationTest extends TestCase
       'password_confirmation' => 'password',
     ]);
 
-    $response->assertSessionHas('error', 'An account with this email already exists. Please use a different email or try logging in.'); 
+    $response->assertSessionHas('error', 'An account with this email already exists. You can log in with it or use a different email.'); 
     $response->assertRedirect();
 
     $this->assertDatabaseCount('users', 1);
