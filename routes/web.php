@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Http\Controllers\RecommendationController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
 
 Route::get('/donate', [DonateController::class, 'index'])->name('donate.index');
 Route::get('/',[WelcomeController::class, 'index'])->name('welcome');
@@ -42,6 +44,12 @@ Route::middleware('guest')->group(function () {
   Route::get('login', function () {
     return view('sign_in');
   });
+
+  //Password reset routes
+  Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+  Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+  Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+  Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.update');
 });
 
 Route::get('/api/check-email', function (Request $request) {

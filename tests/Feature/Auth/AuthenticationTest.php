@@ -61,13 +61,14 @@ class AuthenticationTest extends TestCase
   {
     $user = User::factory()->create();
     
-    $response = $this->post('/login', [
+    $response = $this->from('/login')->post('/login', [
       'email' => $user->email,
       'password' => 'wrong-password',
     ]);
 
     $this->assertGuest();
-    $response->assertSessionHasErrors('email');
+    $response->assertRedirect('/login');
+    $response->assertSessionHas('error', 'Invalid email or password. Please try again.');
   }
   public function test_users_can_logout(): void
   {
