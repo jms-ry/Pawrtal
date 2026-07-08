@@ -36,8 +36,8 @@ class DailyInspectionReminderNotification extends Notification
   {
     return [
       'inspection_id' => $this->inspectionSchedule->id,
-      'application_id' => $this->inspectionSchedule->adoptionApplication->id,
-      'applicant_name' => $this->inspectionSchedule->adoptionApplication->user->fullName(),
+      'application_id' => $this->inspectionSchedule->adoptionApplication?->id,
+      'applicant_name' => $this->inspectionSchedule->adoptionApplication?->user?->fullName(),
       'inspection_date' => $this->inspectionSchedule->inspectionDate(),
       'inspection_location' => $this->inspectionSchedule->inspectionLocation(),
       'message' => 'You have an inspection scheduled for TODAY. Check "My Schedules" for details.',
