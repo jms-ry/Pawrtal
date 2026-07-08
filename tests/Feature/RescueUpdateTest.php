@@ -18,7 +18,7 @@ class RescueUpdateTest extends TestCase
   {
     $rescue = Rescue::factory()->create();
 
-    $response = $this->put(route('rescues.update', $rescue), [
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), [
       'name' => 'Updated Name',
     ]);
 
@@ -32,7 +32,7 @@ class RescueUpdateTest extends TestCase
 
     $this->actingAs($user);
 
-    $response = $this->put(route('rescues.update', $rescue), [
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), [
       'name' => 'Updated Name',
       'species' => 'Dog',
       'description' => 'A friendly dog',
@@ -64,7 +64,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect();
 
@@ -91,7 +91,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect();
 
@@ -103,7 +103,8 @@ class RescueUpdateTest extends TestCase
   public function test_updating_nonexistent_rescue_returns_404()
   {
     $admin = User::factory()->admin()->create();
-
+    $rescue = Rescue::factory()->create();
+    
     $this->actingAs($admin);
 
      $updatedData = [
@@ -117,7 +118,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', 999999), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', 999999), $updatedData);
 
     $response->assertStatus(404);
   }
@@ -141,7 +142,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect(route('rescues.show',$rescue->id));
     $response->assertSessionHas('info','Rescue Profile for '. $updatedData['name']. ' has been updated!');
@@ -184,7 +185,7 @@ class RescueUpdateTest extends TestCase
       'profile_image' => $newImage,
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect(route('rescues.show',$rescue->id));
     $response->assertSessionHas('info','Rescue Profile for '. $updatedData['name']. ' has been updated!');
@@ -224,7 +225,7 @@ class RescueUpdateTest extends TestCase
       'profile_image' => $newImage,
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect(route('rescues.show',$rescue->id));
     $response->assertSessionHas('info','Rescue Profile for '. $updatedData['name']. ' has been updated!');
@@ -283,7 +284,7 @@ class RescueUpdateTest extends TestCase
     ];
 
     // Perform update request
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect(route('rescues.show', $rescue->id));
     $response->assertSessionHas('info', 'Rescue Profile for ' . $updatedData['name'] . ' has been updated!');
@@ -344,7 +345,7 @@ class RescueUpdateTest extends TestCase
       'images' => [$newImage1, $newImage2],
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
     $response->assertRedirect(route('rescues.show', $rescue->id));
     $response->assertSessionHas('info', 'Rescue Profile for ' . $updatedData['name'] . ' has been updated!');
 
@@ -410,7 +411,7 @@ class RescueUpdateTest extends TestCase
     ];
 
     // Perform the update request
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect(route('rescues.show', $rescue->id));
     $response->assertSessionHas('info', 'Rescue Profile for ' . $updatedData['name'] . ' has been updated!');
@@ -467,7 +468,7 @@ class RescueUpdateTest extends TestCase
     ];
 
     // Perform the update request
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     // Assert that validation fails specifically on the 'images' field
     $response->assertSessionHasErrors('images');
@@ -500,7 +501,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('name');
   }
@@ -524,7 +525,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('species');
   }
@@ -548,7 +549,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('description');
   }
@@ -572,7 +573,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('sex');
   }
@@ -596,7 +597,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('health_status');
   }
@@ -620,7 +621,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('vaccination_status');
   }
@@ -644,7 +645,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('spayed_neutered');
   }
@@ -668,7 +669,7 @@ class RescueUpdateTest extends TestCase
       //'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('adoption_status');
   }
@@ -692,7 +693,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('sex');
   }
@@ -716,7 +717,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('health_status');
   }
@@ -740,7 +741,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('vaccination_status');
   }
@@ -764,7 +765,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('spayed_neutered');
   }
@@ -788,7 +789,7 @@ class RescueUpdateTest extends TestCase
       'adoption_status' => 'invalid available',
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertSessionHasErrors('adoption_status');
   }
@@ -815,7 +816,7 @@ class RescueUpdateTest extends TestCase
       'profile_image' => UploadedFile::fake()->create('document.pdf', 100, 'application/pdf'),
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
     $response->assertSessionHasErrors('profile_image');
   }
 
@@ -841,7 +842,7 @@ class RescueUpdateTest extends TestCase
       'profile_image' => UploadedFile::fake()->create('dog.jpg', 10000, 'image/jpg'), // 10MB
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
     $response->assertSessionHasErrors('profile_image');
   }
 
@@ -869,7 +870,7 @@ class RescueUpdateTest extends TestCase
       ],
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
     $response->assertSessionHasErrors('images.0');
 
   }
@@ -898,7 +899,7 @@ class RescueUpdateTest extends TestCase
       ],
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
     $response->assertSessionHasErrors('images.0');
     
   }
@@ -929,7 +930,7 @@ class RescueUpdateTest extends TestCase
       'profile_image' => null,
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect(route('rescues.show',$rescue->id));
     $response->assertSessionHas('info','Rescue Profile for '. $updatedData['name']. ' has been updated!');
@@ -961,7 +962,7 @@ class RescueUpdateTest extends TestCase
 
     $invalidFile = UploadedFile::fake()->create('not_image.pdf', 200, 'application/pdf');
 
-    $response = $this->put(route('rescues.update', $rescue), [
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), [
         'name' => 'Updated Name',
         'species' => 'Dog',
         'description' => 'A friendly dog',
@@ -1001,7 +1002,7 @@ class RescueUpdateTest extends TestCase
       'profile_image' => null,
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect(route('rescues.show', $rescue->id));
     $response->assertSessionHas('info', 'Rescue Profile for ' . $updatedData['name'] . ' has been updated!');
@@ -1044,7 +1045,7 @@ class RescueUpdateTest extends TestCase
       'last_updated_at' => '2000-01-01T00:00:00.000000Z', // stale timestamp
     ];
 
-    $response = $this->put(route('rescues.update', $rescue), $updatedData);
+    $response = $this->from(route('rescues.show', $rescue))->put(route('rescues.update', $rescue), $updatedData);
 
     $response->assertRedirect();
     $response->assertSessionHas('error', 'This rescue profile has been modified by another user. Please refresh the page and try again.');
