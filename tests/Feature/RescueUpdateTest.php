@@ -129,7 +129,7 @@ class RescueUpdateTest extends TestCase
 
     $this->actingAs($admin);
 
-    $rescue = Rescue::factory()->create();
+    $rescue = Rescue::factory()->create(['name' => 'Original Name', 'species' => 'Original Species']);
 
     $updatedData = [
       'name' => 'Updated Name',
