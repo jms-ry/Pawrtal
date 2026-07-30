@@ -30,7 +30,7 @@
             <div class="col-12 col-md-8 ms-2 ms-md-5">
               <button type="submit" class="btn btn-success w-100 fw-bolder" data-form-validation-target="submitButton">Sign in</button>
               <small class="invalid-feedback fw-bold" data-form-validation-target="formFeedback"></small>
-              <a href="{{ route('password.request') }}" class="text-decoration-none mt-2"><p class="text-center fw-bold mt-2 text-danger">Forgot your password?</p></a>
+              {{-- <a href="{{ route('password.request') }}" class="text-decoration-none mt-2"><p class="text-center fw-bold mt-2 text-danger">Forgot your password?</p></a> --}}
             </div>
           </div>
         </form>
