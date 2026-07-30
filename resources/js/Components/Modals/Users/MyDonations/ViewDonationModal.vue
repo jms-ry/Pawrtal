@@ -139,7 +139,7 @@
             <div v-if="type === 'in-kind'" class="card border-0 bg-info-subtle">
               <hr class="text-dark mt-4 mb-2">
               <h6 class="fw-bolder mt-2 text-uppercase font-monospace mt-1"><strong >Donation Image: </strong></h6>
-              <div class="d-flex flex-column align-items-start ms-2 mb-2">
+              <div class="d-flex flex-column align-items-center ms-2 mb-2">
                 <div class="mb-2 mt-2 justify-content-center">
                   <img :src="donationImage" class="w-100 h-100 object-fit-cover rounded-4" style="max-height: 300px; max-width: 100%;">
                 </div>
