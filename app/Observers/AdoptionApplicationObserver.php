@@ -25,17 +25,23 @@ class AdoptionApplicationObserver
   public function updated(AdoptionApplication $adoptionApplication): void
   {
     if($adoptionApplication->wasChanged('status') && $adoptionApplication->user){
-      if($adoptionApplication->status === 'cancelled'){
-        $adoptionApplication->user->notify(new AdoptionApplicationCancelledNotification($adoptionApplication));
-      }
+      try {
+        if($adoptionApplication->status === 'cancelled'){
+          $adoptionApplication->user->notify(new AdoptionApplicationCancelledNotification($adoptionApplication));
+        }
 
-      if($adoptionApplication->status === 'approved'){
-        $adoptionApplication->user->notify(new AdoptionApplicationApprovedNotification($adoptionApplication));
-      }
+        if($adoptionApplication->status === 'approved'){
+          $adoptionApplication->user->notify(new AdoptionApplicationApprovedNotification($adoptionApplication));
+        }
 
-      if($adoptionApplication->status === 'rejected'){
-        $adoptionApplication->user->notify(new AdoptionApplicationRejectedNotification($adoptionApplication));
+        if($adoptionApplication->status === 'rejected'){
+          $adoptionApplication->user->notify(new AdoptionApplicationRejectedNotification($adoptionApplication));
+        }
+      } catch (\Exception $e) {
+        // Handle the exception, e.g., log the error
+        \Log::error('Failed to send adoption application notification: ' . $e->getMessage());
       }
+      
     }
   }
 

@@ -25,17 +25,23 @@ class DonationObserver
   public function updated(Donation $donation): void
   {
     if($donation->wasChanged('status') && $donation->user){
-      if($donation->status ==='cancelled'){
-        $donation->user->notify(new DonationCancelledNotification($donation));
+      try{
+        if($donation->status ==='cancelled'){
+          $donation->user->notify(new DonationCancelledNotification($donation));
+        }
+        
+        if($donation->status ==='accepted'){
+          $donation->user->notify(new DonationAcceptedNotification($donation));
+        }
+
+        if($donation->status === 'rejected'){
+          $donation->user->notify(new DonationRejectedNotification($donation));
+        }
+      } catch (\Exception $e) {
+        // Handle the exception, e.g., log the error
+        \Log::error('Failed to send donation notification: ' . $e->getMessage());
       }
       
-      if($donation->status ==='accepted'){
-        $donation->user->notify(new DonationAcceptedNotification($donation));
-      }
-
-      if($donation->status === 'rejected'){
-        $donation->user->notify(new DonationRejectedNotification($donation));
-      }
     }
   }
 

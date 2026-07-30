@@ -13,17 +13,22 @@ class InspectionScheduleObserver
    */
   public function created(InspectionSchedule $inspectionSchedule): void
   {
-    //notify the applicant
-    if($inspectionSchedule->adoptionApplication?->user){
-      $inspectionSchedule->adoptionApplication->user->notify(new ApplicantInspectionScheduleNotification($inspectionSchedule));
-    }
+    try{
+      //notify the applicant
+      if($inspectionSchedule->adoptionApplication?->user){
+        $inspectionSchedule->adoptionApplication->user->notify(new ApplicantInspectionScheduleNotification($inspectionSchedule));
+      }
 
-    sleep(1); 
-    
-    //notify the inspector
-    if($inspectionSchedule->user){
-      $inspectionSchedule->user->notify(new InspectorInspectionScheduleNotification($inspectionSchedule));
+      sleep(1); 
+      
+      //notify the inspector
+      if($inspectionSchedule->user){
+        $inspectionSchedule->user->notify(new InspectorInspectionScheduleNotification($inspectionSchedule));
+      }
+    } catch (\Exception $e) {
+      \Log::error('Failed to send inspection schedule notification: ' . $e->getMessage());
     }
+    
   }
 
   /**

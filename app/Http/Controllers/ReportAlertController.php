@@ -35,7 +35,11 @@ class ReportAlertController extends Controller
     ]);
     
     // Send notification to report owner
-    $report->user->notify(new ReportAlertNotification($report, Auth::user()));
+    try {
+      $report->user->notify(new ReportAlertNotification($report, Auth::user()));
+    } catch (\Exception $e) {
+      \Log::error('Failed to send report alert notification: ' . $e->getMessage());
+    }
 
     return back()->with('success', 'The report owner has been notified!');
   }

@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     User::create(attributes:[
       'first_name' => 'Admin',
       'last_name' => 'User',
-      'email' => 'admin@example.com',
+      'email' => 'admin@mailinator.com',
       'password' => bcrypt('password'),
       'contact_number' => '1234567890',
       'role' => 'admin',
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
     User::create(attributes:[
       'first_name' => 'Staff',
       'last_name' => 'User',
-      'email' => 'staff@example.com',
+      'email' => 'staff@mailinator.com',
       'password' => bcrypt('password'),
       'contact_number' => '1235476543',
       'role' => 'staff',
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
     User::create(attributes:[
       'first_name' => 'Regular',
       'last_name' => 'User',
-      'email' => 'regular@example.com',
+      'email' => 'regular@mailinator.com',
       'password' => bcrypt('password'),
       'contact_number' => '1234567890',
       'role' => 'regular_user',
