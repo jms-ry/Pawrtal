@@ -24,9 +24,9 @@
             <div class="mb-3">
               <label class="form-label fw-bold">Preferred Size</label>
               <select v-model="form.size" class="form-select">
-                <option value="small">Small (Chihuahua, Pomeranian)</option>
-                <option value="medium">Medium (Beagle, Corgi)</option>
-                <option value="large">Large (Labrador, German Shepherd)</option>
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
                 <option value="any">Any Size</option>
               </select>
             </div>
@@ -155,7 +155,7 @@
 
             <!-- Fun Facts / Tips (Optional) -->
             <p class="text-muted small mb-0">
-              💡 {{ currentFact }}
+             {{ currentFact }}
             </p>
           </div>
         </div>
@@ -165,10 +165,10 @@
           <div class="text-center mb-4">
             <h4 class="mb-2">
               <span v-if="matches.length > 0">
-                🎉 Found {{ matches.length }} Perfect {{ matches.length === 1 ? 'Match' : 'Matches' }}!
+                Found {{ matches.length }} Perfect {{ matches.length === 1 ? 'Match' : 'Matches' }}!
               </span>
               <span v-else>
-                😔 No Matches Found
+               No Matches Found
               </span>
             </h4>
             <p v-if="matches.length > 0" class="text-muted mb-0">
