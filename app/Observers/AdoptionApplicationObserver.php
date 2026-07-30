@@ -29,11 +29,21 @@ class AdoptionApplicationObserver
         if($adoptionApplication->status === 'cancelled'){
           $adoptionApplication->user->notify(new AdoptionApplicationCancelledNotification($adoptionApplication));
         }
+      } catch (\Exception $e) {
+        // Handle the exception, e.g., log the error
+        \Log::error('Failed to send adoption application notification: ' . $e->getMessage());
+      }
 
+      try{
         if($adoptionApplication->status === 'approved'){
           $adoptionApplication->user->notify(new AdoptionApplicationApprovedNotification($adoptionApplication));
         }
+      } catch (\Exception $e) {
+        // Handle the exception, e.g., log the error
+        \Log::error('Failed to send adoption application notification: ' . $e->getMessage());
+      }
 
+      try{
         if($adoptionApplication->status === 'rejected'){
           $adoptionApplication->user->notify(new AdoptionApplicationRejectedNotification($adoptionApplication));
         }

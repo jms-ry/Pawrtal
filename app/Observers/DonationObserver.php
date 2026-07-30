@@ -30,10 +30,21 @@ class DonationObserver
           $donation->user->notify(new DonationCancelledNotification($donation));
         }
         
+      } catch (\Exception $e) {
+        // Handle the exception, e.g., log the error
+        \Log::error('Failed to send donation notification: ' . $e->getMessage());
+      }
+
+      try{
         if($donation->status ==='accepted'){
           $donation->user->notify(new DonationAcceptedNotification($donation));
         }
-
+      } catch (\Exception $e) {
+        // Handle the exception, e.g., log the error
+        \Log::error('Failed to send donation notification: ' . $e->getMessage());
+      }
+      
+      try{
         if($donation->status === 'rejected'){
           $donation->user->notify(new DonationRejectedNotification($donation));
         }
@@ -41,7 +52,6 @@ class DonationObserver
         // Handle the exception, e.g., log the error
         \Log::error('Failed to send donation notification: ' . $e->getMessage());
       }
-      
     }
   }
 

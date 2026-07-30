@@ -18,7 +18,11 @@ class InspectionScheduleObserver
       if($inspectionSchedule->adoptionApplication?->user){
         $inspectionSchedule->adoptionApplication->user->notify(new ApplicantInspectionScheduleNotification($inspectionSchedule));
       }
-      
+    } catch (\Exception $e) {
+      \Log::error('Failed to send inspection schedule notification: ' . $e->getMessage());
+    }
+
+    try{
       //notify the inspector
       if($inspectionSchedule->user){
         $inspectionSchedule->user->notify(new InspectorInspectionScheduleNotification($inspectionSchedule));
