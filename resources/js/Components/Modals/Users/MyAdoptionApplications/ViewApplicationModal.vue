@@ -147,7 +147,7 @@
               Button disabled. Make sure to verify all the documents first.
             </small>
           </div>
-          <div v-if="isAdminStaff === 'true' && applicationStatus === 'under_review'" class="d-block">
+          <div v-if="isAdminStaff === 'true' && applicationStatus === 'under_review' && inspectionStatus !== 'done'" class="d-block">
             <small v-show="inspectionStatus !== 'done'" class="text-dark fw-bolder d-block mt-1 fst-italic">
               Button disabled. Scheduled Inspection must be completed first.
             </small>
