@@ -119,57 +119,37 @@
             <button type="button" class="btn btn-warning" :data-application-id="applicationId" data-bs-toggle="modal" data-bs-target="#cancelApplicationModal">Cancel Application</button>
           </div>
           <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="align-self-start">
-            <span data-bs-toggle="tooltip" data-bs-placement="top" title="Make sure to verify all the documents.">
-              <div class="">
-                <button type="button" class="btn btn-info dropdown-toggle" disabled data-bs-toggle="dropdown" id="takeActionButton">Take Action</button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#setInspectionScheduleModal"
-                    :data-application-id="applicationId"
-                    :data-application-start-date="inspectionStartDate"
-                    :data-application-end-date="inspectionEndDate" 
-                    :data-application-address="fullAddress"
-                    >Set Inspection Schedule</a>
-                  </li>
-                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#rejectApplicationModal" :data-application-id="applicationId">Reject Application</a></li>
-                </ul>
-              </div>
-            </span>
+            <button type="button" class="btn btn-info dropdown-toggle" disabled data-bs-toggle="dropdown" id="takeActionButton">Take Action</button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#setInspectionScheduleModal"
+                :data-application-id="applicationId"
+                :data-application-start-date="inspectionStartDate"
+                :data-application-end-date="inspectionEndDate" 
+                 :data-application-address="fullAddress"
+                >Set Inspection Schedule</a>
+              </li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#rejectApplicationModal" :data-application-id="applicationId">Reject Application</a></li>
+            </ul>
           </div>
           <div v-else-if="isAdminStaff === 'true' && applicationStatus === 'under_review'" class="align-self-start">
-            <span v-if="inspectionStatus !== 'done'" data-bs-toggle="tooltip" data-bs-placement="top" title="Inspection must be completed first">
-              <button 
-                type="button" 
-                class="btn btn-info" 
-                data-bs-toggle="modal" 
-                data-bs-target="#makeDecisionModal" 
-                :data-application-id="applicationId"
-                :disabled="true"
-              >
-                Make Decision
-              </button>
-            </span>
-            <button 
-              v-else
-              type="button" 
-              class="btn btn-info" 
-              data-bs-toggle="modal" 
-              data-bs-target="#makeDecisionModal" 
-              :data-application-id="applicationId"
-            >
+            <button v-if="inspectionStatus !== 'done'" type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#makeDecisionModal" :data-application-id="applicationId" :disabled="true">
+              Make Decision
+            </button>
+            <button v-else type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#makeDecisionModal" :data-application-id="applicationId">
               Make Decision
             </button>
           </div>
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-danger" @click="closeModal">Close</button>
           </div>
-          <div v-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="d-block d-md-none" id="reminderSmall">
-            <small class="text-muted d-block mt-1 fst-italic">
+          <div v-if="isAdminStaff === 'true' && applicationStatus === 'pending'" class="align-items-start" id="reminderSmall">
+            <small class="text-dark fw-bolder d-block mt-1 fst-italic">
               Button disabled. Make sure to verify all the documents first.
             </small>
           </div>
-          <div v-if="isAdminStaff === 'true' && applicationStatus === 'under_review'" class="d-block d-md-none">
-            <small v-show="inspectionStatus !== 'done'" class="text-muted d-block mt-1 fst-italic">
-              Button disabled. Inspection must be completed first.
+          <div v-if="isAdminStaff === 'true' && applicationStatus === 'under_review'" class="d-block">
+            <small v-show="inspectionStatus !== 'done'" class="text-dark fw-bolder d-block mt-1 fst-italic">
+              Button disabled. Scheduled Inspection must be completed first.
             </small>
           </div>
         </div>
