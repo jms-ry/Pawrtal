@@ -71,6 +71,7 @@
                   </a>
                   <div v-else-if="!adoptionApplication.deleted_at" class="d-flex justify-content-center me-1">
                     <a v-if="adoptionApplication.status === 'approved'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                    <a v-if="adoptionApplication.status === 'rejected'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
                     <a v-if="adoptionApplication.can_delete" class="btn btn-danger fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#forceDeleteApplicationModal" :data-application-id="adoptionApplication.id" >Delete </a>
                   </div>
                   <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
@@ -127,6 +128,7 @@
                 </a>
                 <div v-else-if="!adoptionApplication.deleted_at" >
                   <a v-if="adoptionApplication.status === 'approved'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
+                  <a v-if="adoptionApplication.status === 'rejected'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
                   <a v-if="adoptionApplication.can_delete" class="btn btn-danger fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#forceDeleteApplicationModal" :data-application-id="adoptionApplication.id" >Delete </a>
                 </div>
                 <a v-else class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>

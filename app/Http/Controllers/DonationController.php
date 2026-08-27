@@ -174,8 +174,8 @@ class DonationController extends Controller
 
     $archiveBy = Auth::user();
 
-    if ($donation->status !== 'accepted') {
-      return redirect()->back()->with('error', 'Only accepted donations can be archived.');
+    if (in_array($donation->status, ['pending', 'cancelled'])) {
+      return redirect()->back()->with('error', 'Only accepted or rejected donations can be archived.');
     }
 
     $donation->delete();

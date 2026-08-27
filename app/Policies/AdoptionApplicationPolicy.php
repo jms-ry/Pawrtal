@@ -53,11 +53,11 @@ class AdoptionApplicationPolicy
       return false;
     }
     
-    if ($adoptionApplication->status !== 'approved') {
-      return false;
+    if (in_array($adoptionApplication->status, ['approved', 'rejected'])) {
+      return $adoptionApplication->user_id === $user->id || $user->isAdminOrStaff();
     }
 
-    return $adoptionApplication->user_id === $user->id || $user->isAdminOrStaff();
+    return false;
   }
 
   /**
@@ -82,7 +82,7 @@ class AdoptionApplicationPolicy
       return Response::deny('Only application owner can delete.');
     }
 
-    if(in_array($adoptionApplication->status,['rejected','cancelled'])){
+    if($adoptionApplication->status === 'cancelled'){
       return Response::allow();
     }
     

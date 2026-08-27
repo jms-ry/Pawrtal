@@ -46,11 +46,11 @@ class AdoptionApplicationTest extends TestCase
     $this->assertFalse($application->canDelete());
   }
 
-  public function test_can_delete_returns_true_when_status_is_rejected(): void
+  public function test_can_delete_returns_false_when_status_is_rejected(): void
   {
     $application = $this->createAdoptionApplication(['status' => 'rejected']);
 
-    $this->assertTrue($application->canDelete());
+    $this->assertFalse($application->canDelete());
   }
 
   public function test_can_delete_returns_false_when_status_is_pending(): void

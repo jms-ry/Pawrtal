@@ -74,15 +74,15 @@ class DonationPolicy
       return Response::deny('Only donation owner can permanently delete their donations.');
     }
     
-    // Can delete anything except accepted donations
-    if (in_array($donation->status, ['rejected', 'cancelled'])) {
+    // Can delete only cancelled donations
+    if ($donation->status === 'cancelled') {
       return Response::allow();
     }
     
-    // Accepted donations are permanent records for transparency
+    // Accepted or rejected donations are permanent records for transparency
     return Response::deny(
-      'Only rejected or cancelled donations can be permanently deleted. ' .
-      'Pending donations must be cancelled first, and accepted donations are kept for transparency.'
+      'Only cancelled donations can be permanently deleted. ' .
+      'Pending donations must be cancelled first, and accepted and rejected donations are kept for transparency.'
     );
   }
 

@@ -35,16 +35,15 @@ class DonationForceDeleteTest extends TestCase
     $this->assertNull(Donation::withTrashed()->find($donation->id));
   }
 
-  public function test_authenticated_user_can_force_delete_own_rejected_donation()
+  public function test_authenticated_user_cannot_force_delete_own_rejected_donation()
   {
     $user = User::factory()->create();
     $donation = Donation::factory()->rejected()->create(['user_id' => $user->id]);
 
     $response = $this->actingAs($user)->delete(route('donations.forceDelete', $donation->id));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('success', 'Donation permanently deleted successfully.');
-    $this->assertNull(Donation::withTrashed()->find($donation->id));
+    $response->assertForbidden();
+    $this->assertNotNull(Donation::withTrashed()->find($donation->id));
   }
 
   public function test_authenticated_user_cannot_force_delete_own_pending_donation()

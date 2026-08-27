@@ -71,10 +71,6 @@ class AdoptionApplication extends Model
       return true;
     }
 
-    if($this->status === 'rejected'){
-      return true;
-    }
-
     return false;
       
   }

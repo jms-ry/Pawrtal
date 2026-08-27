@@ -64,7 +64,7 @@ class AdoptionApplicationForceDeleteTest extends TestCase
     $this->assertNull(AdoptionApplication::withTrashed()->find($application->id));
   }
 
-  public function test_authenticated_user_can_force_delete_own_rejected_adoption_application()
+  public function test_authenticated_user_cannot_force_delete_own_rejected_adoption_application()
   {
     $user = User::factory()->create();
 
@@ -74,9 +74,8 @@ class AdoptionApplicationForceDeleteTest extends TestCase
 
     $response = $this->delete(route('adoption_applications.forceDelete', $application));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('success', 'Adoption application permanently deleted successfully.');
-    $this->assertNull(AdoptionApplication::withTrashed()->find($application->id));
+    $response->assertForbidden();
+    $this->assertNotNull(AdoptionApplication::withTrashed()->find($application->id));
   }
 
   public function test_authenticated_user_cannot_force_delete_own_pending_adoption_application()
