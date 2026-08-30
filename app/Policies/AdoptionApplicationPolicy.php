@@ -54,7 +54,7 @@ class AdoptionApplicationPolicy
     }
     
     if (in_array($adoptionApplication->status, ['approved', 'rejected'])) {
-      return $adoptionApplication->user_id === $user->id || $user->isAdminOrStaff();
+      return $adoptionApplication->user_id === $user->id;
     }
 
     return false;
@@ -69,7 +69,7 @@ class AdoptionApplicationPolicy
       return false;
     }
 
-    return $adoptionApplication->user_id === $user->id || $user->isAdminOrStaff();
+    return $adoptionApplication->user_id === $user->id;
   }
 
   /**

@@ -246,9 +246,9 @@ class AdminStaffController extends Controller
     $showArchived = $request->boolean('archived');
 
     $adoptionApplications = AdoptionApplication::query()
+      ->withTrashed()
       ->when($showArchived, 
-        fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
+        fn ($q) => $q->onlyTrashed()
       )
       ->with(['user','rescue','inspectionSchedule'])
       ->withCount('inspectionSchedule')

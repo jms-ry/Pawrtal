@@ -236,9 +236,9 @@ class UserController extends Controller
     $showArchived = $request->boolean('archived');
 
     $adoptionApplications = $user->adoptionApplications()
+      ->withTrashed()
       ->when($showArchived, 
-        fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
+        fn ($q) => $q->onlyTrashed()
       )
       ->withCount('inspectionSchedule')
       ->with(['user','rescue'])

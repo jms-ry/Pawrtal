@@ -173,7 +173,7 @@ class AdoptionApplicationDestroyTest extends TestCase
     
   }
 
-  public function test_admin_user_can_destroy_approved_applications()
+  public function test_admin_user_cannot_destroy_approved_applications()
   {
     $user1 = User::factory()->create();
     $admin = User::factory()->admin()->create();
@@ -185,12 +185,11 @@ class AdoptionApplicationDestroyTest extends TestCase
     $this->actingAs($admin);
     
     $response = $this->from(route('dashboard.adoptionApplications'))->delete(route('adoption-applications.destroy', $application));
-    $response->assertRedirect(route('dashboard.adoptionApplications'));
-    $response->assertSessionHas('warning','Adoption application for '. $application->rescue->name. ' has been archived.');
+    $response->assertForbidden();
     
   }
 
-  public function test_admin_user_can_destroy_rejected_applications()
+  public function test_admin_user_cannot_destroy_rejected_applications()
   {
     $user1 = User::factory()->create();
     $admin = User::factory()->admin()->create();
@@ -202,8 +201,7 @@ class AdoptionApplicationDestroyTest extends TestCase
     $this->actingAs($admin);
     
     $response = $this->from(route('users.myAdoptionApplications'))->delete(route('adoption-applications.destroy', $application));
-    $response->assertRedirect(route('users.myAdoptionApplications'));
-    $response->assertSessionHas('warning','Adoption application for '. $application->rescue->name. ' has been archived.');
+    $response->assertForbidden();
     
   }
 
@@ -253,7 +251,7 @@ class AdoptionApplicationDestroyTest extends TestCase
     
   }
 
-  public function test_staff_user_can_destroy_approved_applications()
+  public function test_staff_user_cannot_destroy_approved_applications()
   {
     $user1 = User::factory()->create();
     $staff = User::factory()->staff()->create();
@@ -265,12 +263,11 @@ class AdoptionApplicationDestroyTest extends TestCase
     $this->actingAs($staff);
     
     $response = $this->from(route('dashboard.adoptionApplications'))->delete(route('adoption-applications.destroy', $application));
-    $response->assertRedirect(route('dashboard.adoptionApplications'));
-    $response->assertSessionHas('warning','Adoption application for '. $application->rescue->name. ' has been archived.');
+    $response->assertForbidden();
     
   }
 
-  public function test_staff_user_can_destroy_rejected_applications()
+  public function test_staff_user_cannot_destroy_rejected_applications()
   {
     $user1 = User::factory()->create();
     $staff = User::factory()->staff()->create();
@@ -282,8 +279,7 @@ class AdoptionApplicationDestroyTest extends TestCase
     $this->actingAs($staff);
     
     $response = $this->from(route('users.myAdoptionApplications'))->delete(route('adoption-applications.destroy', $application));
-    $response->assertRedirect(route('users.myAdoptionApplications'));
-    $response->assertSessionHas('warning','Adoption application for '. $application->rescue->name. ' has been archived.');
+    $response->assertForbidden();
     
   }
 

@@ -92,7 +92,7 @@ class AdoptionApplicationRestoreTest extends TestCase
     $response->assertForbidden();
   }
 
-  public function test_admin_user_can_restore_trashed_application()
+  public function test_admin_user_cannot_restore_trashed_application()
   {
     $user1 = User::factory()->create();
     $admin = User::factory()->admin()->create();
@@ -105,9 +105,7 @@ class AdoptionApplicationRestoreTest extends TestCase
 
     $response = $this->from(route('dashboard.adoptionApplications'))->patch(route('adoption_applications.restore', $application));
 
-    $response->assertRedirect(route('dashboard.adoptionApplications'));
-    $response->assertSessionHas('success','Adoption application for '. $application->rescue->name. ' has been restored.');
-    $this->assertDatabaseHas('adoption_applications', ['id' => $application->id]);
+    $response->assertForbidden();
   }
 
   public function test_staff_user_cannot_restore_non_trashed_application()
@@ -125,7 +123,7 @@ class AdoptionApplicationRestoreTest extends TestCase
     $response->assertForbidden();
   }
 
-  public function test_staff_user_can_restore_trashed_application()
+  public function test_staff_user_cannot_restore_trashed_application()
   {
     $user1 = User::factory()->create();
     $staff = User::factory()->staff()->create();
@@ -138,9 +136,7 @@ class AdoptionApplicationRestoreTest extends TestCase
 
     $response = $this->from(route('dashboard.adoptionApplications'))->patch(route('adoption_applications.restore', $application));
 
-    $response->assertRedirect(route('dashboard.adoptionApplications'));
-    $response->assertSessionHas('success','Adoption application for '. $application->rescue->name. ' has been restored.');
-    $this->assertDatabaseHas('adoption_applications', ['id' => $application->id]);
+    $response->assertForbidden();
   }
 
   public function test_deleted_at_set_to_null_when_application_is_restored()
@@ -192,13 +188,12 @@ class AdoptionApplicationRestoreTest extends TestCase
     Notification::fake();
 
     $user1 = User::factory()->create();
-    $staff = User::factory()->staff()->create();
 
     $application = AdoptionApplication::factory()->approved()->trashed()->create([
       'user_id' => $user1->id
     ]);
 
-    $this->actingAs($staff);
+    $this->actingAs($user1);
 
     $response = $this->from(route('dashboard.adoptionApplications'))->patch(route('adoption_applications.restore', $application));
 
