@@ -184,9 +184,9 @@ class AdminStaffController extends Controller
     $showArchived = $request->boolean('archived');
 
     $donations = Donation::query()
+      ->withTrashed()
       ->when($showArchived, 
-        fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
+        fn ($q) => $q->onlyTrashed()
       )
       ->with('user')
       ->when($search, function ($query, $search) {

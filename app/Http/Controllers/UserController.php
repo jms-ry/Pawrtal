@@ -175,9 +175,9 @@ class UserController extends Controller
     $sortOrder = in_array($sortOrder, ['asc','desc']) ? $sortOrder : null;
 
     $donations = $user->donations()
+      ->withTrashed()
       ->when($showArchived, 
-        fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
+        fn ($q) => $q->onlyTrashed()
       )
       ->with('user')
       ->when($search, function ($query, $search) {

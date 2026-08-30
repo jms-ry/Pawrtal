@@ -594,7 +594,7 @@ class UserMyDonationsTest extends TestCase
 
     $adminResponse->assertInertia(fn ($page) =>
       $page->component('User/MyDonations')
-        ->has('donations.data', 3)
+        ->has('donations.data', 7)
         ->where('filters.donation_type', 'in-kind')
       ->where('filters.status', 'accepted')
     );
