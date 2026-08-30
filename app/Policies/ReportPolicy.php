@@ -49,7 +49,7 @@ class ReportPolicy
     {
       return false;
     }
-    return $report->user_id === $user->id || $user->isAdminOrStaff();
+    return $report->user_id === $user->id;
   }
 
   /**
@@ -61,7 +61,7 @@ class ReportPolicy
       return false;
     }
 
-    return $report->user_id === $user->id || $user->isAdminOrStaff();
+    return $report->user_id === $user->id;
   }
 
   /**

@@ -121,9 +121,9 @@ class AdminStaffController extends Controller
     $showArchived = $request->boolean('archived');
 
     $reports = Report::query()
+      ->withTrashed()
       ->when($showArchived, 
         fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
       )
       ->with('user')
       ->when($search, function ($query, $search) {

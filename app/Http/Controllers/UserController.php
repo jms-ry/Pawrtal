@@ -118,9 +118,9 @@ class UserController extends Controller
     $showArchived = $request->boolean('archived');
 
     $reports = $user->reports()
+      ->withTrashed()
       ->when($showArchived, 
-        fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
+        fn ($q) => $q->onlyTrashed()
       )
       ->with('user')
       ->when($search, function ($query, $search) {

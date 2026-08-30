@@ -119,7 +119,7 @@ export default class extends Controller {
       const fullName = this.element.querySelector('#nameSpan');
       fullName.textContent = full_name;
 
-      const isAbleToDelete = isOwnedByLoggedUser || isLoggedUserAdminOrStaff;
+      const isAbleToDelete = isOwnedByLoggedUser;
       const deleteButtonDiv = this.element.querySelector('#deleteReportButtonDiv');
 
       if(isAbleToDelete){

@@ -82,7 +82,7 @@ class ReportDestroyTest extends TestCase
     $response->assertSessionHas('warning', 'Report has been archived!');
   }
 
-  public function test_admin_user_can_destroy_resolved_report()
+  public function test_admin_user_cannot_destroy_resolved_report()
   {
     $user = User::factory()->create();
     $admin = User::factory()->admin()->create();
@@ -96,8 +96,7 @@ class ReportDestroyTest extends TestCase
 
     $response = $this->delete(route('reports.destroy', $report));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('warning', 'Report has been archived!');
+    $response->assertForbidden();
   }
 
   public function test_admin_user_cannot_destroy_active_report()
@@ -113,11 +112,10 @@ class ReportDestroyTest extends TestCase
 
     $response = $this->delete(route('reports.destroy', $report));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('error', 'Active reports cannot be archived.');
+    $response->assertForbidden();
   }
 
-  public function test_staff_user_can_destroy_resolved_report()
+  public function test_staff_user_cannot_destroy_resolved_report()
   {
     $user = User::factory()->create();
     $staff = User::factory()->staff()->create();
@@ -131,8 +129,7 @@ class ReportDestroyTest extends TestCase
 
     $response = $this->delete(route('reports.destroy', $report));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('warning', 'Report has been archived!');
+    $response->assertForbidden();
   }
 
   public function test_staff_user_cannot_destroy_active_report()
@@ -148,21 +145,19 @@ class ReportDestroyTest extends TestCase
 
     $response = $this->delete(route('reports.destroy', $report));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('error', 'Active reports cannot be archived.');
+    $response->assertForbidden();
   }
 
   public function test_report_record_is_soft_deleted_when_destroyed()
   {
     $user = User::factory()->create();
-    $staff = User::factory()->staff()->create();
 
     $report = Report::factory()->lost()->create([
       'user_id' => $user->id,
       'status' => 'resolved'
     ]);
 
-    $this->actingAs($staff);
+    $this->actingAs($user);
 
     $reportId = $report->id;
 
@@ -177,14 +172,13 @@ class ReportDestroyTest extends TestCase
   public function test_report_deleted_at_is_not_null_after_destroying()
   {
     $user = User::factory()->create();
-    $staff = User::factory()->staff()->create();
 
     $report = Report::factory()->lost()->create([
       'user_id' => $user->id,
       'status' => 'resolved'
     ]);
 
-    $this->actingAs($staff);
+    $this->actingAs($user);
 
     $response = $this->delete(route('reports.destroy', $report));
 
@@ -216,14 +210,13 @@ class ReportDestroyTest extends TestCase
     Notification::fake();
 
     $user = User::factory()->create();
-    $staff = User::factory()->staff()->create();
 
     $report = Report::factory()->lost()->create([
       'user_id' => $user->id,
       'status' => 'resolved'
     ]);
 
-    $this->actingAs($staff);
+    $this->actingAs($user);
 
     $response = $this->delete(route('reports.destroy', $report));
 
