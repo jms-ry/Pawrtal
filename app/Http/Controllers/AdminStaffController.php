@@ -121,9 +121,9 @@ class AdminStaffController extends Controller
     $showArchived = $request->boolean('archived');
 
     $reports = Report::query()
+      ->withTrashed()
       ->when($showArchived, 
         fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
       )
       ->with('user')
       ->when($search, function ($query, $search) {
@@ -184,9 +184,9 @@ class AdminStaffController extends Controller
     $showArchived = $request->boolean('archived');
 
     $donations = Donation::query()
+      ->withTrashed()
       ->when($showArchived, 
-        fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
+        fn ($q) => $q->onlyTrashed()
       )
       ->with('user')
       ->when($search, function ($query, $search) {
@@ -246,9 +246,9 @@ class AdminStaffController extends Controller
     $showArchived = $request->boolean('archived');
 
     $adoptionApplications = AdoptionApplication::query()
+      ->withTrashed()
       ->when($showArchived, 
-        fn ($q) => $q->onlyTrashed(),
-        fn ($q) => $q->withoutTrashed()
+        fn ($q) => $q->onlyTrashed()
       )
       ->with(['user','rescue','inspectionSchedule'])
       ->withCount('inspectionSchedule')

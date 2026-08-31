@@ -79,7 +79,7 @@ class ReportRestoreTest extends TestCase
     $response->assertSessionHas('success',  'Report has been restored!');
   }
 
-  public function test_admin_user_can_restore_trashed_report()
+  public function test_admin_user_cannot_restore_trashed_report()
   {
     $user = User::factory()->create();
     $admin = User::factory()->admin()->create();
@@ -93,8 +93,7 @@ class ReportRestoreTest extends TestCase
 
     $response = $this->patch(route('reports.restore', $report));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('success',  'Report has been restored!');
+    $response->assertForbidden();
   }
 
   public function test_admin_user_cannot_restore_non_trashed_report()
@@ -127,8 +126,7 @@ class ReportRestoreTest extends TestCase
 
     $response = $this->patch(route('reports.restore', $report));
 
-    $response->assertRedirect();
-    $response->assertSessionHas('success',  'Report has been restored!');
+    $response->assertForbidden();
   }
 
   public function test_staff_user_cannot_restore_non_trashed_report()
@@ -150,7 +148,6 @@ class ReportRestoreTest extends TestCase
   public function test_report_record_is_restored_when_restoring()
   {
     $user = User::factory()->create();
-    $staff = User::factory()->staff()->create();
 
     $report = Report::factory()->lost()->trashed()->create([
       'user_id' => $user->id,
@@ -161,7 +158,7 @@ class ReportRestoreTest extends TestCase
     $this->assertNotNull($report->deleted_at);
     $this->assertTrue($report->trashed());
 
-    $this->actingAs($staff);
+    $this->actingAs($user);
 
     $response = $this->patch(route('reports.restore', $report));
 
@@ -182,14 +179,13 @@ class ReportRestoreTest extends TestCase
   public function test_non_trashed_report_cannot_be_restored()
   {
     $user = User::factory()->create();
-    $staff = User::factory()->staff()->create();
 
     $report = Report::factory()->lost()->create([
       'user_id' => $user->id,
       'status' => 'resolved'
     ]);
 
-    $this->actingAs($staff);
+    $this->actingAs($user);
 
     $response = $this->patch(route('reports.restore', $report));
     $response->assertForbidden();
@@ -200,14 +196,13 @@ class ReportRestoreTest extends TestCase
     Notification::fake();
 
     $user = User::factory()->create();
-    $staff = User::factory()->staff()->create();
 
     $report = Report::factory()->lost()->trashed()->create([
       'user_id' => $user->id,
       'status' => 'resolved'
     ]);
 
-    $this->actingAs($staff);
+    $this->actingAs($user);
 
     $response = $this->patch(route('reports.restore', $report));
 

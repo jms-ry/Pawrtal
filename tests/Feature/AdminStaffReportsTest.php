@@ -621,8 +621,6 @@ class AdminStaffReportsTest extends TestCase
 
   public function test_combining_filters_respect_visibility_rules()
   {
-    // Test taht trashed records still hidden for non-admin/staff users
-
     $admin = User::factory()->admin()->create();
 
     // Act & Assert for admin
@@ -645,7 +643,7 @@ class AdminStaffReportsTest extends TestCase
 
     $adminResponse->assertInertia(fn ($page) =>
       $page->component('AdminStaff/Reports')
-        ->has('reports.data', 3)
+        ->has('reports.data', 7)
         ->where('filters.type', 'lost')
       ->where('filters.status', 'active')
     );

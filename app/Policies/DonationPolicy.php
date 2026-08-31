@@ -49,7 +49,7 @@ class DonationPolicy
     {
       return false;
     }
-    return $donation->user_id === $user->id || $user->isAdminOrStaff();
+    return $donation->user_id === $user->id;
   }
 
   /**
@@ -61,7 +61,7 @@ class DonationPolicy
     {
       return false;
     }
-    return $donation->user_id === $user->id || $user->isAdminOrStaff();
+    return $donation->user_id === $user->id;
   }
 
   /**

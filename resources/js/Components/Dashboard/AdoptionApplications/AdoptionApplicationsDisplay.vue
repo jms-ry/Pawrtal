@@ -70,11 +70,6 @@
                     :data-application-inspection-status="adoptionApplication.inspection_schedule_status"
                   >View
                   </a>
-                  <div v-if="!adoptionApplication.deleted_at" class="d-flex justify-content-center me-1">
-                    <a v-if="adoptionApplication.status === 'approved'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                    <a v-if="adoptionApplication.status === 'rejected'" class="btn btn-light fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                  </div>
-                  <a v-else class="btn btn-info fw-bolder ms-1" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
                 </div>
               </td>
             </tr>
@@ -126,11 +121,6 @@
                   :data-application-inspection-status="adoptionApplication.inspection_schedule_status"
                   >View 
                 </a>
-                <div v-if="!adoptionApplication.deleted_at" >
-                  <a v-if="adoptionApplication.status === 'approved'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                  <a v-if="adoptionApplication.status === 'rejected'" class="btn btn-light fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#archiveApplicationModal" :data-application-id="adoptionApplication.id" >Archive </a>
-                </div>
-                <a v-else class="btn btn-info fw-bolder mb-1 w-100" data-bs-toggle="modal" data-bs-target="#restoreApplicationModal" :data-application-id="adoptionApplication.id" >Unarchive </a>
               </td>
             </tr>
           </tbody>
@@ -191,10 +181,6 @@
           :inspectors="inspectors"
           :user="user"
         />
-        <ArchiveApplicationModal
-          :user="user"
-        />
-        <UnarchiveApplicationModal/>
       </div>
     </div>
   </div>
@@ -204,8 +190,6 @@
   import { router } from '@inertiajs/vue3';
   import { computed } from 'vue';
   import ViewApplicationModal from '../../Modals/Users/MyAdoptionApplications/ViewApplicationModal.vue';
-  import ArchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/ArchiveApplicationModal.vue';
-  import UnarchiveApplicationModal from '../../Modals/Users/MyAdoptionApplications/UnarchiveApplicationModal.vue';
 
   const props = defineProps({
     adoptionApplications: {
