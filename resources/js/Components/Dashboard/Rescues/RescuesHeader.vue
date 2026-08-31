@@ -40,14 +40,14 @@
         <fieldset class="p-1">
           <legend class="fs-6 fw-bold mx-2 font-monospace" id="filter-legend">Filter by</legend>
           <div class="row g-2 mt-0">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <select v-model="selectedSex" @change="onFilterChange('sex', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
                 <option hidden selected value="">Sex</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
               </select>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <select v-model="selectedSize" 
                 @change="onFilterChange('size', $event.target.value)" class="form-select" aria-label="filter-select" aria-labelledby="filter-legend">
                 <option hidden selected value="">Size</option>
@@ -56,7 +56,7 @@
                 <option value="large">Large</option>
               </select>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <select v-model="selectedStatus" @change="onFilterChange('status', $event.target.value)" class="form-select" aria-label="filter-select"aria-labelledby="filter-legend">
                 <option hidden selected value="">Status</option>
                 <option value="available">Available</option>
@@ -64,19 +64,19 @@
                 <option value="adopted">Adopted</option>
               </select>
             </div>
+            <div class="col-12 p-1 mt-0 mb-0 col-md-3">
+              <button 
+                type="button" 
+                @click="toggleArchived" 
+                class="btn w-100"
+                :class="showArchived ? 'btn-warning' : 'btn-outline-secondary'"
+              >
+                <i class="bi" :class="showArchived ? 'bi-archive-fill' : 'bi-archive'"></i>
+                {{ showArchived ? 'Archived ✓' : 'Archived' }}
+              </button>
+            </div>
           </div>
         </fieldset>
-        <div class="ms-md-3 p-1 mt-0 mb-0 d-flex align-items-end">
-          <button 
-            type="button" 
-            @click="toggleArchived" 
-            class="btn w-100"
-            :class="showArchived ? 'btn-warning' : 'btn-outline-secondary'"
-          >
-            <i class="bi" :class="showArchived ? 'bi-archive-fill' : 'bi-archive'"></i>
-            {{ showArchived ? 'Viewing Archived' : 'View Archived' }}
-          </button>
-        </div>
       </div>
       
       <div class="col-12 col-md-6 mt-3 mt-md-auto mt-0 d-flex flex-column justify-content-end" v-bind:data-controller="props.user?.isAdminOrStaff ? 'rescue-switch' : null">
