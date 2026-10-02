@@ -13,7 +13,7 @@ export default class extends Controller {
     const spanLabel = this.element.querySelector("#switchLabel");
     this.searchFieldTargets.forEach(el => {
       el.classList.toggle("d-none", isChecked);
-      spanLabel.textContent = isChecked ? "Switch back to manual search " : "Switch to AI recommendation?";
+      spanLabel.textContent = isChecked ? "Switch back to manual search " : "Switch to get recommendations?";
     });
 
     this.matchButtonTarget.classList.toggle("d-none", !isChecked);
