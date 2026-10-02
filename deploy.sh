@@ -22,6 +22,11 @@ echo "Linking storage..."
 php artisan storage:link
 
 echo ""
+echo "Installing Node dependencies & building assets..."
+npm install
+npm run build
+
+echo ""
 echo "Clearing old caches..."
 php artisan optimize:clear
 
