@@ -22,10 +22,15 @@ echo "Linking storage..."
 php artisan storage:link
 
 echo ""
+echo "Clearing old caches..."
+php artisan optimize:clear
+
+echo ""
 echo "Caching..."
 php artisan config:cache
 php artisan route:cache  
 php artisan view:cache
+
 
 echo ""
 echo "Starting server..."
