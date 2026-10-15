@@ -9,7 +9,7 @@
           <!--Small Screen -->
           <div class="mx-auto mt-2 mt-md-3 p-md-3 d-block d-md-none">
             <div class="container-sm-fluid w-100">
-              <img src="images/welcome/dog-3.jpg" alt="Happy pet" class="img-fluid rounded-4 mb-2">
+              <img src="images/welcome/dog-3.jpg" alt="Happy pet" class="img-fluid rounded-4 mb-2" style="max-width: 100%;">
             </div>
             <span class="lead fs-5 fst-italic font-monospace d-block text-center mt-2">Location: Barangay Cagbuhangin, Ormoc City, Leyte, Philippines</span>
           </div>
@@ -18,7 +18,7 @@
           <div class="row mt-4 d-none d-md-block mb-0">
             <div class="col-12">
               <div class="w-75 mx-auto d-block text-center">
-                <img src="images/welcome/dog-3.jpg" alt="Happy pet" class="img-fluid rounded-4 mb-4">
+                <img src="images/welcome/dog-3.jpg" alt="Happy pet" class="img-fluid rounded-4 mb-4" style="max-width: 100%;">
                 <span class="lead fs-5 fst-italic font-monospace mt-3">Location: Barangay Cagbuhangin, Ormoc City, Leyte, Philippines</span>
               </div>
             </div>

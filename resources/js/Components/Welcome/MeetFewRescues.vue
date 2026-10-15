@@ -21,6 +21,7 @@
                 :src="rescue.profile_image_url"
                 :alt="rescue.name"
                 class="w-100 h-100 object-fit-cover"
+                style="max-width: 100%;"
               />
               <span
                 class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-light bg-opacity-75 text-dark fw-bold rounded"

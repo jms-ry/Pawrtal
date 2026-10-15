@@ -22,3 +22,9 @@
   </body>
   
 </html>
+<style>
+  html, body {
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+</style>
