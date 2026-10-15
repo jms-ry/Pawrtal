@@ -92,9 +92,9 @@ After seeding, use these credentials to login:
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@example.com | password |
-| Staff | staff@example.com | password |
-| User | regular@example.com | password |
+| Admin | admin@mailinator.com | password |
+| Staff | staff@mailinator.com | password |
+| User | regular@mailinator.com | password |
 
 ## 📖 User Guide
 
