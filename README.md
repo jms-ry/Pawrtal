@@ -70,18 +70,22 @@ A comprehensive web-based platform for animal rescue organizations to manage res
 ```bash
    php artisan migrate:fresh --seed
 ```
+6. **Link the public storage**
+```bash
+   php artisan storage:link
+```
 
-6. **Build frontend assets**
+7. **Build frontend assets**
 ```bash
    npm run build
 ```
 
-7. **Start the application**
+8. **Start the application**
 ```bash
    php artisan serve
 ```
 
-8. **Access the application**
+9. **Access the application**
 ```
    http://localhost:8000
 ```
