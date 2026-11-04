@@ -94,7 +94,7 @@ class InspectionScheduleUpdateTest extends TestCase
     $response->assertForbidden();
   }
 
-  public function test_admin_user_cannot_cancel_missed_inspection_schedule()
+  public function test_admin_user_can_cancel_missed_inspection_schedule()
   {
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->subDays(3)->format('Y-m-d'),
@@ -108,7 +108,8 @@ class InspectionScheduleUpdateTest extends TestCase
       'status' => 'cancelled'
     ]);
 
-    $response->assertForbidden();
+    $response->assertRedirect();
+    $response->assertSessionHas('warning','Inspection schedule has been cancelled.');
   }
 
   public function test_admin_user_cannot_cancel_done_inspection_schedule()
@@ -181,7 +182,7 @@ class InspectionScheduleUpdateTest extends TestCase
     $response->assertForbidden();
   }
 
-  public function test_staff_user_cannot_cancel_missed_inspection_schedule()
+  public function test_staff_user_can_cancel_missed_inspection_schedule()
   {
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->subDays(3)->format('Y-m-d'),
@@ -195,7 +196,8 @@ class InspectionScheduleUpdateTest extends TestCase
       'status' => 'cancelled'
     ]);
 
-    $response->assertForbidden();
+    $response->assertRedirect();
+    $response->assertSessionHas('warning','Inspection schedule has been cancelled.');
   }
 
   public function test_staff_user_cannot_cancel_done_inspection_schedule()
@@ -285,7 +287,7 @@ class InspectionScheduleUpdateTest extends TestCase
     $response->assertForbidden();
   }
 
-  public function test_admin_user_cannot_mark_as_done_missed_inspection_schedule()
+  public function test_admin_user_can_mark_as_done_missed_inspection_schedule()
   {
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->subDays(3)->format('Y-m-d'),
@@ -299,7 +301,8 @@ class InspectionScheduleUpdateTest extends TestCase
       'status' => 'done'
     ]);
 
-    $response->assertForbidden();
+    $response->assertRedirect();
+    $response->assertSessionHas('success','Inspection schedule has been marked done.');
   }
 
   public function test_admin_user_can_mark_as_done_now_inspection_schedule()
@@ -372,7 +375,7 @@ class InspectionScheduleUpdateTest extends TestCase
     $response->assertForbidden();
   }
 
-  public function test_staff_user_cannot_mark_as_done_missed_inspection_schedule()
+  public function test_staff_user_can_mark_as_done_missed_inspection_schedule()
   {
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->subDays(3)->format('Y-m-d'),
@@ -386,7 +389,8 @@ class InspectionScheduleUpdateTest extends TestCase
       'status' => 'done'
     ]);
 
-    $response->assertForbidden();
+    $response->assertRedirect();
+    $response->assertSessionHas('success','Inspection schedule has been marked done.');
   }
 
   public function test_staff_user_can_mark_as_done_now_inspection_schedule()
