@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\DB;
 class DonationControllerTest extends TestCase
 {
   use RefreshDatabase;
@@ -1095,6 +1095,177 @@ class DonationControllerTest extends TestCase
     $response->assertForbidden();
     $this->assertDatabaseHas('donations', ['item_description' => 'Original donation']);
   }
+
+  public function test_cancel_is_rejected_when_donation_is_accepted_after_initial_load()
+  {
+    $user = User::factory()->create();
+    $donation = Donation::factory()->create([
+      'user_id' => $user->id,
+      'status'  => 'pending',
+    ]);
+
+    // Simulate staff accepting between the controller's first load and the locked re-fetch.
+    $fired = false;
+    Donation::retrieved(function ($model) use (&$fired) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => 'accepted']);
+      }
+    });
+
+    $response = $this->actingAs($user)->put(route('donations.update', $donation), [
+      'status' => 'cancelled',
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'This donation can no longer be cancelled because it has already been processed.');
+
+    $this->assertDatabaseHas('donations', [
+      'id'     => $donation->id,
+      'status' => 'accepted', // not overwritten by the cancel
+    ]);
+  }
+
+  public function test_cancel_is_rejected_when_donation_is_rejected_after_initial_load()
+  {
+    $user = User::factory()->create();
+    $donation = Donation::factory()->create([
+      'user_id' => $user->id,
+      'status'  => 'pending',
+    ]);
+
+    // Simulate staff accepting between the controller's first load and the locked re-fetch.
+    $fired = false;
+    Donation::retrieved(function ($model) use (&$fired) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => 'rejected']);
+      }
+    });
+
+    $response = $this->actingAs($user)->put(route('donations.update', $donation), [
+      'status' => 'cancelled',
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'This donation can no longer be cancelled because it has already been processed.');
+
+    $this->assertDatabaseHas('donations', [
+      'id'     => $donation->id,
+      'status' => 'rejected', // not overwritten by the cancel
+    ]);
+  }
+
+  public function test_update_is_rejeted_when_donation_is_accepted_after_initial_load()
+  {
+    $user = User::factory()->create();
+    $donation = Donation::factory()->inKind()->create([
+      'user_id'     => $user->id,
+      'status'      => 'pending',
+      'item_description' => 'Original description',
+    ]);
+
+    $fired = false;
+    Donation::retrieved(function ($model) use (&$fired) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => 'accepted']);
+      }
+    });
+
+    $response = $this->actingAs($user)->put(route('donations.update', $donation), [
+      'item_description' => 'Updated description',
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'This donation can no longer be updated because it has already been processed.');
+
+    $this->assertDatabaseHas('donations', [
+      'id' => $donation->id,
+      'status' => 'accepted',
+      'item_description' => 'Original description', // not overwritten by the update
+    ]);
+  }
+
+  public function test_update_is_rejeted_when_donation_is_rejected_after_initial_load()
+  {
+    $user = User::factory()->create();
+    $donation = Donation::factory()->inKind()->create([
+      'user_id'     => $user->id,
+      'status'      => 'pending',
+      'item_description' => 'Original description',
+    ]);
+
+    $fired = false;
+    Donation::retrieved(function ($model) use (&$fired) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => 'rejected']);
+      }
+    });
+
+    $response = $this->actingAs($user)->put(route('donations.update', $donation), [
+      'item_description' => 'Updated description',
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('warning', 'This donation can no longer be updated because it has already been processed.');
+
+    $this->assertDatabaseHas('donations', [
+      'id' => $donation->id,
+      'status' => 'rejected',
+      'item_description' => 'Original description', // not overwritten by the update
+    ]);
+  }
+
+  public function test_blocked_update_does_not_store_new_image_or_delete_old_image()
+  {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    $oldPath = 'images/donation/donation_images/old.jpg';
+    Storage::disk('public')->put($oldPath, 'old image');
+
+    $donation = Donation::factory()->create([
+      'user_id'        => $user->id,
+      'status'         => 'pending',
+      'donation_image' => $oldPath,
+    ]);
+
+    $fired = false;
+    Donation::retrieved(function ($model) use (&$fired) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => 'accepted']);
+      }
+     });
+
+      $this->actingAs($user)
+        ->put(route('donations.update', $donation), [
+          'description'    => 'Changed description',
+          'donation_image' => UploadedFile::fake()->image('new.jpg'),
+        ])
+      ->assertSessionHas('warning');
+
+      Storage::disk('public')->assertExists($oldPath);
+      $this->assertCount(1, Storage::disk('public')->files('images/donation/donation_images'));
+      $this->assertDatabaseHas('donations', [
+        'id'             => $donation->id,
+        'donation_image' => $oldPath,
+    ]);
+  }
+
   /** End of update function test cases */
 
 

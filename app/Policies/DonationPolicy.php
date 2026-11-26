@@ -37,7 +37,7 @@ class DonationPolicy
   */
   public function update(User $user, Donation $donation): bool
   {
-    return $donation->user_id === $user->id;
+    return $donation->user_id === $user->id && $donation->status === 'pending';
   }
 
   /**

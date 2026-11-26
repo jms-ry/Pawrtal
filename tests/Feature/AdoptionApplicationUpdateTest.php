@@ -14,7 +14,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AdoptionApplicationUpdateTest extends TestCase
 {
@@ -1608,7 +1609,7 @@ class AdoptionApplicationUpdateTest extends TestCase
 
     // Should redirect with error
     $response->assertRedirect(route('dashboard.adoptionApplications'));
-    $response->assertSessionHas('error', 'This application has already been processed.');
+    $response->assertSessionHas('error', 'This rescue has already been adopted.');
 
     // Application should not be approved
     $application->refresh();
@@ -1768,5 +1769,313 @@ class AdoptionApplicationUpdateTest extends TestCase
       'id' => $rescue->id,
       'adoption_status' => 'adopted',
     ]);
+  }
+
+  public function test_cancel_is_rejected_when_application_is_approved_after_initial_load()
+  {
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+
+    $application = AdoptionApplication::factory()->create([
+      'user_id' => $user->id,
+      'rescue_id' => $rescue->id,
+      'status'  => 'pending',
+    ]);
+
+    $fired = false;
+    AdoptionApplication::retrieved(function ($model) use (&$fired) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => 'approved']);
+      }
+    });
+
+    $response = $this->actingAs($user)
+      ->put(route('adoption-applications.update', $application), [
+      'status' => 'cancelled',
+    ]);
+
+    $response->assertSessionHas(
+      'warning',
+      'This adoption application can no longer be cancelled because it has already been processed.'
+    );
+
+    $this->assertDatabaseHas('adoption_applications', [
+      'id'     => $application->id,
+      'status' => 'approved',
+    ]);
+  }
+
+  public function test_cancel_is_rejected_when_application_is_rejected_after_initial_load()
+  {
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+
+    $application = AdoptionApplication::factory()->create([
+      'user_id' => $user->id,
+      'rescue_id' => $rescue->id,
+      'status'  => 'pending',
+    ]);
+
+    $fired = false;
+    AdoptionApplication::retrieved(function ($model) use (&$fired) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => 'rejected']);
+      }
+    });
+
+    $response = $this->actingAs($user)
+      ->put(route('adoption-applications.update', $application), [
+      'status' => 'cancelled',
+    ]);
+
+    $response->assertSessionHas(
+      'warning',
+      'This adoption application can no longer be cancelled because it has already been processed.'
+    );
+
+    $this->assertDatabaseHas('adoption_applications', [
+      'id'     => $application->id,
+      'status' => 'rejected',
+    ]);
+  }
+
+  public function test_cancel_is_rejected_when_application_is_under_review_after_initial_load()
+  {
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+
+    $application = AdoptionApplication::factory()->create([
+      'user_id' => $user->id,
+      'rescue_id' => $rescue->id,
+      'status'  => 'pending',
+    ]);
+
+    $fired = false;
+    AdoptionApplication::retrieved(function ($model) use (&$fired) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => 'under_review']);
+      }
+    });
+
+    $response = $this->actingAs($user)
+      ->put(route('adoption-applications.update', $application), [
+      'status' => 'cancelled',
+    ]);
+
+    $response->assertSessionHas(
+      'warning',
+      'This adoption application can no longer be cancelled because it has already been processed.'
+    );
+
+    $this->assertDatabaseHas('adoption_applications', [
+      'id'     => $application->id,
+      'status' => 'under_review',
+    ]);
+  }
+
+  #[DataProvider('statusesThatBlockApproval')]
+  public function test_approve_is_rejected_when_application_status_changes_after_initial_load(string $status)
+  {
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $application = AdoptionApplication::factory()->create([
+      'user_id'   => $user->id,
+      'rescue_id' => $rescue->id,
+      'status'    => 'under_review',
+    ]);
+
+    $fired = false;
+    AdoptionApplication::retrieved(function ($model) use (&$fired, $status) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => $status]);
+      }
+    });
+
+    $response = $this->actingAs($staff)
+      ->put(route('adoption-applications.update', $application), [
+      'status' => 'approved',
+    ]);
+
+    $response->assertSessionHas('error', 'This application has already been processed.');
+
+    $this->assertDatabaseHas('adoption_applications', [
+      'id'     => $application->id,
+      'status' => $status,
+    ]);
+    $this->assertDatabaseMissing('rescues', [
+      'id'              => $rescue->id,
+      'adoption_status' => 'adopted',
+    ]);
+  }
+
+  public static function statusesThatBlockApproval(): array
+  {
+    return [
+      'approved' => ['approved'],
+      'rejected' => ['rejected'],
+    ];
+  }
+
+  #[DataProvider('statusesThatBlockRejection')]
+  public function test_reject_is_rejected_when_application_status_changes_after_initial_load(string $status)
+  {
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $application = AdoptionApplication::factory()->create([
+      'user_id'   => $user->id,
+      'rescue_id' => $rescue->id,
+      'status'    => 'pending',
+    ]);
+
+    $fired = false;
+    AdoptionApplication::retrieved(function ($model) use (&$fired, $status) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => $status]);
+      }
+    });
+
+    $response = $this->actingAs($staff)
+      ->put(route('adoption-applications.update', $application), [
+      'status' => 'rejected',
+    ]);
+
+    $response->assertSessionHas(
+      'warning',
+      'This adoption application can no longer be rejected. It may have been cancelled or already processed.'
+    );
+
+    $this->assertDatabaseHas('adoption_applications', [
+      'id'     => $application->id,
+      'status' => $status,
+    ]);
+  }
+
+  public static function statusesThatBlockRejection(): array
+  {
+    return [
+      'cancelled' => ['cancelled'],
+      'approved'  => ['approved'],
+      'rejected'  => ['rejected'],
+    ];
+  }
+
+  public function test_approve_auto_rejects_open_siblings_but_not_cancelled_ones()
+  {
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+
+    $application = AdoptionApplication::factory()->create(['rescue_id' => $rescue->id, 'status' => 'under_review', 'user_id' => $user->id]);
+    $pending     = AdoptionApplication::factory()->create(['rescue_id' => $rescue->id, 'status' => 'pending', 'user_id' => $user->id]);
+    $reviewing   = AdoptionApplication::factory()->create(['rescue_id' => $rescue->id, 'status' => 'under_review', 'user_id' => $user->id]);
+    $cancelled   = AdoptionApplication::factory()->create(['rescue_id' => $rescue->id, 'status' => 'cancelled', 'user_id' => $user->id]);
+
+    $this->actingAs($staff)
+      ->put(route('adoption-applications.update', $application), [
+        'status' => 'approved',
+      ])
+    ->assertSessionHas('success');
+
+    $this->assertDatabaseHas('adoption_applications', ['id' => $application->id, 'status' => 'approved']);
+    $this->assertDatabaseHas('adoption_applications', ['id' => $pending->id,     'status' => 'rejected']);
+    $this->assertDatabaseHas('adoption_applications', ['id' => $reviewing->id,   'status' => 'rejected']);
+    $this->assertDatabaseHas('adoption_applications', ['id' => $cancelled->id,   'status' => 'cancelled']);
+    $this->assertDatabaseHas('rescues', ['id' => $rescue->id, 'adoption_status' => 'adopted']);
+  }
+
+  public function test_approve_is_rejected_when_rescue_is_already_adopted()
+  {
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'adopted']);
+    $application = AdoptionApplication::factory()->create([
+      'rescue_id' => $rescue->id,
+      'user_id' => $user->id,
+      'status'    => 'under_review',
+    ]);
+
+    $response = $this->actingAs($staff)
+      ->put(route('adoption-applications.update', $application), [
+      'status' => 'approved',
+    ]);
+
+    $response->assertSessionHas('error', 'This rescue has already been adopted.');
+
+    $this->assertDatabaseHas('adoption_applications', [
+      'id'     => $application->id,
+      'status' => 'under_review',
+    ]);
+  }
+
+  #[DataProvider('statusesThatBlockUpdate')]
+  public function test_update_is_rejected_when_application_status_changes_after_initial_load(string $status)
+  {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $oldPath = 'images/adoption_applications/valid_ids/old.jpg';
+    Storage::disk('public')->put($oldPath, 'old');
+
+    $application = AdoptionApplication::factory()->create([
+      'user_id'  => $user->id,
+      'rescue_id' => $rescue->id,
+      'status'   => 'pending',
+      'valid_id' => $oldPath,
+    ]);
+
+    $fired = false;
+    AdoptionApplication::retrieved(function ($model) use (&$fired, $status) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($model->getTable())
+          ->where('id', $model->id)
+        ->update(['status' => $status]);
+      }
+    });
+
+    $this->actingAs($user)
+      ->put(route('adoption-applications.update', $application), [
+        'valid_id' => UploadedFile::fake()->image('new.jpg'),
+      ])
+        ->assertSessionHas(
+        'warning',
+        'This adoption application can no longer be updated because it has already been processed.'
+      );
+
+      Storage::disk('public')->assertExists($oldPath);
+      $this->assertCount(1, Storage::disk('public')->files('images/adoption_applications/valid_ids'));
+      $this->assertDatabaseHas('adoption_applications', [
+        'id'       => $application->id,
+        'status'   => $status,
+        'valid_id' => $oldPath,
+      ]);
+  }
+
+  public static function statusesThatBlockUpdate(): array
+  {
+    return [
+      'under_review' => ['under_review'],
+      'approved'     => ['approved'],
+      'rejected'     => ['rejected'],
+      'cancelled'    => ['cancelled'],
+    ];
   }
 }

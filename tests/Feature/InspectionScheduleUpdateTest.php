@@ -96,12 +96,12 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_admin_user_can_cancel_missed_inspection_schedule()
   {
+    $admin = User::factory()->admin()->create();
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->subDays(3)->format('Y-m-d'),
+      'inspector_id' => $admin->id
     ]);
     
-    $admin = User::factory()->admin()->create();
-
     $this->actingAs($admin);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -131,11 +131,11 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_admin_user_can_cancel_now_inspection_schedule()
   {
+    $admin = User::factory()->admin()->create();
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->format('Y-m-d'),
+      'inspector_id' => $admin->id
     ]);
-    
-    $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin);
     
@@ -149,12 +149,12 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_admin_user_can_cancel_upcoming_inspection_schedule()
   {
+    $admin = User::factory()->admin()->create();
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->addDays(4)->format('Y-m-d'),
+      'inspector_id' => $admin->id
     ]);
     
-    $admin = User::factory()->admin()->create();
-
     $this->actingAs($admin);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -184,12 +184,12 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_staff_user_can_cancel_missed_inspection_schedule()
   {
+    $staff = User::factory()->staff()->create();
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->subDays(3)->format('Y-m-d'),
+      'inspector_id' => $staff->id
     ]);
     
-    $staff = User::factory()->staff()->create();
-
     $this->actingAs($staff);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -219,12 +219,13 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_staff_user_can_cancel_now_inspection_schedule()
   {
-    $schedule = InspectionSchedule::factory()->create([
-      'inspection_date' => now()->format('Y-m-d'),
-    ]);
-    
     $staff = User::factory()->staff()->create();
 
+    $schedule = InspectionSchedule::factory()->create([
+      'inspection_date' => now()->format('Y-m-d'),
+      'inspector_id' => $staff->id
+    ]);
+    
     $this->actingAs($staff);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -237,12 +238,13 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_staff_user_can_cancel_upcoming_inspection_schedule()
   {
-    $schedule = InspectionSchedule::factory()->create([
-      'inspection_date' => now()->addDays(4)->format('Y-m-d'),
-    ]);
-    
     $staff = User::factory()->staff()->create();
 
+    $schedule = InspectionSchedule::factory()->create([
+      'inspection_date' => now()->addDays(4)->format('Y-m-d'),
+      'inspector_id' => $staff->id
+    ]);
+    
     $this->actingAs($staff);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -289,12 +291,13 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_admin_user_can_mark_as_done_missed_inspection_schedule()
   {
-    $schedule = InspectionSchedule::factory()->create([
-      'inspection_date' => now()->subDays(3)->format('Y-m-d'),
-    ]);
-    
     $admin = User::factory()->admin()->create();
 
+    $schedule = InspectionSchedule::factory()->create([
+      'inspection_date' => now()->subDays(3)->format('Y-m-d'),
+      'inspector_id' => $admin->id
+    ]);
+    
     $this->actingAs($admin);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -307,12 +310,13 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_admin_user_can_mark_as_done_now_inspection_schedule()
   {
-    $schedule = InspectionSchedule::factory()->create([
-      'inspection_date' => now()->format('Y-m-d'),
-    ]);
-    
     $admin = User::factory()->admin()->create();
 
+    $schedule = InspectionSchedule::factory()->create([
+      'inspection_date' => now()->format('Y-m-d'),
+      'inspector_id' => $admin->id
+    ]);
+    
     $this->actingAs($admin);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -325,12 +329,13 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_admin_user_can_mark_as_done_upcoming_inspection_schedule()
   {
-    $schedule = InspectionSchedule::factory()->create([
-      'inspection_date' => now()->addDays(3)->format('Y-m-d'),
-    ]);
-    
     $admin = User::factory()->admin()->create();
 
+    $schedule = InspectionSchedule::factory()->create([
+      'inspection_date' => now()->addDays(3)->format('Y-m-d'),
+      'inspector_id' => $admin->id
+    ]);
+    
     $this->actingAs($admin);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -377,12 +382,12 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_staff_user_can_mark_as_done_missed_inspection_schedule()
   {
-    $schedule = InspectionSchedule::factory()->create([
-      'inspection_date' => now()->subDays(3)->format('Y-m-d'),
-    ]);
-    
     $staff = User::factory()->staff()->create();
 
+    $schedule = InspectionSchedule::factory()->create([
+      'inspection_date' => now()->subDays(3)->format('Y-m-d'),
+      'inspector_id' => $staff->id
+    ]);
     $this->actingAs($staff);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -394,13 +399,13 @@ class InspectionScheduleUpdateTest extends TestCase
   }
 
   public function test_staff_user_can_mark_as_done_now_inspection_schedule()
-  {
-    $schedule = InspectionSchedule::factory()->create([
-      'inspection_date' => now()->format('Y-m-d'),
-    ]);
-    
+  {    
     $staff = User::factory()->staff()->create();
 
+    $schedule = InspectionSchedule::factory()->create([
+      'inspection_date' => now()->format('Y-m-d'),
+      'inspector_id' => $staff->id
+    ]);
     $this->actingAs($staff);
     
     $response = $this->patch(route('inspection-schedules.update', $schedule), [
@@ -413,11 +418,11 @@ class InspectionScheduleUpdateTest extends TestCase
 
   public function test_staff_user_can_mark_as_done_upcoming_inspection_schedule()
   {
+    $staff = User::factory()->staff()->create();
     $schedule = InspectionSchedule::factory()->create([
       'inspection_date' => now()->addDays(3)->format('Y-m-d'),
+      'inspector_id' => $staff->id
     ]);
-    
-    $staff = User::factory()->staff()->create();
 
     $this->actingAs($staff);
     
