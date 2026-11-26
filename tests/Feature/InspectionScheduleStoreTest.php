@@ -9,6 +9,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\DataProvider;
+use App\Models\Rescue;
+use Illuminate\Database\Events\TransactionBeginning;
+use Illuminate\Support\Facades\Event;
 class InspectionScheduleStoreTest extends TestCase
 {
   use RefreshDatabase;
@@ -910,5 +915,111 @@ class InspectionScheduleStoreTest extends TestCase
 
     $this->assertEquals(1, InspectionSchedule::where('application_id', $application->id)->count());
   }
+  #[DataProvider('statusesThatBlockScheduling')]
+  public function test_store_is_rejected_when_application_status_changes_after_initial_load(string $status)
+  {
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'available']);
+    $application = AdoptionApplication::factory()->create([
+      'rescue_id' => $rescue->id,
+      'user_id'   => $user->id,
+      'status'    => 'pending',
+    ]);
 
+    // Fires when the controller opens its transaction: after the form request
+    // and the controller's initial load, before the locked re-fetch.
+    $fired = false;
+    Event::listen(TransactionBeginning::class, function () use (&$fired, $application, $status) {
+      if (! $fired) {
+        $fired = true;
+        DB::table($application->getTable())
+          ->where('id', $application->id)
+        ->update(['status' => $status]);
+      }
+    });
+
+    $this->actingAs($staff)
+      ->post(route('inspection-schedules.store'), [
+        'application_id'      => $application->id,
+        'inspector_id'        => $staff->id,
+        'inspection_location' => fake()->streetAddress(),
+        'inspection_date'     => $application->preferred_inspection_start_date,
+      ])
+    ->assertSessionHas(
+      'warning',
+      'An inspection can no longer be scheduled for this application. It may have been cancelled, already scheduled, or already processed.'
+    );
+
+    // No schedule was created. Don't assert the status here: the controller's
+    // savepoint rollback also reverts the simulated change inside the test.
+    $this->assertDatabaseCount('inspection_schedules', 0);
+  }
+
+  public static function statusesThatBlockScheduling(): array
+  {
+    return [
+      'cancelled'    => ['cancelled'],
+      'under_review' => ['under_review'],
+      'approved'     => ['approved'],
+      'rejected'     => ['rejected'],
+    ];
+  }
+
+  public function test_second_store_for_same_application_is_blocked()
+  {
+    $user = User::factory()->create();
+    $staff = User::factory()->staff()->create();
+    $rescue = Rescue::factory()->create(['adoption_status' => 'adopted']);
+    $application = AdoptionApplication::factory()->create([
+      'rescue_id' => $rescue->id,
+      'user_id' => $user->id,
+      'status'    => 'pending',
+    ]);
+
+    $payload = [
+      'application_id' => $application->id,
+      'inspector_id' =>$staff->id,
+      'inspection_location' => fake()->streetAddress(),
+      'inspection_date' => $application->preferred_inspection_start_date,
+    ];
+
+    $this->actingAs($staff)->post(route('inspection-schedules.store'), $payload)->assertSessionHas('success');
+
+    $this->actingAs($staff)->post(route('inspection-schedules.store'), $payload)
+    ->assertSessionHasErrors('application_id');
+
+    $this->assertDatabaseCount('inspection_schedules', 1);
+    $this->assertDatabaseHas('adoption_applications', [
+      'id'     => $application->id,
+      'status' => 'under_review',
+    ]);
+  }
+
+  public function test_application_can_be_rescheduled_after_inspection_is_cancelled()
+  {
+    $staff = User::factory()->staff()->create();
+    $application = AdoptionApplication::factory()->create(['status' => 'under_review']);
+    $schedule = InspectionSchedule::factory()->create([
+      'application_id' => $application->id,
+      'inspector_id'   => $staff->id,
+      'status'         => 'cancelled', // match your factory/status values
+    ]);
+    $application->update(['status' => 'pending']);
+
+    $this->actingAs($staff)
+      ->post(route('inspection-schedules.store'), [
+        'application_id'      => $application->id,
+        'inspector_id'        => $staff->id,
+        'inspection_location' => fake()->streetAddress(),
+        'inspection_date'     => $application->preferred_inspection_start_date,
+      ])
+    ->assertSessionHas('success');
+
+    $this->assertDatabaseCount('inspection_schedules', 2);
+    $this->assertDatabaseHas('adoption_applications', [
+      'id'     => $application->id,
+      'status' => 'under_review',
+    ]);
+  }
 }

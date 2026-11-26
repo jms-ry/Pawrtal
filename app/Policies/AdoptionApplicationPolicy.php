@@ -37,11 +37,7 @@ class AdoptionApplicationPolicy
   */
   public function update(User $user, AdoptionApplication $adoptionApplication): bool
   {
-    if($adoptionApplication->status === 'pending'){
-      return $adoptionApplication->user_id === $user->id;
-    }
-
-    return false;
+    return $adoptionApplication->user_id === $user->id && $adoptionApplication->status === 'pending';
   }
 
   /**
@@ -91,20 +87,12 @@ class AdoptionApplicationPolicy
 
   public function cancel(User $user, AdoptionApplication $adoptionApplication): bool
   {
-    if($adoptionApplication->status === 'pending'){
-      return $adoptionApplication->user_id === $user->id && !$user->isAdminOrStaff();
-    }
-
-    return false;
+    return $adoptionApplication->user_id === $user->id && $adoptionApplication->status === 'pending';
   }
 
   public function approve(User $user, AdoptionApplication $adoptionApplication): bool
   {
-    if($adoptionApplication->status === 'under_review'){
-      return $user->isAdminOrStaff();
-    }
-
-    return false;
+    return $user->isAdminOrStaff() && $adoptionApplication->status === 'under_review';
   }
 
   public function reject(User $user, AdoptionApplication $adoptionApplication): bool

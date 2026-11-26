@@ -8,6 +8,7 @@ use App\Models\Donation;
 use App\Notifications\DonationArchivedNotification;
 use App\Notifications\DonationForceDeleteNotification;
 use App\Notifications\DonationRestoredNotification;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -107,60 +108,98 @@ class DonationController extends Controller
     //if the request status is "cancelled", update the status to "cancelled"
     if($request->status === 'cancelled'){
       $this->authorize('cancel', $donation);
-      $donation->update($requestData);
+
+      try {
+        DB::transaction(function () use ($donation, $requestData) {
+          $lockedDonation = Donation::lockForUpdate()->findOrFail($donation->id);
+
+          $this->authorize('cancel', $lockedDonation);
+
+          $lockedDonation->update($requestData);
+        });
+      } catch(AuthorizationException $e){
+        return redirect()->back()->with('warning','This donation can no longer be cancelled because it has already been processed.');
+      }
+
       return redirect()->back()->with('warning','Donation has been cancelled.');
     }
 
-    if($request->status === 'accepted'){
+    if ($request->status === 'accepted') {
       $this->authorize('accept', $donation);
 
-      DB::transaction(function () use ($donation, $requestData) {
-        $lockedDonation = Donation::lockForUpdate()->find($donation->id);
+      try {
+        DB::transaction(function () use ($donation, $requestData) {
+          $lockedDonation = Donation::lockForUpdate()->findOrFail($donation->id);
 
-        // Re-check policy on the freshly locked row
-        if ($lockedDonation->status !== 'pending') {
-          abort(403);
-        }
+          // Re-check policy on the freshly locked row
+          $this->authorize('accept', $lockedDonation);
 
-        $lockedDonation->update($requestData);
-      });
+          $lockedDonation->update($requestData);
+        });
+      } catch (AuthorizationException $e) {
+        return redirect()->back()->with('warning','This donation can no longer be accepted. It may have been cancelled or already processed.');
+      }
 
-      return redirect()->back()->with('success','Donation has been accepted.');
+      return redirect()->back()->with('success', 'Donation has been accepted.');
     }
 
-    if($request->status === 'rejected'){
+    if ($request->status === 'rejected') {
       $this->authorize('reject', $donation);
-      
-      DB::transaction(function () use ($donation, $requestData) {
-        $lockedDonation = Donation::lockForUpdate()->find($donation->id);
 
-        // Re-check policy on the freshly locked row
-        if ($lockedDonation->status !== 'pending') {
-          abort(403);
-        }
+      try {
+        DB::transaction(function () use ($donation, $requestData) {
+          $lockedDonation = Donation::lockForUpdate()->findOrFail($donation->id);
 
-        $lockedDonation->update($requestData);
-      });
+          // Re-check policy on the freshly locked row
+          $this->authorize('reject', $lockedDonation);
 
-      return redirect()->back()->with('error','Donation has been rejected.');
+          $lockedDonation->update($requestData);
+        });
+      } catch (AuthorizationException $e) {
+        return redirect()->back()->with('warning','This donation can no longer be rejected. It may have been cancelled or already processed.');
+      }
+
+      return redirect()->back()->with('error', 'Donation has been rejected.');
     }
 
     $this->authorize('update', $donation);
 
-    if ($request->hasFile('donation_image')) {
-      if ($donation->donation_image && Storage::disk('public')->exists($donation->donation_image)) {
-        Storage::disk('public')->delete($donation->donation_image);
-      }
+    $newImagePath = null;
+    $oldImagePath = null;
 
-      $file = $request->file('donation_image');
-      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-      $imagePath = $file->storeAs('images/donation/donation_images', $filename, 'public');
-      $requestData['donation_image'] = $imagePath;
-    } else {
-      unset($requestData['donation_image']);
+    try {
+      DB::transaction(function () use ($donation, $request, &$requestData, &$newImagePath, &$oldImagePath) {
+        $lockedDonation = Donation::lockForUpdate()->findOrFail($donation->id);
+
+        $this->authorize('update', $lockedDonation);
+
+        if ($request->hasFile('donation_image')) {
+          $oldImagePath = $lockedDonation->donation_image;
+
+          $file = $request->file('donation_image');
+          $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+          $newImagePath = $file->storeAs('images/donation/donation_images', $filename, 'public');
+          $requestData['donation_image'] = $newImagePath;
+        } else {
+          unset($requestData['donation_image']);
+        }
+
+        $lockedDonation->update($requestData);
+      });
+    } catch (AuthorizationException $e) {
+      return redirect()->back()->with('warning','This donation can no longer be updated because it has already been processed.');
+    } catch (\Throwable $e) {
+      // Update failed after the new file may have been stored: remove the orphan.
+      if ($newImagePath) {
+        Storage::disk('public')->delete($newImagePath);
+      }
+      throw $e;
     }
 
-    $donation->update($requestData);
+    // Transaction committed: now it's safe to remove the replaced image.
+    if ($oldImagePath && Storage::disk('public')->exists($oldImagePath)) {
+      Storage::disk('public')->delete($oldImagePath);
+    }
 
     return redirect()->back()->with('info', 'Donation has been updated.');
   }

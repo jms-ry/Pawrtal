@@ -207,7 +207,7 @@ class RescueUpdateTest extends TestCase
 
     $admin = User::factory()->admin()->create();
 
-    $rescue = Rescue::factory()->create();
+    $rescue = Rescue::factory()->create(['name' => 'Original Name']);
 
     $this->actingAs($admin);
 

@@ -72,11 +72,15 @@ class InspectionSchedulePolicy
 
   public function done(User $user, InspectionSchedule $inspectionSchedule)
   {
-    return $user->isAdminOrStaff() && in_array($inspectionSchedule->inspectionStatus(),['now','upcoming','missed']);
+    return $user->isAdminOrStaff()
+      && $user->id === $inspectionSchedule->inspector_id
+    && in_array($inspectionSchedule->inspectionStatus(), ['now', 'upcoming', 'missed']);
   }
 
   public function cancel(User $user, InspectionSchedule $inspectionSchedule)
   {
-    return $user->isAdminOrStaff() && in_array($inspectionSchedule->inspectionStatus(),['now','upcoming','missed']);
+    return $user->isAdminOrStaff()
+      && $user->id === $inspectionSchedule->inspector_id
+    && in_array($inspectionSchedule->inspectionStatus(), ['now', 'upcoming', 'missed']);
   }
 }

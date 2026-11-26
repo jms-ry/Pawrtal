@@ -94,7 +94,9 @@ class AdoptionApplication extends Model
   }
   public function inspectionSchedule()
   {
-    return $this->hasOne(InspectionSchedule::class,'application_id');
+    return $this->hasOne(InspectionSchedule::class, 'application_id')
+      ->where('status', '!=', 'cancelled')
+    ->latestOfMany();
   }
 
   public function getInspectionLocationAttribute()

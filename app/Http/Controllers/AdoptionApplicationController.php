@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Models\Rescue;
+use Illuminate\Auth\Access\AuthorizationException;
 class AdoptionApplicationController extends Controller
 {
   /**
@@ -96,53 +97,66 @@ class AdoptionApplicationController extends Controller
     //if the request status is "cancelled", update the status to "cancelled"
     if($request->status === 'cancelled'){
       $this->authorize('cancel',$adoptionApplication);
-      $adoptionApplication->update($requestData);
+
+      try{
+        DB::transaction(function () use ($adoptionApplication, $requestData) {
+          $lockedAdoptionApplication = AdoptionApplication::lockForUpdate()->findOrFail($adoptionApplication->id);
+
+          $this->authorize('cancel', $lockedAdoptionApplication);
+
+          $lockedAdoptionApplication->update($requestData);
+        });
+      }catch(AuthorizationException $e){
+        return redirect()->back()->with('warning','This adoption application can no longer be cancelled because it has already been processed.');
+      }
+
       return redirect()->back()->with('warning','Adoption application for '. $adoptionApplication->rescue->name. ' has been cancelled.');
     }
+
     //approve adoption applicaiton
     if ($request->status === 'approved') {
       $this->authorize('approve', $adoptionApplication);
 
-      $alreadyProcessed = false;
+      $rescueUnavailable = false;
 
-      DB::transaction(function () use ($adoptionApplication, $requestData, &$alreadyProcessed) {
-        $lockedApplication = AdoptionApplication::lockForUpdate()->find($adoptionApplication->id);
+      try {
+        DB::transaction(function () use ($adoptionApplication, $requestData, &$rescueUnavailable) {
+          // Lock order: rescue first, then applications
+          $rescue = Rescue::lockForUpdate()->findOrFail($adoptionApplication->rescue_id);
 
-        // Re-check policy condition on freshly locked row
-        if ($lockedApplication->status !== 'under_review') {
-          $alreadyProcessed = true;
-          return;
-        }
+          $lockedApplication = AdoptionApplication::lockForUpdate()->findOrFail($adoptionApplication->id);
 
-        // Also lock the rescue to prevent double-adoption
-        $rescue = Rescue::lockForUpdate()->find($lockedApplication->rescue_id);
+          // Re-check policy on the freshly locked row
+          $this->authorize('approve', $lockedApplication);
 
-        if ($rescue && $rescue->adoption_status === 'adopted') {
-          $alreadyProcessed = true;
-          return;
-        }
+          if ($rescue->adoption_status === 'adopted') {
+            $rescueUnavailable = true;
+            return;
+          }
 
-        $lockedApplication->update($requestData);
-
-        if ($lockedApplication->rescue_id) {
+          $lockedApplication->update($requestData);
           $rescue->update(['adoption_status' => 'adopted']);
-        }
 
-        AdoptionApplication::where('rescue_id', $lockedApplication->rescue_id)
-          ->where('id', '!=', $lockedApplication->id)
-          ->whereIn('status', ['pending', 'under_review'])
-          ->each(function ($otherApp) use ($lockedApplication) {
-            $otherApp->update([
-              'status' => 'rejected',
-              'review_notes' => "Automatically rejected because another applicant was approved for {$lockedApplication->rescue->name}.",
-              'reviewed_by' => 'System',
-              'review_date' => now(),
-            ]);
+          AdoptionApplication::where('rescue_id', $rescue->id)
+            ->where('id', '!=', $lockedApplication->id)
+            ->whereIn('status', ['pending', 'under_review'])
+            ->lockForUpdate()
+            ->get()
+            ->each(function ($otherApp) use ($rescue) {
+              $otherApp->update([
+                'status'       => 'rejected',
+                'review_notes' => "Automatically rejected because another applicant was approved for {$rescue->name}.",
+                'reviewed_by'  => 'System',
+                'review_date'  => now(),
+              ]);
           });
-      });
-
-      if ($alreadyProcessed) {
+        });
+      } catch (AuthorizationException $e) {
         return redirect()->back()->with('error', 'This application has already been processed.');
+      }
+
+      if ($rescueUnavailable) {
+        return redirect()->back()->with('error', 'This rescue has already been adopted.');
       }
 
       return redirect()->back()->with('success', 'Adoption application for ' . $adoptionApplication->rescue->name . ' has been approved.');
@@ -152,54 +166,89 @@ class AdoptionApplicationController extends Controller
     if ($request->status === 'rejected') {
       $this->authorize('reject', $adoptionApplication);
 
-      DB::transaction(function () use ($adoptionApplication, $requestData) {
-        $lockedApplication = AdoptionApplication::lockForUpdate()->find($adoptionApplication->id);
+      try {
+        DB::transaction(function () use ($adoptionApplication, $requestData) {
+          $lockedApplication = AdoptionApplication::lockForUpdate()->findOrFail($adoptionApplication->id);
 
-        if (!in_array($lockedApplication->status, ['pending', 'under_review'])) {
-          abort(403);
-        }
+          // Re-check policy on the freshly locked row
+          $this->authorize('reject', $lockedApplication);
 
-        $lockedApplication->update($requestData);
-      });
+          $lockedApplication->update($requestData);
+        });
+      } catch (AuthorizationException $e) {
+        return redirect()->back()->with(
+          'warning',
+          'This adoption application can no longer be rejected. It may have been cancelled or already processed.'
+        );
+      }
 
       return redirect()->back()->with('error', 'Adoption application for ' . $adoptionApplication->rescue->name . ' has been rejected.');
     }
 
     $this->authorize('update', $adoptionApplication);
 
-    if ($request->hasFile('valid_id')) {
-      if ($adoptionApplication->valid_id && Storage::disk('public')->exists($adoptionApplication->valid_id)) {
-        Storage::disk('public')->delete($adoptionApplication->valid_id);
-      }
+    $newFiles = [];        
+    $oldValidId = null;    
 
-      $file = $request->file('valid_id');
-      $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-      $validIdPath = $file->storeAs('images/adoption_applications/valid_ids', $filename, 'public');
-      $requestData['valid_id'] = $validIdPath;
-    } else {
-      unset($requestData['valid_id']);
+    try {
+      DB::transaction(function () use ($adoptionApplication, $request, $requestData, &$newFiles, &$oldValidId) {
+        $lockedApplication = AdoptionApplication::withTrashed()->lockForUpdate()->findOrFail($adoptionApplication->id);
+
+        // Re-check policy on the freshly locked row
+        $this->authorize('update', $lockedApplication);
+
+        if ($request->hasFile('valid_id')) {
+          $oldValidId = $lockedApplication->valid_id;
+
+          $file = $request->file('valid_id');
+          $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+          $validIdPath = $file->storeAs('images/adoption_applications/valid_ids', $filename, 'public');
+          $newFiles[] = $validIdPath;
+          $requestData['valid_id'] = $validIdPath;
+        } else {
+          unset($requestData['valid_id']);
+        }
+
+        if ($request->hasFile('supporting_documents')) {
+          // Read from the locked row, not the stale model
+          $existingDocuments = $lockedApplication->supporting_documents ?? [];
+          $documents = [];
+
+          foreach ($request->file('supporting_documents') as $document) {
+            $filename = Str::uuid() . '.' . $document->getClientOriginalExtension();
+            $documentPath = $document->storeAs(
+              'images/adoption_applications/supporting_documents',
+              $filename,
+              'public'
+            );
+            $newFiles[] = $documentPath;
+            $documents[] = $documentPath;
+          }
+
+          $requestData['supporting_documents'] = array_merge($existingDocuments, $documents);
+        } else {
+          unset($requestData['supporting_documents']);
+        }
+
+        $lockedApplication->update($requestData);
+      });
+    } catch (AuthorizationException $e) {
+      return redirect()->back()->with(
+        'warning',
+        'This adoption application can no longer be updated because it has already been processed.'
+      );
+    } catch (\Throwable $e) {
+      // Failure after files were stored: remove the orphans.
+      foreach ($newFiles as $path) {
+        Storage::disk('public')->delete($path);
+      }
+      throw $e;
     }
 
-    if ($request->hasFile('supporting_documents')) {
-      $existingDocuments = $adoptionApplication->supporting_documents ?? [];
-      $documents = [];
-
-      foreach ($request->file('supporting_documents') as $document) {
-        $filename = Str::uuid() . '.' . $document->getClientOriginalExtension();
-        $documentPath = $document->storeAs(
-          'images/adoption_applications/supporting_documents',
-          $filename,
-          'public'
-        );
-        $documents[] = $documentPath;
-      }
-
-      $requestData['supporting_documents'] = array_merge($existingDocuments, $documents);
-    } else {
-      unset($requestData['supporting_documents']);
+    // Committed: now it's safe to remove the replaced valid ID.
+    if ($oldValidId && Storage::disk('public')->exists($oldValidId)) {
+      Storage::disk('public')->delete($oldValidId);
     }
-
-    $adoptionApplication->update($requestData);
 
     return redirect()->back()->with('info', 'Adoption application for ' . $adoptionApplication->rescue->name . ' has been updated.');
   }

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\AdoptionApplication;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\InspectionSchedule;
 class StoreInspectionScheduleRequest extends FormRequest
 {
   /**
@@ -28,16 +29,21 @@ class StoreInspectionScheduleRequest extends FormRequest
         'required',
         'exists:adoption_applications,id',
         function ($attribute, $value, $fail) {
-          $application = AdoptionApplication::with('inspectionSchedule')->find($value);
+          $application = AdoptionApplication::find($value);
           if (!$application) {
             return;
           }
-          
+
           if ($application->status !== 'pending') {
             $fail('The selected application must be a pending application.');
+            return;
           }
 
-          if ($application->inspectionSchedule) {
+          $hasActiveSchedule = InspectionSchedule::where('application_id', $value)
+            ->where('status', '!=', 'cancelled')
+            ->exists();
+
+          if ($hasActiveSchedule) {
             $fail('This application already has an inspection schedule.');
           }
         },
